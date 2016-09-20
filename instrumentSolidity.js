@@ -1,12 +1,14 @@
 var SolidityParser = require("solidity-parser");
-
+var path = require("path");
 module.exports = function(pathToFile, instrument){
 
 	var result = SolidityParser.parseFile("./" + pathToFile);
 	var instrumented = "";
 	const __INDENTATION__ = "    ";
 	var parse = {};
+	var runnableLines=[];
 	var linecount = 1;
+	var fileName = path.basename(pathToFile);
 	var dottable = ['msg', 'tx', 'this'];
 
 	parse["AssignmentExpression"] = function (expression){
@@ -81,7 +83,6 @@ module.exports = function(pathToFile, instrument){
 	}
 
 	parse["IfStatement"] = function(expression){
-		console.log(expression);
 		var retval = "if (";
 		retval += parse[expression.test.type](expression.test) + "){" + parse[expression.consequent.type](expression.consequent) + "}";
 		return retval;
@@ -119,8 +120,10 @@ module.exports = function(pathToFile, instrument){
 	}
 
 	parse["BlockStatement"] = function(expression){
-		console.log(expression);
-		return 'BLOCKSTATEMENT'
+		if (expression.body.length>1){
+			console.log('bigger blockstatement...')
+		}
+		return parse[expression.body[0].type](expression.body[0]);
 	}
 
 	function newLine(lastchar){
@@ -140,7 +143,7 @@ module.exports = function(pathToFile, instrument){
 			if (content.type === "ContractStatement"){
 				instrumented +=  'contract ' + content.name + ' {' + newLine('{');
 				//Inject our coverage event;
-				instrumented += "event Coverage(string contract, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
+				instrumented += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
 
 				for (x in content.body){
 					printBody(content.body[x], indented+1, cover);
@@ -160,6 +163,15 @@ module.exports = function(pathToFile, instrument){
 				instrumented+='{' + newLine('{');
 				printBody(content.body, indented+1, instrument);
 				instrumented+=__INDENTATION__.repeat(indented) +'}' + newLine('}');
+			}else if (content.type === "LibraryStatement"){
+				instrumented +=  'library ' + content.name + ' {' + newLine('{');
+				//Inject our coverage event;
+				instrumented += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
+
+				for (x in content.body){
+					printBody(content.body[x], indented+1, cover);
+				}
+				instrumented += '}' + newLine('}');
 			}else{
 				for (x in content.body){
 					printBody(content.body[x], indented, cover);
@@ -168,7 +180,8 @@ module.exports = function(pathToFile, instrument){
 		}else{
 			if (parse[content.type]!==undefined){
 				if (cover){
-					instrumented += __INDENTATION__.repeat(indented) +"Coverage(" + linecount + ");\n";
+					instrumented += __INDENTATION__.repeat(indented) +"Coverage('" + fileName + "'," + linecount + ");\n";
+					runnableLines.push(linecount);
 				}
 				instrumented += __INDENTATION__.repeat(indented) + parse[content.type](content);
 				instrumented += newLine(instrumented.slice(-1));
@@ -181,6 +194,6 @@ module.exports = function(pathToFile, instrument){
 
 
 
-	return instrumented;
+	return {contract: instrumented, runnableLines: runnableLines};
 
 }
