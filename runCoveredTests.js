@@ -14,14 +14,18 @@ shell.mv('./contracts/', './originalContracts');
 shell.mkdir('./contracts/');
 //For each contract in originalContracts, get the canonical version and the instrumented version
 shell.ls('./originalContracts/*.sol').forEach(function(file) {
-    if (file !== './originalContracts/Migrations.sol') {
+    if (file !== 'originalContracts/Migrations.sol') {
+        console.log("=================")
+        console.log(file);
+        console.log("=================")
         var instrumentedContractInfo = getInstrumentedVersion(file, true);
         var canonicalContractInfo = getInstrumentedVersion(file, false);
         fs.writeFileSync('./canonicalContracts/' + path.basename(file), canonicalContractInfo.contract);
         fs.writeFileSync('./contracts/' + path.basename(file), instrumentedContractInfo.contract);
     }
-    shell.cp("./originalContracts/Migrations.sol", "./contracts/Migrations.sol");
 });
+shell.cp("./originalContracts/Migrations.sol", "./contracts/Migrations.sol");
+shell.cp("./originalContracts/Migrations.sol", "./canonicalContracts/Migrations.sol");
 
 var filter = web3.eth.filter('latest');
 var res = web3.currentProvider.send({
@@ -31,10 +35,7 @@ var res = web3.currentProvider.send({
     id: new Date().getTime()
 });
 var filterid = res.result;
-
 shell.exec("truffle test");
-
-
 //Again, once that truffle issue gets solved, we don't have to call these again here
 shell.ls('./originalContracts/*.sol').forEach(function(file) {
     if (file !== './originalContracts/Migrations.sol') {
@@ -68,7 +69,7 @@ for (idx in res.result) {
 
 fs.writeFileSync('./coverage.json', JSON.stringify(coverage));
 
-shell.exec("istanbul report text")
+shell.exec("istanbul report html")
 
 shell.rm('-rf', './contracts');
 shell.rm('-rf', './canonicalContracts');
