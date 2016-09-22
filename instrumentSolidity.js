@@ -297,12 +297,12 @@ module.exports = function(pathToFile, instrumentingActive){
 			linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
 			//We need to work out the lines and columns the function declaration starts and ends
 			var startline = linecount;
-			var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n');
+			var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
 			var endlineDelta = contract.slice(expression.start).indexOf('{')+1;
 			var functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
 			var endline = startline + (functionDefinition.match(/\n/g)||[]).length;
 			var endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n')
-			fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, col:startcol},end:{line:endline, col:endcol}}}
+			fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, column:startcol},end:{line:endline, column:endcol}}}
 			injectionPoints[expression.start + endlineDelta +1] = {type: "callFunctionEvent", fnId: fnId};
 
 
