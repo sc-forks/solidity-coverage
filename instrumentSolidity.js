@@ -3,7 +3,7 @@ var solparse = require("solparse");
 var fs = require('fs');
 
 var path = require("path");
-module.exports = function(pathToFile, instrument){
+module.exports = function(pathToFile, instrumentingActive){
 
 	// var result = SolidityParser.parseFile("./" + pathToFile);
 	var contract = fs.readFileSync("./" + pathToFile).toString();
@@ -12,40 +12,38 @@ module.exports = function(pathToFile, instrument){
 	const __INDENTATION__ = "    ";
 	var parse = {};
 	var runnableLines=[];
+	var fnMap = {};
+	var fnId = 0;
 	var linecount = 1;
 	var fileName = path.basename(pathToFile);
-	var dottable = ['msg', 'tx', 'this', 'bytes'];
-
-	function addInstrumentationEvent(){
-		runnableLines.push(linecount);
+	var injectionPoints = {};
+	function addInstrumentationEvent(charcount){
+		injectionPoints[charcount] = {type:"callEvent"};
 		return "Coverage('" + fileName + "'," + linecount + ");\n";
 	}
 
 	parse["AssignmentExpression"] = function (expression, instrument){
-		if (instrument){ retval += addInstrumentationEvent(); }
+		if (instrument){ retval += addInstrumentationEvent(expression.start); }
 		var retval = "";
 		retval += parse[expression.left.type](expression.left, instrument);
 		retval += expression.operator;
 		retval += parse[expression.right.type](expression.right, instrument) + ';';
-		if (dottable.indexOf(expression.right.name)>=0){
-			dottable.push(expression.left.name);
-		}
 		return retval;
 	}
 
-	parse["ConditionalExpression"] = function(expression){
+	parse["ConditionalExpression"] = function(expression, instrument){
 		return parse[expression.test.left.type](expression.test.left) + expression.test.operator + parse[expression.test.right.type](expression.test.right) + '?' + parse[expression.consequent.type](expression.consequent) + ":" + parse[expression.alternate.type](expression.alternate);
 	}
 
-	parse["Identifier"] = function(expression){
+	parse["Identifier"] = function(expression, instrument){
 		return expression.name;
 	}
 
-	parse["InformalParameter"] = function(expression){
+	parse["InformalParameter"] = function(expression, instrument){
 		return expression.literal.literal;
 	}
 
-	parse["Literal"] = function(expression){
+	parse["Literal"] = function(expression, instrument){
 		if (typeof expression.value==='string' && expression.value.slice(0,2)!=="0x"){
 			return '"' + expression.value + '"';
 		}else{
@@ -53,7 +51,7 @@ module.exports = function(pathToFile, instrument){
 		}
 	}
 
-	parse["ModifierName"]  = function(expression){
+	parse["ModifierName"]  = function(expression, instrument){
 		var retvalue = expression.name
 		if (expression.params && expression.params.length>0){
 			retvalue += '(';
@@ -98,18 +96,18 @@ module.exports = function(pathToFile, instrument){
 
 	}
 
-	parse["ThisExpression"] = function(expression){
+	parse["ThisExpression"] = function(expression, instrument){
 		return 'this'
 	}
 
 	parse["ReturnStatement"] = function(expression, instrument){
 		var retval = "";
-		if (instrument){ retval += addInstrumentationEvent(); }
+		if (instrument){ retval += addInstrumentationEvent(expression.start); }
 
 		return retval + 'return ' + parse[expression.argument.type](expression.argument, instrument) + ';';
 	}
 
-	parse["NewExpression"] = function(expression){
+	parse["NewExpression"] = function(expression, instrument){
 		var retval = 'new ' + parse[expression.callee.type](expression.callee);
 		retval += '(';
 		for (x in expression.arguments){
@@ -124,12 +122,6 @@ module.exports = function(pathToFile, instrument){
 	}
 
 	parse["MemberExpression"]  = function (expression){
-		// return contract.slice(expression.start, expression.end);
-		// var shouldDot = false;
-		// if (dottable.indexOf(expression.object.name)>=0){shouldDot = true;}
-		// if (expression.object.callee){
-		// 	if (dottable.indexOf(expression.object.callee.name)>=0){shouldDot=true;}
-		// }
 		if (!expression.computed){
 			return parse[expression.object.type](expression.object) + "." + parse[expression.property.type](expression.property);
 		}else{
@@ -150,7 +142,7 @@ module.exports = function(pathToFile, instrument){
 		return retval
 	}
 
-	parse["UnaryExpression"] = function(expression){
+	parse["UnaryExpression"] = function(expression, instrument){
 		if (expression.operator==='delete'){
 		return expression.operator + ' ' + parse[expression.argument.type](expression.argument);
 
@@ -160,17 +152,17 @@ module.exports = function(pathToFile, instrument){
 
 	parse["ThrowStatement"] = function(expression, instrument){
 		var retval = "";
-		if (instrument){ retval += addInstrumentationEvent(); }
+		if (instrument){ retval += addInstrumentationEvent(expression.start); }
 		return retval + 'throw'
 	}
 
-	parse["BinaryExpression"] = function(expression){
+	parse["BinaryExpression"] = function(expression, instrument){
 		return '(' + parse[expression.left.type](expression.left) + expression.operator + parse[expression.right.type](expression.right) + ')';
 	}
 
 	parse["IfStatement"] = function(expression, instrument){
 		var retval = "";
-		if (instrument){ retval += addInstrumentationEvent(); }
+		if (instrument){ retval += addInstrumentationEvent(expression.start); }
 		retval += "if (";
 		retval += parse[expression.test.type](expression.test, instrument) + "){"
 		retval += newLine('{');
@@ -192,7 +184,7 @@ module.exports = function(pathToFile, instrument){
 		return retval;
 	}
 
-	parse["SequenceExpression"] = function(expression){
+	parse["SequenceExpression"] = function(expression, instrument){
 		retval = "(";
 		for (x in expression.expressions){
 			retval += parse[expression.expressions[x].type](expression.expressions[x]) + ', ';
@@ -205,18 +197,17 @@ module.exports = function(pathToFile, instrument){
 		return retval;
 	}
 
-	parse["ImportStatement"] = function(expression){
-		dottable.push(expression.from.slice(0,-4));
+	parse["ImportStatement"] = function(expression, instrument){
 		return 'import "' + expression.from + '"';
 	}
 
-	parse["DeclarativeExpression"] = function(expression){
+	parse["DeclarativeExpression"] = function(expression, instrument){
 		return expression.literal.literal + ' ' + (expression.is_public ? "public " : "") + (expression.is_constant ? "constant " : "") + expression.name;
 	}
 
 	parse["ExpressionStatement"] = function(content, instrument){
 		var retval = "";
-		if (instrument){ retval += addInstrumentationEvent(); }
+		if (instrument){ retval += addInstrumentationEvent(content.start); }
 		if (content.expression.literal && content.expression.literal.literal && content.expression.literal.literal.type==="MappingExpression"){
 			return retval + 'mapping (' + content.expression.literal.literal.from.literal + ' => ' + content.expression.literal.literal.to.literal + ') '+ content.expression.name;
 		}else {
@@ -224,9 +215,8 @@ module.exports = function(pathToFile, instrument){
 		}
 	}
 
-	parse["EnumDeclaration"] = function(expression){
+	parse["EnumDeclaration"] = function(expression, instrument){
 		var retvalue = 'enum ' + expression.name + ' {';
-		dottable.push(expression.name);
 		for (x in expression.members){
 			retvalue += expression.members[x] + ', ';
 		}
@@ -235,7 +225,7 @@ module.exports = function(pathToFile, instrument){
 		return retvalue;
 	}
 
-	parse["EventDeclaration"]=function(expression){
+	parse["EventDeclaration"]=function(expression, instrument){
 		var retval = 'event ' + expression.name + '(';
 		for (x in expression.params){
 			var param = expression.params[x];
@@ -249,9 +239,9 @@ module.exports = function(pathToFile, instrument){
 		return retval
 	}
 
-	parse["VariableDeclarationTuple"] = function(expression){
+	parse["VariableDeclarationTuple"] = function(expression, instrument){
 		var retval = "";
-		if (instrument){ retval += addInstrumentationEvent(); }
+		if (instrument){ retval += addInstrumentationEvent(expression.start); }
 
 		retval += "var (";
 		for (x in expression.declarations){
@@ -277,19 +267,20 @@ module.exports = function(pathToFile, instrument){
 			console.log('more than one declaration')
 		}
 		retval = "";
-		if (instrument){ retval += addInstrumentationEvent(); }
+		if (instrument){ retval += addInstrumentationEvent(expression.start); }
 		return retval + "var " + parse[expression.declarations[0].id.type](expression.declarations[0].id) + " = " + parse[expression.declarations[0].init.type](expression.declarations[0].init);
 	}
 
-	parse["Type"] = function(expression){
+	parse["Type"] = function(expression, instrument){
 		return expression.literal;
 	}
 
-	parse["UsingStatement"] = function(expression){
+	parse["UsingStatement"] = function(expression, instrument){
 		return "using " + expression.library + " for " + parse[expression.for.type](expression.for) + ";";
 	}
 
-	parse["FunctionDeclaration"] = function(expression){
+	parse["FunctionDeclaration"] = function(expression, instrument){
+
 		retval = 'function ' + (expression.name ? expression.name : "") + '('
 		for (x in expression.params){
 			var param = expression.params[x];
@@ -301,9 +292,104 @@ module.exports = function(pathToFile, instrument){
 		retval += ')';
 		retval += parse["Modifiers"](expression.modifiers);
 		if (expression.body){
+
+			fnId+=1;
+			linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
+			//We need to work out the lines and columns the function declaration starts and ends
+			var startline = linecount;
+			var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n');
+			var endlineDelta = contract.slice(expression.start).indexOf('{')+1;
+			var functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
+			var endline = startline + (functionDefinition.match(/\n/g)||[]).length;
+			var endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n')
+			fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, col:startcol},end:{line:endline, col:endcol}}}
+			injectionPoints[expression.start + endlineDelta +1] = {type: "callFunctionEvent", fnId: fnId};
+
+
 			retval+='{' + newLine('{');
-			retval += parse[expression.body.type](expression.body, instrument);
+			retval += parse[expression.body.type](expression.body, instrumentingActive);
 			retval+='}' + newLine('}');
+		}
+		return retval;
+	}
+
+	parse["ContractStatement"] = function(expression, instrument){
+		var retval = "";
+		retval +=  'contract ' + expression.name
+
+		if (expression.is.length>0){
+			retval += ' is '
+			for (x in expression.is){
+				retval += expression.is[x].name + ', '
+			}
+			retval = retval.slice(0,-2);
+		}
+
+		retval += ' {' + newLine('{');
+		//Inject our coverage event if we're covering
+		if (instrumentingActive){
+			//This is harder because of where .start and .end represent, and how documented comments are validated
+			//by solc upon compilation. From the start of this contract statement, find the first '{', and inject
+			//there.
+			injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = {type:"eventDefinition"};
+			retval += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
+		}
+
+		for (x in expression.body){
+			retval+=parse[expression.body[x].type](expression.body[x], instrument);
+			retval += newLine(retval.slice(-1));
+		}
+		retval += '}' + newLine('}');
+		return retval;
+	}
+
+	parse["LibraryStatement"] = function(expression, instrument){
+		var retval = "";
+		retval +=  'library ' + expression.name + ' {' + newLine('{');
+		//Inject our coverage event;
+		if(instrumentingActive){
+
+			//This is harder because of where .start and .end represent, and how documented comments are validated
+			//by solc upon compilation. From the start of this contract statement, find the first '{', and inject
+			//there.
+			injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = {type:"eventDefinition"};
+
+			retval += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
+		}
+
+		for (x in expression.body){
+			retval+=parse[expression.body[x].type](expression.body[x], instrument);
+			retval += newLine(retval.slice(-1));
+		}
+		retval += '}' + newLine('}');
+
+		return retval;
+	}
+
+	parse["ModifierDeclaration"] = function(expression, instrument){
+		var retval = "";
+		retval += 'modifier ' + expression.name + '(';
+		for (x in expression.params){
+			var param = expression.params[x];
+			retval += param.literal.literal + ' ' + (param.isIndexed ? 'true' : '') + param.id + ', ';
+		}
+		if (expression.params && expression.params.length>0){
+			retval = retval.slice(0,-2);
+		}
+		retval += '){';
+		retval += newLine(retval.slice(-1));
+		retval += parse[expression.body.type](expression.body, instrumentingActive);
+		retval += newLine(retval.slice(-1));
+		retval +='}';
+		retval += newLine(retval.slice(-1));
+		return retval;
+	}
+
+	parse["Program"] = function(expression, instrument){
+		retval = "";
+		for (x in expression.body){
+			retval+=parse[expression.body[x].type](expression.body[x], instrument);
+			retval += newLine(retval.slice(-1));
 		}
 		return retval;
 	}
@@ -318,106 +404,42 @@ module.exports = function(pathToFile, instrument){
 
 	}
 
-	printBody(result,0, false);
-
-	function printBody(content, indented, cover){
-		if (content.body){
-			if (content.type === "ContractStatement"){
-				instrumented +=  'contract ' + content.name
-
-				if (content.is.length>0){
-					instrumented += ' is '
-					for (x in content.is){
-						instrumented += content.is[x].name + ', '
-					}
-					instrumented = instrumented.slice(0,-2);
-				}
-
-				instrumented += ' {' + newLine('{');
-				//Inject our coverage event if we're covering
-				if (instrument){
-					instrumented += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
-				}
-
-				for (x in content.body){
-					printBody(content.body[x], indented+1, cover);
-				}
-				instrumented += '}' + newLine('}');
-			}else if (content.type === "FunctionDeclaration"){
-				instrumented += parse[content.type](content);
-				// instrumented +=  __INDENTATION__.repeat(indented) + 'function ' + (content.name ? content.name : "") + '('
-				// for (x in content.params){
-				// 	var param = content.params[x];
-				// 	instrumented += param.literal.literal + ' ' + (param.isIndexed ? 'true' : '') + param.id + ', ';
-				// 	if (param.literal.literal==='address'){
-				// 		dottable.push(param.id);
-				// 	}
-				// }
-				// if (content.params && content.params.length>0){
-				// 	instrumented = instrumented.slice(0,-2);
-				// }
-				// instrumented += ')';
-				// instrumented += parse["Modifiers"](content.modifiers);
-				// instrumented+='{' + newLine('{');
-				// printBody(content.body, indented+1, instrument);
-				// instrumented+=__INDENTATION__.repeat(indented) +'}' + newLine('}');
-			}else if (content.type === "LibraryStatement"){
-				instrumented +=  'library ' + content.name + ' {' + newLine('{');
-				//Inject our coverage event;
-				instrumented += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
-
-				for (x in content.body){
-					printBody(content.body[x], indented+1, cover);
-				}
-				instrumented += '}' + newLine('}');
-			}else if (content.type === "ModifierDeclaration"){
-				instrumented += 'modifier ' + content.name + '(';
-				for (x in content.params){
-					var param = content.params[x];
-					instrumented += param.literal.literal + ' ' + (param.isIndexed ? 'true' : '') + param.id + ', ';
-				}
-				if (content.params && content.params.length>0){
-					instrumented = instrumented.slice(0,-2);
-				}
-				instrumented += '){';
-				instrumented += newLine(instrumented.slice(-1));
-				instrumented += parse[content.body.type](content.body, instrument);
-				instrumented += newLine(instrumented.slice(-1));
-				instrumented +='}';
-				instrumented += newLine(instrumented.slice(-1));
-
-			}else if (content.type === "BlockStatement"){
-				instrumented += parse['BlockStatement'](content, cover);
-			}else if (content.type ==="Program"){
-				//I don't think we need to do anything here...
-				for (x in content.body){
-					printBody(content.body[x], indented, cover);
-				}
-
-			}else{
-				console.log(content);
-				process.exit()
-				for (x in content.body){
-					printBody(content.body[x], indented, cover);
-				}
-			}
+	var instrumented = parse[result.type](result);
+	//We have to iterate through these injection points in descending order to not mess up
+	//the injection process.
+	var sortedPoints = Object.keys(injectionPoints).sort(function(a,b){return a-b});
+	for (x = sortedPoints.length-1; x>=0;  x--){
+		injectionPoint = sortedPoints[x];
+		if (injectionPoints[injectionPoint].type==='callEvent'){
+			linecount = (contract.slice(0, injectionPoint).match(/\n/g)||[]).length + 1;
+			runnableLines.push(linecount);
+			contract = contract.slice(0, injectionPoint) + "Coverage('" + fileName + "'," + linecount + ");\n" + contract.slice(injectionPoint);
+		}else if (injectionPoints[injectionPoint].type==='callFunctionEvent'){
+			contract = contract.slice(0, injectionPoint) + "FunctionCoverage('" + fileName + "'," + injectionPoints[injectionPoint].fnId + ");\n" + contract.slice(injectionPoint);
 		}else{
-			if (parse[content.type]!==undefined){
-				if (cover){
-					instrumented += __INDENTATION__.repeat(indented) +"Coverage('" + fileName + "'," + linecount + ");\n";
-					runnableLines.push(linecount);
-				}
-				instrumented += __INDENTATION__.repeat(indented) + parse[content.type](content);
-				instrumented += newLine(instrumented.slice(-1));
-			}else{
-				console.log(content);
-			}
-
+			contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\n" + contract.slice(injectionPoint);
 		}
 	}
 
-
-
-	return {contract: instrumented, runnableLines: runnableLines};
+	return {contract: contract, runnableLines: runnableLines, fnMap: fnMap};
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
