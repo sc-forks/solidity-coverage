@@ -14,11 +14,65 @@ module.exports = function(pathToFile, instrumentingActive){
 	var runnableLines=[];
 	var fnMap = {};
 	var fnId = 0;
+	var branchMap = {};
+	var branchId = 0;
 	var linecount = 1;
 	var fileName = path.basename(pathToFile);
 	var injectionPoints = {};
+
+	function instrumentFunctionDeclaration(expression){
+		fnId+=1;
+		linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
+		//We need to work out the lines and columns the function declaration starts and ends
+		var startline = linecount;
+		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
+		var endlineDelta = contract.slice(expression.start).indexOf('{')+1;
+		var functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
+		var endline = startline + (functionDefinition.match(/\n/g)||[]).length;
+		var endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n')
+		fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, column:startcol},end:{line:endline, column:endcol}}}
+		if (injectionPoints[expression.start + endlineDelta +1]){
+			injectionPoints[expression.start + endlineDelta +1].push({type: "callFunctionEvent", fnId: fnId});
+		}else{
+			injectionPoints[expression.start + endlineDelta +1] = [{type: "callFunctionEvent", fnId: fnId}];
+		}
+	}
+
+	function instrumentIfStatement(expression){
+		branchId +=1;
+		startline = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
+		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
+		//NB locations for if branches in istanbul are zero length and associated with the start of the if.
+		branchMap[branchId] = {line:linecount, type:'if', locations:[{start:{line:startline, column:startcol},end:{line:startline,column:startcol}},{start:{line:startline, column:startcol},end:{line:startline,column:startcol}}]}
+		if (injectionPoints[expression.consequent.start+1]){
+			injectionPoints[expression.consequent.start+1].push({type: "callBranchEvent", branchId: branchId, locationIdx: 0})
+		}else{
+			injectionPoints[expression.consequent.start+1] = [{type: "callBranchEvent", branchId: branchId, locationIdx: 0}];
+		}
+		if (expression.alternate && expression.alternate.type==='IfStatement'){
+			//It should get instrumented when we parse it
+		} else if (expression.alternate){
+			if (injectionPoints[expression.alternate.start+1]){
+				injectionPoints[expression.alternate.start+1].push({type: "callBranchEvent", branchId: branchId, locationIdx: 1});
+			}else{
+				injectionPoints[expression.alternate.start+1] = [{type: "callBranchEvent", branchId: branchId, locationIdx: 1}];
+			}
+		} else {
+			if (injectionPoints[expression.consequent.end+1]){
+				injectionPoints[expression.consequent.end+1].push({type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1});
+			}else{
+				injectionPoints[expression.consequent.end+1] = [{type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1}];
+			}
+		}
+
+	}
+
 	function addInstrumentationEvent(charcount){
-		injectionPoints[charcount] = {type:"callEvent"};
+		if (injectionPoints[charcount]){
+			injectionPoints[charcount].push({type:"callEvent"});
+		}else{
+			injectionPoints[charcount] = [{type:"callEvent"}];
+		}
 		return "Coverage('" + fileName + "'," + linecount + ");\n";
 	}
 
@@ -32,6 +86,7 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["ConditionalExpression"] = function(expression, instrument){
+		if (instrument)
 		return parse[expression.test.left.type](expression.test.left) + expression.test.operator + parse[expression.test.right.type](expression.test.right) + '?' + parse[expression.consequent.type](expression.consequent) + ":" + parse[expression.alternate.type](expression.alternate);
 	}
 
@@ -162,6 +217,7 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	parse["IfStatement"] = function(expression, instrument){
 		var retval = "";
+		if (instrument) {instrumentIfStatement(expression)}
 		if (instrument){ retval += addInstrumentationEvent(expression.start); }
 		retval += "if (";
 		retval += parse[expression.test.type](expression.test, instrument) + "){"
@@ -293,18 +349,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		retval += parse["Modifiers"](expression.modifiers);
 		if (expression.body){
 
-			fnId+=1;
-			linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
-			//We need to work out the lines and columns the function declaration starts and ends
-			var startline = linecount;
-			var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
-			var endlineDelta = contract.slice(expression.start).indexOf('{')+1;
-			var functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
-			var endline = startline + (functionDefinition.match(/\n/g)||[]).length;
-			var endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n')
-			fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, column:startcol},end:{line:endline, column:endcol}}}
-			injectionPoints[expression.start + endlineDelta +1] = {type: "callFunctionEvent", fnId: fnId};
-
+			instrumentFunctionDeclaration(expression);
 
 			retval+='{' + newLine('{');
 			retval += parse[expression.body.type](expression.body, instrumentingActive);
@@ -331,7 +376,12 @@ module.exports = function(pathToFile, instrumentingActive){
 			//This is harder because of where .start and .end represent, and how documented comments are validated
 			//by solc upon compilation. From the start of this contract statement, find the first '{', and inject
 			//there.
-			injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = {type:"eventDefinition"};
+			var injectionPoint = expression.start + contract.slice(expression.start).indexOf('{')+2;
+			if (injectionPoints[injectionPoint]){
+				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2].push({type:"eventDefinition"});
+			}else{
+				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = {type:"eventDefinition"};
+			}
 			retval += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
 		}
 
@@ -352,8 +402,12 @@ module.exports = function(pathToFile, instrumentingActive){
 			//This is harder because of where .start and .end represent, and how documented comments are validated
 			//by solc upon compilation. From the start of this contract statement, find the first '{', and inject
 			//there.
-			injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = {type:"eventDefinition"};
-
+			var injectionPoint = expression.start + contract.slice(expression.start).indexOf('{')+2;
+			if (injectionPoints[injectionPoint]){
+				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2].push({type:"eventDefinition"});
+			}else{
+				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = {type:"eventDefinition"};
+			}
 			retval += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
 		}
 
@@ -377,6 +431,7 @@ module.exports = function(pathToFile, instrumentingActive){
 			retval = retval.slice(0,-2);
 		}
 		retval += '){';
+		instrumentFunctionDeclaration(expression);
 		retval += newLine(retval.slice(-1));
 		retval += parse[expression.body.type](expression.body, instrumentingActive);
 		retval += newLine(retval.slice(-1));
@@ -410,18 +465,26 @@ module.exports = function(pathToFile, instrumentingActive){
 	var sortedPoints = Object.keys(injectionPoints).sort(function(a,b){return a-b});
 	for (x = sortedPoints.length-1; x>=0;  x--){
 		injectionPoint = sortedPoints[x];
-		if (injectionPoints[injectionPoint].type==='callEvent'){
-			linecount = (contract.slice(0, injectionPoint).match(/\n/g)||[]).length + 1;
-			runnableLines.push(linecount);
-			contract = contract.slice(0, injectionPoint) + "Coverage('" + fileName + "'," + linecount + ");\n" + contract.slice(injectionPoint);
-		}else if (injectionPoints[injectionPoint].type==='callFunctionEvent'){
-			contract = contract.slice(0, injectionPoint) + "FunctionCoverage('" + fileName + "'," + injectionPoints[injectionPoint].fnId + ");\n" + contract.slice(injectionPoint);
-		}else{
-			contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\n" + contract.slice(injectionPoint);
+		for (y in injectionPoints[injectionPoint]){
+			injection = injectionPoints[injectionPoint][y];
+			console.log(injection);
+			if (injection.type==='callEvent'){
+				linecount = (contract.slice(0, injectionPoint).match(/\n/g)||[]).length + 1;
+				runnableLines.push(linecount);
+				contract = contract.slice(0, injectionPoint) + "Coverage('" + fileName + "'," + linecount + ");\n" + contract.slice(injectionPoint);
+			}else if (injection.type==='callFunctionEvent'){
+				contract = contract.slice(0, injectionPoint) + "FunctionCoverage('" + fileName + "'," + injection.fnId + ");\n" + contract.slice(injectionPoint);
+			}else if (injection.type==='callBranchEvent'){
+				contract = contract.slice(0, injectionPoint) + "BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ");\n" + contract.slice(injectionPoint);
+			}else if (injection.type==='callEmptyBranchEvent'){
+				contract = contract.slice(0, injectionPoint) + "else { BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ");}\n" + contract.slice(injectionPoint);
+			}else{
+				contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\n\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n" + contract.slice(injectionPoint);
+			}
 		}
 	}
 
-	return {contract: contract, runnableLines: runnableLines, fnMap: fnMap};
+	return {contract: contract, runnableLines: runnableLines, fnMap: fnMap, branchMap: branchMap};
 
 }
 
