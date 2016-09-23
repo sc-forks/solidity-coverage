@@ -20,25 +20,44 @@ module.exports = function(pathToFile, instrumentingActive){
 	var fileName = path.basename(pathToFile);
 	var injectionPoints = {};
 
+	function instrumentAssignmentExpression(expression){
+		//The only time we instrument an assignment expression is if there's a conditional expression on
+		//the right
+		if (expression.right.type==='ConditionalExpression'){
+			if (expression.left.type==='DeclarativeExpression'){
+				//Then we need to go from bytes32 varname = (conditional expression)
+				//to 					  bytes32 varname; (,varname) = (conditional expression)
+				if (injectionPoints[expression.left.end]){
+					injectionPoints[expression.left.end].push({type:"literal", string:"; (," + expression.left.name});
+				}else{
+					injectionPoints[expression.left.end] = [{type:"literal", string:"; (," + expression.left.name + ")"}];
+				}
+			}else {
+				console.log(expression.left)
+				process.exit();
+			}
+		}
+	}
+
 	function instrumentConditionalExpression(expression){
 		branchId +=1;
-		console.log(contract.slice(expression.start,expression.end));
-		console.log(expression.consequent.start -expression.start);
-		console.log(contract.slice(expression.consequent.start-2, expression.consequent.start-1));
-		console.log(contract.slice(expression.alternate.start-2, expression.alternate.start-1));
 
 		startline = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
 		consequentStartCol = startcol + expression.consequent.start - expression.start;
+		consequentEndCol = consequentStartCol + expression.consequent.end - expression.consequent.start;
 		alternateStartCol = startcol + expression.alternate.start - expression.start;
-		console.log(startcol, consequentStartCol, alternateStartCol)
+		alternateEndCol = alternateStartCol + expression.alternate.end - expression.alternate.start;
 		//NB locations for conditional branches in istanbul are length 1 and associated with the : and ?.
-		branchMap[branchId] = {line:startline, type:'cond-expr', locations:[{start:{line:startline, column:consequentStartCol},end:{line:startline,column:consequentStartCol+1}},{start:{line:startline, column:alternateStartCol},end:{line:startline,column:alternateStartCol+1}}]}
+		branchMap[branchId] = {line:startline, type:'cond-expr', locations:[{start:{line:startline, column:consequentStartCol},end:{line:startline,column:consequentEndCol}},{start:{line:startline, column:alternateStartCol},end:{line:startline,column:alternateEndCol}}]}
 
 		//Right, this could be being used just by itself or as an assignment. In the case of the latter, because
 		//the comma operator doesn't exist, we're going to have to get funky.
 		//if we're on a line by ourselves, this is easier
 		//
+		//Now if we've got to wrap the expression it's being set equal to, do that...
+
+
 		//Wrap the consequent
 		if (injectionPoints[expression.consequent.start]){
 			injectionPoints[expression.consequent.start].push({type:"openParen"});
@@ -66,13 +85,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		}else{
 			injectionPoints[expression.alternate.end] = [{type:"closeParen"}];
 		}
-		//Now if we've got to wrap the expression it's being set equal to, do that...
-		if (contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.start).length!==0){
-			console.log(contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.end))
-			console.log(solparse.parse(contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.end)));
-			process.exit()
-			//We'll get to this.
-		}
+
 	}
 
 	function instrumentLine(startchar, endchar){
@@ -87,16 +100,6 @@ module.exports = function(pathToFile, instrumentingActive){
 				injectionPoints[lastNewLine+1] = [{type:"callEvent"}];
 			}
 		}
-		//Find every newline in this range
-		// var functionText = contract.slice(startchar,endchar);
-		// var indices = [];
-		// for(var i=0; i<functionText.length;i++) {
-		//     if (functionText[i] === "\n") indices.push(i);
-		// }
-		// for (x in indices){
-		// 	charcount = indices[x]+1;
-
-		// }
 	}
 
 	function instrumentFunctionDeclaration(expression){
@@ -158,7 +161,7 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	parse["AssignmentExpression"] = function (expression, instrument){
 		if (instrument){ instrumentLine(expression.start,expression.end); }
-
+		if (instrument){instrumentAssignmentExpression(expression)}
 		var retval = "";
 		retval += parse[expression.left.type](expression.left, instrument);
 		retval += expression.operator;
@@ -168,7 +171,7 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	parse["ConditionalExpression"] = function(expression, instrument){
 		if (instrument){ instrumentLine(expression.start,expression.end); }
-		// if (instrument){ instrumentConditionalExpression(expression); }
+		if (instrument){ instrumentConditionalExpression(expression); }
 		return parse[expression.test.left.type](expression.test.left, instrument) + expression.test.operator + parse[expression.test.right.type](expression.test.right,instrument) + '?' + parse[expression.consequent.type](expression.consequent, instrument) + ":" + parse[expression.alternate.type](expression.alternate,instrument);
 	}
 
@@ -568,10 +571,9 @@ module.exports = function(pathToFile, instrumentingActive){
 		injectionPoint = sortedPoints[x];
 		//Line instrumentation has to happen first
 		injectionPoints[injectionPoint].sort(function(a,b){
-			var eventTypes = ["closeBracket","callBranchEvent","callEvent"];
-			return eventTypes.indexOf(b.eventType) - eventTypes.indexOf(a.eventType);
+			var eventTypes = ["openParen", "closeBracket","callBranchEvent","callEvent"];
+			return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
 		});
-		console.log(injectionPoints[injectionPoint]);
 		for (y in injectionPoints[injectionPoint]){
 			injection = injectionPoints[injectionPoint][y];
 			if (injection.type==='callEvent'){
@@ -590,6 +592,8 @@ module.exports = function(pathToFile, instrumentingActive){
 				contract = contract.slice(0, injectionPoint) + ")" + contract.slice(injectionPoint);
 			}else if (injection.type==='closeBracket'){
 				contract = contract.slice(0, injectionPoint) + "}" + contract.slice(injectionPoint);
+			}else if (injection.type==='literal'){
+				contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
 			}else{
 				console.log(injection.type);
 				contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\n\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n" + contract.slice(injectionPoint);
