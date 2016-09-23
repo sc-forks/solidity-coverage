@@ -20,16 +20,71 @@ module.exports = function(pathToFile, instrumentingActive){
 	var fileName = path.basename(pathToFile);
 	var injectionPoints = {};
 
+	function instrumentConditionalExpression(expression){
+		branchId +=1;
+		console.log(contract.slice(expression.start,expression.end));
+		console.log(expression.consequent.start -expression.start);
+		console.log(contract.slice(expression.consequent.start-2, expression.consequent.start-1));
+		console.log(contract.slice(expression.alternate.start-2, expression.alternate.start-1));
+
+		startline = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
+		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
+		consequentStartCol = startcol + expression.consequent.start - expression.start;
+		alternateStartCol = startcol + expression.alternate.start - expression.start;
+		console.log(startcol, consequentStartCol, alternateStartCol)
+		//NB locations for conditional branches in istanbul are length 1 and associated with the : and ?.
+		branchMap[branchId] = {line:startline, type:'cond-expr', locations:[{start:{line:startline, column:consequentStartCol},end:{line:startline,column:consequentStartCol+1}},{start:{line:startline, column:alternateStartCol},end:{line:startline,column:alternateStartCol+1}}]}
+
+		//Right, this could be being used just by itself or as an assignment. In the case of the latter, because
+		//the comma operator doesn't exist, we're going to have to get funky.
+		//if we're on a line by ourselves, this is easier
+		//
+		//Wrap the consequent
+		if (injectionPoints[expression.consequent.start]){
+			injectionPoints[expression.consequent.start].push({type:"openParen"});
+		}else{
+			injectionPoints[expression.consequent.start] = [{type:"openParen"}];
+		}
+		injectionPoints[expression.consequent.start].push({type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 0});
+
+		if (injectionPoints[expression.consequent.end]){
+			injectionPoints[expression.consequent.end].push({type:"closeParen"});
+		}else{
+			injectionPoints[expression.consequent.end] = [{type:"closeParen"}];
+		}
+
+		//Wrap the alternate
+		if (injectionPoints[expression.alternate.start]){
+			injectionPoints[expression.alternate.start].push({type:"openParen"});
+		}else{
+			injectionPoints[expression.alternate.start] = [{type:"openParen"}];
+		}
+		injectionPoints[expression.alternate.start].push({type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 1});
+
+		if (injectionPoints[expression.alternate.end]){
+			injectionPoints[expression.alternate.end].push({type:"closeParen"});
+		}else{
+			injectionPoints[expression.alternate.end] = [{type:"closeParen"}];
+		}
+		//Now if we've got to wrap the expression it's being set equal to, do that...
+		if (contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.start).length!==0){
+			console.log(contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.end))
+			console.log(solparse.parse(contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.end)));
+			process.exit()
+			//We'll get to this.
+		}
+	}
+
 	function instrumentLine(startchar, endchar){
 		//what's the position of the most recent newline?
 		lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
 		nextNewLine = startchar + contract.slice(endchar).indexOf('\n');
 		// Is everything before us and after us on this line whitespace?
 		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).trim().length===0){
-			if (injectionPoints[lastNewLine]){
-				injectionPoints[lastNewLine].push({type:"callEvent"});
+			if (injectionPoints[lastNewLine+1]){
+				injectionPoints[lastNewLine+1].push({type:"callEvent"});
 			}else{
-				injectionPoints[lastNewLine] = [{type:"callEvent"}];
+				injectionPoints[lastNewLine+1] = [{type:"callEvent"}];
 			}
 		}
 		//Find every newline in this range
@@ -74,6 +129,16 @@ module.exports = function(pathToFile, instrumentingActive){
 			injectionPoints[expression.consequent.start+1] = [{type: "callBranchEvent", branchId: branchId, locationIdx: 0}];
 		}
 		if (expression.alternate && expression.alternate.type==='IfStatement'){
+			if (injectionPoints[expression.alternate.start]){
+				injectionPoints[expression.alternate.start].push({type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true});
+			}else{
+				injectionPoints[expression.alternate.start] = [{type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true}];
+			}
+			if (injectionPoints[expression.alternate.end]){
+				injectionPoints[expression.alternate.end].push({type: "closeBracket"});
+			}else{
+				injectionPoints[expression.alternate.end] = [{type: "closeBracket"}];
+			}
 			//It should get instrumented when we parse it
 		} else if (expression.alternate){
 			if (injectionPoints[expression.alternate.start+1]){
@@ -103,7 +168,7 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	parse["ConditionalExpression"] = function(expression, instrument){
 		if (instrument){ instrumentLine(expression.start,expression.end); }
-
+		// if (instrument){ instrumentConditionalExpression(expression); }
 		return parse[expression.test.left.type](expression.test.left, instrument) + expression.test.operator + parse[expression.test.right.type](expression.test.right,instrument) + '?' + parse[expression.consequent.type](expression.consequent, instrument) + ":" + parse[expression.alternate.type](expression.alternate,instrument);
 	}
 
@@ -502,21 +567,31 @@ module.exports = function(pathToFile, instrumentingActive){
 	for (x = sortedPoints.length-1; x>=0;  x--){
 		injectionPoint = sortedPoints[x];
 		//Line instrumentation has to happen first
-		injectionPoints[injectionPoint].sort(function(a,b){if (a.type==='callEvent') {return -1}else{return 1}});
+		injectionPoints[injectionPoint].sort(function(a,b){
+			var eventTypes = ["closeBracket","callBranchEvent","callEvent"];
+			return eventTypes.indexOf(b.eventType) - eventTypes.indexOf(a.eventType);
+		});
 		console.log(injectionPoints[injectionPoint]);
 		for (y in injectionPoints[injectionPoint]){
 			injection = injectionPoints[injectionPoint][y];
 			if (injection.type==='callEvent'){
-				linecount = (contract.slice(0, injectionPoint).match(/\n/g)||[]).length+2;
+				linecount = (contract.slice(0, injectionPoint).match(/\n/g)||[]).length+1;
 				runnableLines.push(linecount);
 				contract = contract.slice(0, injectionPoint) + "Coverage('" + fileName + "'," + linecount + ");\n" + contract.slice(injectionPoint);
 			}else if (injection.type==='callFunctionEvent'){
 				contract = contract.slice(0, injectionPoint) + "FunctionCoverage('" + fileName + "'," + injection.fnId + ");\n" + contract.slice(injectionPoint);
 			}else if (injection.type==='callBranchEvent'){
-				contract = contract.slice(0, injectionPoint) + "BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ");\n" + contract.slice(injectionPoint);
+				contract = contract.slice(0, injectionPoint) + (injection.openBracket? '{' : '') + "BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ")" + (injection.comma ? ',' : ";") +  "\n" + contract.slice(injectionPoint);
 			}else if (injection.type==='callEmptyBranchEvent'){
 				contract = contract.slice(0, injectionPoint) + "else { BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ");}\n" + contract.slice(injectionPoint);
+			}else if (injection.type==='openParen'){
+				contract = contract.slice(0, injectionPoint) + "(" + contract.slice(injectionPoint);
+			}else if (injection.type==='closeParen'){
+				contract = contract.slice(0, injectionPoint) + ")" + contract.slice(injectionPoint);
+			}else if (injection.type==='closeBracket'){
+				contract = contract.slice(0, injectionPoint) + "}" + contract.slice(injectionPoint);
 			}else{
+				console.log(injection.type);
 				contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\n\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n" + contract.slice(injectionPoint);
 			}
 		}
