@@ -88,12 +88,16 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	}
 
-	function instrumentLine(startchar, endchar){
+	function instrumentLine(expression){
+		console.log(expression);
 		//what's the position of the most recent newline?
+		var startchar = expression.start
+		var endchar = expression.end
+		console.log(contract.slice(startchar, endchar))
 		lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
-		nextNewLine = startchar + contract.slice(endchar).indexOf('\n');
+		nextNewLine = startchar + contract.slice(startchar).indexOf('\n');
 		// Is everything before us and after us on this line whitespace?
-		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).trim().length===0){
+		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).replace(';','').trim().length===0){
 			if (injectionPoints[lastNewLine+1]){
 				injectionPoints[lastNewLine+1].push({type:"callEvent"});
 			}else{
@@ -121,6 +125,7 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	function instrumentIfStatement(expression){
+		console.log(expression)
 		branchId +=1;
 		startline = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
@@ -160,7 +165,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["AssignmentExpression"] = function (expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 		if (instrument){instrumentAssignmentExpression(expression)}
 		var retval = "";
 		retval += parse[expression.left.type](expression.left, instrument);
@@ -170,7 +174,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["ConditionalExpression"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 		if (instrument){ instrumentConditionalExpression(expression); }
 		return parse[expression.test.left.type](expression.test.left, instrument) + expression.test.operator + parse[expression.test.right.type](expression.test.right,instrument) + '?' + parse[expression.consequent.type](expression.consequent, instrument) + ":" + parse[expression.alternate.type](expression.alternate,instrument);
 	}
@@ -242,14 +245,12 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	parse["ReturnStatement"] = function(expression, instrument){
 		var retval = "";
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 
 		return retval + 'return ' + parse[expression.argument.type](expression.argument, instrument) + ';';
 	}
 
 	parse["NewExpression"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		var retval = 'new ' + parse[expression.callee.type](expression.callee, instrument);
 		retval += '(';
@@ -265,7 +266,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["MemberExpression"]  = function (expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		if (!expression.computed){
 			return parse[expression.object.type](expression.object,instrument) + "." + parse[expression.property.type](expression.property, instrument);
@@ -275,7 +275,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["CallExpression"] = function (expression,instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		var retval = parse[expression.callee.type](expression.callee, instrument) + "(";
 		for (x in expression.arguments){
@@ -290,7 +289,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["UnaryExpression"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		if (expression.operator==='delete'){
 		return expression.operator + ' ' + parse[expression.argument.type](expression.argument, instrument);
@@ -300,21 +298,18 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["ThrowStatement"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		var retval = "";
 		return retval + 'throw'
 	}
 
 	parse["BinaryExpression"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		return '(' + parse[expression.left.type](expression.left, instrument) + expression.operator + parse[expression.right.type](expression.right, instrument) + ')';
 	}
 
 	parse["IfStatement"] = function(expression, instrument){
 		var retval = "";
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		if (instrument) {instrumentIfStatement(expression)}
 		retval += "if (";
@@ -361,7 +356,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["ExpressionStatement"] = function(content, instrument){
-		if (instrument){ instrumentLine(content.start,content.end);}
 		var retval = "";
 		if (content.expression.literal && content.expression.literal.literal && content.expression.literal.literal.type==="MappingExpression"){
 			return retval + 'mapping (' + content.expression.literal.literal.from.literal + ' => ' + content.expression.literal.literal.to.literal + ') '+ content.expression.name;
@@ -371,7 +365,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["EnumDeclaration"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		var retvalue = 'enum ' + expression.name + ' {';
 		for (x in expression.members){
@@ -397,7 +390,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["VariableDeclarationTuple"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		var retval = "";
 
@@ -413,7 +405,9 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	parse["BlockStatement"] = function(expression, instrument){
 		var retval = "";
+		console.log(expression)
 		for (var x=0; x < expression.body.length; x++){
+			if (instrument){ instrumentLine(expression.body[x]); }
 			retval += parse[expression.body[x].type](expression.body[x], instrument);
 			retval += newLine(retval.slice(-1));
 		}
@@ -421,7 +415,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["VariableDeclaration"] = function(expression, instrument){
-		if (instrument){ instrumentLine(expression.start,expression.end); }
 
 		if (expression.declarations.length>1){
 			console.log('more than one declaration')
@@ -451,6 +444,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		retval += ')';
 		retval += parse["Modifiers"](expression.modifiers, instrument);
 		if (expression.body){
+			console.log(expression.body);
 
 			instrumentFunctionDeclaration(expression);
 			retval+='{' + newLine('{');
