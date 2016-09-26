@@ -89,13 +89,17 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	function instrumentLine(expression){
-		console.log(expression);
 		//what's the position of the most recent newline?
 		var startchar = expression.start
 		var endchar = expression.end
-		console.log(contract.slice(startchar, endchar))
+
 		lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
 		nextNewLine = startchar + contract.slice(startchar).indexOf('\n');
+		var contractSnipped = contract.slice(lastNewLine, nextNewLine);
+		//Remove comments
+		while (contractSnipped.trim().slice(0,2)==='//'){
+			contractSnipped.replace(/\/\/.*?/g,"");
+		}
 		// Is everything before us and after us on this line whitespace?
 		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).replace(';','').trim().length===0){
 			if (injectionPoints[lastNewLine+1]){
@@ -166,252 +170,113 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	parse["AssignmentExpression"] = function (expression, instrument){
 		if (instrument){instrumentAssignmentExpression(expression)}
-		var retval = "";
-		retval += parse[expression.left.type](expression.left, instrument);
-		retval += expression.operator;
-		retval += parse[expression.right.type](expression.right, instrument) + ';';
-		return retval;
+		parse[expression.left.type](expression.left, instrument);
+		parse[expression.right.type](expression.right, instrument);
 	}
 
 	parse["ConditionalExpression"] = function(expression, instrument){
 		if (instrument){ instrumentConditionalExpression(expression); }
-		return parse[expression.test.left.type](expression.test.left, instrument) + expression.test.operator + parse[expression.test.right.type](expression.test.right,instrument) + '?' + parse[expression.consequent.type](expression.consequent, instrument) + ":" + parse[expression.alternate.type](expression.alternate,instrument);
+		parse[expression.test.left.type](expression.test.left, instrument);
+		parse[expression.test.right.type](expression.test.right,instrument);
+		parse[expression.consequent.type](expression.consequent, instrument)
+		parse[expression.alternate.type](expression.alternate,instrument);
 	}
 
 	parse["Identifier"] = function(expression, instrument){
-		return expression.name;
 	}
 
 	parse["InformalParameter"] = function(expression, instrument){
-		return expression.literal.literal;
 	}
 
 	parse["Literal"] = function(expression, instrument){
-		if (typeof expression.value==='string' && expression.value.slice(0,2)!=="0x"){
-			return '"' + expression.value + '"';
-		}else{
-			return expression.value;
-		}
 	}
 
 	parse["ModifierName"]  = function(expression, instrument){
-		var retvalue = expression.name
-		if (expression.params && expression.params.length>0){
-			retvalue += '(';
-			for (x in expression.params){
-				var param = expression.params[x];
-				retvalue += param.literal.literal + ', ';
-			}
-			retvalue = retvalue.slice(0,-2);
-			retvalue += ')';
-		}
-		return retvalue;
 	};
 
 	parse["Modifiers"] = function(modifiers, instrument){
-		retvalue = "";
-		var retModifier = null;
-		var constModifier = null;
 		for (x in modifiers){
-			if (modifiers[x].name==='returns'){
-				retModifier = x;
-				continue;
-			}else if (modifiers[x].name==='constant'){
-				constModifier = x;
-			}else{
-				retvalue+=parse[modifiers[x].type](modifiers[x], instrument);
-				retvalue += ' ';
-			}
+			parse[modifiers[x].type](modifiers[x], instrument);
 		}
-		if (constModifier) {retvalue += 'constant '};
-		if (retModifier){
-			retvalue += ' returns ';
-			retvalue += ' (';
-			for (p in modifiers[retModifier].params){
-				param = modifiers[retModifier].params[p];
-				retvalue+= parse[param.type](param, instrument);
-				retvalue += ', ';
-			}
-			retvalue = retvalue.slice(0,-2);
-			retvalue +=')';
-		}
-		return retvalue;
-
 	}
 
 	parse["ThisExpression"] = function(expression, instrument){
-		return 'this'
 	}
 
 	parse["ReturnStatement"] = function(expression, instrument){
-		var retval = "";
-
-
-		return retval + 'return ' + parse[expression.argument.type](expression.argument, instrument) + ';';
+		parse[expression.argument.type](expression.argument, instrument);
 	}
 
 	parse["NewExpression"] = function(expression, instrument){
-
-		var retval = 'new ' + parse[expression.callee.type](expression.callee, instrument);
-		retval += '(';
+		parse[expression.callee.type](expression.callee, instrument);
 		for (x in expression.arguments){
-			retval += parse[expression.arguments[x].type](expression.arguments[x], instrument) + ", "
+			parse[expression.arguments[x].type](expression.arguments[x], instrument)
 		}
-		if (expression.arguments && expression.arguments.length){
-			retval = retval.slice(0,-2);
-		}
-		retval+=")"
-
-		return retval
 	}
 
 	parse["MemberExpression"]  = function (expression, instrument){
-
-		if (!expression.computed){
-			return parse[expression.object.type](expression.object,instrument) + "." + parse[expression.property.type](expression.property, instrument);
-		}else{
-			return parse[expression.object.type](expression.object, instrument) + "[" + parse[expression.property.type](expression.property, instrument) + "]";
-		}
+		parse[expression.object.type][expression.object]
+		parse[expression.property.type][expression.property]
 	}
 
 	parse["CallExpression"] = function (expression,instrument){
-
-		var retval = parse[expression.callee.type](expression.callee, instrument) + "(";
+		parse[expression.callee.type](expression.callee, instrument);
 		for (x in expression.arguments){
-			retval += parse[expression.arguments[x].type](expression.arguments[x], instrument) + ", "
+			parse[expression.arguments[x].type](expression.arguments[x], instrument)
 		}
-		if (expression.arguments && expression.arguments.length){
-			retval = retval.slice(0,-2);
-		}
-		retval+=")"
-
-		return retval
 	}
 
 	parse["UnaryExpression"] = function(expression, instrument){
-
-		if (expression.operator==='delete'){
-		return expression.operator + ' ' + parse[expression.argument.type](expression.argument, instrument);
-
-		}
-		return expression.operator + parse[expression.argument.type](expression.argument, instrument);
+		parse[expression.argument.type](expression.argument, instrument);
 	}
 
 	parse["ThrowStatement"] = function(expression, instrument){
-
-		var retval = "";
-		return retval + 'throw'
 	}
 
 	parse["BinaryExpression"] = function(expression, instrument){
-
-		return '(' + parse[expression.left.type](expression.left, instrument) + expression.operator + parse[expression.right.type](expression.right, instrument) + ')';
+		parse[expression.left.type](expression.left, instrument)
+		parse[expression.right.type](expression.right, instrument)
 	}
 
 	parse["IfStatement"] = function(expression, instrument){
-		var retval = "";
-
 		if (instrument) {instrumentIfStatement(expression)}
-		retval += "if (";
-		retval += parse[expression.test.type](expression.test, instrument) + "){"
-		retval += newLine('{');
-		retval += parse[expression.consequent.type](expression.consequent, instrument)
-		retval += newLine(retval.slice(-1));
-		retval += "}";
+		parse[expression.test.type](expression.test, instrument)
+		parse[expression.consequent.type](expression.consequent, instrument)
 		if (expression.alternate){
-			retval += 'else ';
-			if (expression.alternate.type!=="IfStatement"){
-				retval += '{';
-				retval += newLine('{');
-			}
-			retval += parse[expression.alternate.type](expression.alternate, instrument)
-			if (expression.alternate.type!=="IfStatement"){
-				retval += '}';
-				retval += newLine('}');
-			}
+			parse[expression.alternate.type](expression.alternate, instrument)
 		}
-		return retval;
 	}
 
 	parse["SequenceExpression"] = function(expression, instrument){
-
-		retval = "(";
-		for (x in expression.expressions){
-			retval += parse[expression.expressions[x].type](expression.expressions[x], instrument) + ', ';
-		}
-		if (expression.expressions && expression.expressions.length>0){
-			//remove trailing comma and space if needed
-			retval = retval.slice(0,-2);
-		}
-		retval += ')';
-		return retval;
+		parse[expression.expressions[x].type](expression.expressions[x], instrument) + ', ';
 	}
 
 	parse["ImportStatement"] = function(expression, instrument){
-		return 'import "' + expression.from + '"';
 	}
 
 	parse["DeclarativeExpression"] = function(expression, instrument){
-		return expression.literal.literal + ' ' + (expression.is_public ? "public " : "") + (expression.is_constant ? "constant " : "") + expression.name;
 	}
 
 	parse["ExpressionStatement"] = function(content, instrument){
-		var retval = "";
-		if (content.expression.literal && content.expression.literal.literal && content.expression.literal.literal.type==="MappingExpression"){
-			return retval + 'mapping (' + content.expression.literal.literal.from.literal + ' => ' + content.expression.literal.literal.to.literal + ') '+ content.expression.name;
-		}else {
-			return retval + parse[content.expression.type](content.expression, instrument);
-		}
+		parse[content.expression.type](content.expression, instrument);
 	}
 
 	parse["EnumDeclaration"] = function(expression, instrument){
-
-		var retvalue = 'enum ' + expression.name + ' {';
-		for (x in expression.members){
-			retvalue += expression.members[x] + ', ';
-		}
-		retvalue = retvalue.slice(0,-2);
-		retvalue += '}';
-		return retvalue;
 	}
 
 	parse["EventDeclaration"]=function(expression, instrument){
-		var retval = 'event ' + expression.name + '(';
-		for (x in expression.params){
-			var param = expression.params[x];
-			retval += param.literal.literal + ' ' + (param.isIndexed ? 'true' : '') + param.id + ', ';
-		}
-		if (expression.params && expression.params.length>0){
-			//remove trailing comma and space if needed
-			retval = retval.slice(0,-2);
-		}
-		retval += ')';
-		return retval
 	}
 
 	parse["VariableDeclarationTuple"] = function(expression, instrument){
-
-		var retval = "";
-
-		retval += "var (";
-		for (x in expression.declarations){
-			retval += expression.declarations[x].id.name + ', ';
-		}
-		retval = retval.slice(0,-2);
-		retval += ") = ";
-		retval+=parse[expression.init.type](expression.init, instrument)
-		return retval;
+		parse[expression.init.type](expression.init, instrument)
 	}
 
 	parse["BlockStatement"] = function(expression, instrument){
-		var retval = "";
-		console.log(expression)
 		for (var x=0; x < expression.body.length; x++){
 			if (instrument){ instrumentLine(expression.body[x]); }
-			retval += parse[expression.body[x].type](expression.body[x], instrument);
-			retval += newLine(retval.slice(-1));
+			console.log(expression);
+			parse[expression.body[x].type](expression.body[x], instrument);
 		}
-		return retval;
 	}
 
 	parse["VariableDeclaration"] = function(expression, instrument){
@@ -419,54 +284,26 @@ module.exports = function(pathToFile, instrumentingActive){
 		if (expression.declarations.length>1){
 			console.log('more than one declaration')
 		}
-		retval = "";
-		return retval + "var " + parse[expression.declarations[0].id.type](expression.declarations[0].id, instrument) + " = " + parse[expression.declarations[0].init.type](expression.declarations[0].init, instrument);
+		parse[expression.declarations[0].id.type](expression.declarations[0].id, instrument);
+		parse[expression.declarations[0].init.type](expression.declarations[0].init, instrument);
 	}
 
 	parse["Type"] = function(expression, instrument){
-		return expression.literal;
 	}
 
 	parse["UsingStatement"] = function(expression, instrument){
-		return "using " + expression.library + " for " + parse[expression.for.type](expression.for, instrument) + ";";
+		parse[expression.for.type](expression.for, instrument)
 	}
 
 	parse["FunctionDeclaration"] = function(expression, instrument){
-
-		retval = 'function ' + (expression.name ? expression.name : "") + '('
-		for (x in expression.params){
-			var param = expression.params[x];
-			retval += param.literal.literal + ' ' + (param.isIndexed ? 'true' : '') + param.id + ', ';
-		}
-		if (expression.params && expression.params.length>0){
-			retval = retval.slice(0,-2);
-		}
-		retval += ')';
-		retval += parse["Modifiers"](expression.modifiers, instrument);
+		parse["Modifiers"](expression.modifiers, instrument);
 		if (expression.body){
-			console.log(expression.body);
-
 			instrumentFunctionDeclaration(expression);
-			retval+='{' + newLine('{');
-			retval += parse[expression.body.type](expression.body, instrumentingActive);
-			retval+='}' + newLine('}');
+			parse[expression.body.type](expression.body, instrumentingActive);
 		}
-		return retval;
 	}
 
 	parse["ContractStatement"] = function(expression, instrument){
-		var retval = "";
-		retval +=  'contract ' + expression.name
-
-		if (expression.is.length>0){
-			retval += ' is '
-			for (x in expression.is){
-				retval += expression.is[x].name + ', '
-			}
-			retval = retval.slice(0,-2);
-		}
-
-		retval += ' {' + newLine('{');
 		//Inject our coverage event if we're covering
 		if (instrumentingActive){
 			//This is harder because of where .start and .end represent, and how documented comments are validated
@@ -478,20 +315,14 @@ module.exports = function(pathToFile, instrumentingActive){
 			}else{
 				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = [{type:"eventDefinition"}];
 			}
-			retval += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
 		}
 
 		for (x in expression.body){
-			retval+=parse[expression.body[x].type](expression.body[x], instrument);
-			retval += newLine(retval.slice(-1));
+			parse[expression.body[x].type](expression.body[x], instrument);
 		}
-		retval += '}' + newLine('}');
-		return retval;
 	}
 
 	parse["LibraryStatement"] = function(expression, instrument){
-		var retval = "";
-		retval +=  'library ' + expression.name + ' {' + newLine('{');
 		//Inject our coverage event;
 		if(instrumentingActive){
 
@@ -504,57 +335,22 @@ module.exports = function(pathToFile, instrumentingActive){
 			}else{
 				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = [{type:"eventDefinition"}];
 			}
-			retval += "event Coverage(string fileName, uint256 lineNumber);\n"; //We're injecting this, so don't count the newline
 		}
 
 		for (x in expression.body){
-			retval+=parse[expression.body[x].type](expression.body[x], instrument);
-			retval += newLine(retval.slice(-1));
+			parse[expression.body[x].type](expression.body[x], instrument);
 		}
-		retval += '}' + newLine('}');
-
-		return retval;
 	}
 
 	parse["ModifierDeclaration"] = function(expression, instrument){
-		var retval = "";
-		retval += 'modifier ' + expression.name + '(';
-		for (x in expression.params){
-			var param = expression.params[x];
-			retval += param.literal.literal + ' ' + (param.isIndexed ? 'true' : '') + param.id + ', ';
-		}
-		if (expression.params && expression.params.length>0){
-			retval = retval.slice(0,-2);
-		}
-		retval += '){';
-
 		instrumentFunctionDeclaration(expression);
-
-		retval += newLine(retval.slice(-1));
-		retval += parse[expression.body.type](expression.body, instrumentingActive);
-		retval += newLine(retval.slice(-1));
-		retval +='}';
-		retval += newLine(retval.slice(-1));
-		return retval;
+		parse[expression.body.type](expression.body, instrumentingActive);
 	}
 
 	parse["Program"] = function(expression, instrument){
-		retval = "";
 		for (x in expression.body){
-			retval+=parse[expression.body[x].type](expression.body[x], instrument);
-			retval += newLine(retval.slice(-1));
+			parse[expression.body[x].type](expression.body[x], instrument);
 		}
-		return retval;
-	}
-
-	function newLine(lastchar){
-		linecount+=1;
-		if (['}','{',';','_','\n'].indexOf(lastchar)>-1){
-			return '\n';
-		}else{
-			return ';\n';
-		}
-
 	}
 
 	var instrumented = parse[result.type](result);
