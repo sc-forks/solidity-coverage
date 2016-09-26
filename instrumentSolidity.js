@@ -16,6 +16,8 @@ module.exports = function(pathToFile, instrumentingActive){
 	var fnId = 0;
 	var branchMap = {};
 	var branchId = 0;
+	var statementMap = {};
+	var statementId = 0;
 	var linecount = 1;
 	var fileName = path.basename(pathToFile);
 	var injectionPoints = {};
@@ -88,6 +90,48 @@ module.exports = function(pathToFile, instrumentingActive){
 
 	}
 
+	function instrumentStatement(expression){
+		canCover = false;
+		//Can only instrument here if this is a self-contained statement
+		//So if this is the start of the line, we're good
+		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.start).trim().length===0 ){
+			canCover=true;
+		}
+		//If it's preceeded by a '{', we're good
+		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('{')+1, expression.start).trim().length===0 ){
+			canCover=true;
+		}
+
+		//If it's preceeded by a ';', we're good
+		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf(';')+1, expression.start).trim().length===0 ){
+			canCover=true;
+		}
+
+		if (!canCover){return;}
+		//We need to work out the lines and columns the expression starts and ends
+		statementId +=1;
+		linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
+		var startline = linecount;
+		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
+		var expressionContent = contract.slice(expression.start, expression.end);
+
+		var endline = startline + (expressionContent.match('/\n/g') || []).length ;
+		var endcol;
+		if (expressionContent.lastIndexOf('\n')>=0){
+			endcol = contract.slice(expressionContent.lastIndexOf('\n'), expression.end).length -1;
+		}else{
+			endcol = startcol + expressionContent.length -1;
+
+		}
+		statementMap[statementId] = {start:{line: startline, column:startcol},end:{line:endline, column:endcol}}
+
+		if (injectionPoints[expression.start]){
+			injectionPoints[expression.start].push({type:"statement", statementId: statementId});
+		}else{
+			injectionPoints[expression.start] = [{type:"statement", statementId: statementId}];
+		}
+	}
+
 	function instrumentLine(expression){
 		//what's the position of the most recent newline?
 		var startchar = expression.start
@@ -129,7 +173,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	function instrumentIfStatement(expression){
-		console.log(expression)
 		branchId +=1;
 		startline = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
@@ -169,6 +212,7 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["AssignmentExpression"] = function (expression, instrument){
+		if (instrument){instrumentStatement(expression)}
 		if (instrument){instrumentAssignmentExpression(expression)}
 		parse[expression.left.type](expression.left, instrument);
 		parse[expression.right.type](expression.right, instrument);
@@ -204,6 +248,7 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["ReturnStatement"] = function(expression, instrument){
+		if (instrument){instrumentStatement(expression)}
 		parse[expression.argument.type](expression.argument, instrument);
 	}
 
@@ -215,11 +260,12 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["MemberExpression"]  = function (expression, instrument){
-		parse[expression.object.type][expression.object]
-		parse[expression.property.type][expression.property]
+		parse[expression.object.type](expression.object, instrument);
+		parse[expression.property.type](expression.property, instrument);
 	}
 
 	parse["CallExpression"] = function (expression,instrument){
+		if (instrument){instrumentStatement(expression)}
 		parse[expression.callee.type](expression.callee, instrument);
 		for (x in expression.arguments){
 			parse[expression.arguments[x].type](expression.arguments[x], instrument)
@@ -231,6 +277,7 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["ThrowStatement"] = function(expression, instrument){
+		if (instrument){instrumentStatement(expression)}
 	}
 
 	parse["BinaryExpression"] = function(expression, instrument){
@@ -239,6 +286,7 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["IfStatement"] = function(expression, instrument){
+		if (instrument){instrumentStatement(expression)}
 		if (instrument) {instrumentIfStatement(expression)}
 		parse[expression.test.type](expression.test, instrument)
 		parse[expression.consequent.type](expression.consequent, instrument)
@@ -258,6 +306,7 @@ module.exports = function(pathToFile, instrumentingActive){
 	}
 
 	parse["ExpressionStatement"] = function(content, instrument){
+		// if (instrument){instrumentStatement(content.expression)}
 		parse[content.expression.type](content.expression, instrument);
 	}
 
@@ -274,13 +323,12 @@ module.exports = function(pathToFile, instrumentingActive){
 	parse["BlockStatement"] = function(expression, instrument){
 		for (var x=0; x < expression.body.length; x++){
 			if (instrument){ instrumentLine(expression.body[x]); }
-			console.log(expression);
 			parse[expression.body[x].type](expression.body[x], instrument);
 		}
 	}
 
 	parse["VariableDeclaration"] = function(expression, instrument){
-
+		if (instrument){instrumentStatement(expression)}
 		if (expression.declarations.length>1){
 			console.log('more than one declaration')
 		}
@@ -384,14 +432,16 @@ module.exports = function(pathToFile, instrumentingActive){
 				contract = contract.slice(0, injectionPoint) + "}" + contract.slice(injectionPoint);
 			}else if (injection.type==='literal'){
 				contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
+			}else if (injection.type==='statement'){
+				contract = contract.slice(0, injectionPoint) + " StatementCoverage('" + fileName + "'," + injection.statementId + ");\n" + contract.slice(injectionPoint);
 			}else{
 				console.log(injection.type);
-				contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\n\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n" + contract.slice(injectionPoint);
+				contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\nevent StatementCoverage(string fileName, uint256 statementId);\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n" + contract.slice(injectionPoint);
 			}
 		}
 	}
 
-	return {contract: contract, runnableLines: runnableLines, fnMap: fnMap, branchMap: branchMap};
+	return {contract: contract, runnableLines: runnableLines, fnMap: fnMap, branchMap: branchMap, statementMap: statementMap};
 
 }
 

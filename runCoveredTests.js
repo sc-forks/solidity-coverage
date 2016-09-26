@@ -32,6 +32,10 @@ shell.ls('./originalContracts/*.sol').forEach(function(file) {
         for (x=1; x<=Object.keys(instrumentedContractInfo.branchMap).length; x++ ){
             coverage[canonicalContractPath]["b"][x] = [0,0];
         }
+        coverage[canonicalContractPath].statementMap= instrumentedContractInfo.statementMap;
+        for (x=1; x<=Object.keys(instrumentedContractInfo.statementMap).length; x++ ){
+            coverage[canonicalContractPath]["s"][x] = 0;
+        }
     }
 });
 shell.cp("./originalContracts/Migrations.sol", "./contracts/Migrations.sol");
@@ -68,6 +72,10 @@ for (idx in res.result) {
         var data = SolidityCoder.decodeParams(["string", "uint256", "uint256"], event.data.replace("0x", ""));
         var canonicalContractPath = path.resolve('./originalContracts/' + path.basename(data[0]));
         coverage[canonicalContractPath]["b"][data[1].toNumber()][data[2].toNumber()] += 1;
+    }else if(event.topics.indexOf("0xb51abbff580b3a34bbc725f2dc6f736e9d4b45a41293fd0084ad865a31fde0c8")>=0){
+        var data = SolidityCoder.decodeParams(["string","uint256"], event.data.replace("0x", ""));
+        var canonicalContractPath = path.resolve('./originalContracts/' + path.basename(data[0]));
+        coverage[canonicalContractPath]["s"][data[1].toNumber()]+= 1;
     }
 
 }
