@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ethereumjs-testrpc": "^2.2.7"
+    "ethereumjs-testrpc": "^2.2.7",
+    "shelljs": "^0.7.4"
   }
 }
