@@ -1,0 +1,17 @@
+{
+  "name": "truffle-coverage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "instrumentSolidity.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethereumjs-testrpc": "^2.2.7"
+  }
+}
