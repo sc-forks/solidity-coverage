@@ -51,7 +51,7 @@ shell.rm('./allFiredEvents'); //Delete previous results
 shell.exec('truffle test --network coverage');
 
 events = fs.readFileSync('./allFiredEvents').toString().split('\n')
-for (idx==0; idx < events.length-1; idx++){
+for (idx=0; idx < events.length-1; idx++){
     //The limit here isn't a bug - there is an empty line at the end of this file, so we don't
     //want to go to the very end of the array.
     var event = JSON.parse(events[idx]);
