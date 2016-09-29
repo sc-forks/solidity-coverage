@@ -47,8 +47,13 @@ From inside the SolCover directory, run
 
 Upon completion of the tests, open the `./coverage/index.html` file to browse the HTML coverage report.
 
+###A few, uh, provisos, a, a couple of quid pro quos...
+It is very likely that there are valid Solidity statements that this tool won't instrument correctly, as it's only been developed against a small number of contracts. If (and when) you find such cases, please raise an issue.
+
+
 ###TODO
 
+- [ ] **TESTS**
 - [ ] Turn into a true command line tool, rather than just a hacked-together script
 - [ ] Release on NPM 
 - [ ] Do not modify the `../contract/` directory at all during operation (might need changes to truffle)
