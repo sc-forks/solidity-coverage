@@ -1,8 +1,8 @@
 {
-  "name": "truffle-coverage",
-  "version": "1.0.0",
+  "name": "solcover",
+  "version": "0.0.1",
   "description": "",
-  "main": "instrumentSolidity.js",
+  "main": "runCoveredTests.js",
   "directories": {
     "test": "test"
   },
