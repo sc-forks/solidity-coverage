@@ -151,7 +151,13 @@ module.exports = function(pathToFile, instrumentingActive){
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
 		//NB locations for if branches in istanbul are zero length and associated with the start of the if.
 		branchMap[branchId] = {line:linecount, type:'if', locations:[{start:{line:startline, column:startcol},end:{line:startline,column:startcol}},{start:{line:startline, column:startcol},end:{line:startline,column:startcol}}]}
-		createOrAppendInjectionPoint(expression.consequent.start+1,{type: "callBranchEvent", branchId: branchId, locationIdx: 0} )
+		if (contract.slice(expression.consequent.start,1)==='{'){
+			createOrAppendInjectionPoint(expression.consequent.start+1,{type: "callBranchEvent", branchId: branchId, locationIdx: 0} )
+		}else{
+			createOrAppendInjectionPoint(expression.consequent.start,{type: "callBranchEvent", branchId: branchId, locationIdx: 0, openBracket:true} )
+			createOrAppendInjectionPoint(expression.consequent.end, {type:"closeBracket"});
+		}
+
 		if (expression.alternate && expression.alternate.type==='IfStatement'){
 			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true})
 			createOrAppendInjectionPoint(expression.alternate.end, {type:"closeBracket"});
@@ -362,7 +368,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		injectionPoint = sortedPoints[x];
 		//Line instrumentation has to happen first
 		injectionPoints[injectionPoint].sort(function(a,b){
-			var eventTypes = ["openParen", "closeBracket","callBranchEvent","callEvent"];
+			var eventTypes = ["openParen", "closeBracket","callBranchEvent","callEmptyBranchEvent","callEvent"];
 			return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
 		});
 		for (y in injectionPoints[injectionPoint]){
