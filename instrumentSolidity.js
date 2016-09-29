@@ -22,6 +22,14 @@ module.exports = function(pathToFile, instrumentingActive){
 	var fileName = path.basename(pathToFile);
 	var injectionPoints = {};
 
+	function createOrAppendInjectionPoint(key, value){
+		if (injectionPoints[key]){
+			injectionPoints[key].push(value);
+		}else{
+			injectionPoints[key] = [value];
+		}
+	}
+
 	function instrumentAssignmentExpression(expression){
 		//The only time we instrument an assignment expression is if there's a conditional expression on
 		//the right
@@ -29,11 +37,7 @@ module.exports = function(pathToFile, instrumentingActive){
 			if (expression.left.type==='DeclarativeExpression'){
 				//Then we need to go from bytes32 varname = (conditional expression)
 				//to 					  bytes32 varname; (,varname) = (conditional expression)
-				if (injectionPoints[expression.left.end]){
-					injectionPoints[expression.left.end].push({type:"literal", string:"; (," + expression.left.name});
-				}else{
-					injectionPoints[expression.left.end] = [{type:"literal", string:"; (," + expression.left.name + ")"}];
-				}
+				createOrAppendInjectionPoint(expression.left.end, {type:"literal", string:"; (," + expression.left.name + ")"});
 			}else {
 				console.log(expression.left)
 				process.exit();
@@ -61,33 +65,14 @@ module.exports = function(pathToFile, instrumentingActive){
 
 
 		//Wrap the consequent
-		if (injectionPoints[expression.consequent.start]){
-			injectionPoints[expression.consequent.start].push({type:"openParen"});
-		}else{
-			injectionPoints[expression.consequent.start] = [{type:"openParen"}];
-		}
-		injectionPoints[expression.consequent.start].push({type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 0});
-
-		if (injectionPoints[expression.consequent.end]){
-			injectionPoints[expression.consequent.end].push({type:"closeParen"});
-		}else{
-			injectionPoints[expression.consequent.end] = [{type:"closeParen"}];
-		}
+		createOrAppendInjectionPoint(expression.consequent.start, {type:"openParen"});
+		createOrAppendInjectionPoint(expression.consequent.start, {type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 0});
+		createOrAppendInjectionPoint(expression.consequent.end, {type:"closeParen"});
 
 		//Wrap the alternate
-		if (injectionPoints[expression.alternate.start]){
-			injectionPoints[expression.alternate.start].push({type:"openParen"});
-		}else{
-			injectionPoints[expression.alternate.start] = [{type:"openParen"}];
-		}
-		injectionPoints[expression.alternate.start].push({type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 1});
-
-		if (injectionPoints[expression.alternate.end]){
-			injectionPoints[expression.alternate.end].push({type:"closeParen"});
-		}else{
-			injectionPoints[expression.alternate.end] = [{type:"closeParen"}];
-		}
-
+		createOrAppendInjectionPoint(expression.alternate.start, {type:"openParen"});
+		createOrAppendInjectionPoint(expression.alternate.start, {type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 1});
+		createOrAppendInjectionPoint(expression.alternate.end, {type:"closeParen"});
 	}
 
 	function instrumentStatement(expression){
@@ -125,11 +110,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		}
 		statementMap[statementId] = {start:{line: startline, column:startcol},end:{line:endline, column:endcol}}
 
-		if (injectionPoints[expression.start]){
-			injectionPoints[expression.start].push({type:"statement", statementId: statementId});
-		}else{
-			injectionPoints[expression.start] = [{type:"statement", statementId: statementId}];
-		}
+		createOrAppendInjectionPoint(expression.start, {type:"statement", statementId: statementId});
 	}
 
 	function instrumentLine(expression){
@@ -146,11 +127,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		}
 		// Is everything before us and after us on this line whitespace?
 		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).replace(';','').trim().length===0){
-			if (injectionPoints[lastNewLine+1]){
-				injectionPoints[lastNewLine+1].push({type:"callEvent"});
-			}else{
-				injectionPoints[lastNewLine+1] = [{type:"callEvent"}];
-			}
+			createOrAppendInjectionPoint(lastNewLine+1,{type:"callEvent"});
 		}
 	}
 
@@ -165,11 +142,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		var endline = startline + (functionDefinition.match(/\n/g)||[]).length;
 		var endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n')
 		fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, column:startcol},end:{line:endline, column:endcol}}}
-		if (injectionPoints[expression.start + endlineDelta +1]){
-			injectionPoints[expression.start + endlineDelta +1].push({type: "callFunctionEvent", fnId: fnId});
-		}else{
-			injectionPoints[expression.start + endlineDelta +1] = [{type: "callFunctionEvent", fnId: fnId}];
-		}
+		createOrAppendInjectionPoint(expression.start + endlineDelta+1,{type: "callFunctionEvent", fnId: fnId} );
 	}
 
 	function instrumentIfStatement(expression){
@@ -178,35 +151,15 @@ module.exports = function(pathToFile, instrumentingActive){
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
 		//NB locations for if branches in istanbul are zero length and associated with the start of the if.
 		branchMap[branchId] = {line:linecount, type:'if', locations:[{start:{line:startline, column:startcol},end:{line:startline,column:startcol}},{start:{line:startline, column:startcol},end:{line:startline,column:startcol}}]}
-		if (injectionPoints[expression.consequent.start+1]){
-			injectionPoints[expression.consequent.start+1].push({type: "callBranchEvent", branchId: branchId, locationIdx: 0})
-		}else{
-			injectionPoints[expression.consequent.start+1] = [{type: "callBranchEvent", branchId: branchId, locationIdx: 0}];
-		}
+		createOrAppendInjectionPoint(expression.consequent.start+1,{type: "callBranchEvent", branchId: branchId, locationIdx: 0} )
 		if (expression.alternate && expression.alternate.type==='IfStatement'){
-			if (injectionPoints[expression.alternate.start]){
-				injectionPoints[expression.alternate.start].push({type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true});
-			}else{
-				injectionPoints[expression.alternate.start] = [{type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true}];
-			}
-			if (injectionPoints[expression.alternate.end]){
-				injectionPoints[expression.alternate.end].push({type: "closeBracket"});
-			}else{
-				injectionPoints[expression.alternate.end] = [{type: "closeBracket"}];
-			}
+			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true})
+			createOrAppendInjectionPoint(expression.alternate.end, {type:"closeBracket"});
 			//It should get instrumented when we parse it
 		} else if (expression.alternate){
-			if (injectionPoints[expression.alternate.start+1]){
-				injectionPoints[expression.alternate.start+1].push({type: "callBranchEvent", branchId: branchId, locationIdx: 1});
-			}else{
-				injectionPoints[expression.alternate.start+1] = [{type: "callBranchEvent", branchId: branchId, locationIdx: 1}];
-			}
+			createOrAppendInjectionPoint(expression.alternate.start+1, {type: "callBranchEvent", branchId: branchId, locationIdx: 1})
 		} else {
-			if (injectionPoints[expression.consequent.end]){
-				injectionPoints[expression.consequent.end].push({type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1});
-			}else{
-				injectionPoints[expression.consequent.end] = [{type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1}];
-			}
+			createOrAppendInjectionPoint(expression.consequent.end, {type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1});
 		}
 
 	}
@@ -434,9 +387,10 @@ module.exports = function(pathToFile, instrumentingActive){
 				contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
 			}else if (injection.type==='statement'){
 				contract = contract.slice(0, injectionPoint) + " StatementCoverage('" + fileName + "'," + injection.statementId + ");\n" + contract.slice(injectionPoint);
-			}else{
-				console.log(injection.type);
+			}else if (injection.type==='eventDefinition'){
 				contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\nevent StatementCoverage(string fileName, uint256 statementId);\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n" + contract.slice(injectionPoint);
+			}else{
+				console.log('Unknown injection.type');
 			}
 		}
 	}
