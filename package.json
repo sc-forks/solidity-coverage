@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "ethereumjs-testrpc": "^2.2.7",
+    "istanbul": "^0.4.5",
     "shelljs": "^0.7.4"
   }
 }

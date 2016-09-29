@@ -23,9 +23,7 @@ shell.mkdir('./../contracts/');
 //For each contract in originalContracts, get the instrumented version
 shell.ls('./../originalContracts/*.sol').forEach(function(file) {
     if (file !== 'originalContracts/Migrations.sol') {
-        console.log("=================")
-        console.log(file);
-        console.log("=================")
+        console.log("instrumenting ", file);
         var instrumentedContractInfo = getInstrumentedVersion(file, true);
         fs.writeFileSync('./../contracts/' + path.basename(file), instrumentedContractInfo.contract);
         var canonicalContractPath = path.resolve('./../originalContracts/' + path.basename(file));
@@ -49,8 +47,8 @@ shell.ls('./../originalContracts/*.sol').forEach(function(file) {
 });
 shell.cp("./../originalContracts/Migrations.sol", "./../contracts/Migrations.sol");
 
-shell.rm('./allFiredEvents');
-shell.exec('truffle test');
+shell.rm('./allFiredEvents'); //Delete previous results
+shell.exec('truffle test --network coverage');
 
 events = fs.readFileSync('./allFiredEvents').toString().split('\n')
 for (idx==0; idx < events.length-1; idx++){
@@ -78,7 +76,7 @@ for (idx==0; idx < events.length-1; idx++){
 
 fs.writeFileSync('./coverage.json', JSON.stringify(coverage));
 
-shell.exec("istanbul report html")
+shell.exec("./node_modules/istanbul/lib/cli.js report html")
 testrpcProcess.kill();
 shell.rm('-rf', './../contracts');
 shell.mv('./../originalContracts', './../contracts');
