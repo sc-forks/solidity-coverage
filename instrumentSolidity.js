@@ -239,6 +239,9 @@ module.exports = function(pathToFile, instrumentingActive){
 		if (instrument){instrumentStatement(expression)}
 	}
 
+	parse["DenominationLiteral"] = function(expression,instrument){
+	}
+
 	parse["BinaryExpression"] = function(expression, instrument){
 		parse[expression.left.type](expression.left, instrument)
 		parse[expression.right.type](expression.right, instrument)
