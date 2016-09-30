@@ -1,5 +1,5 @@
---- opFns.js.orig	2016-09-27 10:00:02.000000000 +0100
-+++ opFns.js	2016-09-27 10:00:59.000000000 +0100
+--- opFns.js.orig	2016-07-04 17:29:54.000000000 +0100
++++ opFns.js	2016-09-30 12:30:33.000000000 +0100
 @@ -6,6 +6,7 @@
  const logTable = require('./logTable.js')
  const ERROR = constants.ERROR
@@ -8,7 +8,15 @@
  
  // the opcode functions
  module.exports = {
-@@ -507,6 +508,12 @@
+@@ -499,7 +500,6 @@
+     memLength = utils.bufferToInt(memLength)
+     const numOfTopics = runState.opCode - 0xa0
+     const mem = memLoad(runState, memOffset, memLength)
+-    subGas(runState, new BN(numOfTopics * fees.logTopicGas.v + memLength * fees.logDataGas.v))
+ 
+     // add address
+     var log = [runState.address]
+@@ -507,6 +507,12 @@
  
      // add data
      log.push(mem)
