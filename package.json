@@ -16,5 +16,8 @@
     "istanbul": "^0.4.5",
     "shelljs": "^0.7.4",
     "solparse": "^1.0.15"
+  },
+  "devDependencies": {
+    "mocha": "^3.1.0"
   }
 }

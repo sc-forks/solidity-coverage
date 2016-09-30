@@ -1,12 +1,10 @@
 // var SolidityParser = require("solidity-parser");
 var solparse = require("solparse");
-var fs = require('fs');
 
 var path = require("path");
-module.exports = function(pathToFile, instrumentingActive){
+module.exports = function(contract, fileName, instrumentingActive){
 
 	// var result = SolidityParser.parseFile("./" + pathToFile);
-	var contract = fs.readFileSync("./" + pathToFile).toString();
 	var result = solparse.parse(contract);
 	var instrumented = "";
 	const __INDENTATION__ = "    ";
@@ -19,7 +17,6 @@ module.exports = function(pathToFile, instrumentingActive){
 	var statementMap = {};
 	var statementId = 0;
 	var linecount = 1;
-	var fileName = path.basename(pathToFile);
 	var injectionPoints = {};
 
 	function createOrAppendInjectionPoint(key, value){
@@ -117,7 +114,6 @@ module.exports = function(pathToFile, instrumentingActive){
 		//what's the position of the most recent newline?
 		var startchar = expression.start
 		var endchar = expression.end
-
 		lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
 		nextNewLine = startchar + contract.slice(startchar).indexOf('\n');
 		var contractSnipped = contract.slice(lastNewLine, nextNewLine);
@@ -155,12 +151,12 @@ module.exports = function(pathToFile, instrumentingActive){
 			createOrAppendInjectionPoint(expression.consequent.start+1,{type: "callBranchEvent", branchId: branchId, locationIdx: 0} )
 		}else{
 			createOrAppendInjectionPoint(expression.consequent.start,{type: "callBranchEvent", branchId: branchId, locationIdx: 0, openBracket:true} )
-			createOrAppendInjectionPoint(expression.consequent.end, {type:"closeBracket"});
+			createOrAppendInjectionPoint(expression.consequent.end, {type:"closeBracketStart"});
 		}
 
 		if (expression.alternate && expression.alternate.type==='IfStatement'){
 			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true})
-			createOrAppendInjectionPoint(expression.alternate.end, {type:"closeBracket"});
+			createOrAppendInjectionPoint(expression.alternate.end, {type:"closeBracketEnd"});
 			//It should get instrumented when we parse it
 		} else if (expression.alternate){
 			createOrAppendInjectionPoint(expression.alternate.start+1, {type: "callBranchEvent", branchId: branchId, locationIdx: 1})
@@ -371,7 +367,7 @@ module.exports = function(pathToFile, instrumentingActive){
 		injectionPoint = sortedPoints[x];
 		//Line instrumentation has to happen first
 		injectionPoints[injectionPoint].sort(function(a,b){
-			var eventTypes = ["openParen", "callBranchEvent","callEmptyBranchEvent","callEvent", "closeBracket"];
+			var eventTypes = ["openParen", "closeBracketStart", "callBranchEvent","callEmptyBranchEvent","callEvent", "closeBracketEnd"];
 			return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
 		});
 		for (y in injectionPoints[injectionPoint]){
@@ -390,7 +386,9 @@ module.exports = function(pathToFile, instrumentingActive){
 				contract = contract.slice(0, injectionPoint) + "(" + contract.slice(injectionPoint);
 			}else if (injection.type==='closeParen'){
 				contract = contract.slice(0, injectionPoint) + ")" + contract.slice(injectionPoint);
-			}else if (injection.type==='closeBracket'){
+			}else if (injection.type==='closeBracketStart'){
+				contract = contract.slice(0, injectionPoint) + "}" + contract.slice(injectionPoint);
+			}else if (injection.type==='closeBracketEnd'){
 				contract = contract.slice(0, injectionPoint) + "}" + contract.slice(injectionPoint);
 			}else if (injection.type==='literal'){
 				contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
