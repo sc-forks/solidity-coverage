@@ -383,7 +383,7 @@ module.exports = function(pathToFile, instrumentingActive){
 			}else if (injection.type==='callFunctionEvent'){
 				contract = contract.slice(0, injectionPoint) + "FunctionCoverage('" + fileName + "'," + injection.fnId + ");\n" + contract.slice(injectionPoint);
 			}else if (injection.type==='callBranchEvent'){
-				contract = contract.slice(0, injectionPoint) + (injection.openBracket? '{' : '') + "BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ")" + (injection.comma ? ',' : ";") +  "\n" + contract.slice(injectionPoint);
+				contract = contract.slice(0, injectionPoint) + (injection.openBracket? '{' : '') + "BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ")" + (injection.comma ? ',' : ";") + contract.slice(injectionPoint);
 			}else if (injection.type==='callEmptyBranchEvent'){
 				contract = contract.slice(0, injectionPoint) + "else { BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ");}\n" + contract.slice(injectionPoint);
 			}else if (injection.type==='openParen'){
