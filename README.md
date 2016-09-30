@@ -37,6 +37,7 @@ module.exports = {
 ```
 and will not interfere with normal `truffle test` - or other commands - being run during development.
 
+Note that if you have hardcoded gas costs into your tests, some of them may fail when using SolCover. This is because the instrumentation process increases the gas costs for using the contracts, due to the extra events. If this is the case, then the coverage may be incomplete. To avoid this, using `estimateGas` to estimate your gas costs should be more resilient in most cases.
 
 ###Execution
 
