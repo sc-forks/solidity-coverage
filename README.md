@@ -42,6 +42,9 @@ Note that if you have hardcoded gas costs into your tests, some of them may fail
 ###Execution
 
 Firstly, make sure that your contracts in your truffle directory are saved elsewhere too - this script moves them and modifies them to do the instrumentation and allow `truffle` to run the tests with the instrumented contracts. It returns them after the tests are complete, but if something goes wrong, then `originalContracts` in the truffle directory should contain the unmodified contracts.
+
+SolCover runs its own (modified) `testrpc` to get the coverage data, so make sure that you've not left a previous instance running on port 8545, otherwise the coverage reported will be.... sparse...
+
 From inside the SolCover directory, run 
 
 ```node ./runCoveredTests.js```
