@@ -21,7 +21,7 @@
      // add data
      log.push(mem)
 +    //Added to allow tracking of instrumentation even for .call() and throw
-+    let toWrite = {};
++    var toWrite = {};
 +    toWrite.address= log[0].toString('hex');
 +    toWrite.topics = log[1].map(function(x){return x.toString('hex')})
 +    toWrite.data = log[2].toString('hex');
