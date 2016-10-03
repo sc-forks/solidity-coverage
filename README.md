@@ -1,4 +1,7 @@
 #SolCover
+###Code coverage for Solidity testing
+![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
+
 
 ###Installation and preparation
 
