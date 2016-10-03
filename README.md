@@ -7,7 +7,7 @@
 
 From your truffle directory, clone this repo:
 ```
-git clone http://github.com/area/solcover.git
+git clone http://github.com/JoinColony/solcover.git
 cd solcover
 npm install
 ```
@@ -65,4 +65,4 @@ It is very likely that there are valid Solidity statements that this tool won't 
 - [ ] Release on NPM 
 - [ ] Do not modify the `../contract/` directory at all during operation (might need changes to truffle)
 - [ ] Support for arbitrary testing commands
-- [ ] [You tell me](http://github.com/area/solcover/issues)
+- [ ] [You tell me](http://github.com/JoinColony/solcover/issues)
