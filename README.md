@@ -2,6 +2,8 @@
 ###Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
 
+For more details about what this is, how it work and potential limitations, see 
+[the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
 
 ###Installation and preparation
 
