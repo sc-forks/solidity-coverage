@@ -74,11 +74,8 @@ module.exports = function(contract, fileName, instrumentingActive){
 
 	function instrumentStatement(expression){
 		canCover = false;
+		
 		//Can only instrument here if this is a self-contained statement
-		//So if this is the start of the line, we're good
-		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('\n'), expression.start).trim().length===0 ){
-			canCover=true;
-		}
 		//If it's preceeded by a '{', we're good
 		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('{')+1, expression.start).trim().length===0 ){
 			canCover=true;
