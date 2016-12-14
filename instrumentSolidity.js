@@ -204,7 +204,9 @@ module.exports = function(contract, fileName, instrumentingActive){
 
 	parse["ReturnStatement"] = function(expression, instrument){
 		if (instrument){instrumentStatement(expression)}
-		parse[expression.argument.type](expression.argument, instrument);
+		if (expression.argument){
+			parse[expression.argument.type](expression.argument, instrument);
+		}
 	}
 
 	parse["NewExpression"] = function(expression, instrument){
