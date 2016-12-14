@@ -15,7 +15,7 @@
     "ethereumjs-testrpc": "^2.2.7",
     "istanbul": "^0.4.5",
     "shelljs": "^0.7.4",
-    "solparse": "^1.0.15"
+    "solidity-parser": "git+https://github.com/ConsenSys/solidity-parser.git#master"
   },
   "devDependencies": {
     "mocha": "^3.1.0"
