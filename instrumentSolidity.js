@@ -1,11 +1,11 @@
-// var SolidityParser = require("solidity-parser");
-var solparse = require("solparse");
+var SolidityParser = require("solidity-parser");
+//var solparse = require("solparse");
 
 var path = require("path");
 module.exports = function(contract, fileName, instrumentingActive){
 
-	// var result = SolidityParser.parseFile("./" + pathToFile);
-	var result = solparse.parse(contract);
+	var result = SolidityParser.parse(contract);
+	//var result = solparse.parse(contract);
 	var instrumented = "";
 	const __INDENTATION__ = "    ";
 	var parse = {};
@@ -325,7 +325,10 @@ module.exports = function(contract, fileName, instrumentingActive){
 		}
 
 		for (x in expression.body){
-			parse[expression.body[x].type](expression.body[x], instrument);
+			// Ignore top-level variable declarations grouped together in array by solidity-parser
+			if (!Array.isArray(expression.body[x])){
+				parse[expression.body[x].type](expression.body[x], instrument);
+			}
 		}
 	}
 
