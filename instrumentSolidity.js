@@ -155,8 +155,10 @@ module.exports = function(contract, fileName, instrumentingActive){
 			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true})
 			createOrAppendInjectionPoint(expression.alternate.end, {type:"closeBracketEnd"});
 			//It should get instrumented when we parse it
-		} else if (expression.alternate){
+		} else if (expression.alternate && contract.slice(expression.alternate.start,expression.alternate.end).trim().indexOf('{')===0){
 			createOrAppendInjectionPoint(expression.alternate.start+1, {type: "callBranchEvent", branchId: branchId, locationIdx: 1})
+		} else if (expression.alternate){
+			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx: 1})
 		} else {
 			createOrAppendInjectionPoint(expression.consequent.end, {type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1});
 		}
