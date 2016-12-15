@@ -18,6 +18,7 @@
     "solidity-parser": "git+https://github.com/ConsenSys/solidity-parser.git#master"
   },
   "devDependencies": {
-    "mocha": "^3.1.0"
+    "mocha": "^3.1.0",
+    "solc": "^0.4.6"
   }
 }

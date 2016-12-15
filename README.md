@@ -1,4 +1,7 @@
 #SolCover
+
+![CircleCI Status](https://circleci.com/gh/JoinColony/solcover.svg?style=shield&circle-token=53d5360d290ef593c7bdce505b86ae8b9414e684)
+
 ###Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
 
