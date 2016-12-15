@@ -132,10 +132,15 @@ module.exports = function(contract, fileName, instrumentingActive){
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
 		var endlineDelta = contract.slice(expression.start).indexOf('{')+1;
 		var functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
+		var lastChar = contract.slice(expression.start, expression.start + endlineDelta + 1).slice(-1);
 		var endline = startline + (functionDefinition.match(/\n/g)||[]).length;
 		var endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n')
 		fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, column:startcol},end:{line:endline, column:endcol}}}
-		createOrAppendInjectionPoint(expression.start + endlineDelta+1,{type: "callFunctionEvent", fnId: fnId} );
+		if (lastChar === '}'){
+		    createOrAppendInjectionPoint(expression.start + endlineDelta,{type: "callFunctionEvent", fnId: fnId} );
+		} else {
+		    createOrAppendInjectionPoint(expression.start + endlineDelta+1,{type: "callFunctionEvent", fnId: fnId} );
+		}
 	}
 
 	function instrumentIfStatement(expression){
