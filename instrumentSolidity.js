@@ -359,6 +359,60 @@ module.exports = function(contract, fileName, instrumentingActive){
 		}
 	}
 
+	parse["StructDeclaration"] = function(expression, instrument){
+	}
+
+	parse["PragmaStatement"] = function(expression, instrument){
+	}
+
+	parse["UpdateExpression"] = function(expression, instrument){
+	}
+
+	parse["MappingExpression"] = function(expression, instrument){
+	}
+
+	parse["VariableDeclarator"] = function(expression, instrument){
+	}
+
+	parse["EmptyStatement"] = function(expression, instrument){
+	}
+
+	parse["DebuggerStatement"] = function(expression, instrument){
+	}
+
+	parse["IsStatement"] = function(expression, instrument){
+	}
+
+	parse["DeclarativeExpressionList"] = function(expression, instrument){
+	}
+
+	parse["ModifierArgument"] = function(expression, instrument){
+	}
+
+	parse["PlaceholderStatement"] = function(expression, instrument){
+	}
+
+	parse["FunctionName"] = function(expression, instrument){
+	}
+
+	parse["DoWhileStatement"] = function(expression, instrument){
+	}
+
+	parse["WhileStatement"] = function(expression, instrument){
+	}
+
+	parse["ForStatement"] = function(expression, instrument){
+	}
+
+	parse["ForInStatement"] = function(expression, instrument){
+	}
+
+	parse["ContinueStatement"] = function(expression, instrument){
+	}
+
+	parse["BreakStatement"] = function(expression, instrument){
+	}
+
 	var instrumented = parse[result.type](result);
 	//We have to iterate through these injection points in descending order to not mess up
 	//the injection process.
