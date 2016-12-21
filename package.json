@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ethereumjs-testrpc": "^2.2.7",
+    "ethereumjs-testrpc": "^3.0.3",
     "istanbul": "^0.4.5",
     "shelljs": "^0.7.4",
     "solidity-parser": "git+https://github.com/ConsenSys/solidity-parser.git#master"
