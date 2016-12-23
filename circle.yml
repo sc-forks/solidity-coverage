@@ -1,0 +1,3 @@
+dependencies:
+  pre:
+    - npm install -g truffle
