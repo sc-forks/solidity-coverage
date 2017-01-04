@@ -8,6 +8,7 @@ var path = require('path');
 var getInstrumentedVersion = require('./instrumentSolidity.js');
 var CoverageMap = require('./coverageMap.js');
 var coverage = new CoverageMap();
+var mkdirp = require('mkdirp');
 
 var childprocess = require('child_process');
 
@@ -27,14 +28,15 @@ if (shell.test('-d','../originalContracts')){
 shell.mv('./../contracts/', './../originalContracts/');
 shell.mkdir('./../contracts/');
 //For each contract in originalContracts, get the instrumented version
-shell.ls('./../originalContracts/*.sol').forEach(function(file) {
+shell.ls('./../originalContracts/**/*.sol').forEach(function(file) {
     if (file !== 'originalContracts/Migrations.sol') {
         console.log("instrumenting ", file);
         var contract = fs.readFileSync("./" + file).toString();
         var fileName = path.basename(file);
-        var instrumentedContractInfo = getInstrumentedVersion(contract, fileName, true);
-        fs.writeFileSync('./../contracts/' + path.basename(file), instrumentedContractInfo.contract);
-        var canonicalContractPath = path.resolve('./../originalContracts/' + path.basename(file));
+        var instrumentedContractInfo = getInstrumentedVersion(contract, file, true);
+        mkdirp.sync(path.dirname(file.replace('originalContracts', 'contracts')));
+        fs.writeFileSync(file.replace('originalContracts','contracts'), instrumentedContractInfo.contract);
+        var canonicalContractPath = path.resolve(file);
         coverage.addContract(instrumentedContractInfo, canonicalContractPath);
     }
 });
