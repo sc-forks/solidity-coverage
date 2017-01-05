@@ -15,9 +15,15 @@
     "ethereumjs-testrpc": "^3.0.3",
     "istanbul": "^0.4.5",
     "shelljs": "^0.7.4",
+    "sol-explore": "^1.6.2",
     "solidity-parser": "git+https://github.com/ConsenSys/solidity-parser.git#master"
   },
   "devDependencies": {
+    "crypto-js": "^3.1.9-1",
+    "ethereumjs-account": "^2.0.4",
+    "ethereumjs-tx": "^1.2.2",
+    "ethereumjs-util": "^5.0.1",
+    "merkle-patricia-tree": "^2.1.2",
     "mocha": "^3.1.0",
     "solc": "^0.4.6"
   }

@@ -35,11 +35,4 @@ describe('generic statements', function(){
     var output = solc.compile(info.contract, 1); 
     util.report(output.errors);
   })
-
-  it('should compile after instrumenting a statement that is an unbracketed "if" consequent (multi-line)', function(){
-    var contract = util.getCode('statements/if-consequent-no-brackets-multiline.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
-    var output = solc.compile(info.contract, 1); 
-    util.report(output.errors);
-  })
 })
