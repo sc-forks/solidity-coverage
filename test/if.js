@@ -26,7 +26,7 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    });
+    }).catch(done);
   });
 
   // Runs: a(1) => if (x == 1) x = 2;
@@ -44,7 +44,7 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    }).catch(err => {console.log(err); done() })
+    }).catch(done)
   })
 
   it('should cover an if statement with multiline bracketed consequent', (done) => {
@@ -61,7 +61,7 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    });
+    }).catch(done);
   });
 
   // Runs: a(1) => if (x == 1)\n x = 3;
@@ -78,7 +78,7 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    })
+    }).catch(done);
   })
 
   it('should cover a simple if statement with a failing condition', (done) => {
@@ -95,7 +95,7 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 0});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    }).catch(err => {console.log(err); done() })
+    }).catch(done);
   });
 
   // Runs: a(2) => if (x == 1){\n throw;\n }else{\n x = 5; \n}
@@ -112,7 +112,7 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 0, 3: 1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    })
+    }).catch(done);
   });
 
   it('should cover an if statement with an unbracketed alternate',function(done){
@@ -128,7 +128,7 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 0, 3: 1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    })
+    }).catch(done);
   })
 
   it('should cover nested if statements with missing else statements',function(done){
@@ -136,7 +136,6 @@ describe('if, else, and else if statements', function(){
     const info = getInstrumentedVersion(contract, fileName, true);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
-
     vm.execute(info.contract, 'a', [2, 3, 3]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {5: 1, 7: 1});
@@ -144,6 +143,6 @@ describe('if, else, and else if statements', function(){
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
-    })
+    }).catch(done)
   })
 })
