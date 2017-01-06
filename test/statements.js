@@ -41,10 +41,10 @@ describe('generic statements', function(){
   it('should compile after instrumenting a statement that is a function argument (multi-line)', function(){
     var contract = util.getCode('statements/fn-argument-multiline.sol');
     var info = getInstrumentedVersion(contract, "test.sol", true);
-    var output = solc.compile(info.contract, 1); 
+    var output = solc.compile(info.contract, 1);
     util.report(output.errors);
   })
-  it.only('should cover a statement following a close brace', (done) => {
+  it('should cover a statement following a close brace', (done) => {
     const contract = util.getCode('statements/post-close-brace.sol');
     const info = getInstrumentedVersion(contract, "test.sol", true);
     const coverage = new CoverageMap();
