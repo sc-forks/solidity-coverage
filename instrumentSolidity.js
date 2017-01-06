@@ -1,9 +1,12 @@
 var SolidityParser = require("solidity-parser");
+var preprocessor = require('./preprocessor');
+
 //var solparse = require("solparse");
 
 var path = require("path");
 module.exports = function(contract, fileName, instrumentingActive){
 
+	contract = preprocessor.run(contract);
 	var result = SolidityParser.parse(contract);
 	//var result = solparse.parse(contract);
 	var instrumented = "";
@@ -100,10 +103,8 @@ module.exports = function(contract, fileName, instrumentingActive){
 			endcol = contract.slice(expressionContent.lastIndexOf('\n'), expression.end).length -1;
 		}else{
 			endcol = startcol + expressionContent.length -1;
-
 		}
 		statementMap[statementId] = {start:{line: startline, column:startcol},end:{line:endline, column:endcol}}
-
 		createOrAppendInjectionPoint(expression.start, {type:"statement", statementId: statementId});
 	}
 
@@ -121,6 +122,8 @@ module.exports = function(contract, fileName, instrumentingActive){
 		// Is everything before us and after us on this line whitespace?
 		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).replace(';','').trim().length===0){
 			createOrAppendInjectionPoint(lastNewLine+1,{type:"callEvent"});
+		} else if (contract.slice(lastNewLine, startchar).replace('{','').trim().length===0 && contract.slice(endchar,nextNewLine).replace(/[;}]/g,'').trim().length===0){
+			createOrAppendInjectionPoint(expression.start,{type:"callEvent"});
 		}
 	}
 
@@ -149,25 +152,18 @@ module.exports = function(contract, fileName, instrumentingActive){
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
 		//NB locations for if branches in istanbul are zero length and associated with the start of the if.
 		branchMap[branchId] = {line:linecount, type:'if', locations:[{start:{line:startline, column:startcol},end:{line:startline,column:startcol}},{start:{line:startline, column:startcol},end:{line:startline,column:startcol}}]}
-		if (contract.slice(expression.consequent.start,expression.consequent.end).trim().indexOf('{')===0){
+		if (expression.consequent.type === "BlockStatement"){
 			createOrAppendInjectionPoint(expression.consequent.start+1,{type: "callBranchEvent", branchId: branchId, locationIdx: 0} )
-		}else{
-			createOrAppendInjectionPoint(expression.consequent.start,{type: "callBranchEvent", branchId: branchId, locationIdx: 0, openBracket:true} )
-			createOrAppendInjectionPoint(expression.consequent.end, {type:"closeBracketStart"});
 		}
-
 		if (expression.alternate && expression.alternate.type==='IfStatement'){
 			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true})
 			createOrAppendInjectionPoint(expression.alternate.end, {type:"closeBracketEnd"});
 			//It should get instrumented when we parse it
-		} else if (expression.alternate && contract.slice(expression.alternate.start,expression.alternate.end).trim().indexOf('{')===0){
+		} else if (expression.alternate && expression.alternate.type === "BlockStatement"){
 			createOrAppendInjectionPoint(expression.alternate.start+1, {type: "callBranchEvent", branchId: branchId, locationIdx: 1})
-		} else if (expression.alternate){
-			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx: 1})
 		} else {
 			createOrAppendInjectionPoint(expression.consequent.end, {type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1});
 		}
-
 	}
 
 	parse["AssignmentExpression"] = function (expression, instrument){
@@ -368,6 +364,16 @@ module.exports = function(contract, fileName, instrumentingActive){
 		}
 	}
 
+	parse["WhileStatement"] = function(expression, instrument){
+		if (instrument){instrumentStatement(expression)}
+		parse[expression.body.type](expression.body, instrument);
+	}
+
+	parse["ForStatement"] = function(expression, instrument){
+		if (instrument){instrumentStatement(expression)}
+		parse[expression.body.type](expression.body, instrument);
+	}
+
 	parse["StructDeclaration"] = function(expression, instrument){
 	}
 
@@ -405,12 +411,6 @@ module.exports = function(contract, fileName, instrumentingActive){
 	}
 
 	parse["DoWhileStatement"] = function(expression, instrument){
-	}
-
-	parse["WhileStatement"] = function(expression, instrument){
-	}
-
-	parse["ForStatement"] = function(expression, instrument){
 	}
 
 	parse["ForInStatement"] = function(expression, instrument){

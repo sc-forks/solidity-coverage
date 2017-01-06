@@ -1,44 +1,149 @@
-var solc = require('solc');
-var getInstrumentedVersion = require('./../instrumentSolidity.js');
-var util = require('./util/util.js')
+const solc = require('solc');
+const path = require('path');
+const getInstrumentedVersion = require('./../instrumentSolidity.js');
+const util = require('./util/util.js');
+const CoverageMap = require('./../coverageMap');
+const vm = require('./util/vm');
+const assert = require('assert');
 
-/**
- * NB: passing '1' to solc as an option activates the optimiser
- */
 describe('if, else, and else if statements', function(){
 
-  it('should compile after instrumenting else statements with brackets',function(){
-    var contract = util.getCode('if/else-with-brackets.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
-    var output = solc.compile(info.contract, 1); 
-    util.report(output.errors);
+  const fileName = 'test.sol';
+  const filePath = path.resolve('./test.sol');
+  const pathPrefix = './';
+
+  it('should cover an if statement with a bracketed consequent', (done) => {
+    const contract = util.getCode('if/if-with-brackets.sol');
+    const info = getInstrumentedVersion(contract, fileName, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    // Runs: a(1) => if (x == 1) { x = 3; }
+    vm.execute(info.contract, 'a', [1]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1});
+      assert.deepEqual(mapping[filePath].b, {1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    });
+  });
+
+  // Runs: a(1) => if (x == 1) x = 2;
+  it('should cover an unbracketed if consequent (single line)',function(done){
+    const contract = util.getCode('if/if-no-brackets.sol');
+    const info = getInstrumentedVersion(contract, fileName, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    // Same results as previous test
+    vm.execute(info.contract, 'a', [1]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1});
+      assert.deepEqual(mapping[filePath].b, {1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    }).catch(err => {console.log(err); done() })
   })
 
-  it('should compile after instrumenting else statements without brackets',function(){
-    var contract = util.getCode('if/else-without-brackets.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
-    var output = solc.compile(info.contract, 1); 
-    util.report(output.errors);
+  it('should cover an if statement with multiline bracketed consequent', (done) => {
+    const contract = util.getCode('if/if-with-brackets-multiline.sol');
+    const info = getInstrumentedVersion(contract, fileName, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    // Runs: a(1) => if (x == 1){\n x = 3; }
+    vm.execute(info.contract, 'a', [1]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1, 6: 1});
+      assert.deepEqual(mapping[filePath].b, {1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    });
+  });
+
+  // Runs: a(1) => if (x == 1)\n x = 3;
+  it('should cover an unbracketed if consequent (multi-line)', function(done){
+    const contract = util.getCode('if/if-no-brackets-multiline.sol');
+    const info = getInstrumentedVersion(contract, fileName, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+    // Same results as previous test
+    vm.execute(info.contract, 'a', [1]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1, 6: 1});
+      assert.deepEqual(mapping[filePath].b, {1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    })
   })
 
-  it('should compile after instrumenting if statements with no brackets',function(){
-    var contract = util.getCode('if/if-no-brackets.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
-    var output = solc.compile(info.contract, 1); 
-    util.report(output.errors);
+  it('should cover a simple if statement with a failing condition', (done) => {
+    const contract = util.getCode('if/if-with-brackets.sol');
+    const info = getInstrumentedVersion(contract, fileName, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    // Runs: a(2) => if (x == 1) { x = 3; }
+    vm.execute(info.contract, 'a', [2]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1});
+      assert.deepEqual(mapping[filePath].b, {1: [0, 1]});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 0});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    }).catch(err => {console.log(err); done() })
+  });
+
+  // Runs: a(2) => if (x == 1){\n throw;\n }else{\n x = 5; \n}
+  it('should cover an if statement with a bracketed alternate', (done) => {
+    const contract = util.getCode('if/else-with-brackets.sol');
+    const info = getInstrumentedVersion(contract, fileName, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', [2]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1, 6: 0, 8: 1});
+      assert.deepEqual(mapping[filePath].b, {1: [0, 1]});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 0, 3: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    })
+  });
+
+  it('should cover an if statement with an unbracketed alternate',function(done){
+    const contract = util.getCode('if/else-without-brackets.sol');
+    const info = getInstrumentedVersion(contract, "test.sol", true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', [2]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1, 6: 0, 8: 1});
+      assert.deepEqual(mapping[filePath].b, {1: [0, 1]});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 0, 3: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    })
   })
 
-  it('should compile after instrumenting if statements with brackets',function(){
-    var contract = util.getCode('if/if-with-brackets.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
-    var output = solc.compile(info.contract, 1); 
-    util.report(output.errors);
-  })
+  it('should cover nested if statements with missing else statements',function(done){
+    const contract = util.getCode('if/nested-if-missing-else.sol');
+    const info = getInstrumentedVersion(contract, fileName, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
 
-  it('should compile after instrumenting nested if statements with missing else statements',function(){
-    var contract = util.getCode('if/nested-if-missing-else.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
-    var output = solc.compile(info.contract, 1); 
-    util.report(output.errors);
+    vm.execute(info.contract, 'a', [2, 3, 3]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {5: 1, 7: 1});
+      assert.deepEqual(mapping[filePath].b, { '1': [ 0, 1 ], '2': [ 1, 0 ], '3': [ 1, 0 ] });
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1});
+      done();
+    })
   })
 })
