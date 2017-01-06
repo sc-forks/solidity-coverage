@@ -77,7 +77,7 @@ module.exports = function(contract, fileName, instrumentingActive){
 
 	function instrumentStatement(expression){
 		canCover = false;
-		
+
 		//Can only instrument here if this is a self-contained statement
 		//If it's preceeded by a '{', we're good
 		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('{')+1, expression.start).trim().length===0 ){
@@ -86,6 +86,11 @@ module.exports = function(contract, fileName, instrumentingActive){
 
 		//If it's preceeded by a ';', we're good
 		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf(';')+1, expression.start).trim().length===0 ){
+			canCover=true;
+		}
+
+		//If it's preceeded by a '}', we're good
+		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('}')+1, expression.start).trim().length===0 ){
 			canCover=true;
 		}
 
@@ -468,22 +473,3 @@ module.exports = function(contract, fileName, instrumentingActive){
 	return {contract: contract, runnableLines: runnableLines, fnMap: fnMap, branchMap: branchMap, statementMap: statementMap};
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
