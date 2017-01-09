@@ -49,7 +49,7 @@ events = fs.readFileSync('./allFiredEvents').toString().split('\n')
 events.pop();
 //The pop here isn't a bug - there is an empty line at the end of this file, so we
 //don't want to include it as an event.
-coverage.generate(events);
+coverage.generate(events, './../originalContracts/');
 
 fs.writeFileSync('./coverage.json', JSON.stringify(coverage.coverage));
 
