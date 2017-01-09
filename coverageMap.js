@@ -65,7 +65,7 @@ module.exports = class CoverageMap {
    * @param  {String} relative path to host contracts eg: './../contracts'
    * @return {Object} coverage map.
    */
-  generate(events, pathPrefix) {
+  generate(events) {
     for (let idx = 0; idx < events.length; idx++) {
       const event = JSON.parse(events[idx]);
       if (event.topics.indexOf(lineTopic) >= 0) {
