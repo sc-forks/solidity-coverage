@@ -64,22 +64,6 @@ module.exports = function(contract, fileName, instrumentingActive){
 	function instrumentStatement(expression){
 		canCover = false;
 
-		//Can only instrument here if this is a self-contained statement
-		//If it's preceeded by a '{', we're good
-		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('{')+1, expression.start).trim().length===0 ){
-			canCover=true;
-		}
-
-		//If it's preceeded by a ';', we're good
-		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf(';')+1, expression.start).trim().length===0 ){
-			canCover=true;
-		}
-
-		//If it's preceeded by a '}', we're good
-		if ( contract.slice(contract.slice(0,expression.start).lastIndexOf('}')+1, expression.start).trim().length===0 ){
-			canCover=true;
-		}
-
 		statementId +=1;
 		//We need to work out the lines and columns the expression starts and ends
 		linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
@@ -95,7 +79,6 @@ module.exports = function(contract, fileName, instrumentingActive){
 			endcol = startcol + expressionContent.length -1;
 		}
 		statementMap[statementId] = {start:{line: startline, column:startcol},end:{line:endline, column:endcol}}
-		if (!canCover){return;}
 		createOrAppendInjectionPoint(expression.start, {type:"statement", statementId: statementId});
 	}
 
@@ -106,10 +89,7 @@ module.exports = function(contract, fileName, instrumentingActive){
 		lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
 		nextNewLine = startchar + contract.slice(startchar).indexOf('\n');
 		var contractSnipped = contract.slice(lastNewLine, nextNewLine);
-		//Remove comments
-		while (contractSnipped.trim().slice(0,2)==='//'){
-			contractSnipped.replace(/\/\/.*?/g,"");
-		}
+
 		// Is everything before us and after us on this line whitespace?
 		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).replace(';','').trim().length===0){
 			createOrAppendInjectionPoint(lastNewLine+1,{type:"callEvent"});
@@ -160,8 +140,8 @@ module.exports = function(contract, fileName, instrumentingActive){
 	parse["AssignmentExpression"] = function (expression, instrument){
 		if (instrument){instrumentStatement(expression)}
 		if (instrument){instrumentAssignmentExpression(expression)}
-		parse[expression.left.type](expression.left, instrument);
-		parse[expression.right.type](expression.right, instrument);
+		// parse[expression.left.type](expression.left, instrument);
+		// parse[expression.right.type](expression.right, instrument);
 	}
 
 	parse["ConditionalExpression"] = function(expression, instrument){
@@ -209,15 +189,15 @@ module.exports = function(contract, fileName, instrumentingActive){
 
 	parse["MemberExpression"]  = function (expression, instrument){
 		parse[expression.object.type](expression.object, instrument);
-		parse[expression.property.type](expression.property, instrument);
+		// parse[expression.property.type](expression.property, instrument);
 	}
 
 	parse["CallExpression"] = function (expression,instrument){
 		if (instrument){instrumentStatement(expression)}
 		parse[expression.callee.type](expression.callee, instrument);
-		for (x in expression.arguments){
-			parse[expression.arguments[x].type](expression.arguments[x], instrument)
-		}
+		// for (x in expression.arguments){
+			// parse[expression.arguments[x].type](expression.arguments[x], instrument)
+		// }
 	}
 
 	parse["UnaryExpression"] = function(expression, instrument){
@@ -288,7 +268,7 @@ module.exports = function(contract, fileName, instrumentingActive){
 			console.log('more than one declaration')
 		}
 		parse[expression.declarations[0].id.type](expression.declarations[0].id, instrument);
-		parse[expression.declarations[0].init.type](expression.declarations[0].init, instrument);
+		// parse[expression.declarations[0].init.type](expression.declarations[0].init, instrument);
 	}
 
 	parse["Type"] = function(expression, instrument){
@@ -442,8 +422,6 @@ module.exports = function(contract, fileName, instrumentingActive){
 	var statementId = 0;
 	var linecount = 1;
 	var injectionPoints = {};
-	console.log(retValue)
-	process.exit();
 
 	contract = preprocessor.run(contract);
 	result = SolidityParser.parse(contract);
@@ -493,6 +471,7 @@ module.exports = function(contract, fileName, instrumentingActive){
 		}
 	}
 	retValue.contract = contract;
+	retValue.runnableLines = runnableLines
 	return retValue;
 
 }
