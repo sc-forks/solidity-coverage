@@ -44,7 +44,7 @@ describe('generic statements', function(){
     var output = solc.compile(info.contract, 1); 
     util.report(output.errors);
   })
-  it.only('should cover a statement following a close brace', (done) => {
+  it('should cover a statement following a close brace', (done) => {
     const contract = util.getCode('statements/post-close-brace.sol');
     const info = getInstrumentedVersion(contract, "test.sol", true);
     const coverage = new CoverageMap();
