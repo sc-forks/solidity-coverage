@@ -36,7 +36,6 @@ module.exports.run = function r(contract) {
         } else if (
             node.type === 'IfStatement' &&
             node.alternate &&
-            node.alternate.type !== 'IfStatement' &&
             node.alternate.type !== 'BlockStatement') {
           contract = blockWrap(contract, node.alternate);
           keepRunning = true;

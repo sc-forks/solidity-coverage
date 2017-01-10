@@ -139,7 +139,7 @@ describe('if, else, and else if statements', function(){
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {5: 1, 7: 1});
       assert.deepEqual(mapping[filePath].b, { '1': [ 0, 1 ], '2': [ 1, 0 ], '3': [ 1, 0 ] });
-      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1, 3:1});
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
     }).catch(done)
