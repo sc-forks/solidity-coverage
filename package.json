@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --timeout 10000"
+    "test": "mocha --timeout 15000"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +16,7 @@
     "istanbul": "^0.4.5",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser": "git+https://github.com/ConsenSys/solidity-parser.git#master"
+    "solidity-parser": "^0.2.0"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
