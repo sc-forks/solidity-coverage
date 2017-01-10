@@ -6,21 +6,7 @@ var preprocessor = require('./preprocessor');
 var path = require("path");
 module.exports = function(contract, fileName, instrumentingActive){
 
-	contract = preprocessor.run(contract);
-	var result = SolidityParser.parse(contract);
-	//var result = solparse.parse(contract);
-	var instrumented = "";
-	const __INDENTATION__ = "    ";
 	var parse = {};
-	var runnableLines=[];
-	var fnMap = {};
-	var fnId = 0;
-	var branchMap = {};
-	var branchId = 0;
-	var statementMap = {};
-	var statementId = 0;
-	var linecount = 1;
-	var injectionPoints = {};
 
 	function createOrAppendInjectionPoint(key, value){
 		if (injectionPoints[key]){
@@ -94,9 +80,8 @@ module.exports = function(contract, fileName, instrumentingActive){
 			canCover=true;
 		}
 
-		if (!canCover){return;}
-		//We need to work out the lines and columns the expression starts and ends
 		statementId +=1;
+		//We need to work out the lines and columns the expression starts and ends
 		linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
 		var startline = linecount;
 		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
@@ -110,6 +95,7 @@ module.exports = function(contract, fileName, instrumentingActive){
 			endcol = startcol + expressionContent.length -1;
 		}
 		statementMap[statementId] = {start:{line: startline, column:startcol},end:{line:endline, column:endcol}}
+		if (!canCover){return;}
 		createOrAppendInjectionPoint(expression.start, {type:"statement", statementId: statementId});
 	}
 
@@ -209,9 +195,9 @@ module.exports = function(contract, fileName, instrumentingActive){
 
 	parse["ReturnStatement"] = function(expression, instrument){
 		if (instrument){instrumentStatement(expression)}
-		if (expression.argument){
-			parse[expression.argument.type](expression.argument, instrument);
-		}
+		// if (expression.argument){
+			// parse[expression.argument.type](expression.argument, instrument);
+		// }
 	}
 
 	parse["NewExpression"] = function(expression, instrument){
@@ -253,7 +239,11 @@ module.exports = function(contract, fileName, instrumentingActive){
 	parse["IfStatement"] = function(expression, instrument){
 		if (instrument){instrumentStatement(expression)}
 		if (instrument) {instrumentIfStatement(expression)}
-		parse[expression.test.type](expression.test, instrument)
+		// We can't instrument
+		// if (x==1)
+		//
+		// So don't count x==1 as a statement - just the if as a whole.
+		// parse[expression.test.type](expression.test, instrument)
 		parse[expression.consequent.type](expression.consequent, instrument)
 		if (expression.alternate){
 			parse[expression.alternate.type](expression.alternate, instrument)
@@ -427,7 +417,40 @@ module.exports = function(contract, fileName, instrumentingActive){
 	parse["BreakStatement"] = function(expression, instrument){
 	}
 
+	var instrumented = "";
+	var runnableLines=[];
+	var fnMap = {};
+	var fnId = 0;
+	var branchMap = {};
+	var branchId = 0;
+	var statementMap = {};
+	var statementId = 0;
+	var linecount = 1;
+	var injectionPoints = {};
+
+	var result = SolidityParser.parse(contract);
 	var instrumented = parse[result.type](result);
+	var retValue = {contract: contract, runnableLines: runnableLines, fnMap: fnMap, branchMap: branchMap, statementMap: statementMap};
+
+	var instrumented = "";
+	var runnableLines=[];
+	var fnMap = {};
+	var fnId = 0;
+	var branchMap = {};
+	var branchId = 0;
+	var statementMap = {};
+	var statementId = 0;
+	var linecount = 1;
+	var injectionPoints = {};
+	console.log(retValue)
+	process.exit();
+
+	contract = preprocessor.run(contract);
+	result = SolidityParser.parse(contract);
+		var instrumented = parse[result.type](result);
+
+	//var result = solparse.parse(contract);
+
 	//We have to iterate through these injection points in descending order to not mess up
 	//the injection process.
 	var sortedPoints = Object.keys(injectionPoints).sort(function(a,b){return a-b});
@@ -469,7 +492,7 @@ module.exports = function(contract, fileName, instrumentingActive){
 			}
 		}
 	}
-
-	return {contract: contract, runnableLines: runnableLines, fnMap: fnMap, branchMap: branchMap, statementMap: statementMap};
+	retValue.contract = contract;
+	return retValue;
 
 }
