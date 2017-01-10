@@ -12,41 +12,40 @@ const assert = require('assert');
  *     and passing the error to mocha.
  */
 describe('generic statements', function(){
-  const fileName = 'test.sol';
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
 
   it('should compile after instrumenting a single statement (first line of function)', function(){
     var contract = util.getCode('statements/single.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
+    var info = getInstrumentedVersion(contract, filePath, true);
     var output = solc.compile(info.contract, 1);
     util.report(output.errors);
   })
 
   it('should compile after instrumenting multiple statements', function(){
     var contract = util.getCode('statements/multiple.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
+    var info = getInstrumentedVersion(contract, filePath, true);
     var output = solc.compile(info.contract, 1);
     util.report(output.errors);
   })
 
   it('should compile after instrumenting a statement that is a function argument (single line)', function(){
     var contract = util.getCode('statements/fn-argument.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
+    var info = getInstrumentedVersion(contract, filePath, true);
     var output = solc.compile(info.contract, 1);
     util.report(output.errors);
   })
 
   it('should compile after instrumenting a statement that is a function argument (multi-line)', function(){
     var contract = util.getCode('statements/fn-argument-multiline.sol');
-    var info = getInstrumentedVersion(contract, "test.sol", true);
+    var info = getInstrumentedVersion(contract, filePath, true);
     var output = solc.compile(info.contract, 1);
     util.report(output.errors);
   })
   it('should cover a statement following a close brace', (done) => {
     const contract = util.getCode('statements/post-close-brace.sol');
-    const info = getInstrumentedVersion(contract, "test.sol", true);
+    const info = getInstrumentedVersion(contract, filePath, true);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
