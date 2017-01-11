@@ -1,6 +1,8 @@
 #SolCover
 
 ![CircleCI Status](https://circleci.com/gh/JoinColony/solcover.svg?style=shield&circle-token=53d5360d290ef593c7bdce505b86ae8b9414e684)
+[![codecov](https://codecov.io/gh/JoinColony/solcover/branch/master/graph/badge.svg)](https://codecov.io/gh/JoinColony/solcover)
+
 
 ###Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
@@ -57,7 +59,7 @@ From inside the SolCover directory, run
 
 ```node ./runCoveredTests.js```
 
-Upon completion of the tests, open the `./coverage/index.html` file to browse the HTML coverage report.
+Upon completion of the tests, open the `./coverage/lcov-report/index.html` file to browse the HTML coverage report.
 
 ###A few, uh, provisos, a, a couple of quid pro quos...
 It is very likely that there are valid Solidity statements that this tool won't instrument correctly, as it's only been developed against a small number of contracts. If (and when) you find such cases, please raise an issue.

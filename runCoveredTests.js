@@ -53,7 +53,7 @@ coverage.generate(events, './../originalContracts/');
 
 fs.writeFileSync('./coverage.json', JSON.stringify(coverage.coverage));
 
-shell.exec("./node_modules/istanbul/lib/cli.js report html")
+shell.exec("./node_modules/istanbul/lib/cli.js report lcov")
 testrpcProcess.kill();
 shell.rm('-rf', './../contracts');
 shell.mv('./../originalContracts', './../contracts');
