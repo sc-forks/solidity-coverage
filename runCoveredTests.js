@@ -8,6 +8,7 @@ var path = require('path');
 var getInstrumentedVersion = require('./instrumentSolidity.js');
 var CoverageMap = require('./coverageMap.js');
 var coverage = new CoverageMap();
+var mkdirp = require('mkdirp');
 
 var childprocess = require('child_process');
 
@@ -17,7 +18,7 @@ if (!shell.test('-e','./node_modules/ethereumjs-vm/lib/opFns.js.orig')){
     shell.exec('patch -b ./node_modules/ethereumjs-vm/lib/opFns.js ./hookIntoEvents.patch')
 }
 //Run the modified testrpc with large block limit
-var testrpcProcess = childprocess.exec('./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff')
+var testrpcProcess = childprocess.exec('./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffffff --gasPrice 0x1')
 
 if (shell.test('-d','../originalContracts')){
     console.log("There is already an 'originalContracts' directory in your truffle directory.\nThis is probably due to a previous solcover failure.\nPlease make sure the ./contracts/ directory contains your contracts (perhaps by copying them from originalContracts), and then delete the originalContracts directory.")
@@ -27,21 +28,22 @@ if (shell.test('-d','../originalContracts')){
 shell.mv('./../contracts/', './../originalContracts/');
 shell.mkdir('./../contracts/');
 //For each contract in originalContracts, get the instrumented version
-shell.ls('./../originalContracts/*.sol').forEach(function(file) {
+shell.ls('./../originalContracts/**/*.sol').forEach(function(file) {
     if (file !== 'originalContracts/Migrations.sol') {
-        console.log("instrumenting ", file);
-        var contract = fs.readFileSync("./" + file).toString();
-        var fileName = path.basename(file);
-        var instrumentedContractInfo = getInstrumentedVersion(contract, fileName, true);
-        fs.writeFileSync('./../contracts/' + path.basename(file), instrumentedContractInfo.contract);
-        var canonicalContractPath = path.resolve('./../originalContracts/' + path.basename(file));
+        var canonicalContractPath = path.resolve(file);
+
+        console.log("instrumenting ", canonicalContractPath);
+        var contract = fs.readFileSync(canonicalContractPath).toString();
+        var instrumentedContractInfo = getInstrumentedVersion(contract, canonicalContractPath, true);
+        mkdirp.sync(path.dirname(canonicalContractPath.replace('originalContracts', 'contracts')));
+        fs.writeFileSync(canonicalContractPath.replace('originalContracts','contracts'), instrumentedContractInfo.contract);
         coverage.addContract(instrumentedContractInfo, canonicalContractPath);
     }
 });
 shell.cp("./../originalContracts/Migrations.sol", "./../contracts/Migrations.sol");
 
 shell.rm('./allFiredEvents'); //Delete previous results
-shell.exec('truffle test --network coverage');
+shell.exec('truffle test --network test');
 
 events = fs.readFileSync('./allFiredEvents').toString().split('\n')
 events.pop();

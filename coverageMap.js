@@ -70,23 +70,22 @@ module.exports = class CoverageMap {
       const event = JSON.parse(events[idx]);
       if (event.topics.indexOf(lineTopic) >= 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
-        const canonicalContractPath = path.resolve(pathPrefix + path.basename(data[0]));
+        const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].l[data[1].toNumber()] += 1;
       } else if (event.topics.indexOf(functionTopic) >= 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
-        const canonicalContractPath = path.resolve(pathPrefix + path.basename(data[0]));
+        const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].f[data[1].toNumber()] += 1;
       } else if (event.topics.indexOf(branchTopic) >= 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256', 'uint256'], event.data.replace('0x', ''));
-        const canonicalContractPath = path.resolve(pathPrefix + path.basename(data[0]));
+        const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].b[data[1].toNumber()][data[2].toNumber()] += 1;
       } else if (event.topics.indexOf(statementTopic) >= 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
-        const canonicalContractPath = path.resolve(pathPrefix + path.basename(data[0]));
+        const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].s[data[1].toNumber()] += 1;
       }
     }
     return Object.assign({}, this.coverage);
   }
 };
-
