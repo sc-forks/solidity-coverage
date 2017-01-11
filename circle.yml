@@ -5,4 +5,8 @@ dependencies:
   pre:
     - npm install -g truffle
     - rm -rf node_modules/
-    
+test:
+  override:
+    - npm run test-cov
+  post:
+    - bash <(curl -s https://codecov.io/bash)

@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --timeout 30000"
+    "test": "mocha --timeout 30000",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 30000"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "1.1.2",
     "ethereumjs-util": "~4.5.0",
+    "istanbul": "^0.4.5",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
     "solc": "0.4.6"
