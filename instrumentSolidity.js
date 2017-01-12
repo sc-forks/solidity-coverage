@@ -496,6 +496,68 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
   parse.BreakStatement = function parseBreakStatement(expression, instrument) {
   };
 
+  const injector = {};
+  injector.callEvent = function injectCallEvent(injectionPoint) {
+    const linecount = (contract.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
+    runnableLines.push(linecount);
+    contract = contract.slice(0, injectionPoint) + 'Coverage(\'' + fileName + '\',' + linecount + ');\n' + contract.slice(injectionPoint);
+  };
+
+  injector.callFunctionEvent = function injectCallFunctionEvent(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) +
+      'FunctionCoverage(\'' + fileName + '\',' + injection.fnId + ');\n' +
+      contract.slice(injectionPoint);
+  };
+
+  injector.callBranchEvent = function injectCallFunctionEvent(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) +
+      (injection.openBracket ? '{' : '') +
+      'BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ')' +
+      (injection.comma ? ',' : ';') +
+      contract.slice(injectionPoint);
+  };
+
+  injector.callEmptyBranchEvent = function injectCallEmptyBranchEvent(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) +
+      'else { BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ');}\n' +
+      contract.slice(injectionPoint);
+  };
+
+  injector.openParen = function injectOpenParen(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) + '(' + contract.slice(injectionPoint);
+  };
+
+  injector.closeParen = function injectCloseParen(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) + ')' + contract.slice(injectionPoint);
+  };
+
+  injector.closeBracketStart = function injectCloseBracketStart(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
+  };
+
+  injector.closeBracketEnd = function injectCloseBracketEnd(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
+  };
+
+  injector.literal = function injectLiteral(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
+  };
+
+  injector.statement = function injectStatement(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) +
+      ' StatementCoverage(\'' + fileName + '\',' + injection.statementId + ');\n' +
+      contract.slice(injectionPoint);
+  };
+
+  injector.eventDefinition = function injectEventDefinition(injectionPoint, injection) {
+    contract = contract.slice(0, injectionPoint) +
+      'event Coverage(string fileName, uint256 lineNumber);\n' +
+      'event FunctionCoverage(string fileName, uint256 fnId);\n' +
+      'event StatementCoverage(string fileName, uint256 statementId);\n' +
+      'event BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n' +
+       contract.slice(injectionPoint);
+  };
+
   // First, we run over the original contract to get the source mapping.
   let result = SolidityParser.parse(contract);
   parse[result.type](result);
@@ -529,48 +591,7 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
       return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
     });
     injectionPoints[injectionPoint].forEach(injection => {
-      if (injection.type === 'callEvent') {
-        const linecount = (contract.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
-        runnableLines.push(linecount);
-        contract = contract.slice(0, injectionPoint) + 'Coverage(\'' + fileName + '\',' + linecount + ');\n' + contract.slice(injectionPoint);
-      } else if (injection.type === 'callFunctionEvent') {
-        contract = contract.slice(0, injectionPoint) +
-          'FunctionCoverage(\'' + fileName + '\',' + injection.fnId + ');\n' +
-          contract.slice(injectionPoint);
-      } else if (injection.type === 'callBranchEvent') {
-        contract = contract.slice(0, injectionPoint) +
-          (injection.openBracket ? '{' : '') +
-          'BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ')' +
-          (injection.comma ? ',' : ';') +
-          contract.slice(injectionPoint);
-      } else if (injection.type === 'callEmptyBranchEvent') {
-        contract = contract.slice(0, injectionPoint) +
-          'else { BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ');}\n' +
-          contract.slice(injectionPoint);
-      } else if (injection.type === 'openParen') {
-        contract = contract.slice(0, injectionPoint) + '(' + contract.slice(injectionPoint);
-      } else if (injection.type === 'closeParen') {
-        contract = contract.slice(0, injectionPoint) + ')' + contract.slice(injectionPoint);
-      } else if (injection.type === 'closeBracketStart') {
-        contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
-      } else if (injection.type === 'closeBracketEnd') {
-        contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
-      } else if (injection.type === 'literal') {
-        contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
-      } else if (injection.type === 'statement') {
-        contract = contract.slice(0, injectionPoint) +
-          ' StatementCoverage(\'' + fileName + '\',' + injection.statementId + ');\n' +
-          contract.slice(injectionPoint);
-      } else if (injection.type === 'eventDefinition') {
-        contract = contract.slice(0, injectionPoint) +
-          'event Coverage(string fileName, uint256 lineNumber);\n' +
-          'event FunctionCoverage(string fileName, uint256 fnId);\n' +
-          'event StatementCoverage(string fileName, uint256 statementId);\n' +
-          'event BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n' +
-           contract.slice(injectionPoint);
-      } else {
-        console.log('Unknown injection.type');
-      }
+      injector[injection.type](injectionPoint, injection);
     });
   });
   retValue.contract = contract;
