@@ -5,7 +5,7 @@ const preprocessor = require('./preprocessor');
 
 const path = require('path');
 
-module.exports = function (contract, fileName, instrumentingActive) {
+module.exports = function instruentSolidity(contract, fileName, instrumentingActive) {
   const parse = {};
   let runnableLines = [];
   let fnMap = {};
@@ -230,14 +230,14 @@ module.exports = function (contract, fileName, instrumentingActive) {
     }
   }
 
-  parse.AssignmentExpression = function (expression, instrument) {
+  parse.AssignmentExpression = function parseAssignmentExpression(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
     if (instrument) { instrumentAssignmentExpression(expression); }
     // parse[expression.left.type](expression.left, instrument);
     // parse[expression.right.type](expression.right, instrument);
   };
 
-  parse.ConditionalExpression = function (expression, instrument) {
+  parse.ConditionalExpression = function parseConditionalExpression(expression, instrument) {
     if (instrument) { instrumentConditionalExpression(expression); }
     parse[expression.test.left.type](expression.test.left, instrument);
     parse[expression.test.right.type](expression.test.right, instrument);
@@ -245,19 +245,19 @@ module.exports = function (contract, fileName, instrumentingActive) {
     parse[expression.alternate.type](expression.alternate, instrument);
   };
 
-  parse.Identifier = function (expression, instrument) {
+  parse.Identifier = function parseIdentifier(expression, instrument) {
   };
 
-  parse.InformalParameter = function (expression, instrument) {
+  parse.InformalParameter = function parseInformalParameter(expression, instrument) {
   };
 
-  parse.Literal = function (expression, instrument) {
+  parse.Literal = function ParseLiteral(expression, instrument) {
   };
 
-  parse.ModifierName = function (expression, instrument) {
+  parse.ModifierName = function ParseModifierName(expression, instrument) {
   };
 
-  parse.Modifiers = function (modifiers, instrument) {
+  parse.Modifiers = function parseModifier(modifiers, instrument) {
     if (modifiers) {
       modifiers.forEach(modifier => {
         parse[modifier.type](modifier, instrument);
@@ -265,29 +265,29 @@ module.exports = function (contract, fileName, instrumentingActive) {
     }
   };
 
-  parse.ThisExpression = function (expression, instrument) {
+  parse.ThisExpression = function parseThisExpression(expression, instrument) {
   };
 
-  parse.ReturnStatement = function (expression, instrument) {
+  parse.ReturnStatement = function parseReturnStatement(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
     // if (expression.argument){
       // parse[expression.argument.type](expression.argument, instrument);
     // }
   };
 
-  parse.NewExpression = function (expression, instrument) {
+  parse.NewExpression = function parseNewExpression(expression, instrument) {
     parse[expression.callee.type](expression.callee, instrument);
     expression.forEach(construct => {
       parse[construct.type](construct, instrument);
     });
   };
 
-  parse.MemberExpression = function (expression, instrument) {
+  parse.MemberExpression = function parseMemberExpression(expression, instrument) {
     parse[expression.object.type](expression.object, instrument);
     // parse[expression.property.type](expression.property, instrument);
   };
 
-  parse.CallExpression = function (expression, instrument) {
+  parse.CallExpression = function parseCallExpression(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
     parse[expression.callee.type](expression.callee, instrument);
     // for (x in expression.arguments){
@@ -295,23 +295,23 @@ module.exports = function (contract, fileName, instrumentingActive) {
     // }
   };
 
-  parse.UnaryExpression = function (expression, instrument) {
+  parse.UnaryExpression = function parseUnaryExpression(expression, instrument) {
     parse[expression.argument.type](expression.argument, instrument);
   };
 
-  parse.ThrowStatement = function (expression, instrument) {
+  parse.ThrowStatement = function parseThrowStatement(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
   };
 
-  parse.DenominationLiteral = function (expression, instrument) {
+  parse.DenominationLiteral = function parseDenominationLiteral(expression, instrument) {
   };
 
-  parse.BinaryExpression = function (expression, instrument) {
+  parse.BinaryExpression = function parseBinaryExpression(expression, instrument) {
     parse[expression.left.type](expression.left, instrument);
     parse[expression.right.type](expression.right, instrument);
   };
 
-  parse.IfStatement = function (expression, instrument) {
+  parse.IfStatement = function parseIfStatement(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
     if (instrument) { instrumentIfStatement(expression); }
     // We can't instrument
@@ -325,38 +325,38 @@ module.exports = function (contract, fileName, instrumentingActive) {
     }
   };
 
-  parse.SequenceExpression = function (expression, instrument) {
+  parse.SequenceExpression = function parseSequenceExpression(expression, instrument) {
   };
 
-  parse.ImportStatement = function (expression, instrument) {
+  parse.ImportStatement = function parseImportStatemtn(expression, instrument) {
   };
 
-  parse.DeclarativeExpression = function (expression, instrument) {
+  parse.DeclarativeExpression = function parseDeclarativeExpression(expression, instrument) {
   };
 
-  parse.ExpressionStatement = function (content, instrument) {
+  parse.ExpressionStatement = function parseExpressionStatement(content, instrument) {
     // if (instrument){instrumentStatement(content.expression)}
     parse[content.expression.type](content.expression, instrument);
   };
 
-  parse.EnumDeclaration = function (expression, instrument) {
+  parse.EnumDeclaration = function parseEnumDeclaration(expression, instrument) {
   };
 
-  parse.EventDeclaration = function (expression, instrument) {
+  parse.EventDeclaration = function parseEventDeclaration(expression, instrument) {
   };
 
-  parse.VariableDeclarationTuple = function (expression, instrument) {
+  parse.VariableDeclarationTuple = function parseVariableDeclarationTuple(expression, instrument) {
     parse[expression.init.type](expression.init, instrument);
   };
 
-  parse.BlockStatement = function (expression, instrument) {
+  parse.BlockStatement = function parseBlockStatement(expression, instrument) {
     for (let x = 0; x < expression.body.length; x++) {
       if (instrument) { instrumentLine(expression.body[x]); }
       parse[expression.body[x].type](expression.body[x], instrument);
     }
   };
 
-  parse.VariableDeclaration = function (expression, instrument) {
+  parse.VariableDeclaration = function parseVariableDeclaration(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
     if (expression.declarations.length > 1) {
       console.log('more than one declaration');
@@ -365,14 +365,14 @@ module.exports = function (contract, fileName, instrumentingActive) {
     // parse[expression.declarations[0].init.type](expression.declarations[0].init, instrument);
   };
 
-  parse.Type = function (expression, instrument) {
+  parse.Type = function parseType(expression, instrument) {
   };
 
-  parse.UsingStatement = function (expression, instrument) {
+  parse.UsingStatement = function parseUsingStatement(expression, instrument) {
     parse[expression.for.type](expression.for, instrument);
   };
 
-  parse.FunctionDeclaration = function (expression, instrument) {
+  parse.FunctionDeclaration = function parseFunctionDeclaration(expression, instrument) {
     parse.Modifiers(expression.modifiers, instrument);
     if (expression.body) {
       instrumentFunctionDeclaration(expression);
@@ -380,7 +380,7 @@ module.exports = function (contract, fileName, instrumentingActive) {
     }
   };
 
-  parse.ContractStatement = function (expression, instrument) {
+  parse.ContractStatement = function parseContractStatement(expression, instrument) {
     // Inject our coverage event if we're covering
     if (instrumentingActive) {
       // This is harder because of where .start and .end represent, and how documented comments are validated
@@ -405,7 +405,7 @@ module.exports = function (contract, fileName, instrumentingActive) {
     });
   };
 
-  parse.LibraryStatement = function (expression, instrument) {
+  parse.LibraryStatement = function parseLibraryStatement(expression, instrument) {
     // Inject our coverage event;
     if (instrumentingActive) {
       // This is harder because of where .start and .end represent, and how documented comments are validated
@@ -427,73 +427,73 @@ module.exports = function (contract, fileName, instrumentingActive) {
     });
   };
 
-  parse.ModifierDeclaration = function (expression, instrument) {
+  parse.ModifierDeclaration = function parseModifierDeclaration(expression, instrument) {
     instrumentFunctionDeclaration(expression);
     parse[expression.body.type](expression.body, instrumentingActive);
   };
 
-  parse.Program = function (expression, instrument) {
+  parse.Program = function parseProgram(expression, instrument) {
     expression.body.forEach(construct => {
       parse[construct.type](construct, instrument);
     });
   };
 
-  parse.WhileStatement = function (expression, instrument) {
+  parse.WhileStatement = function parseWhileStatement(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
     parse[expression.body.type](expression.body, instrument);
   };
 
-  parse.ForStatement = function (expression, instrument) {
+  parse.ForStatement = function parseForStatement(expression, instrument) {
     if (instrument) { instrumentStatement(expression); }
     parse[expression.body.type](expression.body, instrument);
   };
 
-  parse.StructDeclaration = function (expression, instrument) {
+  parse.StructDeclaration = function parseStructDeclaration(expression, instrument) {
   };
 
-  parse.PragmaStatement = function (expression, instrument) {
+  parse.PragmaStatement = function parsePragmaStatement(expression, instrument) {
   };
 
-  parse.UpdateExpression = function (expression, instrument) {
+  parse.UpdateExpression = function parseUpdateExpression(expression, instrument) {
   };
 
-  parse.MappingExpression = function (expression, instrument) {
+  parse.MappingExpression = function parseMappingExpression(expression, instrument) {
   };
 
-  parse.VariableDeclarator = function (expression, instrument) {
+  parse.VariableDeclarator = function parseVariableDeclarator(expression, instrument) {
   };
 
-  parse.EmptyStatement = function (expression, instrument) {
+  parse.EmptyStatement = function parseEmptyStatement(expression, instrument) {
   };
 
-  parse.DebuggerStatement = function (expression, instrument) {
+  parse.DebuggerStatement = function parseDebuggerStatement(expression, instrument) {
   };
 
-  parse.IsStatement = function (expression, instrument) {
+  parse.IsStatement = function parseIsStatement(expression, instrument) {
   };
 
-  parse.DeclarativeExpressionList = function (expression, instrument) {
+  parse.DeclarativeExpressionList = function parseDeclarativeExpressionList(expression, instrument) {
   };
 
-  parse.ModifierArgument = function (expression, instrument) {
+  parse.ModifierArgument = function parseModifierArgument(expression, instrument) {
   };
 
-  parse.PlaceholderStatement = function (expression, instrument) {
+  parse.PlaceholderStatement = function parsePlaceholderStatement(expression, instrument) {
   };
 
-  parse.FunctionName = function (expression, instrument) {
+  parse.FunctionName = function parseFunctionName(expression, instrument) {
   };
 
-  parse.DoWhileStatement = function (expression, instrument) {
+  parse.DoWhileStatement = function parseDoWhileStatement(expression, instrument) {
   };
 
-  parse.ForInStatement = function (expression, instrument) {
+  parse.ForInStatement = function parseForInStatement(expression, instrument) {
   };
 
-  parse.ContinueStatement = function (expression, instrument) {
+  parse.ContinueStatement = function ParseContinueStatement(expression, instrument) {
   };
 
-  parse.BreakStatement = function (expression, instrument) {
+  parse.BreakStatement = function parseBreakStatement(expression, instrument) {
   };
 
   // First, we run over the original contract to get the source mapping.
@@ -521,26 +521,32 @@ module.exports = function (contract, fileName, instrumentingActive) {
 
   // We have to iterate through these injection points in descending order to not mess up
   // the injection process.
-  const sortedPoints = Object.keys(injectionPoints).sort((a, b) => a - b);
-  for (x = sortedPoints.length - 1; x >= 0; x--) {
-    const injectionPoint = sortedPoints[x];
+  const sortedPoints = Object.keys(injectionPoints).sort((a, b) => b - a);
+  sortedPoints.forEach(injectionPoint => {
     // Line instrumentation has to happen first
     injectionPoints[injectionPoint].sort((a, b) => {
       const eventTypes = ['openParen', 'closeBracketStart', 'callBranchEvent', 'callEmptyBranchEvent', 'callEvent', 'closeBracketEnd'];
       return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
     });
-    for (y in injectionPoints[injectionPoint]) {
-      const injection = injectionPoints[injectionPoint][y];
+    injectionPoints[injectionPoint].forEach(injection => {
       if (injection.type === 'callEvent') {
-        linecount = (contract.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
+        const linecount = (contract.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
         runnableLines.push(linecount);
         contract = contract.slice(0, injectionPoint) + 'Coverage(\'' + fileName + '\',' + linecount + ');\n' + contract.slice(injectionPoint);
       } else if (injection.type === 'callFunctionEvent') {
-        contract = contract.slice(0, injectionPoint) + 'FunctionCoverage(\'' + fileName + '\',' + injection.fnId + ');\n' + contract.slice(injectionPoint);
+        contract = contract.slice(0, injectionPoint) +
+          'FunctionCoverage(\'' + fileName + '\',' + injection.fnId + ');\n' +
+          contract.slice(injectionPoint);
       } else if (injection.type === 'callBranchEvent') {
-        contract = contract.slice(0, injectionPoint) + (injection.openBracket ? '{' : '') + 'BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ')' + (injection.comma ? ',' : ';') + contract.slice(injectionPoint);
+        contract = contract.slice(0, injectionPoint) +
+          (injection.openBracket ? '{' : '') +
+          'BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ')' +
+          (injection.comma ? ',' : ';') +
+          contract.slice(injectionPoint);
       } else if (injection.type === 'callEmptyBranchEvent') {
-        contract = contract.slice(0, injectionPoint) + 'else { BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ');}\n' + contract.slice(injectionPoint);
+        contract = contract.slice(0, injectionPoint) +
+          'else { BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ');}\n' +
+          contract.slice(injectionPoint);
       } else if (injection.type === 'openParen') {
         contract = contract.slice(0, injectionPoint) + '(' + contract.slice(injectionPoint);
       } else if (injection.type === 'closeParen') {
@@ -552,14 +558,21 @@ module.exports = function (contract, fileName, instrumentingActive) {
       } else if (injection.type === 'literal') {
         contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
       } else if (injection.type === 'statement') {
-        contract = contract.slice(0, injectionPoint) + ' StatementCoverage(\'' + fileName + '\',' + injection.statementId + ');\n' + contract.slice(injectionPoint);
+        contract = contract.slice(0, injectionPoint) +
+          ' StatementCoverage(\'' + fileName + '\',' + injection.statementId + ');\n' +
+          contract.slice(injectionPoint);
       } else if (injection.type === 'eventDefinition') {
-        contract = contract.slice(0, injectionPoint) + 'event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\nevent StatementCoverage(string fileName, uint256 statementId);\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n' + contract.slice(injectionPoint);
+        contract = contract.slice(0, injectionPoint) +
+          'event Coverage(string fileName, uint256 lineNumber);\n' +
+          'event FunctionCoverage(string fileName, uint256 fnId);\n' +
+          'event StatementCoverage(string fileName, uint256 statementId);\n' +
+          'event BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n' +
+           contract.slice(injectionPoint);
       } else {
         console.log('Unknown injection.type');
       }
-    }
-  }
+    });
+  });
   retValue.contract = contract;
   retValue.runnableLines = runnableLines;
   return retValue;
