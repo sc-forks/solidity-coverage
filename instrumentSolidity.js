@@ -1,477 +1,566 @@
-var SolidityParser = require("solidity-parser");
-var preprocessor = require('./preprocessor');
-
-//var solparse = require("solparse");
-
-var path = require("path");
-module.exports = function(contract, fileName, instrumentingActive){
-
-	var parse = {};
-
-	function createOrAppendInjectionPoint(key, value){
-		if (injectionPoints[key]){
-			injectionPoints[key].push(value);
-		}else{
-			injectionPoints[key] = [value];
-		}
-	}
-
-	function instrumentAssignmentExpression(expression){
-		//The only time we instrument an assignment expression is if there's a conditional expression on
-		//the right
-		if (expression.right.type==='ConditionalExpression'){
-			if (expression.left.type==='DeclarativeExpression'){
-				//Then we need to go from bytes32 varname = (conditional expression)
-				//to 					  bytes32 varname; (,varname) = (conditional expression)
-				createOrAppendInjectionPoint(expression.left.end, {type:"literal", string:"; (," + expression.left.name + ")"});
-			}else {
-				console.log(expression.left)
-				process.exit();
-			}
-		}
-	}
-
-	function instrumentConditionalExpression(expression){
-		branchId +=1;
-
-		startline = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
-		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
-		consequentStartCol = startcol + expression.consequent.start - expression.start;
-		consequentEndCol = consequentStartCol + expression.consequent.end - expression.consequent.start;
-		alternateStartCol = startcol + expression.alternate.start - expression.start;
-		alternateEndCol = alternateStartCol + expression.alternate.end - expression.alternate.start;
-		//NB locations for conditional branches in istanbul are length 1 and associated with the : and ?.
-		branchMap[branchId] = {line:startline, type:'cond-expr', locations:[{start:{line:startline, column:consequentStartCol},end:{line:startline,column:consequentEndCol}},{start:{line:startline, column:alternateStartCol},end:{line:startline,column:alternateEndCol}}]}
-
-		//Right, this could be being used just by itself or as an assignment. In the case of the latter, because
-		//the comma operator doesn't exist, we're going to have to get funky.
-		//if we're on a line by ourselves, this is easier
-		//
-		//Now if we've got to wrap the expression it's being set equal to, do that...
-
-
-		//Wrap the consequent
-		createOrAppendInjectionPoint(expression.consequent.start, {type:"openParen"});
-		createOrAppendInjectionPoint(expression.consequent.start, {type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 0});
-		createOrAppendInjectionPoint(expression.consequent.end, {type:"closeParen"});
-
-		//Wrap the alternate
-		createOrAppendInjectionPoint(expression.alternate.start, {type:"openParen"});
-		createOrAppendInjectionPoint(expression.alternate.start, {type:"callBranchEvent",comma:true, branchId: branchId, locationIdx: 1});
-		createOrAppendInjectionPoint(expression.alternate.end, {type:"closeParen"});
-	}
-
-	function instrumentStatement(expression){
-		canCover = false;
-
-		statementId +=1;
-		//We need to work out the lines and columns the expression starts and ends
-		linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
-		var startline = linecount;
-		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
-		var expressionContent = contract.slice(expression.start, expression.end);
-
-		var endline = startline + (expressionContent.match('/\n/g') || []).length ;
-		var endcol;
-		if (expressionContent.lastIndexOf('\n')>=0){
-			endcol = contract.slice(expressionContent.lastIndexOf('\n'), expression.end).length -1;
-		}else{
-			endcol = startcol + expressionContent.length -1;
-		}
-		statementMap[statementId] = {start:{line: startline, column:startcol},end:{line:endline, column:endcol}}
-		createOrAppendInjectionPoint(expression.start, {type:"statement", statementId: statementId});
-	}
-
-	function instrumentLine(expression){
-		//what's the position of the most recent newline?
-		var startchar = expression.start
-		var endchar = expression.end
-		lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
-		nextNewLine = startchar + contract.slice(startchar).indexOf('\n');
-		var contractSnipped = contract.slice(lastNewLine, nextNewLine);
-
-		// Is everything before us and after us on this line whitespace?
-		if (contract.slice(lastNewLine, startchar).trim().length===0 && contract.slice(endchar,nextNewLine).replace(';','').trim().length===0){
-			createOrAppendInjectionPoint(lastNewLine+1,{type:"callEvent"});
-		} else if (contract.slice(lastNewLine, startchar).replace('{','').trim().length===0 && contract.slice(endchar,nextNewLine).replace(/[;}]/g,'').trim().length===0){
-			createOrAppendInjectionPoint(expression.start,{type:"callEvent"});
-		}
-	}
-
-	function instrumentFunctionDeclaration(expression){
-		fnId+=1;
-		linecount = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
-		//We need to work out the lines and columns the function declaration starts and ends
-		var startline = linecount;
-		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
-		var endlineDelta = contract.slice(expression.start).indexOf('{')+1;
-		var functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
-		var lastChar = contract.slice(expression.start, expression.start + endlineDelta + 1).slice(-1);
-		var endline = startline + (functionDefinition.match(/\n/g)||[]).length;
-		var endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n')
-		fnMap[fnId] = {name: expression.name, line: linecount, loc:{start:{line: startline, column:startcol},end:{line:endline, column:endcol}}}
-		if (lastChar === '}'){
-		    createOrAppendInjectionPoint(expression.start + endlineDelta,{type: "callFunctionEvent", fnId: fnId} );
-		} else {
-		    createOrAppendInjectionPoint(expression.start + endlineDelta+1,{type: "callFunctionEvent", fnId: fnId} );
-		}
-	}
-
-	function instrumentIfStatement(expression){
-		branchId +=1;
-		startline = (contract.slice(0,expression.start).match(/\n/g)||[]).length + 1;
-		var startcol = expression.start - contract.slice(0,expression.start).lastIndexOf('\n') -1;
-		//NB locations for if branches in istanbul are zero length and associated with the start of the if.
-		branchMap[branchId] = {line:linecount, type:'if', locations:[{start:{line:startline, column:startcol},end:{line:startline,column:startcol}},{start:{line:startline, column:startcol},end:{line:startline,column:startcol}}]}
-		if (expression.consequent.type === "BlockStatement"){
-			createOrAppendInjectionPoint(expression.consequent.start+1,{type: "callBranchEvent", branchId: branchId, locationIdx: 0} )
-		}
-		if (expression.alternate && expression.alternate.type==='IfStatement'){
-			createOrAppendInjectionPoint(expression.alternate.start, {type: "callBranchEvent", branchId: branchId, locationIdx:1, openBracket: true})
-			createOrAppendInjectionPoint(expression.alternate.end, {type:"closeBracketEnd"});
-			//It should get instrumented when we parse it
-		} else if (expression.alternate && expression.alternate.type === "BlockStatement"){
-			createOrAppendInjectionPoint(expression.alternate.start+1, {type: "callBranchEvent", branchId: branchId, locationIdx: 1})
-		} else {
-			createOrAppendInjectionPoint(expression.consequent.end, {type: "callEmptyBranchEvent", branchId: branchId, locationIdx: 1});
-		}
-	}
-
-	parse["AssignmentExpression"] = function (expression, instrument){
-		if (instrument){instrumentStatement(expression)}
-		if (instrument){instrumentAssignmentExpression(expression)}
-		// parse[expression.left.type](expression.left, instrument);
-		// parse[expression.right.type](expression.right, instrument);
-	}
-
-	parse["ConditionalExpression"] = function(expression, instrument){
-		if (instrument){ instrumentConditionalExpression(expression); }
-		parse[expression.test.left.type](expression.test.left, instrument);
-		parse[expression.test.right.type](expression.test.right,instrument);
-		parse[expression.consequent.type](expression.consequent, instrument)
-		parse[expression.alternate.type](expression.alternate,instrument);
-	}
-
-	parse["Identifier"] = function(expression, instrument){
-	}
-
-	parse["InformalParameter"] = function(expression, instrument){
-	}
-
-	parse["Literal"] = function(expression, instrument){
-	}
-
-	parse["ModifierName"]  = function(expression, instrument){
-	};
-
-	parse["Modifiers"] = function(modifiers, instrument){
-		for (x in modifiers){
-			parse[modifiers[x].type](modifiers[x], instrument);
-		}
-	}
-
-	parse["ThisExpression"] = function(expression, instrument){
-	}
-
-	parse["ReturnStatement"] = function(expression, instrument){
-		if (instrument){instrumentStatement(expression)}
-		// if (expression.argument){
-			// parse[expression.argument.type](expression.argument, instrument);
-		// }
-	}
-
-	parse["NewExpression"] = function(expression, instrument){
-		parse[expression.callee.type](expression.callee, instrument);
-		for (x in expression.arguments){
-			parse[expression.arguments[x].type](expression.arguments[x], instrument)
-		}
-	}
-
-	parse["MemberExpression"]  = function (expression, instrument){
-		parse[expression.object.type](expression.object, instrument);
-		// parse[expression.property.type](expression.property, instrument);
-	}
-
-	parse["CallExpression"] = function (expression,instrument){
-		if (instrument){instrumentStatement(expression)}
-		parse[expression.callee.type](expression.callee, instrument);
-		// for (x in expression.arguments){
-			// parse[expression.arguments[x].type](expression.arguments[x], instrument)
-		// }
-	}
-
-	parse["UnaryExpression"] = function(expression, instrument){
-		parse[expression.argument.type](expression.argument, instrument);
-	}
-
-	parse["ThrowStatement"] = function(expression, instrument){
-		if (instrument){instrumentStatement(expression)}
-	}
-
-	parse["DenominationLiteral"] = function(expression,instrument){
-	}
-
-	parse["BinaryExpression"] = function(expression, instrument){
-		parse[expression.left.type](expression.left, instrument)
-		parse[expression.right.type](expression.right, instrument)
-	}
-
-	parse["IfStatement"] = function(expression, instrument){
-		if (instrument){instrumentStatement(expression)}
-		if (instrument) {instrumentIfStatement(expression)}
-		// We can't instrument
-		// if (x==1)
-		//
-		// So don't count x==1 as a statement - just the if as a whole.
-		// parse[expression.test.type](expression.test, instrument)
-		parse[expression.consequent.type](expression.consequent, instrument)
-		if (expression.alternate){
-			parse[expression.alternate.type](expression.alternate, instrument)
-		}
-	}
-
-	parse["SequenceExpression"] = function(expression, instrument){
-		parse[expression.expressions[x].type](expression.expressions[x], instrument) + ', ';
-	}
-
-	parse["ImportStatement"] = function(expression, instrument){
-	}
-
-	parse["DeclarativeExpression"] = function(expression, instrument){
-	}
-
-	parse["ExpressionStatement"] = function(content, instrument){
-		// if (instrument){instrumentStatement(content.expression)}
-		parse[content.expression.type](content.expression, instrument);
-	}
-
-	parse["EnumDeclaration"] = function(expression, instrument){
-	}
-
-	parse["EventDeclaration"]=function(expression, instrument){
-	}
-
-	parse["VariableDeclarationTuple"] = function(expression, instrument){
-		parse[expression.init.type](expression.init, instrument)
-	}
-
-	parse["BlockStatement"] = function(expression, instrument){
-		for (var x=0; x < expression.body.length; x++){
-			if (instrument){ instrumentLine(expression.body[x]); }
-			parse[expression.body[x].type](expression.body[x], instrument);
-		}
-	}
-
-	parse["VariableDeclaration"] = function(expression, instrument){
-		if (instrument){instrumentStatement(expression)}
-		if (expression.declarations.length>1){
-			console.log('more than one declaration')
-		}
-		parse[expression.declarations[0].id.type](expression.declarations[0].id, instrument);
-		// parse[expression.declarations[0].init.type](expression.declarations[0].init, instrument);
-	}
-
-	parse["Type"] = function(expression, instrument){
-	}
-
-	parse["UsingStatement"] = function(expression, instrument){
-		parse[expression.for.type](expression.for, instrument)
-	}
-
-	parse["FunctionDeclaration"] = function(expression, instrument){
-		parse["Modifiers"](expression.modifiers, instrument);
-		if (expression.body){
-			instrumentFunctionDeclaration(expression);
-			parse[expression.body.type](expression.body, instrumentingActive);
-		}
-	}
-
-	parse["ContractStatement"] = function(expression, instrument){
-		//Inject our coverage event if we're covering
-		if (instrumentingActive){
-			//This is harder because of where .start and .end represent, and how documented comments are validated
-			//by solc upon compilation. From the start of this contract statement, find the first '{', and inject
-			//there.
-			var injectionPoint = expression.start + contract.slice(expression.start).indexOf('{')+2;
-			if (injectionPoints[injectionPoint]){
-				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2].push({type:"eventDefinition"});
-			}else{
-				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = [{type:"eventDefinition"}];
-			}
-		}
-
-		for (x in expression.body){
-			// Ignore top-level variable declarations grouped together in array by solidity-parser
-			if (!Array.isArray(expression.body[x])){
-				parse[expression.body[x].type](expression.body[x], instrument);
-			}
-		}
-	}
-
-	parse["LibraryStatement"] = function(expression, instrument){
-		//Inject our coverage event;
-		if(instrumentingActive){
-
-			//This is harder because of where .start and .end represent, and how documented comments are validated
-			//by solc upon compilation. From the start of this contract statement, find the first '{', and inject
-			//there.
-			var injectionPoint = expression.start + contract.slice(expression.start).indexOf('{')+2;
-			if (injectionPoints[injectionPoint]){
-				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2].push({type:"eventDefinition"});
-			}else{
-				injectionPoints[expression.start + contract.slice(expression.start).indexOf('{')+2] = [{type:"eventDefinition"}];
-			}
-		}
-
-		for (x in expression.body){
-			parse[expression.body[x].type](expression.body[x], instrument);
-		}
-	}
-
-	parse["ModifierDeclaration"] = function(expression, instrument){
-		instrumentFunctionDeclaration(expression);
-		parse[expression.body.type](expression.body, instrumentingActive);
-	}
-
-	parse["Program"] = function(expression, instrument){
-		for (x in expression.body){
-			parse[expression.body[x].type](expression.body[x], instrument);
-		}
-	}
-
-	parse["WhileStatement"] = function(expression, instrument){
-		if (instrument){instrumentStatement(expression)}
-		parse[expression.body.type](expression.body, instrument);
-	}
-
-	parse["ForStatement"] = function(expression, instrument){
-		if (instrument){instrumentStatement(expression)}
-		parse[expression.body.type](expression.body, instrument);
-	}
-
-	parse["StructDeclaration"] = function(expression, instrument){
-	}
-
-	parse["PragmaStatement"] = function(expression, instrument){
-	}
-
-	parse["UpdateExpression"] = function(expression, instrument){
-	}
-
-	parse["MappingExpression"] = function(expression, instrument){
-	}
-
-	parse["VariableDeclarator"] = function(expression, instrument){
-	}
-
-	parse["EmptyStatement"] = function(expression, instrument){
-	}
-
-	parse["DebuggerStatement"] = function(expression, instrument){
-	}
-
-	parse["IsStatement"] = function(expression, instrument){
-	}
-
-	parse["DeclarativeExpressionList"] = function(expression, instrument){
-	}
-
-	parse["ModifierArgument"] = function(expression, instrument){
-	}
-
-	parse["PlaceholderStatement"] = function(expression, instrument){
-	}
-
-	parse["FunctionName"] = function(expression, instrument){
-	}
-
-	parse["DoWhileStatement"] = function(expression, instrument){
-	}
-
-	parse["ForInStatement"] = function(expression, instrument){
-	}
-
-	parse["ContinueStatement"] = function(expression, instrument){
-	}
-
-	parse["BreakStatement"] = function(expression, instrument){
-	}
-
-	var instrumented = "";
-	var runnableLines=[];
-	var fnMap = {};
-	var fnId = 0;
-	var branchMap = {};
-	var branchId = 0;
-	var statementMap = {};
-	var statementId = 0;
-	var linecount = 1;
-	var injectionPoints = {};
-
-	var result = SolidityParser.parse(contract);
-	var instrumented = parse[result.type](result);
-	var retValue = {contract: contract, runnableLines: runnableLines, fnMap: fnMap, branchMap: branchMap, statementMap: statementMap};
-
-	var instrumented = "";
-	var runnableLines=[];
-	var fnMap = {};
-	var fnId = 0;
-	var branchMap = {};
-	var branchId = 0;
-	var statementMap = {};
-	var statementId = 0;
-	var linecount = 1;
-	var injectionPoints = {};
-
-	contract = preprocessor.run(contract);
-	result = SolidityParser.parse(contract);
-		var instrumented = parse[result.type](result);
-
-	//var result = solparse.parse(contract);
-
-	//We have to iterate through these injection points in descending order to not mess up
-	//the injection process.
-	var sortedPoints = Object.keys(injectionPoints).sort(function(a,b){return a-b});
-	for (x = sortedPoints.length-1; x>=0;  x--){
-		injectionPoint = sortedPoints[x];
-		//Line instrumentation has to happen first
-		injectionPoints[injectionPoint].sort(function(a,b){
-			var eventTypes = ["openParen", "closeBracketStart", "callBranchEvent","callEmptyBranchEvent","callEvent", "closeBracketEnd"];
-			return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
-		});
-		for (y in injectionPoints[injectionPoint]){
-			injection = injectionPoints[injectionPoint][y];
-			if (injection.type==='callEvent'){
-				linecount = (contract.slice(0, injectionPoint).match(/\n/g)||[]).length+1;
-				runnableLines.push(linecount);
-				contract = contract.slice(0, injectionPoint) + "Coverage('" + fileName + "'," + linecount + ");\n" + contract.slice(injectionPoint);
-			}else if (injection.type==='callFunctionEvent'){
-				contract = contract.slice(0, injectionPoint) + "FunctionCoverage('" + fileName + "'," + injection.fnId + ");\n" + contract.slice(injectionPoint);
-			}else if (injection.type==='callBranchEvent'){
-				contract = contract.slice(0, injectionPoint) + (injection.openBracket? '{' : '') + "BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ")" + (injection.comma ? ',' : ";") + contract.slice(injectionPoint);
-			}else if (injection.type==='callEmptyBranchEvent'){
-				contract = contract.slice(0, injectionPoint) + "else { BranchCoverage('" + fileName + "'," + injection.branchId + "," + injection.locationIdx + ");}\n" + contract.slice(injectionPoint);
-			}else if (injection.type==='openParen'){
-				contract = contract.slice(0, injectionPoint) + "(" + contract.slice(injectionPoint);
-			}else if (injection.type==='closeParen'){
-				contract = contract.slice(0, injectionPoint) + ")" + contract.slice(injectionPoint);
-			}else if (injection.type==='closeBracketStart'){
-				contract = contract.slice(0, injectionPoint) + "}" + contract.slice(injectionPoint);
-			}else if (injection.type==='closeBracketEnd'){
-				contract = contract.slice(0, injectionPoint) + "}" + contract.slice(injectionPoint);
-			}else if (injection.type==='literal'){
-				contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
-			}else if (injection.type==='statement'){
-				contract = contract.slice(0, injectionPoint) + " StatementCoverage('" + fileName + "'," + injection.statementId + ");\n" + contract.slice(injectionPoint);
-			}else if (injection.type==='eventDefinition'){
-				contract = contract.slice(0, injectionPoint) + "event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\nevent StatementCoverage(string fileName, uint256 statementId);\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n" + contract.slice(injectionPoint);
-			}else{
-				console.log('Unknown injection.type');
-			}
-		}
-	}
-	retValue.contract = contract;
-	retValue.runnableLines = runnableLines
-	return retValue;
-
-}
+const SolidityParser = require('solidity-parser');
+const preprocessor = require('./preprocessor');
+
+// var solparse = require("solparse");
+
+const path = require('path');
+
+module.exports = function (contract, fileName, instrumentingActive) {
+  const parse = {};
+  let runnableLines = [];
+  let fnMap = {};
+  let fnId = 0;
+  let branchMap = {};
+  let branchId = 0;
+  let statementMap = {};
+  let statementId = 0;
+  let injectionPoints = {};
+
+  function createOrAppendInjectionPoint(key, value) {
+    if (injectionPoints[key]) {
+      injectionPoints[key].push(value);
+    } else {
+      injectionPoints[key] = [value];
+    }
+  }
+
+  function instrumentAssignmentExpression(expression) {
+    // The only time we instrument an assignment expression is if there's a conditional expression on
+    // the right
+    if (expression.right.type === 'ConditionalExpression') {
+      if (expression.left.type === 'DeclarativeExpression') {
+        // Then we need to go from bytes32 varname = (conditional expression)
+        // to             bytes32 varname; (,varname) = (conditional expression)
+        createOrAppendInjectionPoint(expression.left.end, {
+          type: 'literal', string: '; (,' + expression.left.name + ')',
+        });
+      } else {
+        console.log(expression.left);
+        process.exit();
+      }
+    }
+  }
+
+  function instrumentConditionalExpression(expression) {
+    branchId += 1;
+
+    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
+    const consequentStartCol = startcol + (expression.consequent.start - expression.start);
+    const consequentEndCol = consequentStartCol + (expression.consequent.end - expression.consequent.start);
+    const alternateStartCol = startcol + (expression.alternate.start - expression.start);
+    const alternateEndCol = alternateStartCol + (expression.alternate.end - expression.alternate.start);
+    // NB locations for conditional branches in istanbul are length 1 and associated with the : and ?.
+    branchMap[branchId] = {
+      line: startline,
+      type: 'cond-expr',
+      locations: [{
+        start: {
+          line: startline, column: consequentStartCol,
+        },
+        end: {
+          line: startline, column: consequentEndCol,
+        },
+      }, {
+        start: {
+          line: startline, column: alternateStartCol,
+        },
+        end: {
+          line: startline, column: alternateEndCol,
+        },
+      }],
+    };
+
+    // Right, this could be being used just by itself or as an assignment. In the case of the latter, because
+    // the comma operator doesn't exist, we're going to have to get funky.
+    // if we're on a line by ourselves, this is easier
+    //
+    // Now if we've got to wrap the expression it's being set equal to, do that...
+
+
+    // Wrap the consequent
+    createOrAppendInjectionPoint(expression.consequent.start, {
+      type: 'openParen',
+    });
+    createOrAppendInjectionPoint(expression.consequent.start, {
+      type: 'callBranchEvent', comma: true, branchId, locationIdx: 0,
+    });
+    createOrAppendInjectionPoint(expression.consequent.end, {
+      type: 'closeParen',
+    });
+
+    // Wrap the alternate
+    createOrAppendInjectionPoint(expression.alternate.start, {
+      type: 'openParen',
+    });
+    createOrAppendInjectionPoint(expression.alternate.start, {
+      type: 'callBranchEvent', comma: true, branchId, locationIdx: 1,
+    });
+    createOrAppendInjectionPoint(expression.alternate.end, {
+      type: 'closeParen',
+    });
+  }
+
+  function instrumentStatement(expression) {
+    statementId += 1;
+    // We need to work out the lines and columns the expression starts and ends
+    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
+    const expressionContent = contract.slice(expression.start, expression.end);
+
+    const endline = startline + (expressionContent.match('/\n/g') || []).length;
+    let endcol;
+    if (expressionContent.lastIndexOf('\n') >= 0) {
+      endcol = contract.slice(expressionContent.lastIndexOf('\n'), expression.end).length - 1;
+    } else {
+      endcol = startcol + (expressionContent.length - 1);
+    }
+    statementMap[statementId] = {
+      start: {
+        line: startline, column: startcol,
+      },
+      end: {
+        line: endline, column: endcol,
+      },
+    };
+    createOrAppendInjectionPoint(expression.start, {
+      type: 'statement', statementId,
+    });
+  }
+
+  function instrumentLine(expression) {
+    // what's the position of the most recent newline?
+    const startchar = expression.start;
+    const endchar = expression.end;
+    const lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
+    const nextNewLine = startchar + contract.slice(startchar).indexOf('\n');
+    const contractSnipped = contract.slice(lastNewLine, nextNewLine);
+
+    // Is everything before us and after us on this line whitespace?
+    if (contract.slice(lastNewLine, startchar).trim().length === 0 && contract.slice(endchar, nextNewLine).replace(';', '').trim().length === 0) {
+      createOrAppendInjectionPoint(lastNewLine + 1, {
+        type: 'callEvent',
+      });
+    } else if (contract.slice(lastNewLine, startchar).replace('{', '').trim().length === 0 &&
+               contract.slice(endchar, nextNewLine).replace(/[;}]/g, '').trim().length === 0) {
+      createOrAppendInjectionPoint(expression.start, {
+        type: 'callEvent',
+      });
+    }
+  }
+
+  function instrumentFunctionDeclaration(expression) {
+    fnId += 1;
+    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    // We need to work out the lines and columns the function declaration starts and ends
+    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
+    const endlineDelta = contract.slice(expression.start).indexOf('{') + 1;
+    const functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
+    const lastChar = contract.slice(expression.start, expression.start + endlineDelta + 1).slice(-1);
+    const endline = startline + (functionDefinition.match(/\n/g) || []).length;
+    const endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n');
+    fnMap[fnId] = {
+      name: expression.name,
+      line: startline,
+      loc: {
+        start: {
+          line: startline, column: startcol,
+        },
+        end: {
+          line: endline, column: endcol,
+        },
+      },
+    };
+    if (lastChar === '}') {
+      createOrAppendInjectionPoint(expression.start + endlineDelta, {
+        type: 'callFunctionEvent', fnId,
+      });
+    } else {
+      createOrAppendInjectionPoint(expression.start + endlineDelta + 1, {
+        type: 'callFunctionEvent', fnId,
+      });
+    }
+  }
+
+  function instrumentIfStatement(expression) {
+    branchId += 1;
+    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
+    // NB locations for if branches in istanbul are zero length and associated with the start of the if.
+    branchMap[branchId] = {
+      line: startline,
+      type: 'if',
+      locations: [{
+        start: {
+          line: startline, column: startcol,
+        },
+        end: {
+          line: startline, column: startcol,
+        },
+      }, {
+        start: {
+          line: startline, column: startcol,
+        },
+        end: {
+          line: startline, column: startcol,
+        },
+      }],
+    };
+    if (expression.consequent.type === 'BlockStatement') {
+      createOrAppendInjectionPoint(expression.consequent.start + 1, {
+        type: 'callBranchEvent', branchId, locationIdx: 0,
+      });
+    }
+    if (expression.alternate && expression.alternate.type === 'IfStatement') {
+      createOrAppendInjectionPoint(expression.alternate.start, {
+        type: 'callBranchEvent', branchId, locationIdx: 1, openBracket: true,
+      });
+      createOrAppendInjectionPoint(expression.alternate.end, {
+        type: 'closeBracketEnd',
+      });
+      // It should get instrumented when we parse it
+    } else if (expression.alternate && expression.alternate.type === 'BlockStatement') {
+      createOrAppendInjectionPoint(expression.alternate.start + 1, {
+        type: 'callBranchEvent', branchId, locationIdx: 1,
+      });
+    } else {
+      createOrAppendInjectionPoint(expression.consequent.end, {
+        type: 'callEmptyBranchEvent', branchId, locationIdx: 1,
+      });
+    }
+  }
+
+  parse.AssignmentExpression = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+    if (instrument) { instrumentAssignmentExpression(expression); }
+    // parse[expression.left.type](expression.left, instrument);
+    // parse[expression.right.type](expression.right, instrument);
+  };
+
+  parse.ConditionalExpression = function (expression, instrument) {
+    if (instrument) { instrumentConditionalExpression(expression); }
+    parse[expression.test.left.type](expression.test.left, instrument);
+    parse[expression.test.right.type](expression.test.right, instrument);
+    parse[expression.consequent.type](expression.consequent, instrument);
+    parse[expression.alternate.type](expression.alternate, instrument);
+  };
+
+  parse.Identifier = function (expression, instrument) {
+  };
+
+  parse.InformalParameter = function (expression, instrument) {
+  };
+
+  parse.Literal = function (expression, instrument) {
+  };
+
+  parse.ModifierName = function (expression, instrument) {
+  };
+
+  parse.Modifiers = function (modifiers, instrument) {
+    if (modifiers) {
+      modifiers.forEach(modifier => {
+        parse[modifier.type](modifier, instrument);
+      });
+    }
+  };
+
+  parse.ThisExpression = function (expression, instrument) {
+  };
+
+  parse.ReturnStatement = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+    // if (expression.argument){
+      // parse[expression.argument.type](expression.argument, instrument);
+    // }
+  };
+
+  parse.NewExpression = function (expression, instrument) {
+    parse[expression.callee.type](expression.callee, instrument);
+    expression.forEach(construct => {
+      parse[construct.type](construct, instrument);
+    });
+  };
+
+  parse.MemberExpression = function (expression, instrument) {
+    parse[expression.object.type](expression.object, instrument);
+    // parse[expression.property.type](expression.property, instrument);
+  };
+
+  parse.CallExpression = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+    parse[expression.callee.type](expression.callee, instrument);
+    // for (x in expression.arguments){
+      // parse[expression.arguments[x].type](expression.arguments[x], instrument)
+    // }
+  };
+
+  parse.UnaryExpression = function (expression, instrument) {
+    parse[expression.argument.type](expression.argument, instrument);
+  };
+
+  parse.ThrowStatement = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+  };
+
+  parse.DenominationLiteral = function (expression, instrument) {
+  };
+
+  parse.BinaryExpression = function (expression, instrument) {
+    parse[expression.left.type](expression.left, instrument);
+    parse[expression.right.type](expression.right, instrument);
+  };
+
+  parse.IfStatement = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+    if (instrument) { instrumentIfStatement(expression); }
+    // We can't instrument
+    // if (x==1)
+    //
+    // So don't count x==1 as a statement - just the if as a whole.
+    // parse[expression.test.type](expression.test, instrument)
+    parse[expression.consequent.type](expression.consequent, instrument);
+    if (expression.alternate) {
+      parse[expression.alternate.type](expression.alternate, instrument);
+    }
+  };
+
+  parse.SequenceExpression = function (expression, instrument) {
+  };
+
+  parse.ImportStatement = function (expression, instrument) {
+  };
+
+  parse.DeclarativeExpression = function (expression, instrument) {
+  };
+
+  parse.ExpressionStatement = function (content, instrument) {
+    // if (instrument){instrumentStatement(content.expression)}
+    parse[content.expression.type](content.expression, instrument);
+  };
+
+  parse.EnumDeclaration = function (expression, instrument) {
+  };
+
+  parse.EventDeclaration = function (expression, instrument) {
+  };
+
+  parse.VariableDeclarationTuple = function (expression, instrument) {
+    parse[expression.init.type](expression.init, instrument);
+  };
+
+  parse.BlockStatement = function (expression, instrument) {
+    for (let x = 0; x < expression.body.length; x++) {
+      if (instrument) { instrumentLine(expression.body[x]); }
+      parse[expression.body[x].type](expression.body[x], instrument);
+    }
+  };
+
+  parse.VariableDeclaration = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+    if (expression.declarations.length > 1) {
+      console.log('more than one declaration');
+    }
+    parse[expression.declarations[0].id.type](expression.declarations[0].id, instrument);
+    // parse[expression.declarations[0].init.type](expression.declarations[0].init, instrument);
+  };
+
+  parse.Type = function (expression, instrument) {
+  };
+
+  parse.UsingStatement = function (expression, instrument) {
+    parse[expression.for.type](expression.for, instrument);
+  };
+
+  parse.FunctionDeclaration = function (expression, instrument) {
+    parse.Modifiers(expression.modifiers, instrument);
+    if (expression.body) {
+      instrumentFunctionDeclaration(expression);
+      parse[expression.body.type](expression.body, instrumentingActive);
+    }
+  };
+
+  parse.ContractStatement = function (expression, instrument) {
+    // Inject our coverage event if we're covering
+    if (instrumentingActive) {
+      // This is harder because of where .start and .end represent, and how documented comments are validated
+      // by solc upon compilation. From the start of this contract statement, find the first '{', and inject
+      // there.
+      const injectionPoint = expression.start + contract.slice(expression.start).indexOf('{') + 2;
+      if (injectionPoints[injectionPoint]) {
+        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2].push({
+          type: 'eventDefinition',
+        });
+      } else {
+        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2] = [{
+          type: 'eventDefinition',
+        }];
+      }
+    }
+
+    expression.body.forEach(construct => {
+      if (!Array.isArray(construct)) {
+        parse[construct.type](construct, instrument);
+      }
+    });
+  };
+
+  parse.LibraryStatement = function (expression, instrument) {
+    // Inject our coverage event;
+    if (instrumentingActive) {
+      // This is harder because of where .start and .end represent, and how documented comments are validated
+      // by solc upon compilation. From the start of this contract statement, find the first '{', and inject
+      // there.
+      const injectionPoint = expression.start + contract.slice(expression.start).indexOf('{') + 2;
+      if (injectionPoints[injectionPoint]) {
+        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2].push({
+          type: 'eventDefinition',
+        });
+      } else {
+        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2] = [{
+          type: 'eventDefinition',
+        }];
+      }
+    }
+    expression.body.forEach(construct => {
+      parse[construct.type](construct, instrument);
+    });
+  };
+
+  parse.ModifierDeclaration = function (expression, instrument) {
+    instrumentFunctionDeclaration(expression);
+    parse[expression.body.type](expression.body, instrumentingActive);
+  };
+
+  parse.Program = function (expression, instrument) {
+    expression.body.forEach(construct => {
+      parse[construct.type](construct, instrument);
+    });
+  };
+
+  parse.WhileStatement = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+    parse[expression.body.type](expression.body, instrument);
+  };
+
+  parse.ForStatement = function (expression, instrument) {
+    if (instrument) { instrumentStatement(expression); }
+    parse[expression.body.type](expression.body, instrument);
+  };
+
+  parse.StructDeclaration = function (expression, instrument) {
+  };
+
+  parse.PragmaStatement = function (expression, instrument) {
+  };
+
+  parse.UpdateExpression = function (expression, instrument) {
+  };
+
+  parse.MappingExpression = function (expression, instrument) {
+  };
+
+  parse.VariableDeclarator = function (expression, instrument) {
+  };
+
+  parse.EmptyStatement = function (expression, instrument) {
+  };
+
+  parse.DebuggerStatement = function (expression, instrument) {
+  };
+
+  parse.IsStatement = function (expression, instrument) {
+  };
+
+  parse.DeclarativeExpressionList = function (expression, instrument) {
+  };
+
+  parse.ModifierArgument = function (expression, instrument) {
+  };
+
+  parse.PlaceholderStatement = function (expression, instrument) {
+  };
+
+  parse.FunctionName = function (expression, instrument) {
+  };
+
+  parse.DoWhileStatement = function (expression, instrument) {
+  };
+
+  parse.ForInStatement = function (expression, instrument) {
+  };
+
+  parse.ContinueStatement = function (expression, instrument) {
+  };
+
+  parse.BreakStatement = function (expression, instrument) {
+  };
+
+  // First, we run over the original contract to get the source mapping.
+  let result = SolidityParser.parse(contract);
+  parse[result.type](result);
+  const retValue = {
+    contract, runnableLines, fnMap, branchMap, statementMap,
+  };
+
+  // Now, we reset almost everything and use the preprocessor first to increase our effectiveness.
+  runnableLines = [];
+  fnMap = {};
+  fnId = 0;
+  branchMap = {};
+  branchId = 0;
+  statementMap = {};
+  statementId = 0;
+  injectionPoints = {};
+
+  contract = preprocessor.run(contract);
+  result = SolidityParser.parse(contract);
+  parse[result.type](result);
+
+  // var result = solparse.parse(contract);
+
+  // We have to iterate through these injection points in descending order to not mess up
+  // the injection process.
+  const sortedPoints = Object.keys(injectionPoints).sort((a, b) => a - b);
+  for (x = sortedPoints.length - 1; x >= 0; x--) {
+    const injectionPoint = sortedPoints[x];
+    // Line instrumentation has to happen first
+    injectionPoints[injectionPoint].sort((a, b) => {
+      const eventTypes = ['openParen', 'closeBracketStart', 'callBranchEvent', 'callEmptyBranchEvent', 'callEvent', 'closeBracketEnd'];
+      return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
+    });
+    for (y in injectionPoints[injectionPoint]) {
+      const injection = injectionPoints[injectionPoint][y];
+      if (injection.type === 'callEvent') {
+        linecount = (contract.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
+        runnableLines.push(linecount);
+        contract = contract.slice(0, injectionPoint) + 'Coverage(\'' + fileName + '\',' + linecount + ');\n' + contract.slice(injectionPoint);
+      } else if (injection.type === 'callFunctionEvent') {
+        contract = contract.slice(0, injectionPoint) + 'FunctionCoverage(\'' + fileName + '\',' + injection.fnId + ');\n' + contract.slice(injectionPoint);
+      } else if (injection.type === 'callBranchEvent') {
+        contract = contract.slice(0, injectionPoint) + (injection.openBracket ? '{' : '') + 'BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ')' + (injection.comma ? ',' : ';') + contract.slice(injectionPoint);
+      } else if (injection.type === 'callEmptyBranchEvent') {
+        contract = contract.slice(0, injectionPoint) + 'else { BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ');}\n' + contract.slice(injectionPoint);
+      } else if (injection.type === 'openParen') {
+        contract = contract.slice(0, injectionPoint) + '(' + contract.slice(injectionPoint);
+      } else if (injection.type === 'closeParen') {
+        contract = contract.slice(0, injectionPoint) + ')' + contract.slice(injectionPoint);
+      } else if (injection.type === 'closeBracketStart') {
+        contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
+      } else if (injection.type === 'closeBracketEnd') {
+        contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
+      } else if (injection.type === 'literal') {
+        contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
+      } else if (injection.type === 'statement') {
+        contract = contract.slice(0, injectionPoint) + ' StatementCoverage(\'' + fileName + '\',' + injection.statementId + ');\n' + contract.slice(injectionPoint);
+      } else if (injection.type === 'eventDefinition') {
+        contract = contract.slice(0, injectionPoint) + 'event Coverage(string fileName, uint256 lineNumber);\nevent FunctionCoverage(string fileName, uint256 fnId);\nevent StatementCoverage(string fileName, uint256 statementId);\nevent BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n' + contract.slice(injectionPoint);
+      } else {
+        console.log('Unknown injection.type');
+      }
+    }
+  }
+  retValue.contract = contract;
+  retValue.runnableLines = runnableLines;
+  return retValue;
+};
