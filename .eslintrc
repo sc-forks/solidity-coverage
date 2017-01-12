@@ -1,0 +1,55 @@
+{
+  "extends": ["airbnb-base"],
+  "plugins": ["mocha"],
+  "env":{
+    "meteor": true,
+    "es6": true,
+    "commonjs": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "rules": {
+    /* General  */
+    "consistent-return": [0],
+    "complexity": ["error", 6],
+    "eol-last": [0],
+    "eqeqeq": ["error", "smart"],
+    "max-len": ["error", 150, 2],
+    "no-console": [0],
+    "no-mixed-requires": [0],
+    "no-native-reassign": [0],
+    "no-param-reassign": [0],
+    "no-use-before-define" : ["error", { "functions": false }],
+    "no-useless-rename": ["error", {
+      "ignoreDestructuring": true
+    }],
+    "no-undefined": ["error"],
+    "no-underscore-dangle": ["error", { "allow": ["_id"], "allowAfterThis": true }],
+    "object-curly-spacing": ["error", "always", {
+      "objectsInObjects": false,
+      "arraysInObjects": false
+    }],
+    "object-curly-newline": ["error", { "minProperties": 1 }],
+    "object-property-newline": ["error"],
+    "prefer-template": [0],
+    "quotes": [2, "single"],
+    "radix": ["error", "always"],
+    "require-yield": [0],
+    "semi": [2, "always"],
+    "no-unused-vars": 0,
+    "import/extensions": [0],
+    "arrow-parens":[2, "as-needed"],
+    "no-plusplus":[2, { "allowForLoopAfterthoughts": true }],
+    "no-bitwise": [2],
+    "import/no-unresolved": [2, { ignore: ['\.sol\.js$'] }],
+    "class-methods-use-this": [2],
+
+    /* Plugins */
+    "import/no-extraneous-dependencies": [0],
+    "mocha/no-exclusive-tests": "error"
+  },
+  "settings": {
+  }
+}

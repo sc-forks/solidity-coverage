@@ -22,6 +22,9 @@
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "1.1.2",
     "ethereumjs-util": "~4.5.0",
