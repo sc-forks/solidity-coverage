@@ -213,13 +213,9 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
       });
     }
     if (expression.alternate && expression.alternate.type === 'IfStatement') {
-      createOrAppendInjectionPoint(expression.alternate.start, {
-        type: 'callBranchEvent', branchId, locationIdx: 1, openBracket: true,
-      });
-      createOrAppendInjectionPoint(expression.alternate.end, {
-        type: 'closeBracketEnd',
-      });
-      // It should get instrumented when we parse it
+      // Do nothing - we must be pre-preprocessor, so don't bother instrumenting -
+      // when we're actually instrumenting, this will never happen (we've wrapped it in
+      // a block statement)
     } else if (expression.alternate && expression.alternate.type === 'BlockStatement') {
       createOrAppendInjectionPoint(expression.alternate.start + 1, {
         type: 'callBranchEvent', branchId, locationIdx: 1,
@@ -279,9 +275,9 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
 
   parse.NewExpression = function parseNewExpression(expression, instrument) {
     parse[expression.callee.type](expression.callee, instrument);
-    expression.forEach(construct => {
-      parse[construct.type](construct, instrument);
-    });
+    // expression.arguments.forEach(construct => {
+    //   parse[construct.type](construct, instrument);
+    // });
   };
 
   parse.MemberExpression = function parseMemberExpression(expression, instrument) {
@@ -309,8 +305,8 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
   };
 
   parse.BinaryExpression = function parseBinaryExpression(expression, instrument) {
-    parse[expression.left.type](expression.left, instrument);
-    parse[expression.right.type](expression.right, instrument);
+    // parse[expression.left.type](expression.left, instrument);
+    // parse[expression.right.type](expression.right, instrument);
   };
 
   parse.IfStatement = function parseIfStatement(expression, instrument) {
@@ -533,14 +529,6 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
     contract = contract.slice(0, injectionPoint) + ')' + contract.slice(injectionPoint);
   };
 
-  injector.closeBracketStart = function injectCloseBracketStart(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
-  };
-
-  injector.closeBracketEnd = function injectCloseBracketEnd(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) + '}' + contract.slice(injectionPoint);
-  };
-
   injector.literal = function injectLiteral(injectionPoint, injection) {
     contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
   };
@@ -589,7 +577,7 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
   sortedPoints.forEach(injectionPoint => {
     // Line instrumentation has to happen first
     injectionPoints[injectionPoint].sort((a, b) => {
-      const eventTypes = ['openParen', 'closeBracketStart', 'callBranchEvent', 'callEmptyBranchEvent', 'callEvent', 'closeBracketEnd'];
+      const eventTypes = ['openParen', 'callBranchEvent', 'callEmptyBranchEvent', 'callEvent'];
       return eventTypes.indexOf(b.type) - eventTypes.indexOf(a.type);
     });
     injectionPoints[injectionPoint].forEach(injection => {
