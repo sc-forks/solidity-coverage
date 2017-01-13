@@ -28,12 +28,13 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
     // The only time we instrument an assignment expression is if there's a conditional expression on
     // the right
     if (expression.right.type === 'ConditionalExpression') {
-      if (expression.left.type === 'DeclarativeExpression') {
+      if (expression.left.type === 'DeclarativeExpression' || expression.left.type==="Identifier") {
         // Then we need to go from bytes32 varname = (conditional expression)
         // to             bytes32 varname; (,varname) = (conditional expression)
         createOrAppendInjectionPoint(expression.left.end, {
           type: 'literal', string: '; (,' + expression.left.name + ')',
         });
+        instrumentConditionalExpression(expression.right);
       } else {
         console.log(expression.left);
         process.exit();
@@ -238,11 +239,12 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
   };
 
   parse.ConditionalExpression = function parseConditionalExpression(expression, instrument) {
+  	if (instrument){ instrumentStatement(expression) }
     if (instrument) { instrumentConditionalExpression(expression); }
-    parse[expression.test.left.type](expression.test.left, instrument);
-    parse[expression.test.right.type](expression.test.right, instrument);
-    parse[expression.consequent.type](expression.consequent, instrument);
-    parse[expression.alternate.type](expression.alternate, instrument);
+    //parse[expression.test.left.type](expression.test.left, instrument);
+    //parse[expression.test.right.type](expression.test.right, instrument);
+    //parse[expression.consequent.type](expression.consequent, instrument);
+    //parse[expression.alternate.type](expression.alternate, instrument);
   };
 
   parse.Identifier = function parseIdentifier(expression, instrument) {
