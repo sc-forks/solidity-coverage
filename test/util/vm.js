@@ -46,7 +46,7 @@ function getTypesFromAbi(abi, functionName) {
  * @return {Object}             abi
  */
 function getAbi(source, compilation){
-  const contractNameMatch = source.match(/(?:contract|library)\s([^\s]*)\s*{/)
+  const contractNameMatch = source.match(/(?:contract)\s([^\s]*)\s*{/)
   if(!contractNameMatch) {
     throw new Error('Could not parse contract name from source.')
   }
