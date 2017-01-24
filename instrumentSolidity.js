@@ -5,14 +5,17 @@ const preprocessor = require('./preprocessor');
 
 const path = require('path');
 
-module.exports = function instruentSolidity(contract, fileName, instrumentingActive) {
+module.exports = function instrumentSolidity(contractSource, fileName, instrumentingActive) {
   const parse = {};
-  let runnableLines = [];
-  let fnMap = {};
+  const contract = {};
+  contract.source = contractSource;
+  contract.instrumented = contractSource;
+  contract.runnableLines = [];
+  contract.fnMap = {};
   let fnId = 0;
-  let branchMap = {};
+  contract.branchMap = {};
   let branchId = 0;
-  let statementMap = {};
+  contract.statementMap = {};
   let statementId = 0;
   let injectionPoints = {};
 
@@ -45,14 +48,14 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
   function instrumentConditionalExpression(expression) {
     branchId += 1;
 
-    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
-    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
+    const startline = (contract.instrumented.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    const startcol = expression.start - contract.instrumented.slice(0, expression.start).lastIndexOf('\n') - 1;
     const consequentStartCol = startcol + (expression.consequent.start - expression.start);
     const consequentEndCol = consequentStartCol + (expression.consequent.end - expression.consequent.start);
     const alternateStartCol = startcol + (expression.alternate.start - expression.start);
     const alternateEndCol = alternateStartCol + (expression.alternate.end - expression.alternate.start);
     // NB locations for conditional branches in istanbul are length 1 and associated with the : and ?.
-    branchMap[branchId] = {
+    contract.branchMap[branchId] = {
       line: startline,
       type: 'cond-expr',
       locations: [{
@@ -105,18 +108,18 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
   function instrumentStatement(expression) {
     statementId += 1;
     // We need to work out the lines and columns the expression starts and ends
-    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
-    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
-    const expressionContent = contract.slice(expression.start, expression.end);
+    const startline = (contract.instrumented.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    const startcol = expression.start - contract.instrumented.slice(0, expression.start).lastIndexOf('\n') - 1;
+    const expressionContent = contract.instrumented.slice(expression.start, expression.end);
 
     const endline = startline + (expressionContent.match('/\n/g') || []).length;
     let endcol;
     if (expressionContent.lastIndexOf('\n') >= 0) {
-      endcol = contract.slice(expressionContent.lastIndexOf('\n'), expression.end).length - 1;
+      endcol = contract.instrumented.slice(expressionContent.lastIndexOf('\n'), expression.end).length - 1;
     } else {
       endcol = startcol + (expressionContent.length - 1);
     }
-    statementMap[statementId] = {
+    contract.statementMap[statementId] = {
       start: {
         line: startline, column: startcol,
       },
@@ -133,17 +136,17 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
     // what's the position of the most recent newline?
     const startchar = expression.start;
     const endchar = expression.end;
-    const lastNewLine = contract.slice(0, startchar).lastIndexOf('\n');
-    const nextNewLine = startchar + contract.slice(startchar).indexOf('\n');
-    const contractSnipped = contract.slice(lastNewLine, nextNewLine);
+    const lastNewLine = contract.instrumented.slice(0, startchar).lastIndexOf('\n');
+    const nextNewLine = startchar + contract.instrumented.slice(startchar).indexOf('\n');
+    const contractSnipped = contract.instrumented.slice(lastNewLine, nextNewLine);
 
     // Is everything before us and after us on this line whitespace?
-    if (contract.slice(lastNewLine, startchar).trim().length === 0 && contract.slice(endchar, nextNewLine).replace(';', '').trim().length === 0) {
+    if (contract.instrumented.slice(lastNewLine, startchar).trim().length === 0 && contract.instrumented.slice(endchar, nextNewLine).replace(';', '').trim().length === 0) {
       createOrAppendInjectionPoint(lastNewLine + 1, {
         type: 'callEvent',
       });
-    } else if (contract.slice(lastNewLine, startchar).replace('{', '').trim().length === 0 &&
-               contract.slice(endchar, nextNewLine).replace(/[;}]/g, '').trim().length === 0) {
+    } else if (contract.instrumented.slice(lastNewLine, startchar).replace('{', '').trim().length === 0 &&
+               contract.instrumented.slice(endchar, nextNewLine).replace(/[;}]/g, '').trim().length === 0) {
       createOrAppendInjectionPoint(expression.start, {
         type: 'callEvent',
       });
@@ -152,15 +155,15 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
 
   function instrumentFunctionDeclaration(expression) {
     fnId += 1;
-    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    const startline = (contract.instrumented.slice(0, expression.start).match(/\n/g) || []).length + 1;
     // We need to work out the lines and columns the function declaration starts and ends
-    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
-    const endlineDelta = contract.slice(expression.start).indexOf('{') + 1;
-    const functionDefinition = contract.slice(expression.start, expression.start + endlineDelta);
-    const lastChar = contract.slice(expression.start, expression.start + endlineDelta + 1).slice(-1);
+    const startcol = expression.start - contract.instrumented.slice(0, expression.start).lastIndexOf('\n') - 1;
+    const endlineDelta = contract.instrumented.slice(expression.start).indexOf('{') + 1;
+    const functionDefinition = contract.instrumented.slice(expression.start, expression.start + endlineDelta);
+    const lastChar = contract.instrumented.slice(expression.start, expression.start + endlineDelta + 1).slice(-1);
     const endline = startline + (functionDefinition.match(/\n/g) || []).length;
     const endcol = functionDefinition.length - functionDefinition.lastIndexOf('\n');
-    fnMap[fnId] = {
+    contract.fnMap[fnId] = {
       name: expression.name,
       line: startline,
       loc: {
@@ -185,10 +188,10 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
 
   function instrumentIfStatement(expression) {
     branchId += 1;
-    const startline = (contract.slice(0, expression.start).match(/\n/g) || []).length + 1;
-    const startcol = expression.start - contract.slice(0, expression.start).lastIndexOf('\n') - 1;
+    const startline = (contract.instrumented.slice(0, expression.start).match(/\n/g) || []).length + 1;
+    const startcol = expression.start - contract.instrumented.slice(0, expression.start).lastIndexOf('\n') - 1;
     // NB locations for if branches in istanbul are zero length and associated with the start of the if.
-    branchMap[branchId] = {
+    contract.branchMap[branchId] = {
       line: startline,
       type: 'if',
       locations: [{
@@ -384,13 +387,13 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
       // This is harder because of where .start and .end represent, and how documented comments are validated
       // by solc upon compilation. From the start of this contract statement, find the first '{', and inject
       // there.
-      const injectionPoint = expression.start + contract.slice(expression.start).indexOf('{') + 2;
+      const injectionPoint = expression.start + contract.instrumented.slice(expression.start).indexOf('{') + 2;
       if (injectionPoints[injectionPoint]) {
-        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2].push({
+        injectionPoints[expression.start + contract.instrumented.slice(expression.start).indexOf('{') + 2].push({
           type: 'eventDefinition',
         });
       } else {
-        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2] = [{
+        injectionPoints[expression.start + contract.instrumented.slice(expression.start).indexOf('{') + 2] = [{
           type: 'eventDefinition',
         }];
       }
@@ -409,13 +412,13 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
       // This is harder because of where .start and .end represent, and how documented comments are validated
       // by solc upon compilation. From the start of this contract statement, find the first '{', and inject
       // there.
-      const injectionPoint = expression.start + contract.slice(expression.start).indexOf('{') + 2;
+      const injectionPoint = expression.start + contract.instrumented.slice(expression.start).indexOf('{') + 2;
       if (injectionPoints[injectionPoint]) {
-        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2].push({
+        injectionPoints[expression.start + contract.instrumented.slice(expression.start).indexOf('{') + 2].push({
           type: 'eventDefinition',
         });
       } else {
-        injectionPoints[expression.start + contract.slice(expression.start).indexOf('{') + 2] = [{
+        injectionPoints[expression.start + contract.instrumented.slice(expression.start).indexOf('{') + 2] = [{
           type: 'eventDefinition',
         }];
       }
@@ -496,77 +499,77 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
 
   const injector = {};
   injector.callEvent = function injectCallEvent(injectionPoint) {
-    const linecount = (contract.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
-    runnableLines.push(linecount);
-    contract = contract.slice(0, injectionPoint) + 'Coverage(\'' + fileName + '\',' + linecount + ');\n' + contract.slice(injectionPoint);
+    const linecount = (contract.instrumented.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
+    contract.runnableLines.push(linecount);
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) + 'Coverage(\'' + fileName + '\',' + linecount + ');\n' + contract.instrumented.slice(injectionPoint);
   };
 
   injector.callFunctionEvent = function injectCallFunctionEvent(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) +
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) +
       'FunctionCoverage(\'' + fileName + '\',' + injection.fnId + ');\n' +
-      contract.slice(injectionPoint);
+      contract.instrumented.slice(injectionPoint);
   };
 
   injector.callBranchEvent = function injectCallFunctionEvent(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) +
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) +
       (injection.openBracket ? '{' : '') +
       'BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ')' +
       (injection.comma ? ',' : ';') +
-      contract.slice(injectionPoint);
+      contract.instrumented.slice(injectionPoint);
   };
 
   injector.callEmptyBranchEvent = function injectCallEmptyBranchEvent(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) +
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) +
       'else { BranchCoverage(\'' + fileName + '\',' + injection.branchId + ',' + injection.locationIdx + ');}\n' +
-      contract.slice(injectionPoint);
+      contract.instrumented.slice(injectionPoint);
   };
 
   injector.openParen = function injectOpenParen(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) + '(' + contract.slice(injectionPoint);
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) + '(' + contract.instrumented.slice(injectionPoint);
   };
 
   injector.closeParen = function injectCloseParen(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) + ')' + contract.slice(injectionPoint);
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) + ')' + contract.instrumented.slice(injectionPoint);
   };
 
   injector.literal = function injectLiteral(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) + injection.string + contract.slice(injectionPoint);
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) + injection.string + contract.instrumented.slice(injectionPoint);
   };
 
   injector.statement = function injectStatement(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) +
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) +
       ' StatementCoverage(\'' + fileName + '\',' + injection.statementId + ');\n' +
-      contract.slice(injectionPoint);
+      contract.instrumented.slice(injectionPoint);
   };
 
   injector.eventDefinition = function injectEventDefinition(injectionPoint, injection) {
-    contract = contract.slice(0, injectionPoint) +
+    contract.instrumented = contract.instrumented.slice(0, injectionPoint) +
       'event Coverage(string fileName, uint256 lineNumber);\n' +
       'event FunctionCoverage(string fileName, uint256 fnId);\n' +
       'event StatementCoverage(string fileName, uint256 statementId);\n' +
       'event BranchCoverage(string fileName, uint256 branchId, uint256 locationIdx);\n' +
-       contract.slice(injectionPoint);
+       contract.instrumented.slice(injectionPoint);
   };
 
   // First, we run over the original contract to get the source mapping.
-  let result = SolidityParser.parse(contract);
+  let result = SolidityParser.parse(contract.instrumented);
   parse[result.type](result);
-  const retValue = {
-    contract, runnableLines, fnMap, branchMap, statementMap,
-  };
+  const retValue = JSON.parse(JSON.stringify(contract));
 
   // Now, we reset almost everything and use the preprocessor first to increase our effectiveness.
-  runnableLines = [];
-  fnMap = {};
+  contract.runnableLines = [];
+  contract.fnMap = {};
   fnId = 0;
-  branchMap = {};
+  contract.branchMap = {};
   branchId = 0;
-  statementMap = {};
+  contract.statementMap = {};
   statementId = 0;
   injectionPoints = {};
 
-  contract = preprocessor.run(contract);
-  result = SolidityParser.parse(contract);
+  contract.preprocessed = preprocessor.run(contract.source);
+  contract.instrumented = contract.preprocessed;
+  result = SolidityParser.parse(contract.preprocessed);
+
   parse[result.type](result);
 
   // var result = solparse.parse(contract);
@@ -584,7 +587,7 @@ module.exports = function instruentSolidity(contract, fileName, instrumentingAct
       injector[injection.type](injectionPoint, injection);
     });
   });
-  retValue.contract = contract;
-  retValue.runnableLines = runnableLines;
+  retValue.runnableLines = contract.runnableLines;
+  retValue.contract = contract.instrumented;
   return retValue;
 };
