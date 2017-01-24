@@ -1,6 +1,9 @@
 const parse = {};
 const instrumenter = require('./instrumenter');
 
+// All the functions in this file do is walk the AST and call the instrumenter
+// functions where appropriate, which determine where to inject events.
+
 // Assign a dummy function to everything we might see in the AST
 ['AssignmentExpression',
   'BinaryExpression',

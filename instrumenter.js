@@ -1,5 +1,8 @@
 const instrumenter = {};
 
+// These functions work out where in an expression we can inject our
+// instrumenation events.
+
 function createOrAppendInjectionPoint(contract, key, value) {
   if (contract.injectionPoints[key]) {
     contract.injectionPoints[key].push(value);

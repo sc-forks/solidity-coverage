@@ -1,5 +1,7 @@
 const injector = {};
 
+// These functions are used to actually inject the instrumentation events.
+
 injector.callEvent = function injectCallEvent(contract, fileName, injectionPoint) {
   const linecount = (contract.instrumented.slice(0, injectionPoint).match(/\n/g) || []).length + 1;
   contract.runnableLines.push(linecount);
