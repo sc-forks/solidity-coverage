@@ -36,7 +36,7 @@ shell.ls('./../originalContracts/**/*.sol').forEach(file => {
 
     console.log('instrumenting ', canonicalContractPath);
     const contract = fs.readFileSync(canonicalContractPath).toString();
-    const instrumentedContractInfo = getInstrumentedVersion(contract, canonicalContractPath, true);
+    const instrumentedContractInfo = getInstrumentedVersion(contract, canonicalContractPath);
     mkdirp.sync(path.dirname(canonicalContractPath.replace('originalContracts', 'contracts')));
     fs.writeFileSync(canonicalContractPath.replace('originalContracts', 'contracts'), instrumentedContractInfo.contract);
     coverage.addContract(instrumentedContractInfo, canonicalContractPath);

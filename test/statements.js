@@ -20,34 +20,34 @@ describe('generic statements', () => {
 
   it('should compile after instrumenting a single statement (first line of function)', () => {
     const contract = util.getCode('statements/single.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
   });
 
   it('should compile after instrumenting multiple statements', () => {
     const contract = util.getCode('statements/multiple.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a statement that is a function argument (single line)', () => {
     const contract = util.getCode('statements/fn-argument.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a statement that is a function argument (multi-line)', () => {
     const contract = util.getCode('statements/fn-argument-multiline.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
   });
   it('should cover a statement following a close brace', done => {
     const contract = util.getCode('statements/post-close-brace.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -71,7 +71,7 @@ describe('generic statements', () => {
 
   it('should cover a library statement and an invoked library method', done => {
     const contract = util.getCode('statements/library.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 

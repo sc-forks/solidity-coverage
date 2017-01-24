@@ -14,7 +14,7 @@ describe('conditional statements', () => {
 
   it('should cover a conditional that reaches the consequent (same-line)', done => {
     const contract = util.getCode('conditional/sameline-consequent.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -38,7 +38,7 @@ describe('conditional statements', () => {
 
   it('should cover a conditional that reaches the alternate (same-line)', done => {
     const contract = util.getCode('conditional/sameline-alternate.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -62,7 +62,7 @@ describe('conditional statements', () => {
 
   it('should cover a conditional that reaches the consequent (multi-line)', done => {
     const contract = util.getCode('conditional/multiline-consequent.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -86,7 +86,7 @@ describe('conditional statements', () => {
 
   it('should cover a conditional that reaches the alternate (multi-line)', done => {
     const contract = util.getCode('conditional/multiline-alternate.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -110,7 +110,7 @@ describe('conditional statements', () => {
 
   it('should cover a DeclarativeExpression assignment by conditional that reaches the alternate', done => {
     const contract = util.getCode('conditional/declarative-exp-assignment-alternate.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -135,7 +135,7 @@ describe('conditional statements', () => {
 
   it('should cover an Identifier assignment by conditional that reaches the alternate', done => {
     const contract = util.getCode('conditional/identifier-assignment-alternate.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -163,7 +163,7 @@ describe('conditional statements', () => {
 
   /* it('should cover a variable delcaration assignment by conditional that reaches the alternate', (done) => {
     const contract = util.getCode('conditional/variable-decl-assignment-alternate.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
     // Runs var z = (x) ? y = false : y = false;

@@ -14,7 +14,7 @@ describe('for and while statements', () => {
 
   it('should cover a for statement with a bracketed body (multiline)', done => {
     const contract = util.getCode('loops/for-with-brackets.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -37,7 +37,7 @@ describe('for and while statements', () => {
 
   it('should cover a for statement with an unbracketed body', done => {
     const contract = util.getCode('loops/for-no-brackets.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -60,7 +60,7 @@ describe('for and while statements', () => {
 
   it('should cover a while statement with an bracketed body (multiline)', done => {
     const contract = util.getCode('loops/while-with-brackets.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
@@ -83,7 +83,7 @@ describe('for and while statements', () => {
 
   it('should cover a while statement with an unbracketed body (multiline)', done => {
     const contract = util.getCode('loops/while-no-brackets.sol');
-    const info = getInstrumentedVersion(contract, filePath, true);
+    const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 

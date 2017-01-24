@@ -7,7 +7,7 @@ const parse = require('./parse');
 
 const path = require('path');
 
-module.exports = function instrumentSolidity(contractSource, fileName, instrumentingActive) {
+module.exports = function instrumentSolidity(contractSource, fileName) {
   const contract = {};
   contract.source = contractSource;
   contract.instrumented = contractSource;
@@ -23,7 +23,7 @@ module.exports = function instrumentSolidity(contractSource, fileName, instrumen
 
   // First, we run over the original contract to get the source mapping.
   let ast = SolidityParser.parse(contract.source);
-  parse[ast.type](contract, ast, false);
+  parse[ast.type](contract, ast);
   const retValue = JSON.parse(JSON.stringify(contract));
 
   // Now, we reset almost everything and use the preprocessor first to increase our effectiveness.
@@ -40,7 +40,7 @@ module.exports = function instrumentSolidity(contractSource, fileName, instrumen
   contract.instrumented = contract.preprocessed;
   ast = SolidityParser.parse(contract.preprocessed);
 
-  parse[ast.type](contract, ast, instrumentingActive);
+  parse[ast.type](contract, ast);
 
   // var result = solparse.parse(contract);
 
