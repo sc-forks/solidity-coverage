@@ -58,4 +58,20 @@ describe('generic statements', function(){
       done();
     }).catch(done);
   });
+
+  it('should cover a library statement and an invoked library method', (done) => {
+    const contract = util.getCode('statements/library.sol');
+    const info = getInstrumentedVersion(contract, filePath, true);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'not', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {9: 1, 10: 1, 19: 1});
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1, 3: 1});
+      assert.deepEqual(mapping[filePath].f, {1: 1, 2: 1});
+      done();
+    }).catch(done);
+  });
 })
