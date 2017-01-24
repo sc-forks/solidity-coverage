@@ -16,7 +16,7 @@ function instrumentAssignmentExpression(contract, expression, instrument) {
     if (expression.left.type === 'DeclarativeExpression' || expression.left.type === 'Identifier') {
       // Then we need to go from bytes32 varname = (conditional expression)
       // to             bytes32 varname; (,varname) = (conditional expression)
-      if (instrument){
+      if (instrument) {
         createOrAppendInjectionPoint(contract, expression.left.end, {
           type: 'literal', string: '; (,' + expression.left.name + ')',
         });
@@ -66,7 +66,7 @@ function instrumentConditionalExpression(contract, expression, instrument) {
 
 
   // Wrap the consequent
-  if (instrument){
+  if (instrument) {
     createOrAppendInjectionPoint(contract, expression.consequent.start, {
       type: 'openParen',
     });
@@ -112,7 +112,7 @@ function instrumentStatement(contract, expression, instrument) {
       line: endline, column: endcol,
     },
   };
-  if (instrument){
+  if (instrument) {
     createOrAppendInjectionPoint(contract, expression.start, {
       type: 'statement', statementId: contract.statementId,
     });
@@ -127,7 +127,7 @@ function instrumentLine(contract, expression, instrument) {
   const nextNewLine = startchar + contract.instrumented.slice(startchar).indexOf('\n');
   const contractSnipped = contract.instrumented.slice(lastNewLine, nextNewLine);
 
-  if (instrument){
+  if (instrument) {
     if (contract.instrumented.slice(lastNewLine, startchar).trim().length === 0 &&
         contract.instrumented.slice(endchar, nextNewLine).replace(';', '').trim().length === 0) {
       createOrAppendInjectionPoint(contract, lastNewLine + 1, {
@@ -165,7 +165,7 @@ function instrumentFunctionDeclaration(contract, expression, instrument) {
       },
     },
   };
-  if (instrument){
+  if (instrument) {
     if (lastChar === '}') {
       createOrAppendInjectionPoint(contract, expression.start + endlineDelta, {
         type: 'callFunctionEvent', fnId: contract.fnId,
@@ -175,7 +175,7 @@ function instrumentFunctionDeclaration(contract, expression, instrument) {
         type: 'callFunctionEvent', fnId: contract.fnId,
       });
     }
-}
+  }
 }
 
 function instrumentIfStatement(contract, expression, instrument) {
@@ -202,7 +202,7 @@ function instrumentIfStatement(contract, expression, instrument) {
       },
     }],
   };
-  if (instrument){
+  if (instrument) {
     if (expression.consequent.type === 'BlockStatement') {
       createOrAppendInjectionPoint(contract, expression.consequent.start + 1, {
         type: 'callBranchEvent', branchId: contract.branchId, locationIdx: 0,

@@ -26,7 +26,7 @@ module.exports.run = function r(contract) {
     const ast = SolidityParser.parse(contract);
     keepRunning = false;
     SolExplore.traverse(ast, {
-      enter(node, parent) {
+      enter(node, parent) { // eslint-disable-line no-loop-func
         // If consequents
         if (node.type === 'IfStatement' && node.consequent.type !== 'BlockStatement') {
           contract = blockWrap(contract, node.consequent);
