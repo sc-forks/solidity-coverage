@@ -18,7 +18,9 @@ const accountAddress = new Buffer('7caf6f9bc8b3ba5c7824f934c826bd6dc38c8467', 'h
  */
 function encodeFunctionTxData(functionName, types, args) {
   const fullName = functionName + '(' + types.join() + ')';
-  const signature = CryptoJS.SHA3(fullName, {outputLength: 256}).toString(CryptoJS.enc.Hex).slice(0, 8);
+  const signature = CryptoJS.SHA3(fullName, {
+    outputLength: 256,
+  }).toString(CryptoJS.enc.Hex).slice(0, 8);
   const dataHex = signature + coder.encodeParams(types, args);
   return '0x' + dataHex;
 }
@@ -39,19 +41,19 @@ function getTypesFromAbi(abi, functionName) {
 }
 
 /**
- * Retrieves abi for contract 
+ * Retrieves abi for contract
  * Source: raineorshine/eth-new-contract/src/index.js (line 8)
  * @param  {String} source      solidity contract
  * @param  {Object} compilation compiled `source`
  * @return {Object}             abi
  */
-function getAbi(source, compilation){
-  const contractNameMatch = source.match(/(?:contract)\s([^\s]*)\s*{/)
-  if(!contractNameMatch) {
-    throw new Error('Could not parse contract name from source.')
+function getAbi(source, compilation) {
+  const contractNameMatch = source.match(/(?:contract)\s([^\s]*)\s*{/);
+  if (!contractNameMatch) {
+    throw new Error('Could not parse contract name from source.');
   }
-  const contractName = contractNameMatch[1]
-  return JSON.parse(compilation.contracts[contractName].interface)
+  const contractName = contractNameMatch[1];
+  return JSON.parse(compilation.contracts[contractName].interface);
 }
 
 /**
@@ -69,14 +71,20 @@ function createAccount(trie) {
  */
 
 function deploy(vm, code) {
-  const tx = new Transaction({gasPrice: '1', gasLimit: 'ffffff', data: code,});
+  const tx = new Transaction({
+    gasPrice: '1', gasLimit: 'ffffff', data: code,
+  });
   tx.sign(new Buffer(secretKey, 'hex'));
 
   return new Promise((resolve, reject) => {
-    vm.runTx({tx: tx}, (err, results) => {
-      (err)
-        ? reject(err)
-        : resolve(results.createdAddress);
+    vm.runTx({
+      tx,
+    }, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results.createdAddress);
+      }
     });
   });
 }
@@ -91,7 +99,6 @@ function deploy(vm, code) {
  * @return {Promise}             resolves array of logged events
  */
 function callMethod(vm, abi, address, functionName, args) {
-
   const types = getTypesFromAbi(abi, functionName);
   const txData = encodeFunctionTxData(functionName, types, args);
   const options = {
@@ -102,13 +109,15 @@ function callMethod(vm, abi, address, functionName, args) {
     nonce: '0x1',
   };
 
-  let tx = new Transaction(options);
+  const tx = new Transaction(options);
   tx.sign(new Buffer(secretKey, 'hex'));
 
   return new Promise((resolve, reject) => {
-    vm.runTx({tx: tx}, (err, results) => {
-      let seenEvents = [];
-      results.vm.runState.logs.map(log => {
+    vm.runTx({
+      tx,
+    }, (err, results) => {
+      const seenEvents = [];
+      results.vm.runState.logs.forEach(log => {
         const toWrite = {};
         toWrite.address = log[0].toString('hex');
         toWrite.topics = log[1].map(x => x.toString('hex'));
@@ -131,9 +140,11 @@ function callMethod(vm, abi, address, functionName, args) {
 module.exports.execute = function ex(contract, functionName, args) {
   const output = solc.compile(contract, 1);
   const code = new Buffer(output.contracts.Test.bytecode, 'hex');
-  const abi = getAbi(contract, output); 
+  const abi = getAbi(contract, output);
   const stateTrie = new Trie();
-  const vm = new VM({ state: stateTrie });
+  const vm = new VM({
+    state: stateTrie,
+  });
 
   createAccount(stateTrie);
   return deploy(vm, code).then(address => callMethod(vm, abi, address, functionName, args));

@@ -27,11 +27,11 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0",
     "ethereumjs-account": "~2.0.4",
-    "ethereumjs-tx": "1.1.2",
-    "ethereumjs-util": "~4.5.0",
+    "ethereumjs-tx": "^1.2.2",
+    "ethereumjs-util": "^5.0.1",
     "istanbul": "^0.4.5",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
-    "solc": "0.4.6"
+    "solc": "0.4.8"
   }
 }
