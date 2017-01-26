@@ -8,7 +8,7 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
   it('should compile after instrumenting zeppelin-solidity/Bounty.sol', () => {
     const bounty = getInstrumentedVersion(util.getCode('zeppelin/Bounty.sol'), 'bounty.sol');
     const ownable = getInstrumentedVersion(util.getCode('zeppelin/Ownable.sol'), 'ownable.sol');
-    const pullPayment = getInstrumentedVersion(util.getCode('zeppelin/pullPayment.sol'), 'pullPayment.sol');
+    const pullPayment = getInstrumentedVersion(util.getCode('zeppelin/PullPayment.sol'), 'pullPayment.sol');
     const killable = getInstrumentedVersion(util.getCode('zeppelin/Killable.sol'), 'killable.sol');
     const inputs = {
       'Ownable.sol': ownable.contract,
