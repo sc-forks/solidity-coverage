@@ -6,14 +6,19 @@ const util = require('./util/util.js');
 
 describe('Battery test of production contracts: OpenZeppelin', () => {
   it('should compile after instrumenting zeppelin-solidity/Bounty.sol', () => {
-    const contract = util.getCode('zeppelin/Bounty.sol');
-    const info = getInstrumentedVersion(contract, 'test.sol');
+    const bounty = getInstrumentedVersion(util.getCode('zeppelin/Bounty.sol'), 'bounty.sol');
+    const ownable = getInstrumentedVersion(util.getCode('zeppelin/Ownable.sol'), 'ownable.sol');
+    const pullPayment = getInstrumentedVersion(util.getCode('zeppelin/pullPayment.sol'), 'pullPayment.sol');
+    const killable = getInstrumentedVersion(util.getCode('zeppelin/Killable.sol'), 'killable.sol');
     const inputs = {
-      'PullPayment.sol': util.getCode('zeppelin/PullPayment.sol'),
-      'Killable.sol': util.getCode('zeppelin/Killable.sol'),
-      'Bounty.sol': info.contract,
+      'Ownable.sol': ownable.contract,
+      'PullPayment.sol': pullPayment.contract,
+      'Killable.sol': killable.contract,
+      'Bounty.sol': bounty.contract,
     };
-    const output = solc.compile(inputs, 1);
+    const output = solc.compile({
+      sources: inputs,
+    }, 1);
     util.report(output.errors);
   });
 
