@@ -90,4 +90,24 @@ describe('generic statements', () => {
       done();
     }).catch(done);
   });
+
+  it('should cover a tuple statement', done => {
+    const contract = util.getCode('statements/tuple.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        5: 1,
+      });
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {});
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+      });
+      done();
+    }).catch(done);
+  });
 });
