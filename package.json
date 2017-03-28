@@ -18,7 +18,8 @@
     "mkdirp": "^0.5.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser": "0.3.0"
+    "solidity-parser": "0.3.0",
+    "truffle": "git+https://github.com/cgewecke/truffle.git"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
