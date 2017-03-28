@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for originalContracts/RecoveryQuorum.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">originalContracts/</a> RecoveryQuorum.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>44/44</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">95% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>19/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>15/15</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>43/43</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">50×</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">45×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-yes">638×</span>
+<span class="cline-any cline-yes">82×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">554×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45×</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">66×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1287×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1192×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">638×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">pragma solidity ^0.4.4;
+import "./RecoverableController.sol";
+import "./Lib1.sol";
+&nbsp;
+contract RecoveryQuorum {
+    RecoverableController public controller;
+&nbsp;
+    address[] public delegateAddresses; // needed for iteration of mapping
+    mapping (address =&gt; Delegate) public delegates;
+    struct Delegate{
+        uint deletedAfter; // delegate exists if not 0
+        uint pendingUntil;
+        address proposedUserKey;
+    }
+&nbsp;
+    event RecoveryEvent(string action, address initiatedBy);
+&nbsp;
+    modifier onlyUserKey(){ if (msg.sender == controller.userKey()) _; }
+&nbsp;
+    function RecoveryQuorum(address _controller, address[] _delegates){
+        controller = RecoverableController(_controller);
+        for(uint i = 0; i &lt; _delegates.length; i++){
+            delegateAddresses.push(_delegates[i]);
+            delegates[_delegates[i]] = Delegate({proposedUserKey: 0x0, pendingUntil: 0, deletedAfter: 31536000000000});
+        }
+    }
+    function signUserChange(address proposedUserKey) {
+        if(delegateRecordExists(delegates[msg.sender])) {
+            delegates[msg.sender].proposedUserKey = proposedUserKey;
+            changeUserKey(proposedUserKey);
+            RecoveryEvent("signUserChange", msg.sender);
+        }
+    }
+    function changeUserKey(address newUserKey) {
+        if(collectedSignatures(newUserKey) &gt;= neededSignatures()){
+            controller.changeUserKeyFromRecovery(newUserKey);
+            for(uint i = 0 ; i &lt; delegateAddresses.length ; i++){
+                //remove any pending delegates after a recovery
+                if(delegates[delegateAddresses[i]].pendingUntil &gt; now){ 
+                    delegates[delegateAddresses[i]].deletedAfter = now;
+                }
+                delete delegates[delegateAddresses[i]].proposedUserKey;
+            }
+        }
+    }
+&nbsp;
+    function replaceDelegates(address[] delegatesToRemove, address[] delegatesToAdd) onlyUserKey{
+        for(uint i = 0 ; i &lt; delegatesToRemove.length ; i++){
+            removeDelegate(delegatesToRemove[i]);
+        }
+        garbageCollect();
+        for(uint j = 0 ; j &lt; delegatesToAdd.length ; j++){
+            addDelegate(delegatesToAdd[j]);
+        }
+        RecoveryEvent("replaceDelegates", msg.sender);
+    }
+    function collectedSignatures(address _proposedUserKey) returns (uint signatures){
+        for(uint i = 0 ; i &lt; delegateAddresses.length ; i++){
+            if (delegateHasValidSignature(delegates[delegateAddresses[i]]) &amp;&amp; delegates[delegateAddresses[i]].proposedUserKey == _proposedUserKey){
+                signatures++;
+            }
+        }
+    }
+&nbsp;
+    function getAddresses() constant returns (address[]){ return delegateAddresses; }
+&nbsp;
+    function neededSignatures() returns (uint){
+        uint currentDelegateCount; //always 0 at this point
+        for(uint i = 0 ; i &lt; delegateAddresses.length ; i++){
+            if(delegateIsCurrent(delegates[delegateAddresses[i]])){ currentDelegateCount++; }
+        }
+        return currentDelegateCount/2 + 1;
+    }
+    function addDelegate(address delegate) private {
+        if(!delegateRecordExists(delegates[delegate]) &amp;&amp; delegateAddresses.length &lt; 15) {
+            delegates[delegate] = Delegate({proposedUserKey: 0x0, pendingUntil: now + controller.longTimeLock(), deletedAfter: 31536000000000});
+            delegateAddresses.push(delegate);
+        }
+    }
+    function removeDelegate(address delegate) private {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if(delegates[delegate].deletedAfter &gt; controller.longTimeLock() + now){ 
+            //remove right away if they are still pending
+            if(delegates[delegate].pendingUntil &gt; now){ 
+                delegates[delegate].deletedAfter = now;
+            } else{
+                delegates[delegate].deletedAfter = controller.longTimeLock() + now;
+            }
+        }
+    }
+&nbsp;
+    function garbageCollect() private{
+        uint i = 0;
+        while(i &lt; delegateAddresses.length){
+            if(delegateIsDeleted(delegates[delegateAddresses[i]])){
+                delegates[delegateAddresses[i]].deletedAfter = 0;
+                delegates[delegateAddresses[i]].pendingUntil = 0;
+                delegates[delegateAddresses[i]].proposedUserKey = 0;
+                Lib1.removeAddress(i, delegateAddresses);
+            }else{i++;}
+        }
+    }
+    function delegateRecordExists(Delegate d) private returns (bool){
+        return d.deletedAfter != 0;
+    }
+    function delegateIsDeleted(Delegate d) private returns (bool){
+        return d.deletedAfter &lt;= now; //doesnt check record existence
+    }
+    function delegateIsCurrent(Delegate d) private returns (bool){
+        return delegateRecordExists(d) &amp;&amp; !delegateIsDeleted(d) &amp;&amp; now &gt; d.pendingUntil;
+    }
+    function delegateHasValidSignature(Delegate d) private returns (bool){
+        return delegateIsCurrent(d) &amp;&amp; d.proposedUserKey != 0x0;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 27 2017 16:25:45 GMT-0700 (PDT)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
