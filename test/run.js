@@ -6,8 +6,6 @@ const fs = require('fs');
 const childprocess = require('child_process');
 const mock = require('./util/mockTruffle.js');
 
-let launchTestRpc = false;
-
 // shell.test alias for legibility
 function pathExists(path) { return shell.test('-e', path); }
 
@@ -16,10 +14,11 @@ function collectGarbage() {
   if (global.gc) { global.gc(); }
 }
 
-describe('run', () => {
+describe.only('run', () => {
   let port = 8555;
   let testrpcProcess = null;
-  let script = `node ./exec.js --dir "./mock" --port ${port} `; // --silent
+  let script = `node ./exec.js --dir "./mock" --port ${port} --test`; // --silent
+  let launchTestRpc = false;
 
   before(() => {
     mock.protectCoverage();
@@ -33,7 +32,7 @@ describe('run', () => {
     // AND verify that the script actually works.
     if (launchTestRpc) {
       port = 8557;
-      script = `node ./exec.js --dir "./mock" --port ${port} --norpc`; // --silent
+      script = `node ./exec.js --dir "./mock" --port ${port} --norpc --test`; // --silent
       const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
       testrpcProcess = childprocess.exec(command);
       launchTestRpc = false;
@@ -49,14 +48,18 @@ describe('run', () => {
     mock.remove();
   });
 
-  // This pre-test flushes the suite. There's some kind of sequencing issue here in development 
+  // This pre-test flushes the suite. There's some kind of sequencing issue here in development, 
+  // possibly tied to the use of ethereumjs-vm in the coverage tests?
+  // - tests pass w/out this if we only run these test - e.g. it only fails when running the suite.
   // - the first test always fails unless there is a fresh testrpc install. 
-  // Should not be a problem on CI but results in false positives @home.
-  /*it('flush tests', () => {
-    mock.install('Simple.sol', 'simple.js');
-    shell.exec(script);
-    collectGarbage();
-  });*/
+  // - Running this on Circle CI causes it to crash though.
+  it('flush test suite', () => {
+    if (!process.env.CI){ // <---- CI is set by default on circle
+      mock.install('Simple.sol', 'simple.js');
+      shell.exec(script); // <---- This fails mysteriously, but we don't test here.
+      collectGarbage();
+    }
+  });
 
   // This test should be positioned first in the suite because of the way testrpc is
   // launched for these tests.
