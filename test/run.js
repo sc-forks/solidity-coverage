@@ -1,5 +1,3 @@
-
-
 const assert = require('assert');
 const shell = require('shelljs');
 const fs = require('fs');
@@ -14,7 +12,7 @@ function collectGarbage() {
   if (global.gc) { global.gc(); }
 }
 
-describe.only('run', () => {
+describe('run', () => {
   let port = 8555;
   let testrpcProcess = null;
   let script = `node ./exec.js --dir "./mock" --port ${port} --test`; // --silent
@@ -29,7 +27,7 @@ describe.only('run', () => {
     // tests exits so there are errors launching testrpc repeatedly on the same port. Tests #2 through
     // #last will use this instance of testrpc (port 8557). Test #1 uses the instance launched by
     // the run script (which also installs the patch). This allows us to end run CI container issues
-    // AND verify that the script actually works.
+    // AND verify that the script in exec actually works.
     if (launchTestRpc) {
       port = 8557;
       script = `node ./exec.js --dir "./mock" --port ${port} --norpc --test`; // --silent
@@ -52,7 +50,7 @@ describe.only('run', () => {
   // possibly tied to the use of ethereumjs-vm in the coverage tests?
   // - tests pass w/out this if we only run these test - e.g. it only fails when running the suite.
   // - the first test always fails unless there is a fresh testrpc install. 
-  // - Running this on Circle CI causes it to crash though.
+  // - Running this on Circle CI causes suite to crash
   it('flush test suite', () => {
     if (!process.env.CI){ // <---- CI is set by default on circle
       mock.install('Simple.sol', 'simple.js');
@@ -61,8 +59,8 @@ describe.only('run', () => {
     }
   });
 
-  // This test should be positioned first in the suite because of the way testrpc is
-  // launched for these tests.
+  // This test should be positioned first (or second if flushing) in the suite because of 
+  // the way we're launching testrpc
   it('simple contract: should generate coverage, cleanup & exit(0)', () => {
     // Directory should be clean
     assert(pathExists('./coverage') === false, 'should start without: coverage');
