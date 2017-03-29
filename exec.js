@@ -1,5 +1,3 @@
-
-
 const shell = require('shelljs');
 const fs = require('fs');
 const path = require('path');
@@ -9,21 +7,24 @@ const SolidityCoder = require('web3/lib/solidity/coder.js');
 const getInstrumentedVersion = require('./instrumentSolidity.js');
 const CoverageMap = require('./coverageMap.js');
 
+const gasLimit = '0xfffffffffff';
 const coverage = new CoverageMap();
 const coverageDir = './coverageEnv';
+//const _MODULES_ = 'node_modules/solcover/node_modules';
+const _MODULES_ = 'node_modules';
 let log = () => {};
 let workingDir = './..';
-const gasLimit = '0xfffffffffff';
 let port = 8555;
 let testrpcProcess = null;
 let events = null;
 let silence = '';
 
 // --------------------------------------- Script --------------------------------------------------
+
 if (argv.dir) workingDir = argv.dir;     // Working dir relative to solcover
 if (argv.port) port = argv.port;         // Testrpc port
 
-if (argv.silent) {                        // Log level
+if (argv.silent) {                       // Log level
   silence = '> /dev/null 2>&1';
 } else {
   log = console.log;
@@ -33,13 +34,13 @@ if (argv.silent) {                        // Log level
 // on (hopefully) unused port. Changes here should be also be added to the before() block
 // of test/run.js
 if (!argv.norpc) {
-  if (!shell.test('-e', './node_modules/ethereumjs-vm/lib/opFns.js.orig')) {
+  if (!shell.test('-e', `./${_MODULES_}/ethereumjs-vm/lib/opFns.js.orig`)) {
     log('Patch local testrpc...');
-    shell.exec('patch -b ./node_modules/ethereumjs-vm/lib/opFns.js ./hookIntoEvents.patch');
+    shell.exec(`patch -b ./${_MODULES_}/ethereumjs-vm/lib/opFns.js ./hookIntoEvents.patch`);
   }
   log(`Launching testrpc on port ${port}`);
   try {
-    const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit ${gasLimit} --port ${port}`;
+    const command = `./${_MODULES_}/ethereumjs-testrpc/bin/testrpc --gasLimit ${gasLimit} --port ${port}`;
     testrpcProcess = childprocess.exec(command);
   } catch (err) {
     const msg = `There was a problem launching testrpc: ${err}`;
@@ -109,7 +110,7 @@ try {
 try {
   coverage.generate(events, `${coverageDir}/contracts/`);
   fs.writeFileSync('./coverage.json', JSON.stringify(coverage.coverage));
-  shell.exec(`./node_modules/istanbul/lib/cli.js report lcov ${silence}`);
+  shell.exec(`./${_MODULES_}/istanbul/lib/cli.js report lcov ${silence}`);
 } catch (err) {
   const msg = 'There was a problem generating producing the coverage map / running Istanbul.\n';
   cleanUp(msg + err);
