@@ -33,7 +33,7 @@ describe('run', () => {
     // AND verify that the script actually works.
     if (launchTestRpc) {
       port = 8557;
-      script = `node ./exec.js --dir "./mock" --port ${port} --norpc `; // --silent
+      script = `node ./exec.js --dir "./mock" --port ${port} --norpc`; // --silent
       const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
       testrpcProcess = childprocess.exec(command);
       launchTestRpc = false;
@@ -52,11 +52,11 @@ describe('run', () => {
   // This pre-test flushes the suite. There's some kind of sequencing issue here in development 
   // - the first test always fails unless there is a fresh testrpc install. 
   // Should not be a problem on CI but results in false positives @home.
-  it('flush tests', () => {
+  /*it('flush tests', () => {
     mock.install('Simple.sol', 'simple.js');
     shell.exec(script);
     collectGarbage();
-  });
+  });*/
 
   // This test should be positioned first in the suite because of the way testrpc is
   // launched for these tests.
