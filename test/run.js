@@ -19,7 +19,7 @@ function collectGarbage() {
 describe('run', () => {
   let port = 8555;
   let testrpcProcess = null;
-  let script = `node ./exec.js --dir "./mock" --port ${port} --silent`; //
+  let script = `node ./exec.js --dir "./mock" --port ${port} `; // --silent
 
   before(() => {
     mock.protectCoverage();
@@ -33,7 +33,7 @@ describe('run', () => {
     // AND verify that the script actually works.
     if (launchTestRpc) {
       port = 8557;
-      script = `node ./exec.js --dir "./mock" --port ${port} --norpc --silent`; //
+      script = `node ./exec.js --dir "./mock" --port ${port} --norpc `; // --silent
       const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
       testrpcProcess = childprocess.exec(command);
       launchTestRpc = false;
