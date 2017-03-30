@@ -45,6 +45,7 @@ const instrumenter = require('./instrumenter');
   'Program',
   'ReturnStatement',
   'SequenceExpression',
+  'StateVariableDeclaration',
   'StructDeclaration',
   'ThisExpression',
   'ThrowStatement',
@@ -188,9 +189,7 @@ parse.ContractOrLibraryStatement = function parseContractOrLibraryStatement(cont
   }
 
   expression.body.forEach(construct => {
-    if (!Array.isArray(construct)) {
-      parse[construct.type](contract, construct);
-    }
+    parse[construct.type](contract, construct);
   });
 };
 
