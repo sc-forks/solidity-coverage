@@ -2,13 +2,15 @@
   "name": "solcover",
   "version": "0.0.1",
   "description": "",
-  "main": "runCoveredTests.js",
+  "bin": {
+    "solcover": "./exec.js"
+  },
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --timeout 30000",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 30000"
+    "test": "mocha --timeout 60000",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000"
   },
   "author": "",
   "license": "ISC",
