@@ -15,7 +15,7 @@ function collectGarbage() {
 describe('run', () => {
   let port = 8555;
   let testrpcProcess = null;
-  let script = `node ./exec.js --dir "./mock" --port ${port} --test`; // --silent
+  let script = `node ./exec.js --dir "./mock" --port ${port} --testing --silent`; // --silent
   let launchTestRpc = false;
 
   before(() => {
@@ -30,7 +30,7 @@ describe('run', () => {
     // AND verify that the script in exec actually works.
     if (launchTestRpc) {
       port = 8557;
-      script = `node ./exec.js --dir "./mock" --port ${port} --norpc --test`; // --silent
+      script = `node ./exec.js --dir "./mock" --port ${port} --norpc --testing --silent`; // --silent
       const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
       testrpcProcess = childprocess.exec(command);
       launchTestRpc = false;

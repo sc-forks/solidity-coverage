@@ -13,11 +13,14 @@ const gasLimitHex = 0xfffffffffff;
 const gasPriceHex = 0x01;
 
 const coverage = new CoverageMap();
-const coverageDir = './coverageEnv'; // Path to env that instrumented .sols are tested in
-//let modulesDir = 'node_modules/solcover/node_modules'; 
-let modulesDir = 'node_modules';
 
-let workingDir = './..';              // Default location of contracts folder
+// Paths
+const coverageDir = './coverageEnv';                   // Env that instrumented .sols are tested in
+const solcoverDir = 'node_modules/solcover'            // Solcover assets
+let modulesDir = 'node_modules/solcover/node_modules'; // Solcover's npm assets: configurable via test
+
+
+let workingDir = '.';                 // Default location of contracts folder
 let port = 8555;                      // Default port - NOT 8545 & configurable via --port
 let silence = '';                     // Default log level: configurable by --silence 
 let log = console.log;                // Default log level: configurable by --silence 
@@ -29,10 +32,10 @@ let events;                           // ref to string loaded from 'allFiredEven
 
 if (argv.dir) workingDir = argv.dir;     
 if (argv.port) port = argv.port;  
-if (argv.test) modulesDir = 'node_modules';       
+if (argv.testing) modulesDir = 'node_modules'; 
 
 if (argv.silent) {                       
-  silence = '> /dev/null 2>&1';          // Silence for solcover's unit tests / CI
+  silence = '> /dev/null 2>&1';       // Silence for solcover's unit tests / CI
   log = () => {}
 } 
 
@@ -45,7 +48,7 @@ if (!argv.norpc) {
   
   if (!shell.test('-e', patchInstalled)) {
     log('Patching local testrpc...');
-    shell.exec(`patch -b ${patchRequired} ./hookIntoEvents.patch`);
+    shell.exec(`patch -b ${patchRequired} ./${solcoverDir}/hookIntoEvents.patch`);
   }
   
   try {
@@ -118,7 +121,7 @@ try {
 
 // Get events fired during instrumented contracts execution.
 try {
-  events = fs.readFileSync('./allFiredEvents').toString().split('\n');
+  events = fs.readFileSync(`./allFiredEvents`).toString().split('\n');
   events.pop();
 } catch (err) {
   const msg =
@@ -138,7 +141,7 @@ try {
   
   coverage.generate(events, `${coverageDir}/contracts/`);
   json = JSON.stringify(coverage.coverage);
-  fs.writeFileSync('./coverage.json', json);
+  fs.writeFileSync(`./coverage.json`, json);
   shell.exec(istanbul);
 
 } catch (err) {
@@ -159,7 +162,7 @@ function cleanUp(err) {
   log('Cleaning up...');
   shell.config.silent = true;
   shell.rm('-Rf', `${coverageDir}`);
-  shell.rm('./allFiredEvents');
+  shell.rm(`./allFiredEvents`);
   if (testrpcProcess) { testrpcProcess.kill(); }
 
   if (err) {
