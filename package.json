@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ethereumjs-testrpc": "https://github.com/ethereumjs/testrpc.git#5ba3c45b2ca306ab589f4a4c649d9afc39042680",
+    "ethereumjs-testrpc": "https://github.com/cgewecke/testrpc.git#solcover",
     "istanbul": "^0.4.5",
     "mkdirp": "^0.5.1",
     "shelljs": "^0.7.4",

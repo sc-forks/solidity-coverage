@@ -39,18 +39,9 @@ if (argv.silent) {
   log = () => {}
 } 
 
-// Patch our local testrpc if necessary & run the modified testrpc with large block limit,
-// on (hopefully) unused port. (Changes here should be also be added to the before() block
-// of test/run.js).
+// Run the modified testrpc with large block limit, on (hopefully) unused port. 
+// (Changes here should be also be added to the before() block of test/run.js).
 if (!argv.norpc) {
-  const patchRequired = `./${modulesDir}/ethereumjs-vm/lib/opFns.js`
-  const patchInstalled = `./${modulesDir}/ethereumjs-vm/lib/opFns.js.orig`;
-  
-  if (!shell.test('-e', patchInstalled)) {
-    log('Patching local testrpc...');
-    shell.exec(`patch -b ${patchRequired} ./${solcoverDir}/hookIntoEvents.patch`);
-  }
-  
   try {
     log(`Launching testrpc on port ${port}`);
     

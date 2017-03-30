@@ -26,8 +26,8 @@ describe('run', () => {
     // CI (Ubuntu) doesn't seem to be freeing  server resources until the parent process of these
     // tests exits so there are errors launching testrpc repeatedly on the same port. Tests #2 through
     // #last will use this instance of testrpc (port 8557). Test #1 uses the instance launched by
-    // the run script (which also installs the patch). This allows us to end run CI container issues
-    // AND verify that the script in exec actually works.
+    // the run script. This allows us to end run CI container issues AND verify that the script in 
+    // exec actually works.
     if (launchTestRpc) {
       port = 8557;
       script = `node ./exec.js --dir "./mock" --port ${port} --norpc --testing --silent`; // --silent
