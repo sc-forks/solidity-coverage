@@ -38,8 +38,10 @@ if (argv.testing) modulesDir = 'node_modules';
 
 if (argv.silent) {                       
   silence = '> /dev/null 2>&1';       // Silence for solcover's unit tests / CI
-  log = () => {}
+  log = () => {};
 } 
+
+console.log('argv.norpc --> ' + argv.norpc);
 
 // Run the modified testrpc with large block limit, on (hopefully) unused port. 
 // (Changes here should be also be added to the before() block of test/run.js).
