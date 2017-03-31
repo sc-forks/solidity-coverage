@@ -22,7 +22,7 @@ describe('run', () => {
     dir: "./mock",
     port: port,
     testing: true,
-    silent: true,
+    silent: false,
     norpc: true,
   };
 
@@ -47,11 +47,11 @@ describe('run', () => {
   // - the first test always fails unless there is a fresh testrpc install. 
   // - Running this on Circle CI causes suite to crash
   it('flush test suite', () => {
-    if (!process.env.CI){ // <---- CI is set by default on circle
+    //if (!process.env.CI){ // <---- CI is set by default on circle
       mock.install('Simple.sol', 'simple.js', config);
       shell.exec(script); // <---- This fails mysteriously, but we don't test here.
       collectGarbage();
-    }
+    //}
   });
 
   // This test should be positioned first (or second if flushing) in the suite because of 
