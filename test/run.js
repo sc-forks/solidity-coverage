@@ -22,7 +22,7 @@ describe('run', () => {
     dir: "./mock",
     port: port,
     testing: true,
-    silent: true
+    silent: false
   };
 
   before(() => {
@@ -42,7 +42,7 @@ describe('run', () => {
         dir: "./mock",
         port: port,
         testing: true,
-        silent: true,
+        silent: false,
         norpc: true,
       };
       const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
