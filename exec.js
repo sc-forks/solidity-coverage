@@ -10,7 +10,10 @@ const SolidityCoder = require('web3/lib/solidity/coder.js');
 const getInstrumentedVersion = require('./instrumentSolidity.js');
 const CoverageMap = require('./coverageMap.js');
 
-
+const istanbul = require('istanbul');
+const istanbulCollector = new istanbul.Collector();
+const istanbulReporter = new istanbul.Reporter();
+        
 // Very high gas block limits / contract deployment limits
 const gasLimitString = '0xfffffffffff';
 const gasLimitHex = 0xfffffffffff;
@@ -89,7 +92,7 @@ try {
 }
 
 // For each contract except migrations.sol:
-// 1. Generate reference to its real path (this identifies it in the reports)
+// 1. Generate file path reference for coverage report
 // 2. Load contract as string
 // 3. Instrument contract
 // 4. Save instrumented contract in the coverage environment folder where covered tests will run
@@ -145,8 +148,11 @@ try {
   const json = JSON.stringify(coverage.coverage);
   fs.writeFileSync('./coverage.json', json);
 
-  const istanbul = `./${modulesDir}/istanbul/lib/cli.js report lcov ${silence}`;
-  shell.exec(istanbul);
+  istanbulCollector.add(coverage.coverage);
+  istanbulReporter.addAll([ 'lcov', 'html' ]);
+  istanbulReporter.write(istanbulCollector, false, () => {
+      log('Istanbul coverage reports generated');
+  });
 
 } catch (err) {
   const msg = 'There was a problem generating producing the coverage map / running Istanbul.\n';

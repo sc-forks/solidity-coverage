@@ -22,7 +22,7 @@ describe('run', () => {
     dir: "./mock",
     port: port,
     testing: true,
-    silent: false,
+    silent: true,
     norpc: true,
   };
 
