@@ -38,7 +38,7 @@ module.exports.restoreCoverage = function () {
  * @param  {String} contract <contractName.sol> located in /test/sources/run/
  * @param  {[type]} test     <testName.js> located in /test/run/
  */
-module.exports.install = function (contract, test) {
+module.exports.install = function (contract, test, config) {
   shell.mkdir('./mock');
   shell.mkdir('./mock/contracts');
   shell.mkdir('./mock/migrations');
@@ -78,7 +78,10 @@ module.exports.install = function (contract, test) {
                       }}};`
                   ;
 
+  const configjs = `module.exports = ${JSON.stringify(config)}`;
+
   fs.writeFileSync('./mock/truffle.js', trufflejs);
+  fs.writeFileSync('./.solcover.js', configjs);
 };
 
 /**
@@ -86,6 +89,7 @@ module.exports.install = function (contract, test) {
  */
 module.exports.remove = function () {
   shell.config.silent = true;
+  shell.rm('./.solcover.js');
   shell.rm('-Rf', 'mock');
   shell.rm('-Rf', 'coverage');
   shell.rm('coverage.json');

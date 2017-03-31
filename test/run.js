@@ -13,10 +13,17 @@ function collectGarbage() {
 }
 
 describe('run', () => {
-  let port = 8555;
   let testrpcProcess = null;
-  let script = `node ./exec.js --dir "./mock" --port ${port} --testing --silent`; // --silent
+  let script = 'node ./exec.js'
   let launchTestRpc = false;
+  let port = 8555;
+
+  let config =  {
+    dir: "./mock",
+    port: port,
+    testing: true,
+    silent: true
+  };
 
   before(() => {
     mock.protectCoverage();
@@ -29,11 +36,17 @@ describe('run', () => {
     // the run script. This allows us to end run CI container issues AND verify that the script in 
     // exec actually works.
     if (launchTestRpc) {
+      launchTestRpc = false;
       port = 8557;
-      script = `node ./exec.js --dir "./mock" --port ${port} --norpc --testing --silent`; // --silent
+      config =  {
+        dir: "./mock",
+        port: port,
+        testing: true,
+        silent: true,
+        norpc: true,
+      };
       const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
       testrpcProcess = childprocess.exec(command);
-      launchTestRpc = false;
     }
   });
 
@@ -53,7 +66,7 @@ describe('run', () => {
   // - Running this on Circle CI causes suite to crash
   it('flush test suite', () => {
     if (!process.env.CI){ // <---- CI is set by default on circle
-      mock.install('Simple.sol', 'simple.js');
+      mock.install('Simple.sol', 'simple.js', config);
       shell.exec(script); // <---- This fails mysteriously, but we don't test here.
       collectGarbage();
     }
@@ -67,7 +80,7 @@ describe('run', () => {
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 
     // Run script (exits 0);
-    mock.install('Simple.sol', 'simple.js');
+    mock.install('Simple.sol', 'simple.js', config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
@@ -89,7 +102,7 @@ describe('run', () => {
     // Run against contract that only uses method.call.
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
-    mock.install('OnlyCall.sol', 'only-call.js');
+    mock.install('OnlyCall.sol', 'only-call.js', config);
 
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
@@ -108,7 +121,7 @@ describe('run', () => {
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 
     // Run with Simple.sol and a failing assertion in a truffle test
-    mock.install('Simple.sol', 'truffle-test-fail.js');
+    mock.install('Simple.sol', 'truffle-test-fail.js', config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
     assert(pathExists('./coverage') === true, 'script should gen coverage folder');
@@ -123,7 +136,7 @@ describe('run', () => {
 
   it('deployment cost > block gasLimit: should generate coverage, cleanup & exit(0)', () => {
     // Just making sure Expensive.sol compiles and deploys here.
-    mock.install('Expensive.sol', 'block-gas-limit.js');
+    mock.install('Expensive.sol', 'block-gas-limit.js', config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
     collectGarbage();
@@ -134,7 +147,7 @@ describe('run', () => {
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 
     // Run with Simple.sol and a syntax error in the truffle test
-    mock.install('Simple.sol', 'truffle-crash.js');
+    mock.install('Simple.sol', 'truffle-crash.js', config);
     shell.exec(script);
     assert(shell.error() !== null, 'script should error');
     assert(pathExists('./coverage') !== true, 'script should NOT gen coverage folder');
@@ -147,7 +160,7 @@ describe('run', () => {
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 
     // Run with SimpleError.sol (has syntax error) and working truffle test
-    mock.install('SimpleError.sol', 'simple.js');
+    mock.install('SimpleError.sol', 'simple.js', config);
     shell.exec(script);
     assert(shell.error() !== null, 'script should error');
     assert(pathExists('./coverage') !== true, 'script should NOT gen coverage folder');
@@ -159,7 +172,7 @@ describe('run', () => {
     // Run contract and test that pass but fire no events
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
-    mock.install('Empty.sol', 'empty.js');
+    mock.install('Empty.sol', 'empty.js', config);
     shell.exec(script);
     assert(shell.error() !== null, 'script should error');
     assert(pathExists('./coverage') !== true, 'script should NOT gen coverage folder');
