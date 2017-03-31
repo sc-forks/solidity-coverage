@@ -18,45 +18,27 @@ describe('run', () => {
   let launchTestRpc = false;
   let port = 8555;
 
-  let config =  {
+  config =  {
     dir: "./mock",
     port: port,
     testing: true,
-    silent: false
+    silent: false,
+    norpc: true,
   };
 
   before(() => {
     mock.protectCoverage();
+    const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
+    testrpcProcess = childprocess.exec(command);
   });
 
-  beforeEach(() => {
-    // CI (Ubuntu) doesn't seem to be freeing  server resources until the parent process of these
-    // tests exits so there are errors launching testrpc repeatedly on the same port. Tests #2 through
-    // #last will use this instance of testrpc (port 8557). Test #1 uses the instance launched by
-    // the run script. This allows us to end run CI container issues AND verify that the script in 
-    // exec actually works.
-    if (launchTestRpc) {
-      launchTestRpc = false;
-      port = 8557;
-      config =  {
-        dir: "./mock",
-        port: port,
-        testing: true,
-        silent: false,
-        norpc: true,
-      };
-      const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
-      testrpcProcess = childprocess.exec(command);
-    }
+  afterEach(() => {
+    mock.remove();
   });
 
   after(() => {
     mock.restoreCoverage();
     testrpcProcess.kill();
-  });
-
-  afterEach(() => {
-    mock.remove();
   });
 
   // This pre-test flushes the suite. There's some kind of sequencing issue here in development, 
