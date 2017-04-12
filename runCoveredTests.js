@@ -59,3 +59,4 @@ shell.exec('./node_modules/istanbul/lib/cli.js report lcov');
 testrpcProcess.kill();
 shell.rm('-rf', './../contracts');
 shell.mv('./../originalContracts', './../contracts');
+process.exit(0);
