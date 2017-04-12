@@ -15,6 +15,7 @@
   "dependencies": {
     "ethereumjs-testrpc": "https://github.com/ethereumjs/testrpc.git#5ba3c45b2ca306ab589f4a4c649d9afc39042680",
     "istanbul": "^0.4.5",
+    "keccakjs": "^0.2.1",
     "mkdirp": "^0.5.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
