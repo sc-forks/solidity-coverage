@@ -5,7 +5,7 @@
  */
 const SolidityCoder = require('web3/lib/solidity/coder.js');
 const path = require('path');
-const keccak = require('keccakjs')
+const keccak = require('keccakjs');
 
 /**
  * Converts solcover event data into an object that can be
@@ -16,10 +16,10 @@ module.exports = class CoverageMap {
 
   constructor() {
     this.coverage = {};
-    this.lineTopics = []
-    this.functionTopics = []
-    this.branchTopics = []
-    this.statementTopics = []
+    this.lineTopics = [];
+    this.functionTopics = [];
+    this.branchTopics = [];
+    this.statementTopics = [];
   }
 
   /**
@@ -31,7 +31,6 @@ module.exports = class CoverageMap {
    */
 
   addContract(info, canonicalContractPath) {
-
     this.coverage[canonicalContractPath] = {
       l: {},
       path: canonicalContractPath,
@@ -60,16 +59,15 @@ module.exports = class CoverageMap {
     }
 
     const keccakhex = (x => {
-      var hash = new keccak(256)
-      hash.update(x)
-      return hash.digest('hex') 
+      const hash = new keccak(256); // eslint-disable-line new-cap
+      hash.update(x);
+      return hash.digest('hex');
     });
 
-    this.lineTopics.push(keccakhex("__Coverage"+info.contractName+"(string,uint256)")); 
-    this.functionTopics.push(keccakhex("__FunctionCoverage"+info.contractName+"(string,uint256)")); 
-    this.branchTopics.push(keccakhex("__BranchCoverage"+info.contractName+"(string,uint256,uint256)")); 
-    this.statementTopics.push(keccakhex("__StatementCoverage"+info.contractName+"(string,uint256)")); 
-
+    this.lineTopics.push(keccakhex('__Coverage' + info.contractName + '(string,uint256)'));
+    this.functionTopics.push(keccakhex('__FunctionCoverage' + info.contractName + '(string,uint256)'));
+    this.branchTopics.push(keccakhex('__BranchCoverage' + info.contractName + '(string,uint256,uint256)'));
+    this.statementTopics.push(keccakhex('__StatementCoverage' + info.contractName + '(string,uint256)'));
   }
 
   /**
@@ -83,26 +81,22 @@ module.exports = class CoverageMap {
     for (let idx = 0; idx < events.length; idx++) {
       const event = JSON.parse(events[idx]);
 
-      if (event.topics.filter( t => this.lineTopics.indexOf(t) >= 0 ).length > 0) {
+      if (event.topics.filter(t => this.lineTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].l[data[1].toNumber()] += 1;
-
-      } else if (event.topics.filter( t => this.functionTopics.indexOf(t) >= 0 ).length > 0) {
+      } else if (event.topics.filter(t => this.functionTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].f[data[1].toNumber()] += 1;
-
-      } else if (event.topics.filter( t => this.branchTopics.indexOf(t) >= 0 ).length > 0) {
+      } else if (event.topics.filter(t => this.branchTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].b[data[1].toNumber()][data[2].toNumber()] += 1;
-
-      } else if (event.topics.filter( t => this.statementTopics.indexOf(t) >= 0 ).length > 0) {
+      } else if (event.topics.filter(t => this.statementTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].s[data[1].toNumber()] += 1;
-
       }
     }
     return Object.assign({}, this.coverage);

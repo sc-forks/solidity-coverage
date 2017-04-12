@@ -41,8 +41,8 @@ module.exports = function instrumentSolidity(contractSource, fileName) {
 
   ast = SolidityParser.parse(contract.preprocessed);
 
-  const contractStatement = ast['body'].filter( node => { return node.type == 'ContractStatement' });
-  contract.contractName = contractStatement[0].name
+  const contractStatement = ast.body.filter(node => node.type === 'ContractStatement');
+  contract.contractName = contractStatement[0].name;
 
   parse[ast.type](contract, ast);
 
@@ -63,7 +63,7 @@ module.exports = function instrumentSolidity(contractSource, fileName) {
   });
   retValue.runnableLines = contract.runnableLines;
   retValue.contract = contract.instrumented;
-  retValue.contractName = contractStatement[0].name
+  retValue.contractName = contractStatement[0].name;
 
   return retValue;
 };
