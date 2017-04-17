@@ -12,7 +12,7 @@ function collectGarbage() {
   if (global.gc) { global.gc(); }
 }
 
-describe('run', () => {
+describe.only('run', () => {
   let testrpcProcess = null;
   let script = 'node ./exec.js'
   let launchTestRpc = false;
@@ -22,7 +22,7 @@ describe('run', () => {
     dir: "./mock",
     port: port,
     testing: true,
-    silent: false,
+    silent: true,
     norpc: true,
   };
 
@@ -45,13 +45,10 @@ describe('run', () => {
   // possibly tied to the use of ethereumjs-vm in the coverage tests?
   // - tests pass w/out this if we only run these test - e.g. it only fails when running the suite.
   // - the first test always fails unless there is a fresh testrpc install. 
-  // - Running this on Circle CI causes suite to crash
   it('flush test suite', () => {
-    //if (!process.env.CI){ // <---- CI is set by default on circle
-      mock.install('Simple.sol', 'simple.js', config);
-      shell.exec(script); // <---- This fails mysteriously, but we don't test here.
-      collectGarbage();
-    //}
+    mock.install('Simple.sol', 'simple.js', config);
+    shell.exec(script); // <---- This fails mysteriously, but we don't test here.
+    collectGarbage();
   });
 
   // This test should be positioned first (or second if flushing) in the suite because of 

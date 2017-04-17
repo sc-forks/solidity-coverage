@@ -4,9 +4,7 @@ const shell = require('shelljs');
 const fs = require('fs');
 const reqCwd = require('req-cwd');
 const path = require('path');
-const program = require('commander');
 const childprocess = require('child_process');
-const SolidityCoder = require('web3/lib/solidity/coder.js');
 const getInstrumentedVersion = require('./instrumentSolidity.js');
 const CoverageMap = require('./coverageMap.js');
 
@@ -27,14 +25,14 @@ const solcoverDir = 'node_modules/solcover';           // Solcover assets
 let modulesDir = 'node_modules/solcover/node_modules'; // Solcover's npm assets: configurable via test
 
 // Options
-let workingDir = '.';                      // Default location of contracts folder
-let port = 8555;                           // Default port - NOT 8545 & configurable via --port
-let coverageOption = '--network coverage'; // Default truffle network execution flag
-let silence = '';                          // Default log level: configurable by --silence
-let log = console.log;                     // Default log level: configurable by --silence
+let workingDir = '.';                       // Default location of contracts folder
+let port = 8555;                            // Default port - NOT 8545 & configurable via --port
+let coverageOption = '--network coverage';  // Default truffle network execution flag
+let silence = '';                           // Default log level: configurable by --silence
+let log = console.log;                      // Default log level: configurable by --silence
 
-let testrpcProcess;                        // ref to testrpc process we need to kill on exit
-let events;                                // ref to string loaded from 'allFiredEvents'
+let testrpcProcess;                         // ref to testrpc server we need to close on exit
+let events;                                 // ref to string loaded from 'allFiredEvents'
 
 // --------------------------------------- Script --------------------------------------------------
 const config = reqCwd.silent(`${workingDir}/.solcover.js`) || {};

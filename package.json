@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^2.9.0",
-    "ethereumjs-testrpc": "https://github.com/cgewecke/testrpc.git#solcover",
+    "ethereumjs-testrpc": "https://github.com/sc-forks/testrpc.git",
     "istanbul": "^0.4.5",
     "mkdirp": "^0.5.1",
     "req-cwd": "^1.0.1",
