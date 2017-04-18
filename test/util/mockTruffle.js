@@ -45,7 +45,14 @@ module.exports.install = function (contract, test, config) {
   shell.mkdir('./mock/test');
 
   // Mock contracts
-  shell.cp(`./test/sources/run/${contract}`, `./mock/contracts/${contract}`);
+  if (Array.isArray(contract)){
+    contract.forEach(item => {
+      shell.cp(`./test/sources/run/${item}`, `./mock/contracts/${item}`);
+    })
+  } else {
+    shell.cp(`./test/sources/run/${contract}`, `./mock/contracts/${contract}`);
+  }
+
   shell.cp('./test/sources/run/Migrations.sol', './mock/contracts/Migrations.sol');
 
   // Mock migrations
@@ -67,6 +74,61 @@ module.exports.install = function (contract, test, config) {
 
   // Mock test
   shell.cp(`./test/run/${test}`, `./mock/test/${test}`);
+
+  // Mock truffle.js
+  const trufflejs = `module.exports = {
+                    networks: {
+                      development: {
+                        host: "localhost", 
+                        port: 8545,
+                        network_id: "*"
+                      }}};`
+                  ;
+
+  const configjs = `module.exports = ${JSON.stringify(config)}`;
+
+  fs.writeFileSync('./mock/truffle.js', trufflejs);
+  fs.writeFileSync('./.solcover.js', configjs);
+};
+
+/**
+ * Installs mock truffle project at ./mock with a single contract
+ * and test specified by the params.
+ * @param  {String} contract <contractName.sol> located in /test/sources/run/
+ * @param  {[type]} test     <testName.js> located in /test/run/
+ */
+module.exports.installInheritanceTest = function (config) {
+  shell.mkdir('./mock');
+  shell.mkdir('./mock/contracts');
+  shell.mkdir('./mock/migrations');
+  shell.mkdir('./mock/test');
+
+  // Mock contracts
+  shell.cp(`./test/sources/run/Proxy.sol`, `./mock/contracts/Proxy.sol`);
+  shell.cp(`./test/sources/run/Owned.sol`, `./mock/contracts/Owned.sol`);
+  shell.cp('./test/sources/run/Migrations.sol', './mock/contracts/Migrations.sol');
+
+  // Mock migrations
+  const initialMigration = `
+    let Migrations = artifacts.require('Migrations.sol');
+    module.exports = function(deployer) {
+      deployer.deploy(Migrations);
+    };`;
+
+  const deployContracts = `
+    var Owned = artifacts.require('./Owned.sol');
+    var Proxy = artifacts.require('./Proxy.sol');
+    module.exports = function(deployer) {
+      deployer.deploy(Owned);
+      deployer.link(Owned, Proxy);
+      deployer.deploy(Proxy);
+    };`;
+
+  fs.writeFileSync('./mock/migrations/1_initial_migration.js', initialMigration);
+  fs.writeFileSync('./mock/migrations/2_deploy_contracts.js', deployContracts);
+
+  // Mock test
+  shell.cp(`./test/run/inheritance.js`, `./mock/test/inheritance.js`);
 
   // Mock truffle.js
   const trufflejs = `module.exports = {

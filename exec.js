@@ -20,9 +20,7 @@ const gasPriceHex = 0x01;
 const coverage = new CoverageMap();
 
 // Paths
-const coverageDir = './coverageEnv';                   // Env that instrumented .sols are tested in
-const solcoverDir = 'node_modules/solcover';           // Solcover assets
-let modulesDir = 'node_modules/solcover/node_modules'; // Solcover's npm assets: configurable via test
+const coverageDir = './coverageEnv';        // Env that instrumented .sols are tested in
 
 // Options
 let workingDir = '.';                       // Default location of contracts folder
@@ -32,14 +30,13 @@ let silence = '';                           // Default log level: configurable b
 let log = console.log;                      // Default log level: configurable by --silence
 
 let testrpcProcess;                         // ref to testrpc server we need to close on exit
-let events;                                 // ref to string loaded from 'allFiredEvents'
+let events;                                 // ref to string loaded from 'allFiredEvents'                         
 
 // --------------------------------------- Script --------------------------------------------------
 const config = reqCwd.silent(`${workingDir}/.solcover.js`) || {};
 
 if (config.dir) workingDir = config.dir;
 if (config.port) port = config.port;
-if (config.testing) modulesDir = 'node_modules';
 
 if (config.silent) {
   silence = '> /dev/null 2>&1';       // Silence for solcover's unit tests / CI
@@ -51,7 +48,7 @@ if (config.silent) {
 if (!config.norpc) {
   try {
     log(`Launching testrpc on port ${port}`);
-    const command = `./${modulesDir}/ethereumjs-testrpc/bin/testrpc `;
+    const command = `./node_modules/ethereumjs-testrpc-sc/bin/testrpc`;
     const options = `--gasLimit ${gasLimitString} --port ${port}`;
     testrpcProcess = childprocess.exec(command + options);
   } catch (err) {
@@ -102,11 +99,11 @@ try {
     if (file !== migrations) {
       log('Instrumenting ', file);
       const contractPath = path.resolve(file);
+      const canonicalPath = contractPath.split(`/coverageEnv`).join('');
       const contract = fs.readFileSync(contractPath).toString();
-      const instrumentedContractInfo = getInstrumentedVersion(contract, contractPath);
-  
+      const instrumentedContractInfo = getInstrumentedVersion(contract, canonicalPath);
       fs.writeFileSync(contractPath, instrumentedContractInfo.contract);
-      coverage.addContract(instrumentedContractInfo, contractPath);
+      coverage.addContract(instrumentedContractInfo, canonicalPath);
     }
   });
 } catch (err) {
@@ -117,8 +114,9 @@ try {
 // coverage environment folder
 try {
   log('Launching Truffle (this can take a few seconds)...');
-  const truffle = `./../${modulesDir}/truffle/cli.js`;
+  const truffle = `./../node_modules/truffle/cli.js`;
   const command = `cd coverageEnv && ${truffle} test ${coverageOption} ${silence}`;
+  //const command = `cd coverageEnv && truffle test ${coverageOption} ${silence}`;
   shell.exec(command);
 } catch (err) {
   cleanUp(err);
@@ -141,20 +139,28 @@ try {
 
 // Generate coverage / write coverage report / run istanbul
 try {
-  coverage.generate(events, `${coverageDir}/contracts/`);
+  //coverage.generate(events, `${coverageDir}/contracts/`);
+  coverage.generate(events, './contracts');
   
   const json = JSON.stringify(coverage.coverage);
   fs.writeFileSync('./coverage.json', json);
 
   istanbulCollector.add(coverage.coverage);
-  istanbulReporter.addAll([ 'lcov', 'html' ]);
-  istanbulReporter.write(istanbulCollector, false, () => {
+  istanbulReporter.add('html');
+  istanbulReporter.add('lcov');
+  istanbulReporter.add('text');
+  istanbulReporter.write(istanbulCollector, true, () => {
       log('Istanbul coverage reports generated');
   });
 
 } catch (err) {
-  const msg = 'There was a problem generating producing the coverage map / running Istanbul.\n';
-  cleanUp(msg + err);
+  if (config.testing){
+    cleanUp()
+  } else {
+    const msg = 'There was a problem generating producing the coverage map / running Istanbul.\n';
+    cleanUp(msg + err);
+  }
+  
 }
 
 // Finish

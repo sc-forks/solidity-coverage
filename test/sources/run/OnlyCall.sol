@@ -5,7 +5,8 @@
 pragma solidity ^0.4.3;
 
 contract OnlyCall {
-    function getFive() returns (uint){
-        return 5;
+    function addTwo(uint val) returns (uint){
+        val = val + 2;
+        return val;
     }
 }

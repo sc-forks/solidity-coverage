@@ -12,7 +12,7 @@ function collectGarbage() {
   if (global.gc) { global.gc(); }
 }
 
-describe.only('run', () => {
+describe('run', () => {
   let testrpcProcess = null;
   let script = 'node ./exec.js'
   let launchTestRpc = false;
@@ -22,13 +22,13 @@ describe.only('run', () => {
     dir: "./mock",
     port: port,
     testing: true,
-    silent: true,
+    silent: true, // <-- Set to false to debug tests
     norpc: true,
   };
 
   before(() => {
     mock.protectCoverage();
-    const command = `./node_modules/ethereumjs-testrpc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
+    const command = `./node_modules/ethereumjs-testrpc-sc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
     testrpcProcess = childprocess.exec(command);
   });
 
@@ -38,7 +38,7 @@ describe.only('run', () => {
 
   after(() => {
     mock.restoreCoverage();
-    testrpcProcess.kill();
+    //testrpcProcess.kill();
   });
 
   // This pre-test flushes the suite. There's some kind of sequencing issue here in development, 
@@ -74,7 +74,6 @@ describe.only('run', () => {
     assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
     assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
     collectGarbage();
-    launchTestRpc = true; // Toggle flag to launch a single testrpc instance for rest of tests.
   });
 
   it('contract only uses .call: should generate coverage, cleanup & exit(0)', () => {
@@ -91,7 +90,28 @@ describe.only('run', () => {
 
     const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'getFive', 'coverage.json should map "getFive"');
+    assert(produced[path].fnMap['1'].name === 'addTwo', 'coverage.json should map "addTwo"');
+    collectGarbage();
+  });
+
+  it('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
+    // Run against a contract that 'is' another contract 
+    assert(pathExists('./coverage') === false, 'should start without: coverage');
+    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    mock.installInheritanceTest(config);
+
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+
+    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
+    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+
+    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const ownedPath = Object.keys(produced)[0];
+    const proxyPath = Object.keys(produced)[1];
+    
+    assert(produced[ownedPath].fnMap['1'].name === 'Owned', 'coverage.json should map "Owned"');
+    assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'coverage.json should map "isOwner"');
     collectGarbage();
   });
 
