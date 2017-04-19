@@ -67,10 +67,19 @@ if (config.silent) {
 // (Changes here should be also be added to the before() block of test/run.js).
 if (!config.norpc) {
   try {
-    log(`Launching testrpc on port ${port}`);
-    const command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc';
+    // NPM installs the testrpc-sc fork at different locations in node_modules based on
+    // whether testrpc is a pre-existing dependency of the project solcover is being added to
+    // using (--save-dev).
+    let command;
+    if (shell.test('-e', './node_modules/ethereumjs-testrpc-sc')) {
+      command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
+    } else {
+      command = './node_modules/solcover/node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
+    }
+
     const options = `--gasLimit ${gasLimitString} --port ${port}`;
     testrpcProcess = childprocess.exec(command + options);
+    log(`Launching testrpc on port ${port}`);
   } catch (err) {
     const msg = `There was a problem launching testrpc: ${err}`;
     cleanUp(msg);
