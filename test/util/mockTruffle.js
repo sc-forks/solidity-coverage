@@ -45,7 +45,7 @@ module.exports.install = function install(contract, test, config) {
 
   // Mock contracts
   if (Array.isArray(contract)) {
-    contract.forEach((item) => {
+    contract.forEach(item => {
       shell.cp(`./test/sources/run/${item}`, `./mock/contracts/${item}`);
     });
   } else {

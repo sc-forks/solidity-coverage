@@ -111,12 +111,12 @@ function callMethod(vm, abi, address, functionName, args) {
   const tx = new Transaction(options);
   tx.sign(new Buffer(secretKey, 'hex'));
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     vm.runTx({
       tx,
     }, (err, results) => {
       const seenEvents = [];
-      results.vm.runState.logs.forEach((log) => {
+      results.vm.runState.logs.forEach(log => {
         const toWrite = {};
         toWrite.address = log[0].toString('hex');
         toWrite.topics = log[1].map(x => x.toString('hex'));

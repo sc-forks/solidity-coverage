@@ -113,7 +113,7 @@ try {
 // 4. Save instrumented contract in the coverage environment folder where covered tests will run
 // 5. Add instrumentation info to the coverage map
 try {
-  shell.ls(`${coverageDir}/contracts/**/*.sol`).forEach((file) => {
+  shell.ls(`${coverageDir}/contracts/**/*.sol`).forEach(file => {
     const migrations = `${coverageDir}/contracts/Migrations.sol`;
 
     if (file !== migrations) {
