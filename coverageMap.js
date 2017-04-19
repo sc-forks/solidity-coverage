@@ -5,11 +5,7 @@
  */
 const SolidityCoder = require('web3/lib/solidity/coder.js');
 const path = require('path');
-
-const lineTopic = 'b8995a65f405d9756b41a334f38d8ff0c93c4934e170d3c1429c3e7ca101014d';
-const functionTopic = 'd4ce765fd23c5cc3660249353d61ecd18ca60549dd62cb9ca350a4244de7b87f';
-const branchTopic = 'd4cf56ed5ba572684f02f889f12ac42d9583c8e3097802060e949bfbb3c1bff5';
-const statementTopic = 'b51abbff580b3a34bbc725f2dc6f736e9d4b45a41293fd0084ad865a31fde0c8';
+const keccak = require('keccakjs');
 
 /**
  * Converts solcover event data into an object that can be
@@ -20,6 +16,10 @@ module.exports = class CoverageMap {
 
   constructor() {
     this.coverage = {};
+    this.lineTopics = [];
+    this.functionTopics = [];
+    this.branchTopics = [];
+    this.statementTopics = [];
   }
 
   /**
@@ -29,6 +29,7 @@ module.exports = class CoverageMap {
    * @param {String} canonicalContractPath target file location
    * @return {Object} coverage map with all values set to zero
    */
+
   addContract(info, canonicalContractPath) {
     this.coverage[canonicalContractPath] = {
       l: {},
@@ -56,6 +57,17 @@ module.exports = class CoverageMap {
     for (let x = 1; x <= Object.keys(info.statementMap).length; x++) {
       this.coverage[canonicalContractPath].s[x] = 0;
     }
+
+    const keccakhex = (x => {
+      const hash = new keccak(256); // eslint-disable-line new-cap
+      hash.update(x);
+      return hash.digest('hex');
+    });
+
+    this.lineTopics.push(keccakhex('__Coverage' + info.contractName + '(string,uint256)'));
+    this.functionTopics.push(keccakhex('__FunctionCoverage' + info.contractName + '(string,uint256)'));
+    this.branchTopics.push(keccakhex('__BranchCoverage' + info.contractName + '(string,uint256,uint256)'));
+    this.statementTopics.push(keccakhex('__StatementCoverage' + info.contractName + '(string,uint256)'));
   }
 
   /**
@@ -68,19 +80,20 @@ module.exports = class CoverageMap {
   generate(events, pathPrefix) {
     for (let idx = 0; idx < events.length; idx++) {
       const event = JSON.parse(events[idx]);
-      if (event.topics.indexOf(lineTopic) >= 0) {
+
+      if (event.topics.filter(t => this.lineTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].l[data[1].toNumber()] += 1;
-      } else if (event.topics.indexOf(functionTopic) >= 0) {
+      } else if (event.topics.filter(t => this.functionTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].f[data[1].toNumber()] += 1;
-      } else if (event.topics.indexOf(branchTopic) >= 0) {
+      } else if (event.topics.filter(t => this.branchTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].b[data[1].toNumber()][data[2].toNumber()] += 1;
-      } else if (event.topics.indexOf(statementTopic) >= 0) {
+      } else if (event.topics.filter(t => this.statementTopics.indexOf(t) >= 0).length > 0) {
         const data = SolidityCoder.decodeParams(['string', 'uint256'], event.data.replace('0x', ''));
         const canonicalContractPath = data[0];
         this.coverage[canonicalContractPath].s[data[1].toNumber()] += 1;
