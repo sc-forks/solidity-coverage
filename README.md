@@ -10,8 +10,31 @@ For more details about what this is, how it work and potential limitations, see
 [the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
 
 This branch is an attempt to prepare solcover for npm publication and simplify its use as a
-command line utility. Gas cost issues etc are managed under the hood - you don't have to modify
-`truffle.js` - and the tool cleans up after itself if (when) it crashes. 
+command line utility. Gas cost issues etc are managed under the hood if your tests run using the 
+the development network and the tool cleans up after itself if (when) it crashes. 
+
+If your `truffle.js` doesn't include a development network, you should add one with bare-bones
+options. 
+
+```
+// Example truffle.js
+module.exports = {
+  networks: {
+    development: {
+      host: "localhost",
+      network_id: "*" // Match any network id  
+    },
+    'dev.auction': {
+      host: "localhost",
+      port: 8545,
+      network_id: "*" // Match any network id
+    },
+    test: {
+      provider: TestRPC.provider(), // in-memory TestRPC provider
+      network_id: "*" // Match any network id
+    }
+  }
+```
 
 ### Install
 ```

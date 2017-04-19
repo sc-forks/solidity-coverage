@@ -104,13 +104,9 @@ try {
   // Coverage network opts NOT specified: default to the development network w/ modified
   // port, gasLimit, gasPrice. Export the config object only.
   } else {
-    truffleConfig.networks.development = {
-      host: "localhost",
-      network_id: "*", 
-      port: port,
-      gas: gasLimitHex,
-      gasPrice: gasPriceHex
-    }
+    truffleConfig.networks.development.port = port;
+    truffleConfig.networks.development.gas = gasLimitHex;
+    truffleConfig.networks.development.gasPrice = gasPriceHex;
     coverageOption = '';
     fs.writeFileSync(`${coverageDir}/truffle.js`, `module.exports = ${JSON.stringify(truffleConfig)}`);
   }
