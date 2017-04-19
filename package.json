@@ -18,16 +18,16 @@
     "commander": "^2.9.0",
     "ethereumjs-testrpc": "https://github.com/sc-forks/testrpc-sc.git",
     "istanbul": "^0.4.5",
+    "keccakjs": "^0.2.1",
     "mkdirp": "^0.5.1",
     "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser": "0.3.0",
-    "truffle": "git+https://github.com/cgewecke/truffle.git"
+    "solidity-parser": "0.3.0"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
-    "eslint": "^3.13.1",
+    "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0",
@@ -37,6 +37,6 @@
     "istanbul": "^0.4.5",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
-    "solc": "0.4.6"
+    "solc": "0.4.8"
   }
 }

@@ -1,5 +1,4 @@
 const solc = require('solc');
-const path = require('path');
 const VM = require('ethereumjs-vm');
 const Account = require('ethereumjs-account');
 const Transaction = require('ethereumjs-tx');
@@ -17,12 +16,12 @@ const accountAddress = new Buffer('7caf6f9bc8b3ba5c7824f934c826bd6dc38c8467', 'h
  * Source: consensys/eth-lightwallet/lib/txutils.js (line 18)
  */
 function encodeFunctionTxData(functionName, types, args) {
-  const fullName = functionName + '(' + types.join() + ')';
+  const fullName = `${functionName}(${types.join()})`;
   const signature = CryptoJS.SHA3(fullName, {
     outputLength: 256,
   }).toString(CryptoJS.enc.Hex).slice(0, 8);
   const dataHex = signature + coder.encodeParams(types, args);
-  return '0x' + dataHex;
+  return `0x${dataHex}`;
 }
 
 /**
@@ -112,7 +111,7 @@ function callMethod(vm, abi, address, functionName, args) {
   const tx = new Transaction(options);
   tx.sign(new Buffer(secretKey, 'hex'));
 
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     vm.runTx({
       tx,
     }, (err, results) => {

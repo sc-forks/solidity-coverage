@@ -7,11 +7,11 @@ const path = require('path');
 const childprocess = require('child_process');
 const getInstrumentedVersion = require('./instrumentSolidity.js');
 const CoverageMap = require('./coverageMap.js');
-
 const istanbul = require('istanbul');
+
 const istanbulCollector = new istanbul.Collector();
 const istanbulReporter = new istanbul.Reporter();
-        
+
 // Very high gas block limits / contract deployment limits
 const gasLimitString = '0xfffffffffff';
 const gasLimitHex = 0xfffffffffff;
@@ -30,8 +30,28 @@ let silence = '';                           // Default log level: configurable b
 let log = console.log;                      // Default log level: configurable by --silence
 
 let testrpcProcess;                         // ref to testrpc server we need to close on exit
-let events;                                 // ref to string loaded from 'allFiredEvents'                         
+let events;                                 // ref to string loaded from 'allFiredEvents'
 
+// --------------------------------------- Utilities -----------------------------------------------
+/**
+ * Removes coverage build artifacts, kills testrpc.
+ * Exits (1) and prints msg on error, exits (0) otherwise.
+ * @param  {String} err error message
+ */
+function cleanUp(err) {
+  log('Cleaning up...');
+  shell.config.silent = true;
+  shell.rm('-Rf', `${coverageDir}`);
+  shell.rm('./allFiredEvents');
+  if (testrpcProcess) { testrpcProcess.kill(); }
+
+  if (err) {
+    log(`${err}\nExiting without generating coverage...`);
+    process.exit(1);
+  } else {
+    process.exit(0);
+  }
+}
 // --------------------------------------- Script --------------------------------------------------
 const config = reqCwd.silent(`${workingDir}/.solcover.js`) || {};
 
@@ -48,7 +68,7 @@ if (config.silent) {
 if (!config.norpc) {
   try {
     log(`Launching testrpc on port ${port}`);
-    const command = `./node_modules/ethereumjs-testrpc-sc/bin/testrpc`;
+    const command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc';
     const options = `--gasLimit ${gasLimitString} --port ${port}`;
     testrpcProcess = childprocess.exec(command + options);
   } catch (err) {
@@ -69,19 +89,19 @@ try {
   const truffleConfig = reqCwd(`${workingDir}/truffle.js`);
 
   // Coverage network opts specified: copy truffle.js whole to coverage environment
-  if (truffleConfig.networks.coverage){
+  if (truffleConfig.networks.coverage) {
     shell.cp(`${workingDir}/truffle.js`, `${coverageDir}/truffle.js`);
 
   // Coverage network opts NOT specified: default to the development network w/ modified
   // port, gasLimit, gasPrice. Export the config object only.
-  } else {    
+  } else {
     truffleConfig.networks.development.port = port;
     truffleConfig.networks.development.gas = gasLimitHex;
     truffleConfig.networks.development.gasPrice = gasPriceHex;
     coverageOption = '';
     fs.writeFileSync(`${coverageDir}/truffle.js`, `module.exports = ${JSON.stringify(truffleConfig)}`);
   }
-} catch (err){
+} catch (err) {
   const msg = ('There was a problem generating the coverage environment: ');
   cleanUp(msg + err);
 }
@@ -99,7 +119,7 @@ try {
     if (file !== migrations) {
       log('Instrumenting ', file);
       const contractPath = path.resolve(file);
-      const canonicalPath = contractPath.split(`/coverageEnv`).join('');
+      const canonicalPath = contractPath.split('/coverageEnv').join('');
       const contract = fs.readFileSync(contractPath).toString();
       const instrumentedContractInfo = getInstrumentedVersion(contract, canonicalPath);
       fs.writeFileSync(contractPath, instrumentedContractInfo.contract);
@@ -114,9 +134,7 @@ try {
 // coverage environment folder
 try {
   log('Launching Truffle (this can take a few seconds)...');
-  const truffle = `./../node_modules/truffle/cli.js`;
-  const command = `cd coverageEnv && ${truffle} test ${coverageOption} ${silence}`;
-  //const command = `cd coverageEnv && truffle test ${coverageOption} ${silence}`;
+  const command = `cd coverageEnv && truffle test ${coverageOption} ${silence}`;
   shell.exec(command);
 } catch (err) {
   cleanUp(err);
@@ -139,9 +157,9 @@ try {
 
 // Generate coverage / write coverage report / run istanbul
 try {
-  //coverage.generate(events, `${coverageDir}/contracts/`);
+  // coverage.generate(events, `${coverageDir}/contracts/`);
   coverage.generate(events, './contracts');
-  
+
   const json = JSON.stringify(coverage.coverage);
   fs.writeFileSync('./coverage.json', json);
 
@@ -150,39 +168,16 @@ try {
   istanbulReporter.add('lcov');
   istanbulReporter.add('text');
   istanbulReporter.write(istanbulCollector, true, () => {
-      log('Istanbul coverage reports generated');
+    log('Istanbul coverage reports generated');
   });
-
 } catch (err) {
-  if (config.testing){
-    cleanUp()
+  if (config.testing) {
+    cleanUp();
   } else {
     const msg = 'There was a problem generating producing the coverage map / running Istanbul.\n';
     cleanUp(msg + err);
   }
-  
 }
 
 // Finish
 cleanUp();
-
-// --------------------------------------- Utilities -----------------------------------------------
-/**
- * Removes coverage build artifacts, kills testrpc.
- * Exits (1) and prints msg on error, exits (0) otherwise.
- * @param  {String} err error message
- */
-function cleanUp(err) {
-  log('Cleaning up...');
-  shell.config.silent = true;
-  shell.rm('-Rf', `${coverageDir}`);
-  shell.rm('./allFiredEvents');
-  if (testrpcProcess) { testrpcProcess.kill(); }
-
-  if (err) {
-    log(`${err}\nExiting without generating coverage...`);
-    process.exit(1);
-  } else {
-    process.exit(0);
-  }
-}
