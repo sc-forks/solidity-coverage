@@ -1,6 +1,10 @@
 {
   "extends": ["airbnb-base"],
   "plugins": ["mocha"],
+  "globals": {
+    "artifacts": true,
+    "contract": true
+  },
   "env":{
     "meteor": true,
     "es6": true,

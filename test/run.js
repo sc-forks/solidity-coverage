@@ -1,3 +1,5 @@
+/* eslint-env node, mocha */
+
 const assert = require('assert');
 const shell = require('shelljs');
 const fs = require('fs');
@@ -14,13 +16,12 @@ function collectGarbage() {
 
 describe('run', () => {
   let testrpcProcess = null;
-  let script = 'node ./exec.js'
-  let launchTestRpc = false;
-  let port = 8555;
+  const script = 'node ./exec.js';
+  const port = 8555;
 
-  config =  {
-    dir: "./mock",
-    port: port,
+  const config = {
+    dir: './mock',
+    port,
     testing: true,
     silent: true, // <-- Set to false to debug tests
     norpc: true,
@@ -41,17 +42,17 @@ describe('run', () => {
     testrpcProcess.kill();
   });
 
-  // This pre-test flushes the suite. There's some kind of sequencing issue here in development, 
+  // This pre-test flushes the suite. There's some kind of sequencing issue here in development,
   // possibly tied to the use of ethereumjs-vm in the coverage tests?
   // - tests pass w/out this if we only run these test - e.g. it only fails when running the suite.
-  // - the first test always fails unless there is a fresh testrpc install. 
+  // - the first test always fails unless there is a fresh testrpc install.
   it('flush test suite', () => {
     mock.install('Simple.sol', 'simple.js', config);
     shell.exec(script); // <---- This fails mysteriously, but we don't test here.
     collectGarbage();
   });
 
-  // This test should be positioned first (or second if flushing) in the suite because of 
+  // This test should be positioned first (or second if flushing) in the suite because of
   // the way we're launching testrpc
   it('simple contract: should generate coverage, cleanup & exit(0)', () => {
     // Directory should be clean
@@ -95,7 +96,7 @@ describe('run', () => {
   });
 
   it('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
-    // Run against a contract that 'is' another contract 
+    // Run against a contract that 'is' another contract
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
     mock.installInheritanceTest(config);
@@ -109,7 +110,7 @@ describe('run', () => {
     const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
     const ownedPath = Object.keys(produced)[0];
     const proxyPath = Object.keys(produced)[1];
-    
+
     assert(produced[ownedPath].fnMap['1'].name === 'Owned', 'coverage.json should map "Owned"');
     assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'coverage.json should map "isOwner"');
     collectGarbage();
