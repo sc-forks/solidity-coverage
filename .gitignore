@@ -3,3 +3,4 @@ coverage.json
 coverage/
 node_modules/
 .changelog
+.DS_Store

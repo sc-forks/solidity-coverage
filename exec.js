@@ -114,9 +114,7 @@ try {
 // coverage environment folder
 try {
   log('Launching Truffle (this can take a few seconds)...');
-  const truffle = `./../node_modules/truffle/cli.js`;
-  const command = `cd coverageEnv && ${truffle} test ${coverageOption} ${silence}`;
-  //const command = `cd coverageEnv && truffle test ${coverageOption} ${silence}`;
+  const command = `cd coverageEnv && truffle test ${coverageOption} ${silence}`;
   shell.exec(command);
 } catch (err) {
   cleanUp(err);

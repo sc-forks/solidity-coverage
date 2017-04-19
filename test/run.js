@@ -38,7 +38,7 @@ describe('run', () => {
 
   after(() => {
     mock.restoreCoverage();
-    //testrpcProcess.kill();
+    testrpcProcess.kill();
   });
 
   // This pre-test flushes the suite. There's some kind of sequencing issue here in development, 
