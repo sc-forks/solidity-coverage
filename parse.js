@@ -5,7 +5,10 @@ const instrumenter = require('./instrumenter');
 // functions where appropriate, which determine where to inject events.
 
 // Assign a dummy function to everything we might see in the AST
-['AssignmentExpression',
+['AssemblyAssignment',
+  'AssemblyItem',
+  'AssemblyLocalBinding',
+  'AssignmentExpression',
   'BinaryExpression',
   'BlockStatement',
   'BreakStatement',
@@ -24,12 +27,14 @@ const instrumenter = require('./instrumenter');
   'ExpressionStatement',
   'ForInStatement',
   'ForStatement',
+  'FunctionalAssemblyExpression',
   'FunctionDeclaration',
   'FunctionName',
   'Identifier',
   'IfStatement',
   'ImportStatement',
   'InformalParameter',
+  'InlineAssemblyBlock',
   'IsStatement',
   'LibraryStatement',
   'Literal',
