@@ -28,7 +28,6 @@ describe('run', () => {
   };
 
   before(() => {
-    mock.protectCoverage();
     const command = `./node_modules/ethereumjs-testrpc-sc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
     testrpcProcess = childprocess.exec(command);
   });
@@ -38,7 +37,6 @@ describe('run', () => {
   });
 
   after(() => {
-    mock.restoreCoverage();
     testrpcProcess.kill();
   });
 

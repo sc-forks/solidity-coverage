@@ -7,31 +7,6 @@ const fs = require('fs');
 const shell = require('shelljs');
 
 /**
- * Moves existing coverage reports into a safe place while testing run script which
- * would overwrite them. Silences shell complaints about non-existent files.
- */
-module.exports.protectCoverage = function protectCoverage() {
-  shell.config.silent = true;
-  shell.rm('-Rf', './safe');
-  shell.mkdir('./safe');
-  shell.mv('./coverage', './safe/coverage');
-  shell.mv('./coverage.json', './safe/coverage.json');
-  shell.config.silent = false;
-};
-
-/**
- * Restores pre-existing coverage reports after testing run script.
- * Silences shell complaints about non-existent files.
- */
-module.exports.restoreCoverage = function restoreCoverage() {
-  shell.config.silent = true;
-  shell.mv('./safe/coverage', './coverage');
-  shell.mv('./safe/coverage.json', './coverage.json');
-  shell.rm('-Rf', './safe');
-  shell.config.silent = false;
-};
-
-/**
  * Installs mock truffle project at ./mock with a single contract
  * and test specified by the params.
  * @param  {String} contract <contractName.sol> located in /test/sources/run/
