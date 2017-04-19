@@ -1,6 +1,5 @@
 /* eslint-env node, mocha */
 
-const solc = require('solc');
 const path = require('path');
 const getInstrumentedVersion = require('./../instrumentSolidity.js');
 const util = require('./util/util.js');
@@ -12,13 +11,13 @@ describe('conditional statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
-  it('should cover a conditional that reaches the consequent (same-line)', done => {
+  it('should cover a conditional that reaches the consequent (same-line)', (done) => {
     const contract = util.getCode('conditional/sameline-consequent.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
@@ -36,13 +35,13 @@ describe('conditional statements', () => {
     }).catch(done);
   });
 
-  it('should cover a conditional that reaches the alternate (same-line)', done => {
+  it('should cover a conditional that reaches the alternate (same-line)', (done) => {
     const contract = util.getCode('conditional/sameline-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
@@ -60,13 +59,13 @@ describe('conditional statements', () => {
     }).catch(done);
   });
 
-  it('should cover a conditional that reaches the consequent (multi-line)', done => {
+  it('should cover a conditional that reaches the consequent (multi-line)', (done) => {
     const contract = util.getCode('conditional/multiline-consequent.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
@@ -84,13 +83,13 @@ describe('conditional statements', () => {
     }).catch(done);
   });
 
-  it('should cover a conditional that reaches the alternate (multi-line)', done => {
+  it('should cover a conditional that reaches the alternate (multi-line)', (done) => {
     const contract = util.getCode('conditional/multiline-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
@@ -108,14 +107,14 @@ describe('conditional statements', () => {
     }).catch(done);
   });
 
-  it('should cover a DeclarativeExpression assignment by conditional that reaches the alternate', done => {
+  it('should cover a DeclarativeExpression assignment by conditional that reaches the alternate', (done) => {
     const contract = util.getCode('conditional/declarative-exp-assignment-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
     // Runs bool z = (x) ? false : true;
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
@@ -133,14 +132,14 @@ describe('conditional statements', () => {
     }).catch(done);
   });
 
-  it('should cover an Identifier assignment by conditional that reaches the alternate', done => {
+  it('should cover an Identifier assignment by conditional that reaches the alternate', (done) => {
     const contract = util.getCode('conditional/identifier-assignment-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
     // Runs z = (x) ? false : true;
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1, 8: 1,
@@ -159,9 +158,10 @@ describe('conditional statements', () => {
   });
 
   // Solcover has trouble with this case. The conditional coverage strategy relies on being able to
-  // reference the left-hand variable before its value is assigned. Solidity doesn't allow this for 'var'.
+  // reference the left-hand variable before its value is assigned. Solidity doesn't allow this
+  // for 'var'.
 
-  /* it('should cover a variable delcaration assignment by conditional that reaches the alternate', (done) => {
+  /* it('should cover a var decl assignment by conditional that reaches the alternate', (done) => {
     const contract = util.getCode('conditional/variable-decl-assignment-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();

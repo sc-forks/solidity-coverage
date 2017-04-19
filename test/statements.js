@@ -45,13 +45,13 @@ describe('generic statements', () => {
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
   });
-  it('should cover a statement following a close brace', done => {
+  it('should cover a statement following a close brace', (done) => {
     const contract = util.getCode('statements/post-close-brace.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'a', [1]).then(events => {
+    vm.execute(info.contract, 'a', [1]).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 0, 8: 1,
@@ -69,13 +69,13 @@ describe('generic statements', () => {
     }).catch(done);
   });
 
-  it('should cover a library statement and an invoked library method', done => {
+  it('should cover a library statement and an invoked library method', (done) => {
     const contract = util.getCode('statements/library.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'not', []).then(events => {
+    vm.execute(info.contract, 'not', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         9: 1, 10: 1, 19: 1,
@@ -91,13 +91,13 @@ describe('generic statements', () => {
     }).catch(done);
   });
 
-  it('should cover a tuple statement', done => {
+  it('should cover a tuple statement', (done) => {
     const contract = util.getCode('statements/tuple.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', []).then((events) => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,

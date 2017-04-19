@@ -1,10 +1,6 @@
 {
   "extends": ["airbnb-base"],
   "plugins": ["mocha"],
-  "globals": {
-    "artifacts": true,
-    "contract": true
-  },
   "env":{
     "meteor": true,
     "es6": true,
@@ -44,7 +40,6 @@
     "semi": [2, "always"],
     "no-unused-vars": 0,
     "import/extensions": [0],
-    "import/no-dynamic-require": [0],
     "arrow-parens":[2, "as-needed"],
     "no-plusplus":[2, { "allowForLoopAfterthoughts": true }],
     "no-bitwise": [2],
