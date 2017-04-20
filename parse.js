@@ -35,6 +35,7 @@ const instrumenter = require('./instrumenter');
   'ImportStatement',
   'InformalParameter',
   'InlineAssemblyBlock',
+  'InlineAssemblyStatement',
   'IsStatement',
   'LibraryStatement',
   'Literal',
