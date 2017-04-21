@@ -41,7 +41,8 @@ module.exports = function instrumentSolidity(contractSource, fileName) {
 
   ast = SolidityParser.parse(contract.preprocessed);
 
-  const contractStatement = ast.body.filter(node => node.type === 'ContractStatement');
+  const contractStatement = ast.body.filter(node => (node.type === 'ContractStatement' ||
+                                                     node.type === 'LibraryStatement'));
   contract.contractName = contractStatement[0].name;
 
   parse[ast.type](contract, ast);
