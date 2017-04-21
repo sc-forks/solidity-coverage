@@ -10,9 +10,37 @@ For more details about what this is, how it work and potential limitations, see
 [the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
 
 This branch is an attempt to prepare solcover for npm publication and simplify its use as a
-command line utility. Gas cost issues etc are managed under the hood if your tests are able to run 
-using the default development network and the tool cleans up after itself if (when) it crashes. 
+command line utility. Gas cost issues etc are managed under the hood  and the tool cleans up after 
+itself if (when) it crashes. 
 
+### Configuration
+
+By default, solcover generates a stub `truffle.js` that accomodates its special gas needs and 
+connects to a modified version of testrpc on port 8555. If your tests can run on the development network
+using a standard `truffle.js`, you shouldn't have to do any configuration. If your tests 
+depend on logic added to `truffle.js` - for example: [zeppelin-solidity](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js) 
+uses the file to expose a babel polyfill that its suite needs to run correctly - you can override the default behavior 
+by specifying a coverage network in `truffle.js`. 
+
+Example coverage network config
+```javascript
+module.exports = {
+  networks: {
+    development: {
+      host: "localhost",
+      port: 8545,
+      network_id: "*" // Match any network id
+    },
+    coverage: {
+      host: "localhost",
+      network_id: "*", 
+      port: 8555,         // <-- Use this port only 
+      gas: 0xfffffffffff, // <-- Use this high gas value
+      gasPrice: 0x01      // <-- Use this low gas price
+    }
+  }
+};
+``` 
 ### Install
 ```
 $ npm install --save-dev https://github.com/JoinColony/solcover.git#truffle3
