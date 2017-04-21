@@ -25,6 +25,7 @@ const coverageDir = './coverageEnv';        // Env that instrumented .sols are t
 // Options
 let workingDir = '.';                       // Default location of contracts folder
 let port = 8555;                            // Default port - NOT 8545 & configurable via --port
+let accounts = 35;                          // Default number of accounts to run testrpc w
 let coverageOption = '--network coverage';  // Default truffle network execution flag
 let silence = '';                           // Default log level: configurable by --silence
 let log = console.log;                      // Default log level: configurable by --silence
@@ -57,6 +58,7 @@ const config = reqCwd.silent(`${workingDir}/.solcover.js`) || {};
 
 if (config.dir) workingDir = config.dir;
 if (config.port) port = config.port;
+if (config.accounts) accounts = config.accounts;
 
 if (config.silent) {
   silence = '> /dev/null 2>&1';       // Silence for solcover's unit tests / CI
@@ -77,7 +79,7 @@ if (!config.norpc) {
       command = './node_modules/solcover/node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
     }
 
-    const options = `--gasLimit ${gasLimitString} --port ${port}`;
+    const options = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
     testrpcProcess = childprocess.exec(command + options);
     log(`Launching testrpc on port ${port}`);
   } catch (err) {
