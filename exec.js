@@ -150,11 +150,14 @@ try {
 }
 
 // Run solcover's fork of truffle over instrumented contracts in the
-// coverage environment folder
+// coverage environment folder. Shell cd command needs to be invoked
+// as its own statement for command line options to work, apparently.
 try {
   log('Launching Truffle (this can take a few seconds)...');
-  const command = `cd coverageEnv && truffle test ${coverageOption} ${silence}`;
+  const command = `truffle test ${coverageOption} ${silence}`;
+  shell.cd('./coverageEnv');
   shell.exec(command);
+  shell.cd('./..');
 } catch (err) {
   cleanUp(err);
 }
