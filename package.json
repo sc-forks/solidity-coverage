@@ -10,7 +10,8 @@
   },
   "scripts": {
     "test": "mocha --timeout 60000",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000"
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000",
+    "lint": "./node_modules/.bin/eslint --fix ./"
   },
   "author": "",
   "license": "ISC",
