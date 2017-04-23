@@ -112,11 +112,14 @@ parse.MemberExpression = function parseMemberExpression(contract, expression) {
 };
 
 parse.CallExpression = function parseCallExpression(contract, expression) {
-  instrumenter.instrumentStatement(contract, expression);
-  parse[expression.callee.type](contract, expression.callee);
-  // for (x in expression.arguments){
-    // parse[expression.arguments[x].type](contract, expression.arguments[x])
-  // }
+  // Peek ahead to see if this is non-newed contract constructor chained to a method call
+  // AST represents this as nested nested call expressions and we only want to instrument it once.
+  if (expression.callee.object && expression.callee.object.type === 'CallExpression') {
+    parse[expression.callee.type](contract, expression.callee);
+  } else {
+    instrumenter.instrumentStatement(contract, expression);
+    parse[expression.callee.type](contract, expression.callee);
+  }
 };
 
 parse.UnaryExpression = function parseUnaryExpression(contract, expression) {

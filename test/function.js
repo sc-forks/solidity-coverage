@@ -37,4 +37,11 @@ describe('function declarations', () => {
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
   });
+
+  it('should compile after instrumenting a constructor call that chains to a method call', () => {
+    const contract = util.getCode('function/chainable.sol');
+    const info = getInstrumentedVersion(contract, 'test.sol');
+    const output = solc.compile(info.contract, 1);
+    util.report(output.errors);
+  });
 });
