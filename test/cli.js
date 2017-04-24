@@ -14,7 +14,7 @@ function collectGarbage() {
   if (global.gc) { global.gc(); }
 }
 
-describe('run', () => {
+describe('cli', () => {
   let testrpcProcess = null;
   const script = 'node ./exec.js';
   const port = 8555;
@@ -109,6 +109,27 @@ describe('run', () => {
 
     assert(produced[ownedPath].fnMap['1'].name === 'Owned', 'coverage.json should map "Owned"');
     assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'coverage.json should map "isOwner"');
+    collectGarbage();
+  });
+
+  it('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
+    assert(pathExists('./coverage') === false, 'should start without: coverage');
+    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+
+    const privateKey = '0x3af46c9ac38ee1f01b05f9915080133f644bf57443f504d339082cb5285ccae4';
+    const balance = "0xfffffffffffffff";
+    const testConfig = Object.assign({}, config);
+    
+    testConfig.testrpcOptions = `--account="${privateKey},${balance}" --port 8777`;
+    testConfig.norpc = false;
+    testConfig.port = 8777;
+
+    // Installed test will process.exit(1) and crash truffle if the test isn't
+    // loaded with the account specified above
+    mock.install('Simple.sol', 'testrpc-options.js', testConfig);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+
     collectGarbage();
   });
 

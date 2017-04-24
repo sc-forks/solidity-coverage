@@ -23,9 +23,6 @@ const coverage = new CoverageMap();
 const coverageDir = './coverageEnv';        // Env that instrumented .sols are tested in
 
 // Options
-let workingDir = '.';                       // Default location of contracts folder
-let port = 8555;                            // Default port - NOT 8545 & configurable via --port
-let accounts = 35;                          // Default number of accounts to run testrpc w
 let coverageOption = '--network coverage';  // Default truffle network execution flag
 let silence = '';                           // Default log level: configurable by --silence
 let log = console.log;                      // Default log level: configurable by --silence
@@ -54,18 +51,23 @@ function cleanUp(err) {
   }
 }
 // --------------------------------------- Script --------------------------------------------------
-const config = reqCwd.silent(`${workingDir}/.solcover.js`) || {};
+const config = reqCwd.silent('./.solcover.js') || {};
 
-if (config.dir) workingDir = config.dir;
-if (config.port) port = config.port;
-if (config.accounts) accounts = config.accounts;
+const workingDir = config.dir || '.';    // Relative path to contracts folder
+const port = config.port || 8555;        // Port testrpc listens on
+const accounts = config.accounts || 35;  // Number of accounts to testrpc launches with
 
+// Set testrpc options
+const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
+const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
+
+// Silence shell and script logging (for solcover's unit tests / CI)
 if (config.silent) {
-  silence = '> /dev/null 2>&1';       // Silence for solcover's unit tests / CI
+  silence = '> /dev/null 2>&1';
   log = () => {};
 }
 
-// Run the modified testrpc with large block limit, on (hopefully) unused port.
+// Run modified testrpc with large block limit, on (hopefully) unused port.
 // (Changes here should be also be added to the before() block of test/run.js).
 if (!config.norpc) {
   try {
@@ -78,10 +80,8 @@ if (!config.norpc) {
     } else {
       command = './node_modules/solcover/node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
     }
-
-    const options = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
-    testrpcProcess = childprocess.exec(command + options);
-    log(`Launching testrpc on port ${port}`);
+    testrpcProcess = childprocess.exec(command + testrpcOptions);
+    log(`Testrpc launched on port ${port}`);
   } catch (err) {
     const msg = `There was a problem launching testrpc: ${err}`;
     cleanUp(msg);
@@ -133,12 +133,15 @@ try {
 // 3. Instrument contract
 // 4. Save instrumented contract in the coverage environment folder where covered tests will run
 // 5. Add instrumentation info to the coverage map
+let currentFile;
 try {
   shell.ls(`${coverageDir}/contracts/**/*.sol`).forEach(file => {
     const migrations = `${coverageDir}/contracts/Migrations.sol`;
 
     if (file !== migrations) {
       log('Instrumenting ', file);
+      currentFile = file;
+
       const contractPath = path.resolve(file);
       const canonicalPath = contractPath.split('/coverageEnv').join('');
       const contract = fs.readFileSync(contractPath).toString();
@@ -148,15 +151,17 @@ try {
     }
   });
 } catch (err) {
-  cleanUp(err);
+  const msg = (`There was a problem instrumenting ${currentFile}: `);
+  cleanUp(msg + err);
 }
 
 // Run solcover's fork of truffle over instrumented contracts in the
 // coverage environment folder. Shell cd command needs to be invoked
 // as its own statement for command line options to work, apparently.
 try {
-  log('Launching Truffle (this can take a few seconds)...');
-  const command = `truffle test ${coverageOption} ${silence}`;
+  log('Launching test command (this can take a few seconds)...');
+  const defaultCommand = `truffle test ${coverageOption} ${silence}`;
+  const command = config.testCommand || defaultCommand;
   shell.cd('./coverageEnv');
   shell.exec(command);
   shell.cd('./..');
@@ -181,7 +186,6 @@ try {
 
 // Generate coverage / write coverage report / run istanbul
 try {
-  // coverage.generate(events, `${coverageDir}/contracts/`);
   coverage.generate(events, './contracts');
 
   const json = JSON.stringify(coverage.coverage);

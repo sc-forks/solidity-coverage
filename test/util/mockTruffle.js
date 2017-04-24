@@ -12,7 +12,7 @@ const shell = require('shelljs');
  * @param  {String} contract <contractName.sol> located in /test/sources/run/
  * @param  {[type]} test     <testName.js> located in /test/run/
  */
-module.exports.install = function install(contract, test, config) {
+module.exports.install = function install(contract, test, config ) {
   shell.mkdir('./mock');
   shell.mkdir('./mock/contracts');
   shell.mkdir('./mock/migrations');
