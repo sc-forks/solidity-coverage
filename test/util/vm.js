@@ -36,7 +36,8 @@ function getTypesFromAbi(abi, functionName) {
     return json.type;
   }
   const funcJson = abi.filter(matchesFunctionName)[0];
-  return (funcJson.inputs).map(getTypes);
+
+  return funcJson ? (funcJson.inputs).map(getTypes) : [];
 }
 
 /**

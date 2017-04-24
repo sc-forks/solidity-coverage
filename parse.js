@@ -197,9 +197,11 @@ parse.ContractOrLibraryStatement = function parseContractOrLibraryStatement(cont
     }];
   }
 
-  expression.body.forEach(construct => {
-    parse[construct.type](contract, construct);
-  });
+  if (expression.body) {
+    expression.body.forEach(construct => {
+      parse[construct.type](contract, construct);
+    });
+  }
 };
 
 parse.ContractStatement = function ParseContractStatement(contract, expression) {

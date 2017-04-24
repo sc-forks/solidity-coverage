@@ -50,8 +50,6 @@ describe('run', () => {
     collectGarbage();
   });
 
-  // This test should be positioned first (or second if flushing) in the suite because of
-  // the way we're launching testrpc
   it('simple contract: should generate coverage, cleanup & exit(0)', () => {
     // Directory should be clean
     assert(pathExists('./coverage') === false, 'should start without: coverage');

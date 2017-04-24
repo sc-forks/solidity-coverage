@@ -110,4 +110,20 @@ describe('generic statements', () => {
       done();
     }).catch(done);
   });
+
+  it('should cover an empty bodied contract statement', done => {
+    const contract = util.getCode('statements/empty-contract-body.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, null, []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {});
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {});
+      assert.deepEqual(mapping[filePath].f, {});
+      done();
+    }).catch(done);
+  });
 });
