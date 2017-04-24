@@ -3,6 +3,10 @@
 const solc = require('solc');
 const getInstrumentedVersion = require('./../instrumentSolidity.js');
 const util = require('./util/util.js');
+const path = require('path');
+const CoverageMap = require('./../coverageMap');
+const vm = require('./util/vm');
+const assert = require('assert');
 
 /**
  * NB: passing '1' to solc as an option activates the optimiser
@@ -10,6 +14,9 @@ const util = require('./util/util.js');
  *     and passing the error to mocha.
  */
 describe('function declarations', () => {
+  const filePath = path.resolve('./test.sol');
+  const pathPrefix = './';
+
   it('should compile after instrumenting an ordinary function declaration', () => {
     const contract = util.getCode('function/function.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
@@ -38,10 +45,95 @@ describe('function declarations', () => {
     util.report(output.errors);
   });
 
+  it('should compile after instrumenting a new->constructor-->method chain', () => {
+    const contract = util.getCode('function/chainable-new.sol');
+    const info = getInstrumentedVersion(contract, 'test.sol');
+    const output = solc.compile(info.contract, 1);
+    util.report(output.errors);
+  });
+
   it('should compile after instrumenting a constructor call that chains to a method call', () => {
     const contract = util.getCode('function/chainable.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
+  });
+
+  it('should compile after instrumenting a constructor-->method-->value chain', () => {
+    const contract = util.getCode('function/chainable-value.sol');
+    const info = getInstrumentedVersion(contract, 'test.sol');
+    const output = solc.compile(info.contract, 1);
+    util.report(output.errors);
+  });
+
+  it('should cover a simple invoked function call', done => {
+    const contract = util.getCode('function/function-call.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        7: 1,
+      });
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {
+        1: 1,
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+        2: 1,
+      });
+      done();
+    }).catch(done);
+  });
+
+  it('should cover a constructor call that chains to a method call', done => {
+    const contract = util.getCode('function/chainable.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+    // The vm runs out of gas here - but we can verify line / statement / fn
+    // coverage is getting mapped.
+    vm.execute(info.contract, 'a', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        9: 0,
+      });
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {
+        1: 0,
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 0,
+        2: 0,
+      });
+      done();
+    }).catch(done);
+  });
+
+  it('should cover a constructor call that chains to a method call', done => {
+    const contract = util.getCode('function/chainable-value.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+    // The vm runs out of gas here - but we can verify line / statement / fn
+    // coverage is getting mapped.
+    vm.execute(info.contract, 'a', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        10: 0,
+      });
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {
+        1: 0,
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 0,
+        2: 0,
+      });
+      done();
+    }).catch(done);
   });
 });

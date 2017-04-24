@@ -112,12 +112,12 @@ parse.MemberExpression = function parseMemberExpression(contract, expression) {
 };
 
 parse.CallExpression = function parseCallExpression(contract, expression) {
-  // Peek ahead to see if this is non-newed contract constructor chained to a method call
-  // AST represents this as nested nested call expressions and we only want to instrument it once.
-  if (expression.callee.object && expression.callee.object.type === 'CallExpression') {
+  // It looks like in any given chain of call expressions, only the head callee is an Identifier
+  // node ... and we only want to instrument the statement once.
+  if (expression.callee.type === 'Identifier') {
+    instrumenter.instrumentStatement(contract, expression);
     parse[expression.callee.type](contract, expression.callee);
   } else {
-    instrumenter.instrumentStatement(contract, expression);
     parse[expression.callee.type](contract, expression.callee);
   }
 };
