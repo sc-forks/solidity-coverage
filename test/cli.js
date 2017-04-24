@@ -40,13 +40,40 @@ describe('cli', () => {
     testrpcProcess.kill();
   });
 
-  // This pre-test flushes the suite. There's some kind of sequencing issue here in development,
-  // possibly tied to the use of ethereumjs-vm in the coverage tests?
-  // - tests pass w/out this if we only run these test - e.g. it only fails when running the suite.
-  // - the first test always fails unless there is a fresh testrpc install.
-  it('flush test suite', () => {
-    mock.install('Simple.sol', 'simple.js', config);
-    shell.exec(script); // <---- This fails mysteriously, but we don't test here.
+  // The 'config' tests ask exec.js to run testrpc on special ports, the subsequent tests use
+  // the testrpc launched in the before() block. For some reason config tests fail randomly
+  // unless they are at the top of the suite. Hard to debug since they pass if logging is turned
+  // on - there might be a timing issue around resource cleanup or something.
+  it('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
+    const privateKey = '0x3af46c9ac38ee1f01b05f9915080133f644bf57443f504d339082cb5285ccae4';
+    const balance = '0xfffffffffffffff';
+    const testConfig = Object.assign({}, config);
+
+    testConfig.testrpcOptions = `--account="${privateKey},${balance}" --port 8777`;
+    testConfig.norpc = false;
+    testConfig.port = 8777;
+
+    // Installed test will process.exit(1) and crash truffle if the test isn't
+    // loaded with the account specified above
+    mock.install('Simple.sol', 'testrpc-options.js', testConfig);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+    collectGarbage();
+  });
+
+  it('config with test command options string: should run test', () => {
+    assert(pathExists('./allFiredEvents') === false, 'should start without: events log');
+    const testConfig = Object.assign({}, config);
+
+    testConfig.testCommand = 'mocha --timeout 5000 > /dev/null 2>&1';
+    testConfig.norpc = false;
+    testConfig.port = 8888;
+
+    // Installed test will write a fake allFiredEvents to ./ after 4000ms
+    // allowing test to pass
+    mock.install('Simple.sol', 'command-options.js', testConfig);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
     collectGarbage();
   });
 
@@ -109,27 +136,6 @@ describe('cli', () => {
 
     assert(produced[ownedPath].fnMap['1'].name === 'Owned', 'coverage.json should map "Owned"');
     assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'coverage.json should map "isOwner"');
-    collectGarbage();
-  });
-
-  it('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
-
-    const privateKey = '0x3af46c9ac38ee1f01b05f9915080133f644bf57443f504d339082cb5285ccae4';
-    const balance = "0xfffffffffffffff";
-    const testConfig = Object.assign({}, config);
-    
-    testConfig.testrpcOptions = `--account="${privateKey},${balance}" --port 8777`;
-    testConfig.norpc = false;
-    testConfig.port = 8777;
-
-    // Installed test will process.exit(1) and crash truffle if the test isn't
-    // loaded with the account specified above
-    mock.install('Simple.sol', 'testrpc-options.js', testConfig);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
-
     collectGarbage();
   });
 
