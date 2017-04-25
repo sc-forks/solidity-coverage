@@ -6,12 +6,8 @@
 ### Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
 
-For more details about what this is, how it work and potential limitations, see 
+For more details about what this is, how it works and potential limitations, see 
 [the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
-
-This branch is an attempt to prepare solcover for npm publication and simplify its use as a
-command line utility. Gas cost issues are managed under the hood and the tool cleans up after 
-itself if (when) it crashes. 
 
 ### Install
 ```
@@ -24,18 +20,19 @@ $ ./node_modules/solcover/exec.js
 ```
 
 Tests run signficantly slower while coverage is being generated. A 1 to 2 minute delay 
-between the end of Truffle compilation and the beginning of test execution is not impossible if your
+between the end of Truffle compilation and the beginning of test execution is possible if your
 test suite is large. Large solidity files can also take a while to instrument.
 
 ### Configuration
 
-By default, solcover generates a stub `truffle.js` that accomodates its special gas needs and 
-connects to a modified version of testrpc on port 8555. If your tests can run on the development network
+By default, Solcover generates a stub `truffle.js` that accomodates its special gas needs and 
+connects to a modified version of testrpc on port 8555. If your tests will run on the development network
 using a standard `truffle.js` and a testrpc instance with no special options, you shouldn't have to 
 do any configuration. If your tests depend on logic added to `truffle.js` - for example: 
 [zeppelin-solidity](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js) 
-uses the file to expose a babel polyfill that its suite needs to run correctly - you can override the 
-default behavior by specifying a coverage network in `truffle.js`. 
+uses the file to expose a babel polyfill that its suite requires - you can override the 
+default behavior by declaring a coverage network in `truffle.js`. Solcover will use your 'truffle.js'
+instead of a dynamically generated one. 
 
 **Example coverage network config**
 ```javascript
@@ -61,12 +58,14 @@ You can also create a `.solcover.js` config file in the root directory of your p
 some additional options:
 + **port**: <Number> The port you want Solcover to run testrpc on / have truffle connect to.
 + **testrpcOptions**: <String> A string of options to be appended to a command line invocation 
-of testrpc. Ex: `--account="0x89a..f',10000" --port 8777`". If you use this option specify the port 
-in your testrpcOptions string AND as a `port` option.
+of testrpc. 
+  + Example: `--account="0x89a...b1f',10000" --port 8777`". 
+  + Note: you should specify the port in your `testrpcOptions` string AND as a `port` option.
 + **testCommand**: <String> By default Solcover runs `truffle test` or `truffle test --network coverage`. 
-`testCommand` let you run tests some other way: ex: `mocha --timeout 5000`. If you're doing this, you
-will probably need to make sure the web3 provider for your tests explicitly connects to the port solcover's 
-testrpc is set to run on, e.g: `var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8555"))`  
+This option lets you run tests some other way: ex: `mocha --timeout 5000`. You 
+will probably also need to make sure the web3 provider for your tests explicitly connects to the port Solcover's 
+testrpc is set to run on, e.g: 
+  + `var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8555"))`  
 
 **Example .solcover.js config file**
 ```
@@ -84,20 +83,20 @@ This is because the instrumentation process increases the gas costs for using th
 the extra events. If this is the case, then the coverage may be incomplete. To avoid this, using 
 `estimateGas` to estimate your gas costs should be more resilient in most cases.
 
-**Events testing**: Solcover injects events into your solidity files to log which lines your tests reach,
-so any tests that depend on how many events are fired or where the event sits in the logs array
+**Events testing**: Because Solcover injects events into your contracts to log which lines your tests reach,
+any tests that ask how many events are fired or where the event sits in the logs array
 will probably error while coverage is being generated.
 
 **Using `require` in `migrations.js` files**: Truffle overloads Node's `require` function but
 implements a simplified search algorithm for node_modules packages 
 ([see issue #383 at Truffle](https://github.com/trufflesuite/truffle/issues/383)). 
 Because Solcover copies an instrumented version of your project into a temporary folder, `require` 
-statements handled by Truffle internally don't resolve correctly.  
+statements handled by Truffle internally won't resolve correctly.  
 
 **Coveralls / CodeCov**: These CI services take the Istanbul reports generated by Solcover and display 
-line coverage. Istanbul's own html report provides significantly more detailed
-reporting and can show whether your tests actually cover all the conditional branches
-in your code. It can be found inside the `coverage` folder at `index.html` after you run the tool. 
+line coverage. Istanbul's own html report publishes significantly more detail and can show whether 
+your tests actually reach all the conditional branches in your code. It can be found inside the 
+`coverage` folder at `index.html` after you run the tool. 
 
 ### Examples
 
