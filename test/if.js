@@ -1,6 +1,5 @@
 /* eslint-env node, mocha */
 
-const solc = require('solc');
 const path = require('path');
 const getInstrumentedVersion = require('./../instrumentSolidity.js');
 const util = require('./util/util.js');

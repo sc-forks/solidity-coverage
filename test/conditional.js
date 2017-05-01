@@ -1,6 +1,5 @@
 /* eslint-env node, mocha */
 
-const solc = require('solc');
 const path = require('path');
 const getInstrumentedVersion = require('./../instrumentSolidity.js');
 const util = require('./util/util.js');
@@ -159,9 +158,10 @@ describe('conditional statements', () => {
   });
 
   // Solcover has trouble with this case. The conditional coverage strategy relies on being able to
-  // reference the left-hand variable before its value is assigned. Solidity doesn't allow this for 'var'.
+  // reference the left-hand variable before its value is assigned. Solidity doesn't allow this
+  // for 'var'.
 
-  /* it('should cover a variable delcaration assignment by conditional that reaches the alternate', (done) => {
+  /* it('should cover a var decl assignment by conditional that reaches the alternate', (done) => {
     const contract = util.getCode('conditional/variable-decl-assignment-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();

@@ -2,27 +2,33 @@
   "name": "solcover",
   "version": "0.0.1",
   "description": "",
-  "main": "runCoveredTests.js",
+  "bin": {
+    "solcover": "./exec.js"
+  },
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --timeout 30000",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 30000"
+    "test": "mocha --timeout 60000",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000",
+    "lint": "./node_modules/.bin/eslint --fix ./"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ethereumjs-testrpc": "https://github.com/ethereumjs/testrpc.git#5ba3c45b2ca306ab589f4a4c649d9afc39042680",
+    "commander": "^2.9.0",
+    "ethereumjs-testrpc-sc": "https://github.com/sc-forks/testrpc-sc.git",
     "istanbul": "^0.4.5",
+    "keccakjs": "^0.2.1",
     "mkdirp": "^0.5.1",
+    "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
     "solidity-parser": "0.3.0"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
-    "eslint": "^3.13.1",
+    "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0",
@@ -32,6 +38,6 @@
     "istanbul": "^0.4.5",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
-    "solc": "0.4.6"
+    "solc": "0.4.8"
   }
 }

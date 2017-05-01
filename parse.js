@@ -5,7 +5,10 @@ const instrumenter = require('./instrumenter');
 // functions where appropriate, which determine where to inject events.
 
 // Assign a dummy function to everything we might see in the AST
-['AssignmentExpression',
+['AssemblyAssignment',
+  'AssemblyItem',
+  'AssemblyLocalBinding',
+  'AssignmentExpression',
   'BinaryExpression',
   'BlockStatement',
   'BreakStatement',
@@ -24,12 +27,15 @@ const instrumenter = require('./instrumenter');
   'ExpressionStatement',
   'ForInStatement',
   'ForStatement',
+  'FunctionalAssemblyExpression',
   'FunctionDeclaration',
   'FunctionName',
   'Identifier',
   'IfStatement',
   'ImportStatement',
   'InformalParameter',
+  'InlineAssemblyBlock',
+  'InlineAssemblyStatement',
   'IsStatement',
   'LibraryStatement',
   'Literal',
@@ -106,11 +112,14 @@ parse.MemberExpression = function parseMemberExpression(contract, expression) {
 };
 
 parse.CallExpression = function parseCallExpression(contract, expression) {
-  instrumenter.instrumentStatement(contract, expression);
-  parse[expression.callee.type](contract, expression.callee);
-  // for (x in expression.arguments){
-    // parse[expression.arguments[x].type](contract, expression.arguments[x])
-  // }
+  // It looks like in any given chain of call expressions, only the head callee is an Identifier
+  // node ... and we only want to instrument the statement once.
+  if (expression.callee.type === 'Identifier') {
+    instrumenter.instrumentStatement(contract, expression);
+    parse[expression.callee.type](contract, expression.callee);
+  } else {
+    parse[expression.callee.type](contract, expression.callee);
+  }
 };
 
 parse.UnaryExpression = function parseUnaryExpression(contract, expression) {
@@ -188,9 +197,11 @@ parse.ContractOrLibraryStatement = function parseContractOrLibraryStatement(cont
     }];
   }
 
-  expression.body.forEach(construct => {
-    parse[construct.type](contract, construct);
-  });
+  if (expression.body) {
+    expression.body.forEach(construct => {
+      parse[construct.type](contract, construct);
+    });
+  }
 };
 
 parse.ContractStatement = function ParseContractStatement(contract, expression) {

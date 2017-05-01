@@ -3,10 +3,7 @@
 const solc = require('solc');
 const getInstrumentedVersion = require('./../instrumentSolidity.js');
 const util = require('./util/util.js');
-const CoverageMap = require('./../coverageMap');
 const path = require('path');
-const vm = require('./util/vm');
-const assert = require('assert');
 
 /**
  * NB: passing '1' to solc as an option activates the optimiser
@@ -15,7 +12,6 @@ const assert = require('assert');
  */
 describe('generic expressions', () => {
   const filePath = path.resolve('./test.sol');
-  const pathPrefix = './';
 
   it('should compile after instrumenting a single binary expression', () => {
     const contract = util.getCode('expressions/single-binary-expression.sol');
