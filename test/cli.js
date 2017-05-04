@@ -28,7 +28,7 @@ describe('cli', () => {
   };
 
   before(() => {
-    const command = `./node_modules/ethereumjs-testrpc-sc/bin/testrpc --gasLimit 0xfffffffffff --port ${port}`;
+    const command = `./node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port ${port}`;
     testrpcProcess = childprocess.exec(command);
   });
 
