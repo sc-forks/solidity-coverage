@@ -1,9 +1,9 @@
 {
-  "name": "solcover",
+  "name": "solidity-coverage",
   "version": "0.0.1",
   "description": "",
   "bin": {
-    "solcover": "./exec.js"
+    "solidity-coverage": "./exec.js"
   },
   "directories": {
     "test": "test"

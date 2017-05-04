@@ -18,7 +18,7 @@ $ npm install --save-dev https://github.com/sc-forks/solidity-coverage.git
 
 ### Run 
 ```
-$ ./node_modules/solidity-coverage/exec.js
+$ ./node_modules/.bin/solidity-coverage
 ```
 
 Tests run signficantly slower while coverage is being generated. A 1 to 2 minute delay 
@@ -58,20 +58,20 @@ module.exports = {
 
 You can also create a `.solcover.js` config file in the root directory of your project and specify 
 some additional options:
-+ **port**: <Number> The port you want solidity-coverage to run testrpc on / have truffle connect to.
-+ **testrpcOptions**: <String> A string of options to be appended to a command line invocation 
++ **port**: {Number} The port you want solidity-coverage to run testrpc on / have truffle connect to.
++ **testrpcOptions**: {String} A string of options to be appended to a command line invocation 
 of testrpc. 
   + Example: `--account="0x89a...b1f',10000" --port 8777`". 
   + Note: you should specify the port in your `testrpcOptions` string AND as a `port` option.
-+ **testCommand**: <String> By default solidity-coverage runs `truffle test` or `truffle test --network coverage`. 
++ **testCommand**: {String} By default solidity-coverage runs `truffle test` or `truffle test --network coverage`. 
 This option lets you run tests some other way: ex: `mocha --timeout 5000`. You 
 will probably also need to make sure the web3 provider for your tests explicitly connects to the port solidity-coverage's 
 testrpc is set to run on, e.g: 
   + `var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8555"))`
-+ **norpc**: <Boolean> : By default, false. When true, solidity-coverage will not launch its own testrpc instance. This
++ **norpc**: {Boolean} By default, false. When true, solidity-coverage will not launch its own testrpc instance. This
 can be useful if you are running tests using a different vm like the 
 [`sc-forks` version of `pyethereum`](https://github.com/sc-forks/pyethereum)  
-+ **dir**: <String> : By default, solidity-coverage looks for a `contracts` folder in your root
++ **dir**: {String} : By default, solidity-coverage looks for a `contracts` folder in your root
 directory. `dir` allows you to define a relative path from the root directory to the contracts
 folder. A `dir` of `./secretDirectory` would tell solidity-coverage to look for `./secretDirectory/contracts`
 

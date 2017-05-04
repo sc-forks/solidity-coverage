@@ -78,7 +78,7 @@ if (!config.norpc) {
     if (shell.test('-e', './node_modules/ethereumjs-testrpc-sc')) {
       command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
     } else {
-      command = './node_modules/solcover/node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
+      command = './node_modules/solidity-coverage/node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
     }
     testrpcProcess = childprocess.exec(command + testrpcOptions);
     log(`Testrpc launched on port ${port}`);
