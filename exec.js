@@ -70,22 +70,11 @@ if (config.silent) {
 // Run modified testrpc with large block limit, on (hopefully) unused port.
 // (Changes here should be also be added to the before() block of test/run.js).
 if (!config.norpc) {
-  try {
-    // NPM installs the testrpc-sc fork at different locations in node_modules based on
-    // whether testrpc is a pre-existing dependency of the project solcover is being added to
-    // using (--save-dev).
-    let command;
-    if (shell.test('-e', './node_modules/ethereumjs-testrpc-sc')) {
-      command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
-    } else {
-      command = './node_modules/solidity-coverage/node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
-    }
-    testrpcProcess = childprocess.exec(command + testrpcOptions);
-    log(`Testrpc launched on port ${port}`);
-  } catch (err) {
-    const msg = `There was a problem launching testrpc: ${err}`;
-    cleanUp(msg);
-  }
+  const command = './node_modules/.bin/testrpc-sc ';
+  testrpcProcess = childprocess.exec(command + testrpcOptions, null, (err) => {
+    if (err) cleanUp('testRpc errored after launching as a childprocess.');
+  });
+  log(`Launching testrpc on port ${port}`);
 }
 
 // Generate a copy of the target truffle project configured for solcover and save to the coverage
