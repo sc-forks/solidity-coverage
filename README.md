@@ -68,12 +68,16 @@ This option lets you run tests some other way: ex: `mocha --timeout 5000`. You
 will probably also need to make sure the web3 provider for your tests explicitly connects to the port solidity-coverage's 
 testrpc is set to run on, e.g: 
   + `var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8555"))`
-+ **norpc**: {Boolean} By default, false. When true, solidity-coverage will not launch its own testrpc instance. This
++ **norpc**: {Boolean} When true, solidity-coverage will not launch its own testrpc instance. This
 can be useful if you are running tests using a different vm like the 
-[`sc-forks` version of `pyethereum`](https://github.com/sc-forks/pyethereum)  
+[`sc-forks` version of `pyethereum`](https://github.com/sc-forks/pyethereum). (Default: false).  
++ **isTruffle**: {Boolean}: Set to false if your project does not have a migrations folder or a 
+`truffle.js` config file.
 + **dir**: {String} : By default, solidity-coverage looks for a `contracts` folder in your root
 directory. `dir` allows you to define a relative path from the root directory to the contracts
 folder. A `dir` of `./secretDirectory` would tell solidity-coverage to look for `./secretDirectory/contracts`
+
+
 
 **Example .solcover.js config file**
 ```javascript
