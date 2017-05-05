@@ -53,9 +53,10 @@ function cleanUp(err) {
 // --------------------------------------- Script --------------------------------------------------
 const config = reqCwd.silent('./.solcover.js') || {};
 
-const workingDir = config.dir || '.';    // Relative path to contracts folder
-const port = config.port || 8555;        // Port testrpc listens on
-const accounts = config.accounts || 35;  // Number of accounts to testrpc launches with
+const workingDir = config.dir || '.';       // Relative path to contracts folder
+const port = config.port || 8555;           // Port testrpc listens on
+const accounts = config.accounts || 35;     // Number of accounts to testrpc launches with
+const isTruffle = config.isTruffle || true; // Is target a truffle project?
 
 // Set testrpc options
 const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
@@ -71,45 +72,49 @@ if (config.silent) {
 // (Changes here should be also be added to the before() block of test/run.js).
 if (!config.norpc) {
   const command = './node_modules/.bin/testrpc-sc ';
-  testrpcProcess = childprocess.exec(command + testrpcOptions, null, (err) => {
+  testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
     if (err) cleanUp('testRpc errored after launching as a childprocess.');
   });
   log(`Launching testrpc on port ${port}`);
 }
 
-// Generate a copy of the target truffle project configured for solcover and save to the coverage
+// Generate a copy of the target project configured for solcover and save to the coverage
 // environment folder.
 log('Generating coverage environment');
 try {
+  // Common environment: /contracts/ & /test/
   shell.mkdir(`${coverageDir}`);
   shell.cp('-R', `${workingDir}/contracts`, `${coverageDir}`);
-  shell.cp('-R', `${workingDir}/migrations`, `${coverageDir}`);
   shell.cp('-R', `${workingDir}/test`, `${coverageDir}`);
 
-  const truffleConfig = reqCwd(`${workingDir}/truffle.js`);
+  // Truffle environment: + /migrations/, truffle.js
+  if (isTruffle) {
+    shell.cp('-R', `${workingDir}/migrations`, `${coverageDir}`);
+    const truffleConfig = reqCwd(`${workingDir}/truffle.js`);
 
-  // Coverage network opts specified: copy truffle.js whole to coverage environment
-  if (truffleConfig.networks.coverage) {
-    shell.cp(`${workingDir}/truffle.js`, `${coverageDir}/truffle.js`);
+    // Coverage network opts specified: copy truffle.js whole to coverage environment
+    if (truffleConfig.networks.coverage) {
+      shell.cp(`${workingDir}/truffle.js`, `${coverageDir}/truffle.js`);
 
-  // Coverage network opts NOT specified: default to the development network w/ modified
-  // port, gasLimit, gasPrice. Export the config object only.
-  } else {
-    const trufflejs = `
-      module.exports = {
-        networks: {
-          development: {
-            host: "localhost", 
-            network_id: "*",
-            port: ${port},
-            gas: ${gasLimitHex},
-            gasPrice: ${gasPriceHex}
+    // Coverage network opts NOT specified: default to the development network w/ modified
+    // port, gasLimit, gasPrice. Export the config object only.
+    } else {
+      const trufflejs = `
+        module.exports = {
+          networks: {
+            development: {
+              host: "localhost", 
+              network_id: "*",
+              port: ${port},
+              gas: ${gasLimitHex},
+              gasPrice: ${gasPriceHex}
+            }
           }
-        }
-      };`;
+        };`;
 
-    coverageOption = '';
-    fs.writeFileSync(`${coverageDir}/truffle.js`, trufflejs);
+      coverageOption = '';
+      fs.writeFileSync(`${coverageDir}/truffle.js`, trufflejs);
+    }
   }
 } catch (err) {
   const msg = ('There was a problem generating the coverage environment: ');
@@ -144,7 +149,7 @@ try {
   cleanUp(msg + err);
 }
 
-// Run solcover's fork of truffle over instrumented contracts in the
+// Run truffle over instrumented contracts in the
 // coverage environment folder. Shell cd command needs to be invoked
 // as its own statement for command line options to work, apparently.
 try {
