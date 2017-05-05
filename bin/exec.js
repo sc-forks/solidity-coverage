@@ -5,9 +5,9 @@ const fs = require('fs');
 const reqCwd = require('req-cwd');
 const path = require('path');
 const childprocess = require('child_process');
-const getInstrumentedVersion = require('./instrumentSolidity.js');
-const CoverageMap = require('./coverageMap.js');
 const istanbul = require('istanbul');
+const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
+const CoverageMap = require('./../lib/coverageMap.js');
 
 const istanbulCollector = new istanbul.Collector();
 const istanbulReporter = new istanbul.Reporter();

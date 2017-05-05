@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 
 const solc = require('solc');
-const getInstrumentedVersion = require('./../instrumentSolidity.js');
+const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
 
 describe('Battery test of production contracts: OpenZeppelin', () => {
