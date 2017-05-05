@@ -16,7 +16,7 @@ function collectGarbage() {
 
 describe('cli', () => {
   let testrpcProcess = null;
-  const script = 'node ./exec.js';
+  const script = 'node ./bin/exec.js';
   const port = 8555;
 
   const config = {
