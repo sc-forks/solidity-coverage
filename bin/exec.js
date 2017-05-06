@@ -56,7 +56,6 @@ const config = reqCwd.silent('./.solcover.js') || {};
 const workingDir = config.dir || '.';       // Relative path to contracts folder
 const port = config.port || 8555;           // Port testrpc listens on
 const accounts = config.accounts || 35;     // Number of accounts to testrpc launches with
-const isTruffle = config.isTruffle || true; // Is target a truffle project?
 
 // Set testrpc options
 const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
@@ -82,40 +81,9 @@ if (!config.norpc) {
 // environment folder.
 log('Generating coverage environment');
 try {
-  // Common environment: /contracts/ & /test/
+  // Gnosis-specific file structure 
   shell.mkdir(`${coverageDir}`);
   shell.cp('-R', `${workingDir}/contracts`, `${coverageDir}`);
-  shell.cp('-R', `${workingDir}/test`, `${coverageDir}`);
-
-  // Truffle environment: + /migrations/, truffle.js
-  if (isTruffle) {
-    shell.cp('-R', `${workingDir}/migrations`, `${coverageDir}`);
-    const truffleConfig = reqCwd(`${workingDir}/truffle.js`);
-
-    // Coverage network opts specified: copy truffle.js whole to coverage environment
-    if (truffleConfig.networks.coverage) {
-      shell.cp(`${workingDir}/truffle.js`, `${coverageDir}/truffle.js`);
-
-    // Coverage network opts NOT specified: default to the development network w/ modified
-    // port, gasLimit, gasPrice. Export the config object only.
-    } else {
-      const trufflejs = `
-        module.exports = {
-          networks: {
-            development: {
-              host: "localhost", 
-              network_id: "*",
-              port: ${port},
-              gas: ${gasLimitHex},
-              gasPrice: ${gasPriceHex}
-            }
-          }
-        };`;
-
-      coverageOption = '';
-      fs.writeFileSync(`${coverageDir}/truffle.js`, trufflejs);
-    }
-  }
 } catch (err) {
   const msg = ('There was a problem generating the coverage environment: ');
   cleanUp(msg + err);
