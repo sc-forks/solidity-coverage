@@ -9,11 +9,11 @@
 For more details about what this is, how it works and potential limitations, see 
 [the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
 
-(solidity-coverage is a stand-alone fork of [Solcover](https://github.com/JoinColony/solcover))
+**solidity-coverage** is a stand-alone fork of [Solcover](https://github.com/JoinColony/solcover)
 
 ### Install
 ```
-$ npm install --save-dev https://github.com/sc-forks/solidity-coverage.git
+$ npm install --save-dev solidity-coverage
 ```
 
 ### Run 
@@ -71,8 +71,6 @@ testrpc is set to run on, e.g:
 + **norpc**: {Boolean} When true, solidity-coverage will not launch its own testrpc instance. This
 can be useful if you are running tests using a different vm like the 
 [`sc-forks` version of `pyethereum`](https://github.com/sc-forks/pyethereum). (Default: false).  
-+ **isTruffle**: {Boolean}: Set to false if your project does not have a migrations folder or a 
-`truffle.js` config file.
 + **dir**: {String} : By default, solidity-coverage looks for a `contracts` folder in your root
 directory. `dir` allows you to define a relative path from the root directory to the contracts
 folder. A `dir` of `./secretDirectory` would tell solidity-coverage to look for `./secretDirectory/contracts`
@@ -85,7 +83,7 @@ module.exports = {
     port: 6545,
     testrpcOptions: '-p 6545 -u 0x54fd80d6ae7584d8e9a19fe1df43f04e5282cc43',
     testCommand: 'mocha --timeout 5000',
-    norpc: true
+    norpc: true,
     dir: './secretDirectory'
 };
 ```
@@ -116,10 +114,7 @@ your tests actually reach all the conditional branches in your code. It can be f
 
 **WARNING**: This utility is in development and its accuracy is unknown. If you 
 find discrepancies between the coverage report and your suite's behavior, please open an 
-[issue](https://github.com/sc-forks/solidity-coverage/issues). The purpose of 
-the following examples is to help you install solidity-coverage in your own project and evaluate the 
-coverage of your own tests. The reports below are **not** meaningful analyses of the 
-the past or present state of any project's testing regime.  
+[issue](https://github.com/sc-forks/solidity-coverage/issues). 
 
 + **metacoin**: The default truffle project
   + [HTML reports](https://sc-forks.github.io/metacoin/)
@@ -135,14 +130,10 @@ the past or present state of any project's testing regime.
 
 Contributions are welcome! If you're opening a PR that adds features please consider writing some
 [unit tests](https://github.com/sc-forks/solidity-coverage/tree/master/test) for them. You could 
-also lint your submission by running 'npm run lint'. Bugs can be reported in the 
-[issues](https://github.com/sc-forks/solidity-coverage/issues)  
+also lint your submission with `npm run lint`. Bugs can be reported in the 
+[issues](https://github.com/sc-forks/solidity-coverage/issues).  
 
 ### Contributors
 + [@area](https://github.com/area)
 + [@cgewecke](https://github.com/cgewecke)
 + [@adriamb](https://github.com/adriamb)
-
-### TODO
-
-- [ ] Release on NPM 
