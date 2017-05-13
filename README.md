@@ -9,11 +9,11 @@
 For more details about what this is, how it works and potential limitations, see 
 [the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
 
-(solidity-coverage is a stand-alone fork of [Solcover](https://github.com/JoinColony/solcover))
+**solidity-coverage** is a stand-alone fork of [Solcover](https://github.com/JoinColony/solcover)
 
 ### Install
 ```
-$ npm install --save-dev https://github.com/sc-forks/solidity-coverage.git
+$ npm install --save-dev solidity-coverage
 ```
 
 ### Run 
@@ -83,7 +83,7 @@ module.exports = {
     port: 6545,
     testrpcOptions: '-p 6545 -u 0x54fd80d6ae7584d8e9a19fe1df43f04e5282cc43',
     testCommand: 'mocha --timeout 5000',
-    norpc: true
+    norpc: true,
     dir: './secretDirectory'
 };
 ```
@@ -130,14 +130,10 @@ find discrepancies between the coverage report and your suite's behavior, please
 
 Contributions are welcome! If you're opening a PR that adds features please consider writing some
 [unit tests](https://github.com/sc-forks/solidity-coverage/tree/master/test) for them. You could 
-also lint your submission by running 'npm run lint'. Bugs can be reported in the 
-[issues](https://github.com/sc-forks/solidity-coverage/issues)  
+also lint your submission with `npm run lint`. Bugs can be reported in the 
+[issues](https://github.com/sc-forks/solidity-coverage/issues).  
 
 ### Contributors
 + [@area](https://github.com/area)
 + [@cgewecke](https://github.com/cgewecke)
 + [@adriamb](https://github.com/adriamb)
-
-### TODO
-
-- [ ] Release on NPM 
