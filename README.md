@@ -1,8 +1,8 @@
-[![Stories in Ready](https://badge.waffle.io/sc-forks/solidity-coverage.png?label=ready&title=Ready)](https://waffle.io/sc-forks/solidity-coverage?utm_source=badge)
 # solidity-coverage
 
 [![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)](https://circleci.com/gh/sc-forks/solidity-coverage)
 [![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/master/graph/badge.svg)](https://codecov.io/gh/sc-forks/solidity-coverage)
+[![Stories in Ready](https://badge.waffle.io/sc-forks/solidity-coverage.png?label=ready&title=Ready)](https://waffle.io/sc-forks/solidity-coverage?utm_source=badge)
 
 ### Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
