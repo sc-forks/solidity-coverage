@@ -102,10 +102,10 @@ Because solidity-coverage copies an instrumented version of your project into a 
 statements handled by Truffle internally won't resolve correctly.  
 
 **Using HDWalletProvider in `truffle.js`**: [See Truffle issue #348](https://github.com/trufflesuite/truffle/issues/348).
-HDWalletProvider tends to crash solidity-coverage and you should make sure its constructor isn't invoked while 
-coverage is running. An example workaround can be found at the zeppelin-solidity project 
-[here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), where a 
-coverage script sets a shell environment variable and `truffle.js` checks it before instantiating the wallet. 
+HDWalletProvider crashes solidity-coverage, so its constructor shouldn't be invoked when generating
+coverage. An example workaround can be found at the zeppelin-solidity project 
+[here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), which uses a 
+shell script to set environment variable and has `truffle.js` check it before instantiating the wallet. 
 
 ### Examples
 
