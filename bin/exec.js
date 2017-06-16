@@ -54,12 +54,8 @@ function cleanUp(err) {
 const config = reqCwd.silent('./.solcover.js') || {};
 
 const workingDir = config.dir || '.';       // Relative path to contracts folder
-const port = config.port || 8555;           // Port testrpc listens on
+let port = config.port || 8555;             // Port testrpc listens on
 const accounts = config.accounts || 35;     // Number of accounts to testrpc launches with
-
-// Set testrpc options
-const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
-const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
 
 // Silence shell and script logging (for solcover's unit tests / CI)
 if (config.silent) {
@@ -67,27 +63,16 @@ if (config.silent) {
   log = () => {};
 }
 
-// Run modified testrpc with large block limit, on (hopefully) unused port.
-// (Changes here should be also be added to the before() block of test/run.js).
-if (!config.norpc) {
-  const command = './node_modules/.bin/testrpc-sc ';
-  testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
-    if (err) cleanUp('testRpc errored after launching as a childprocess.');
-  });
-  log(`Launching testrpc on port ${port}`);
-}
-
 // Generate a copy of the target project configured for solcover and save to the coverage
 // environment folder.
 log('Generating coverage environment');
 try {
-  
-  // Truffle environment: 
-  // contracts/  
-  // test/ 
-  // migrations/ 
+  // Truffle environment:
+  // contracts/
+  // test/
+  // migrations/
   // truffle.js
-  
+
   shell.mkdir(`${coverageDir}`);
   shell.cp('-R', `${workingDir}/contracts`, `${coverageDir}`);
   shell.cp('-R', `${workingDir}/test`, `${coverageDir}`);
@@ -97,6 +82,7 @@ try {
 
   // Coverage network opts specified: copy truffle.js whole to coverage environment
   if (truffleConfig.networks.coverage) {
+    port = truffleConfig.networks.coverage.port || port;
     shell.cp(`${workingDir}/truffle.js`, `${coverageDir}/truffle.js`);
 
   // Coverage network opts NOT specified: default to the development network w/ modified
@@ -149,6 +135,20 @@ try {
 } catch (err) {
   const msg = (`There was a problem instrumenting ${currentFile}: `);
   cleanUp(msg + err);
+}
+
+// Set testrpc options
+const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
+const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
+
+// Run modified testrpc with large block limit, on (hopefully) unused port.
+// (Changes here should be also be added to the before() block of test/run.js).
+if (!config.norpc) {
+  const command = './node_modules/.bin/testrpc-sc ';
+  testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
+    if (err) cleanUp('testRpc errored after launching as a childprocess.');
+  });
+  log(`Launching testrpc on port ${port}`);
 }
 
 // Run truffle over instrumented contracts in the

@@ -12,13 +12,42 @@ const shell = require('shelljs');
  * @param  {String} contract <contractName.sol> located in /test/sources/cli/
  * @param  {[type]} test     <testName.js> located in /test/cli/
  */
-module.exports.install = function install(contract, test, config) {
+module.exports.install = function install(contract, test, config, _trufflejs) {
+  const configjs = `module.exports = ${JSON.stringify(config)}`;
+  const contractLocation = `./${contract}`;
+
+  // Mock migrations
+  const initialMigration = `
+    let Migrations = artifacts.require('Migrations.sol');
+    module.exports = function(deployer) {
+      deployer.deploy(Migrations);
+    };`;
+
+  const deployContracts = `
+    var contract = artifacts.require('${contractLocation}');
+    module.exports = function(deployer) {
+      deployer.deploy(contract);
+    };`;
+
+  // Mock truffle.js
+  const trufflejs = _trufflejs ||
+
+  `module.exports = {
+    networks: {
+      development: {
+        host: "localhost", 
+        port: 8545,
+        network_id: "*"
+      }
+    }
+  };`;
+
+  // Generate mock
   shell.mkdir('./mock');
   shell.mkdir('./mock/contracts');
   shell.mkdir('./mock/migrations');
   shell.mkdir('./mock/test');
 
-  // Mock contracts
   if (Array.isArray(contract)) {
     contract.forEach(item => {
       shell.cp(`./test/sources/cli/${item}`, `./mock/contracts/${item}`);
@@ -28,41 +57,11 @@ module.exports.install = function install(contract, test, config) {
   }
 
   shell.cp('./test/sources/cli/Migrations.sol', './mock/contracts/Migrations.sol');
-
-  // Mock migrations
-  const initialMigration = `
-    let Migrations = artifacts.require('Migrations.sol');
-    module.exports = function(deployer) {
-      deployer.deploy(Migrations);
-    };`;
-
-  const contractLocation = `./${contract}`;
-  const deployContracts = `
-    var contract = artifacts.require('${contractLocation}');
-    module.exports = function(deployer) {
-      deployer.deploy(contract);
-    };`;
-
   fs.writeFileSync('./mock/migrations/1_initial_migration.js', initialMigration);
   fs.writeFileSync('./mock/migrations/2_deploy_contracts.js', deployContracts);
-
-  // Mock test
-  shell.cp(`./test/cli/${test}`, `./mock/test/${test}`);
-
-  // Mock truffle.js
-  const trufflejs = `module.exports = {
-                    networks: {
-                      development: {
-                        host: "localhost", 
-                        port: 8545,
-                        network_id: "*"
-                      }}};`
-                  ;
-
-  const configjs = `module.exports = ${JSON.stringify(config)}`;
-
   fs.writeFileSync('./mock/truffle.js', trufflejs);
   fs.writeFileSync('./.solcover.js', configjs);
+  shell.cp(`./test/cli/${test}`, `./mock/test/${test}`);
 };
 
 /**

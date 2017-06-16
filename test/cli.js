@@ -84,6 +84,51 @@ describe('cli', () => {
     }
   });
 
+  it('trufflejs specifies coverage network: should generate coverage, cleanup and exit(0)', () => {
+    if (!process.env.CI) {
+      const trufflejs =
+      `module.exports = {
+        networks: {
+          development: {
+            host: "localhost", 
+            port: 8545,
+            network_id: "*"
+          },
+          coverage: {
+            host: "localhost", 
+            port: 8999,
+            network_id: "*"
+          }
+        }
+      };`;
+
+      const testConfig = Object.assign({}, config);
+      testConfig.norpc = false;
+      testConfig.port = 8555; // Manually inspect that port is actually set to 8999
+
+      // Directory should be clean
+      assert(pathExists('./coverage') === false, 'should start without: coverage');
+      assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+
+      // Run script (exits 0);
+      mock.install('Simple.sol', 'simple.js', testConfig, trufflejs);
+      shell.exec(script);
+      assert(shell.error() === null, 'script should not error');
+
+      // Directory should have coverage report
+      assert(pathExists('./coverage') === true, 'script should gen coverage folder');
+      assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+
+      // Coverage should be real.
+      // This test is tightly bound to the function names in Simple.sol
+      const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+      const path = Object.keys(produced)[0];
+      assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
+      assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+      collectGarbage();
+    }
+  });
+
   it('simple contract: should generate coverage, cleanup & exit(0)', () => {
     // Directory should be clean
     assert(pathExists('./coverage') === false, 'should start without: coverage');
