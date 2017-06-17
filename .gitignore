@@ -1,4 +1,5 @@
 allFiredEvents
+scTopics
 coverage.json
 coverage/
 node_modules/
