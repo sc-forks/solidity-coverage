@@ -41,6 +41,7 @@ function cleanUp(err) {
   shell.config.silent = true;
   shell.rm('-Rf', `${coverageDir}`);
   shell.rm('./allFiredEvents');
+  shell.rm('./scTopics');
   if (testrpcProcess) { testrpcProcess.kill(); }
 
   if (err) {
