@@ -1,12 +1,18 @@
 machine:
   node:
-    version: 6.9.1
+    version: 6.11.0
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+
 dependencies:
   pre:
     - npm install -g truffle
-    - rm -rf node_modules/
+  override:
+    - yarn
+  cache_directories:
+    - ~/.cache/yarn
 test:
   override:
-    - npm run test-cov
+    - yarn run test-cov
   post:
     - bash <(curl -s https://codecov.io/bash)
