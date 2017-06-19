@@ -567,9 +567,9 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-"bignumber.js@git+https://github.com/debris/bignumber.js.git#master":
+"bignumber.js@git+https://github.com/debris/bignumber.js#master":
   version "2.0.7"
-  resolved "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2"
+  resolved "git+https://github.com/debris/bignumber.js#94d7146671b9719e00a09c29b01a691bc85048c2"
 
 bignumber.js@~2.1.4:
   version "2.1.4"
@@ -1581,7 +1581,7 @@ glob@^5.0.15:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@~7.1.1:
+glob@^7.0.0, glob@^7.0.3, glob@~7.1.1:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -2382,7 +2382,7 @@ mocha@^2.4.5:
     supports-color "1.2.0"
     to-iso-string "0.0.2"
 
-mocha@^3.1.0:
+mocha@^3.1.0, mocha@^3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-3.4.2.tgz#d0ef4d332126dbf18d0d640c9b382dd48be97594"
   dependencies:
@@ -2512,6 +2512,10 @@ optionator@^0.8.1, optionator@^0.8.2:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
     wordwrap "~1.0.0"
+
+original-require@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/original-require/-/original-require-1.0.1.tgz#0f130471584cd33511c5ec38c8d59213f9ac5e20"
 
 os-homedir@^1.0.0, os-homedir@^1.0.1:
   version "1.0.2"
@@ -2940,13 +2944,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@^2.2.8:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.1.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
-  dependencies:
-    glob "^7.0.5"
-
-rimraf@~2.2.6:
+rimraf@^2.2.8, rimraf@~2.2.6:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
@@ -3102,6 +3100,16 @@ solc@0.4.6:
 solc@0.4.8, solc@^0.4.2:
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.8.tgz#96abbee1266341ae97fb4bdc3abcc9bc1b5052ab"
+  dependencies:
+    fs-extra "^0.30.0"
+    memorystream "^0.3.1"
+    require-from-string "^1.1.0"
+    semver "^5.3.0"
+    yargs "^4.7.1"
+
+solc@^0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.11.tgz#2522eb43e7c0419bac2060b96e20a2593bfb5e8b"
   dependencies:
     fs-extra "^0.30.0"
     memorystream "^0.3.1"
@@ -3350,6 +3358,14 @@ trim-right@^1.0.1:
 trim@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.1.tgz#5858547f6b290757ee95cccc666fb50084c460dd"
+
+truffle@^3.2.5:
+  version "3.2.93"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-3.2.93.tgz#a9b6994b6c45579e1ed8364e4d3d010f7d1f8877"
+  dependencies:
+    mocha "^3.4.2"
+    original-require "^1.0.1"
+    solc "^0.4.11"
 
 tryit@^1.0.1:
   version "1.0.3"

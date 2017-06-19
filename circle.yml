@@ -5,8 +5,6 @@ machine:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
-  pre:
-    - npm install -g truffle
   override:
     - yarn
   cache_directories:
