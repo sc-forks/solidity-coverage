@@ -25,10 +25,11 @@ const coverageDir = './coverageEnv';        // Env that instrumented .sols are t
 // Options
 let coverageOption = '--network coverage';  // Default truffle network execution flag
 let silence = '';                           // Default log level: configurable by --silence
-let log = console.log;                      // Default log level: configurable by --silence
+let log = console.log;
 
 let testrpcProcess;                         // ref to testrpc server we need to close on exit
 let events;                                 // ref to string loaded from 'allFiredEvents'
+let testsErrored = null;                    // flag set to non-null if truffle tests error
 
 // --------------------------------------- Utilities -----------------------------------------------
 /**
@@ -46,6 +47,9 @@ function cleanUp(err) {
 
   if (err) {
     log(`${err}\nExiting without generating coverage...`);
+    process.exit(1);
+  } else if (testsErrored) {
+    log('Some truffle tests failed while running coverage');
     process.exit(1);
   } else {
     process.exit(0);
@@ -161,6 +165,7 @@ try {
   const command = config.testCommand || defaultCommand;
   shell.cd('./coverageEnv');
   shell.exec(command);
+  testsErrored = shell.error();
   shell.cd('./..');
 } catch (err) {
   cleanUp(err);

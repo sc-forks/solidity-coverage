@@ -6,9 +6,7 @@ const Simple = artifacts.require('./Simple.sol');
 contract('Simple', accounts => {
   // Crash truffle if the account loaded in the options string isn't found here.
   it('should load with expected account', () => {
-    if (accounts[0] !== '0xa4860cedd5143bd63f347cab453bf91425f8404f') {
-      process.exit(1);
-    }
+    assert(accounts[0] === '0xa4860cedd5143bd63f347cab453bf91425f8404f');
   });
 
   // Generate some coverage so the script doesn't exit(1) because there are no events
