@@ -13,6 +13,7 @@
   "rules": {
     /* General  */
     "consistent-return": [0],
+    "no-return-assign": [0],
     "complexity": ["error", 6],
     "eol-last": [0],
     "eqeqeq": ["error", "smart"],

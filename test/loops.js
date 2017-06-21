@@ -11,6 +11,8 @@ describe('for and while statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
+  before(() => process.env.NO_EVENTS_FILTER = true);
+
   it('should cover a for statement with a bracketed body (multiline)', done => {
     const contract = util.getCode('loops/for-with-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);

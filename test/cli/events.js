@@ -3,7 +3,7 @@
 
 const Events = artifacts.require('./Events.sol');
 
-contract('Events', () => {
+contract('Events', accounts => {
   it('logs events correctly', done => {
     const loggedEvents = [];
     Events.deployed().then(instance => {
@@ -11,13 +11,9 @@ contract('Events', () => {
       allEvents.watch((error, event) => { loggedEvents.push(event); });
 
       instance.test(5).then(() => {
-        if (loggedEvents.length > 2) { 
-          assert(false, 'Did not filter events correctly'); 
-        } else { 
-          assert(true); 
-        }
-
-        done();
+        const bad = loggedEvents.filter(e => e.event !== 'LogEventOne' && e.event !== 'LogEventTwo');
+        assert(bad.length === 0, 'Did not filter events correctly');
+        allEvents.stopWatching(done);
       });
     });
   });

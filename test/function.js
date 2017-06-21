@@ -17,6 +17,8 @@ describe('function declarations', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
+  before(() => process.env.NO_EVENTS_FILTER = true);
+
   it('should compile after instrumenting an ordinary function declaration', () => {
     const contract = util.getCode('function/function.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');

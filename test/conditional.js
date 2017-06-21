@@ -11,6 +11,8 @@ describe('conditional statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
+  before(() => process.env.NO_EVENTS_FILTER = true);
+
   it('should cover a conditional that reaches the consequent (same-line)', done => {
     const contract = util.getCode('conditional/sameline-consequent.sol');
     const info = getInstrumentedVersion(contract, filePath);
