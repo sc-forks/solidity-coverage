@@ -13,6 +13,7 @@
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000",
     "lint": "./node_modules/.bin/eslint --fix ./"
   },
+  "homepage": "https://github.com/sc-forks/solidity-coverage",
   "author": "",
   "license": "ISC",
   "dependencies": {

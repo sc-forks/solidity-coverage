@@ -59,7 +59,10 @@ module.exports = {
 
 You can also create a `.solcover.js` config file in the root directory of your project and specify 
 some additional options:
+
+
 + **port**: *{ Number }* Port to run testrpc on / have truffle connect to. (Default: 8555)
++ **accounts**: *{ Number }* Number of accounts to launch testrpc with. (Default: 35)
 + **testrpcOptions**: *{ String }* options to append to a command line invocation of testrpc. 
   + ex: `--secure --unlock "0x1234..." --unlock "0xabcd..."`. 
   + NB: if you specify the port in your rpc options string, also declare it as a `port` option.
@@ -69,9 +72,9 @@ you run an arbitrary test command instead, like: `mocha --timeout 5000`.
   + make sure you don't have another instance of testrpc running on that port (web3 will error if you do). 
 + **norpc**: *{ Boolean }* When true, solidity-coverage will not launch its own testrpc instance. This
 can be useful if you are using a different vm like the [sc-forks version of pyethereum](https://github.com/sc-forks/pyethereum).  
-+ **dir**: *{ String }* : Solidity-coverage usually looks for a `contracts` folder in your root
-directory. `dir` allows you to define a relative path from the root directory to the contracts
-folder. `dir: "./secretDirectory"` would tell solidity-coverage to look for `./secretDirectory/contracts`
++ **dir**: *{ String }* : Solidity-coverage usually looks for `contracts` and `test` folders in your root
+directory. `dir` allows you to define a relative path from the root directory to those assets. 
+`dir: "./<dirname>"` would tell solidity-coverage to look for `./<dirname>/contracts/` and `./<dirname>/test/`
 
 **Example .solcover.js config file**
 ```javascript
@@ -91,10 +94,6 @@ This is because the instrumentation process increases the gas costs for using th
 the extra events. If this is the case, then the coverage may be incomplete. To avoid this, using 
 `estimateGas` to estimate your gas costs should be more resilient in most cases.
 
-**Events testing**: Because solidity-coverage injects events into your contracts to log which lines your tests reach,
-any tests that ask how many events are fired or where the event sits in the logs array
-will probably error while coverage is being generated.
-
 **Using `require` in `migrations.js` files**: Truffle overloads Node's `require` function but
 implements a simplified search algorithm for node_modules packages 
 ([see Truffle issue #383](https://github.com/trufflesuite/truffle/issues/383)). 
@@ -102,10 +101,10 @@ Because solidity-coverage copies an instrumented version of your project into a 
 statements handled by Truffle internally won't resolve correctly.  
 
 **Using HDWalletProvider in `truffle.js`**: [See Truffle issue #348](https://github.com/trufflesuite/truffle/issues/348).
-HDWalletProvider crashes solidity-coverage, so its constructor shouldn't be invoked when generating
-coverage. An example workaround can be found at the zeppelin-solidity project 
-[here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), which uses a 
-shell script to set environment variable and has `truffle.js` check it before instantiating the wallet. 
+HDWalletProvider crashes solidity-coverage, so its constructor shouldn't be invoked while running this tool. 
+A workaround can be found at the zeppelin-solidity project 
+[here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), where a 
+shell script is used to set an environment variable which `truffle.js` checks before instantiating the wallet. 
 
 ### Examples
 
