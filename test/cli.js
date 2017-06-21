@@ -84,6 +84,34 @@ describe('cli', () => {
     }
   });
 
+  it('contract tests events: tests should pass without errors', () => {
+    if (!process.env.CI) {
+      assert(pathExists('./coverage') === false, 'should start without: coverage');
+      assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+
+      const testConfig = Object.assign({}, config);
+
+      testConfig.norpc = false;
+      testConfig.port = 8889;
+
+      mock.install('Events.sol', 'events.js', testConfig);
+      shell.exec(script);
+      assert(shell.error() === null, 'script should not error');
+
+      // Directory should have coverage report
+      assert(pathExists('./coverage') === true, 'script should gen coverage folder');
+      assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+
+      // Coverage should be real.
+      // This test is tightly bound to the function names in Simple.sol
+      const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+      const path = Object.keys(produced)[0];
+      assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
+      assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+      collectGarbage();
+    }
+  });
+
   it('trufflejs specifies coverage network: should generate coverage, cleanup and exit(0)', () => {
     if (!process.env.CI) {
       const trufflejs =
@@ -167,30 +195,6 @@ describe('cli', () => {
     const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
     const path = Object.keys(produced)[0];
     assert(produced[path].fnMap['1'].name === 'addTwo', 'coverage.json should map "addTwo"');
-    collectGarbage();
-  });
-
-  it('contract tests events: tests should pass without errors', () => {
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
-
-    mock.install('Events.sol', 'events.js', config);
-    shell.exec(script);
-
-    // **** DISABLED PENDING TESTRPC FILTER WORK *****
-    // assert(shell.error() === null, 'script should not error');
-    // ***********************************************
-
-    // Directory should have coverage report
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
-
-    // Coverage should be real.
-    // This test is tightly bound to the function names in Simple.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
     collectGarbage();
   });
 
