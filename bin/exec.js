@@ -83,10 +83,10 @@ try {
   shell.cp('-R', `${workingDir}/test`, `${coverageDir}`);
   shell.cp('-R', `${workingDir}/migrations`, `${coverageDir}`);
 
-  const truffleConfig = reqCwd(`${workingDir}/truffle.js`);
+  const truffleConfig = reqCwd.silent(`${workingDir}/truffle.js`);
 
   // Coverage network opts specified: copy truffle.js whole to coverage environment
-  if (truffleConfig.networks.coverage) {
+  if (truffleConfig && truffleConfig.networks && truffleConfig.networks.coverage) {
     port = truffleConfig.networks.coverage.port || port;
     shell.cp(`${workingDir}/truffle.js`, `${coverageDir}/truffle.js`);
 
@@ -142,21 +142,20 @@ try {
   cleanUp(msg + err);
 }
 
-// Set testrpc options
-const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
-const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
-
 // Run modified testrpc with large block limit, on (hopefully) unused port.
 // (Changes here should be also be added to the before() block of test/run.js).
 if (!config.norpc) {
+  const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
+  const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
   const command = './node_modules/.bin/testrpc-sc ';
+  
   testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
     if (err) cleanUp('testRpc errored after launching as a childprocess.');
   });
   log(`Launching testrpc on port ${port}`);
 }
 
-// Run truffle over instrumented contracts in the
+// Run truffle (or config.testCommand) over instrumented contracts in the
 // coverage environment folder. Shell cd command needs to be invoked
 // as its own statement for command line options to work, apparently.
 try {
