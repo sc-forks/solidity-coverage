@@ -64,8 +64,8 @@ some additional options:
 + **port**: *{ Number }* Port to run testrpc on / have truffle connect to. (Default: 8555)
 + **accounts**: *{ Number }* Number of accounts to launch testrpc with. (Default: 35)
 + **testrpcOptions**: *{ String }* options to append to a command line invocation of testrpc.
-  + ex: `--secure --unlock "0x1234..." --unlock "0xabcd..."`.
-  + NB: if you specify the port in your rpc options string, also declare it as a `port` option.
+  + ex: `--secure --port 8555 --unlock "0x1234..." --unlock "0xabcd..."`.
+  + NB: you should specify a port in your rpc options string and also declare it in the config's `port` option.
 + **testCommand**: *{ String }* By default solidity-coverage runs `truffle test`. This option lets
 you run an arbitrary test command instead, like: `mocha --timeout 5000`.
   + remember to set the config's port option to whatever port your tests use (probably 8545).
