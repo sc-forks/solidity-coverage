@@ -29,6 +29,9 @@ module.exports.install = function install(contract, test, config, _trufflejs) {
       deployer.deploy(contract);
     };`;
 
+  // Mock external asset
+  const asset = 'module.exports = { value: true };';
+
   // Mock truffle.js
   const trufflejs = _trufflejs ||
 
@@ -46,6 +49,8 @@ module.exports.install = function install(contract, test, config, _trufflejs) {
   shell.mkdir('./mock');
   shell.mkdir('./mock/contracts');
   shell.mkdir('./mock/migrations');
+  shell.mkdir('./mock/assets');
+  shell.mkdir('./mock/node_modules');
   shell.mkdir('./mock/test');
 
   if (Array.isArray(contract)) {
@@ -60,15 +65,15 @@ module.exports.install = function install(contract, test, config, _trufflejs) {
   fs.writeFileSync('./mock/migrations/1_initial_migration.js', initialMigration);
   fs.writeFileSync('./mock/migrations/2_deploy_contracts.js', deployContracts);
   fs.writeFileSync('./mock/truffle.js', trufflejs);
+  fs.writeFileSync('./mock/assets/asset.js', asset);
   fs.writeFileSync('./.solcover.js', configjs);
   shell.cp(`./test/cli/${test}`, `./mock/test/${test}`);
 };
 
 /**
- * Installs mock truffle project at ./mock with a single contract
+ * Installs mock truffle project at ./mock with two contracts - one inherits from the other
  * and test specified by the params.
- * @param  {String} contract <contractName.sol> located in /test/sources/cli/
- * @param  {[type]} test     <testName.js> located in /test/cli/
+ * @param  {config} .solcover.js configuration
  */
 module.exports.installInheritanceTest = function installInheritanceTest(config) {
   shell.mkdir('./mock');
