@@ -147,7 +147,7 @@ try {
 if (!config.norpc) {
   const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
   const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
-  const command = './node_modules/.bin/testrpc-sc ';
+  const command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
 
   testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
     if (err) cleanUp('testRpc errored after launching as a childprocess.');
