@@ -180,6 +180,29 @@ describe('cli', () => {
     collectGarbage();
   });
 
+  it('tests require assets outside of test folder: should generate coverage, cleanup & exit(0)', () => {
+    // Directory should be clean
+    assert(pathExists('./coverage') === false, 'should start without: coverage');
+    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+
+    // Run script (exits 0);
+    mock.install('Simple.sol', 'requires-externally.js', config);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+
+    // Directory should have coverage report
+    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
+    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+
+    // Coverage should be real.
+    // This test is tightly bound to the function names in Simple.sol
+    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const path = Object.keys(produced)[0];
+    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
+    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+    collectGarbage();
+  });
+
   it('contract only uses .call: should generate coverage, cleanup & exit(0)', () => {
     // Run against contract that only uses method.call.
     assert(pathExists('./coverage') === false, 'should start without: coverage');
