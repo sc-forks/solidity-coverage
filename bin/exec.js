@@ -73,13 +73,7 @@ if (config.silent) {
 // environment folder.
 log('Generating coverage environment');
 try {
-  // Truffle environment:
-  // contracts/
-  // test/
-  // migrations/
-  // truffle.js
-
-  let files = shell.ls(`${workingDir}`);
+  let files = shell.ls(workingDir);
   const nmIndex = files.indexOf('node_modules');
 
   if (!config.copyNodeModules && nmIndex > -1) {
@@ -87,16 +81,15 @@ try {
   }
 
   files = files.map(file => `${workingDir}/` + file);
-  shell.mkdir(`${coverageDir}`);
-  shell.cp('-R', files, `${coverageDir}`);
+  shell.mkdir(coverageDir);
+  shell.cp('-R', files, coverageDir);
 
   const truffleConfig = reqCwd.silent(`${workingDir}/truffle.js`);
 
-  // Coverage network opts specified: copy truffle.js whole to coverage environment
+  // Coverage network opts specified: use port if declared
   if (truffleConfig && truffleConfig.networks && truffleConfig.networks.coverage) {
     port = truffleConfig.networks.coverage.port || port;
-    shell.cp(`${workingDir}/truffle.js`, `${coverageDir}/truffle.js`);
-
+   
   // Coverage network opts NOT specified: default to the development network w/ modified
   // port, gasLimit, gasPrice. Export the config object only.
   } else {
@@ -203,9 +196,7 @@ try {
   istanbulReporter.add('html');
   istanbulReporter.add('lcov');
   istanbulReporter.add('text');
-  istanbulReporter.write(istanbulCollector, true, () => {
-    log('Istanbul coverage reports generated');
-  });
+  istanbulReporter.write(istanbulCollector, true);
 } catch (err) {
   if (config.testing) {
     cleanUp();
