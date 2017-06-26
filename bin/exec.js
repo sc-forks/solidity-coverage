@@ -61,6 +61,7 @@ const config = reqCwd.silent('./.solcover.js') || {};
 const workingDir = config.dir || '.';       // Relative path to contracts folder
 let port = config.port || 8555;             // Port testrpc listens on
 const accounts = config.accounts || 35;     // Number of accounts to testrpc launches with
+const copyNodeModules = config.copyNodeModules || false; // Whether we copy node_modules when making coverage environment
 
 // Silence shell and script logging (for solcover's unit tests / CI)
 if (config.silent) {
@@ -78,10 +79,16 @@ try {
   // migrations/
   // truffle.js
 
+  let files = shell.ls(`${workingDir}`);
+  const nmIndex = files.indexOf('node_modules');
+
+  if (!config.copyNodeModules && nmIndex > -1) {
+    files.splice(nmIndex, 1); // Removes node_modules from array.
+  }
+
+  files = files.map(file => `${workingDir}/` + file);
   shell.mkdir(`${coverageDir}`);
-  shell.cp('-R', `${workingDir}/contracts`, `${coverageDir}`);
-  shell.cp('-R', `${workingDir}/test`, `${coverageDir}`);
-  shell.cp('-R', `${workingDir}/migrations`, `${coverageDir}`);
+  shell.cp('-R', files, `${coverageDir}`);
 
   const truffleConfig = reqCwd.silent(`${workingDir}/truffle.js`);
 
@@ -97,7 +104,7 @@ try {
       module.exports = {
         networks: {
           development: {
-            host: "localhost", 
+            host: "localhost",
             network_id: "*",
             port: ${port},
             gas: ${gasLimitHex},
@@ -148,7 +155,7 @@ if (!config.norpc) {
   const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
   const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
   const command = './node_modules/.bin/testrpc-sc ';
-  
+
   testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
     if (err) cleanUp('testRpc errored after launching as a childprocess.');
   });
@@ -178,9 +185,9 @@ try {
   const msg =
   `
     There was an error generating coverage. Possible reasons include:
-    1. Another application is using port ${port} 
+    1. Another application is using port ${port}
     2. Truffle crashed because your tests errored
-    
+
   `;
   cleanUp(msg + err);
 }

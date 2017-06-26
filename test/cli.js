@@ -118,12 +118,12 @@ describe('cli', () => {
       `module.exports = {
         networks: {
           development: {
-            host: "localhost", 
+            host: "localhost",
             port: 8545,
             network_id: "*"
           },
           coverage: {
-            host: "localhost", 
+            host: "localhost",
             port: 8999,
             network_id: "*"
           }
