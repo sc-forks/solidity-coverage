@@ -76,6 +76,7 @@ can be useful if you are using a different vm like the [sc-forks version of pyet
 directory. `dir` allows you to define a relative path from the root directory to those assets.
 `dir: "./<dirname>"` would tell solidity-coverage to look for `./<dirname>/contracts/` and `./<dirname>/test/`
 + **copyNodeModules**: *{ Boolean }* : When true, will copy `node_modules` into the coverage environment. False by default, and may significantly increase the time for coverage to complete if enabled. Only enable if required.
++ **skipFiles**: *{ Array }* : An array of contracts (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used.
 
 **Example .solcover.js config file**
 ```javascript
@@ -97,7 +98,7 @@ the extra events. If this is the case, then the coverage may be incomplete. To a
 
 **Using `require` in `migrations.js` files**: Truffle overloads Node's `require` function but
 implements a simplified search algorithm for node_modules packages
-([see Truffle issue #383](https://github.com/trufflesuite/truffle/issues/383)). 
+([see Truffle issue #383](https://github.com/trufflesuite/truffle/issues/383)).
 Because solidity-coverage copies an instrumented version of your project into a temporary folder, `require`
 statements handled by Truffle internally won't resolve correctly.  
 
