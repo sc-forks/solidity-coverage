@@ -196,7 +196,9 @@ try {
   istanbulReporter.add('html');
   istanbulReporter.add('lcov');
   istanbulReporter.add('text');
-  istanbulReporter.write(istanbulCollector, true);
+  istanbulReporter.write(istanbulCollector, true, () => {
+    log('Istanbul coverage reports generated');
+  });
 } catch (err) {
   if (config.testing) {
     cleanUp();
