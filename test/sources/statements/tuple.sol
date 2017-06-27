@@ -1,7 +1,13 @@
 pragma solidity ^0.4.3;
 
-contract Test {  
+contract Test { 
+
+    function returnTuple() returns (uint x, uint y) {
+        return (10, 20);
+    }
+
     function a() {
-        var(x,y) = (10,20);
+        var (a, b) = (10, 20);
+        var (x, y) = returnTuple();
     }
 }
