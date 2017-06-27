@@ -242,6 +242,28 @@ describe('cli', () => {
     collectGarbage();
   });
 
+  it('contracts are skipped: should generate coverage, cleanup & exit(0)', () => {
+    // Skip instrumentation of some contracts
+    assert(pathExists('./coverage') === false, 'should start without: coverage');
+    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    const testConfig = Object.assign({}, config);
+
+    testConfig.skipFiles = ['Owned.sol'];
+    mock.installInheritanceTest(testConfig);
+
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+
+    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
+    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+
+    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const firstKey = Object.keys(produced)[0];
+    assert(Object.keys(produced).length === 1, 'coverage.json should only contain instrumentation for one contract');
+    assert(firstKey.substr(firstKey.length - 9) === 'Proxy.sol', 'coverage.json should only contain instrumentation for Proxy.sol');
+    collectGarbage();
+  });
+
   it('truffle tests failing: should generate coverage, cleanup & exit(1)', () => {
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');

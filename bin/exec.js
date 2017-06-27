@@ -62,6 +62,7 @@ const workingDir = config.dir || '.';       // Relative path to contracts folder
 let port = config.port || 8555;             // Port testrpc listens on
 const accounts = config.accounts || 35;     // Number of accounts to testrpc launches with
 const copyNodeModules = config.copyNodeModules || false; // Whether we copy node_modules when making coverage environment
+let skipFiles = config.skipFiles || []; // Which files should be skipped during instrumentation
 
 // Silence shell and script logging (for solcover's unit tests / CI)
 if (config.silent) {
@@ -89,7 +90,7 @@ try {
   // Coverage network opts specified: use port if declared
   if (truffleConfig && truffleConfig.networks && truffleConfig.networks.coverage) {
     port = truffleConfig.networks.coverage.port || port;
-   
+
   // Coverage network opts NOT specified: default to the development network w/ modified
   // port, gasLimit, gasPrice. Export the config object only.
   } else {
@@ -114,18 +115,19 @@ try {
   cleanUp(msg + err);
 }
 
-// For each contract except migrations.sol:
+// For each contract except migrations.sol (or those in skipFiles):
 // 1. Generate file path reference for coverage report
 // 2. Load contract as string
 // 3. Instrument contract
 // 4. Save instrumented contract in the coverage environment folder where covered tests will run
 // 5. Add instrumentation info to the coverage map
+skipFiles = skipFiles.map(contract => `${coverageDir}/contracts/` + contract);
+skipFiles.push(`${coverageDir}/contracts/Migrations.sol`);
+
 let currentFile;
 try {
   shell.ls(`${coverageDir}/contracts/**/*.sol`).forEach(file => {
-    const migrations = `${coverageDir}/contracts/Migrations.sol`;
-
-    if (file !== migrations) {
+    if (!skipFiles.includes(file)) {
       log('Instrumenting ', file);
       currentFile = file;
 
@@ -135,6 +137,8 @@ try {
       const instrumentedContractInfo = getInstrumentedVersion(contract, canonicalPath);
       fs.writeFileSync(contractPath, instrumentedContractInfo.contract);
       coverage.addContract(instrumentedContractInfo, canonicalPath);
+    } else {
+      log('Skipping instrumentation of ', file);
     }
   });
 } catch (err) {
