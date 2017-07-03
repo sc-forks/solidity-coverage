@@ -44,6 +44,6 @@
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
     "solc": "0.4.8",
-    "truffle": "^3.2.5"
+    "truffle": "3.2.5"
   }
 }

@@ -96,6 +96,26 @@ This is because the instrumentation process increases the gas costs for using th
 the extra events. If this is the case, then the coverage may be incomplete. To avoid this, using
 `estimateGas` to estimate your gas costs should be more resilient in most cases.
 
+Example (in a Truffle test):
+```javascript
+// Hardcoded Gas Call
+MyContract.deployed().then(instance => {       
+  instance.claimTokens(0, {gasLimit: 3000000}).then(() => {
+      assert(web3.eth.getBalance(instance.address).equals(new BigNumber('0')))
+      done();
+  })
+});
+
+// Using gas estimation
+MyContract.deployed().then(instance => {       
+  const data = instance.contract.claimTokens.getData(0);
+  const gasEstimate = web3.eth.estimateGas({to: instance.address, data: data});
+  instance.claimTokens(0, {gasLimit: gasEstimate}).then(() => {
+      assert(web3.eth.getBalance(instance.address).equals(new BigNumber('0')))
+      done();
+  })
+});
+```
 **Using `require` in `migrations.js` files**: Truffle overloads Node's `require` function but
 implements a simplified search algorithm for node_modules packages
 ([see Truffle issue #383](https://github.com/trufflesuite/truffle/issues/383)).
@@ -117,12 +137,12 @@ find discrepancies between the coverage report and your suite's behavior, please
 + **metacoin**: The default truffle project
   + [HTML reports](https://sc-forks.github.io/metacoin/)
   + [Metacoin with solidity-coverage installed](https://github.com/sc-forks/metacoin) (simple, without configuration)
-+ **zeppelin-solidity** at commit 453a19825013a586751b87c67bebd551a252fb50
-  + [HTML reports]( https://sc-forks.github.io/zeppelin-solidity/)
-  + [Zeppelin with solidity-coverage installed](https://github.com/sc-forks/zeppelin-solidity) (declares own coverage network in truffle.js)
-+ **numeraire** at commit 5ac3fa432c6b4192468c95a66e52ca086c804c95
-  + [HTML reports](https://sc-forks.github.io/contract/)
-  + [Numeraire with solidity-coverage installed](https://github.com/sc-forks/contract) (uses .solcover.js)
++ **zeppelin-solidity** at commit [453a198](https://github.com/OpenZeppelin/zeppelin-solidity/tree/453a19825013a586751b87c67bebd551a252fb50)
+  + [HTML reports]( https://sc-forks.github.io/zeppelin-solidity/)(declares own coverage network in truffle.js)
+  + [Zeppelin with solidity-coverage installed](https://github.com/sc-forks/zeppelin-solidity) 
++ **numeraire** at commit [695b0a0](https://github.com/numerai/contract/tree/695b0a073c1f70199138f5e988e8cc20382205a4)(uses .solcover.js)
+  + [HTML reports](https://sc-forks.github.io/contract/contracts/index.html)
+  + [Numeraire with solidity-coverage installed](https://github.com/sc-forks/contract) 
 
 ### Contribution Guidelines
 
