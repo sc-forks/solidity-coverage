@@ -159,6 +159,30 @@ describe('conditional statements', () => {
     }).catch(done);
   });
 
+  it('should cover an assignment to a member expression (reaches the alternate)', done => {
+    const contract = util.getCode('conditional/mapping-assignment.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        '11': 1, '12': 1,
+      });
+      assert.deepEqual(mapping[filePath].b, {
+        1: [0, 1],
+      });
+      assert.deepEqual(mapping[filePath].s, {
+        '1': 1, '2': 1,
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+      });
+      done();
+    }).catch(done);
+  });
+
   // Solcover has trouble with this case. The conditional coverage strategy relies on being able to
   // reference the left-hand variable before its value is assigned. Solidity doesn't allow this
   // for 'var'.
