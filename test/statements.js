@@ -46,6 +46,14 @@ describe('generic statements', () => {
     const output = solc.compile(info.contract, 1);
     util.report(output.errors);
   });
+
+  it('should compile after instrumenting an empty-contract-body', () => {
+    const contract = util.getCode('statements/empty-contract-ala-melonport.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = solc.compile(info.contract, 1);
+    util.report(output.errors);
+  });
+
   it('should cover a statement following a close brace', done => {
     const contract = util.getCode('statements/post-close-brace.sol');
     const info = getInstrumentedVersion(contract, filePath);
