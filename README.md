@@ -128,6 +128,10 @@ A workaround can be found at the zeppelin-solidity project
 [here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), where a
 shell script is used to set an environment variable which `truffle.js` checks before instantiating the wallet.
 
+**Getting `Error: Invalid JSON RPC response: ""`** after the instrumentation or compilation steps. This can be resolved by setting the `norpc` option in `.solcover.js` to `true` and launching testrpc-sc from the command line in another window with: 
++ `./node_modules/ethereumjs-testrpc-sc/bin/testrpc --gasLimit 0xfffffffffff --port 8555`. 
++ (ProTip courtesy of [@maurelian](https://github.com/maurelian) )
+
 ### Examples
 
 **WARNING**: This utility is in development and its accuracy is unknown. If you
