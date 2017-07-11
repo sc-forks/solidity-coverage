@@ -75,8 +75,11 @@ can be useful if you are using a different vm like the [sc-forks version of pyet
 + **dir**: *{ String }* : Solidity-coverage usually looks for `contracts` and `test` folders in your root
 directory. `dir` allows you to define a relative path from the root directory to those assets.
 `dir: "./<dirname>"` would tell solidity-coverage to look for `./<dirname>/contracts/` and `./<dirname>/test/`
-+ **copyNodeModules**: *{ Boolean }* : When true, will copy `node_modules` into the coverage environment. False by default, and may significantly increase the time for coverage to complete if enabled. Only enable if required.
-+ **skipFiles**: *{ Array }* : An array of contracts (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used.
++ **copyNodeModules**: *{ Boolean }* : When true, will copy `node_modules` into the coverage environment. 
+  False by default, and may significantly increase the time for coverage to complete if enabled. Only enable if required.
++ **skipFiles**: *{ Array }* : An array of contracts (with paths expressed relative to the `contracts` directory) 
+  that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, 
+  and does not need to be added to this configuration option if it is used.
 
 **Example .solcover.js config file**
 ```javascript
@@ -116,11 +119,6 @@ MyContract.deployed().then(instance => {
   })
 });
 ```
-**Using `require` in `migrations.js` files**: Truffle overloads Node's `require` function but
-implements a simplified search algorithm for node_modules packages
-([see Truffle issue #383](https://github.com/trufflesuite/truffle/issues/383)).
-Because solidity-coverage copies an instrumented version of your project into a temporary folder, `require`
-statements handled by Truffle internally won't resolve correctly.  
 
 **Using HDWalletProvider in `truffle.js`**: [See Truffle issue #348](https://github.com/trufflesuite/truffle/issues/348).
 HDWalletProvider crashes solidity-coverage, so its constructor shouldn't be invoked while running this tool.
@@ -128,9 +126,24 @@ A workaround can be found at the zeppelin-solidity project
 [here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), where a
 shell script is used to set an environment variable which `truffle.js` checks before instantiating the wallet.
 
-**Getting `Error: Invalid JSON RPC response: ""`** after the instrumentation or compilation steps. This can be resolved by setting the `norpc` option in `.solcover.js` to `true` and launching testrpc-sc from the command line in another window with: 
+**Getting `Error: Invalid JSON RPC response: ""`** after the instrumentation or compilation steps. 
+This error is intermittent and mysterious, affecting some projects more than others. 
+Can be resolved by setting the `norpc` option in 
+`.solcover.js` to `true` and launching testrpc-sc from the command line in another window with: 
 + `./node_modules/ethereumjs-testrpc-sc/bin/testrpc --gasLimit 0xfffffffffff --port 8555`. 
 + (ProTip courtesy of [@maurelian](https://github.com/maurelian) )
+
+**Running out of memory**: (See [issue #59](https://github.com/sc-forks/solidity-coverage/issues/59)). 
+If your target contains dozens of contracts, you may run up against node's 1.7MB memory cap during the
+contract compilation step. This can be addressed by setting the `testCommand` option in `.solcover.js` as 
+below (note the path - it reaches outside a temporarily generated `coverageEnv` folder to access a locally
+installed version of truffle in your root directory's node_modules):
+```javascript
+testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/truffle test --network coverage'
+``` 
+Large projects may also hit their CI container memcap running coverage after unit tests. This can be
+addressed on TravisCI by adding `sudo: required` to the `travis.yml`, which raises the container's 
+limit to 7.5MB (ProTip courtesy of [@federicobond](https://github.com/federicobond).
 
 ### Examples
 
