@@ -84,6 +84,24 @@ describe('cli', () => {
     }
   });
 
+  it('config racing test command: should run test after testrpc has started', () => {
+    if (!process.env.CI) {
+      assert(pathExists('./allFiredEvents') === false, 'should start without: events log');
+      const testConfig = Object.assign({}, config);
+
+      testConfig.testCommand = 'node ../test/util/mockTestCommand.js';
+      testConfig.norpc = false;
+      testConfig.port = 8888;
+
+      // Installed test will write a fake allFiredEvents to ./ after 4000ms
+      // allowing test to pass
+      mock.install('Simple.sol', 'command-options.js', testConfig);
+      shell.exec(script);
+      assert(shell.error() === null, 'script should not error');
+      collectGarbage();
+    }
+  });
+
   it('contract tests events: tests should pass without errors', () => {
     if (!process.env.CI) {
       assert(pathExists('./coverage') === false, 'should start without: coverage');
