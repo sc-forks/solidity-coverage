@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require('fs')
 const request = require('request')
 
 request({
@@ -13,7 +14,9 @@ request({
     json: true
 }, (error, response, body) => {
     if(error) {
+        console.error(error)
         process.exit(1)
     }
+    fs.writeFileSync('../allFiredEvents', 'foobar')
     process.exit(0)
 })
