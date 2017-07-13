@@ -146,71 +146,80 @@ try {
   cleanUp(msg + err);
 }
 
-// Run modified testrpc with large block limit, on (hopefully) unused port.
-// (Changes here should be also be added to the before() block of test/run.js).
-if (!config.norpc) {
-  const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
-  const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
-  const command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
+new Promise((resolve, reject) => {
+  // Run modified testrpc with large block limit, on (hopefully) unused port.
+  // (Changes here should be also be added to the before() block of test/run.js).
+  if (!config.norpc) {
+    const defaultRpcOptions = `--gasLimit ${gasLimitString} --accounts ${accounts} --port ${port}`;
+    const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
+    const command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
 
-  testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
-    if (err) cleanUp('testRpc errored after launching as a childprocess.');
-  });
-  log(`Launching testrpc on port ${port}`);
-}
-
-// Run truffle (or config.testCommand) over instrumented contracts in the
-// coverage environment folder. Shell cd command needs to be invoked
-// as its own statement for command line options to work, apparently.
-try {
-  log('Launching test command (this can take a few seconds)...');
-  const defaultCommand = `truffle test ${coverageOption} ${silence}`;
-  const command = config.testCommand || defaultCommand;
-  shell.cd('./coverageEnv');
-  shell.exec(command);
-  testsErrored = shell.error();
-  shell.cd('./..');
-} catch (err) {
-  cleanUp(err);
-}
-
-// Get events fired during instrumented contracts execution.
-try {
-  events = fs.readFileSync('./allFiredEvents').toString().split('\n');
-  events.pop();
-} catch (err) {
-  const msg =
-  `
-    There was an error generating coverage. Possible reasons include:
-    1. Another application is using port ${port}
-    2. Truffle crashed because your tests errored
-
-  `;
-  cleanUp(msg + err);
-}
-
-// Generate coverage / write coverage report / run istanbul
-try {
-  coverage.generate(events, './contracts');
-
-  const json = JSON.stringify(coverage.coverage);
-  fs.writeFileSync('./coverage.json', json);
-
-  istanbulCollector.add(coverage.coverage);
-  istanbulReporter.add('html');
-  istanbulReporter.add('lcov');
-  istanbulReporter.add('text');
-  istanbulReporter.write(istanbulCollector, true, () => {
-    log('Istanbul coverage reports generated');
-  });
-} catch (err) {
-  if (config.testing) {
-    cleanUp();
+    testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
+      if (err) cleanUp('testRpc errored after launching as a childprocess.');
+    });
+    testrpcProcess.stdout.on('data', data => {
+      if (data.includes('Listening')) {
+        log(`Launched testrpc on port ${port}`);
+        return resolve();
+      }
+    });
   } else {
-    const msg = 'There was a problem generating producing the coverage map / running Istanbul.\n';
+    return resolve();
+  }
+}).then(() => {
+  // Run truffle (or config.testCommand) over instrumented contracts in the
+  // coverage environment folder. Shell cd command needs to be invoked
+  // as its own statement for command line options to work, apparently.
+  try {
+    log('Launching test command (this can take a few seconds)...');
+    const defaultCommand = `truffle test ${coverageOption} ${silence}`;
+    const command = config.testCommand || defaultCommand;
+    shell.cd('./coverageEnv');
+    shell.exec(command);
+    testsErrored = shell.error();
+    shell.cd('./..');
+  } catch (err) {
+    cleanUp(err);
+  }
+
+  // Get events fired during instrumented contracts execution.
+  try {
+    events = fs.readFileSync('./allFiredEvents').toString().split('\n');
+    events.pop();
+  } catch (err) {
+    const msg =
+    `
+      There was an error generating coverage. Possible reasons include:
+      1. Another application is using port ${port}
+      2. Truffle crashed because your tests errored
+
+    `;
     cleanUp(msg + err);
   }
-}
 
-// Finish
-cleanUp();
+  // Generate coverage / write coverage report / run istanbul
+  try {
+    coverage.generate(events, './contracts');
+
+    const json = JSON.stringify(coverage.coverage);
+    fs.writeFileSync('./coverage.json', json);
+
+    istanbulCollector.add(coverage.coverage);
+    istanbulReporter.add('html');
+    istanbulReporter.add('lcov');
+    istanbulReporter.add('text');
+    istanbulReporter.write(istanbulCollector, true, () => {
+      log('Istanbul coverage reports generated');
+    });
+  } catch (err) {
+    if (config.testing) {
+      cleanUp();
+    } else {
+      const msg = 'There was a problem generating producing the coverage map / running Istanbul.\n';
+      cleanUp(msg + err);
+    }
+  }
+
+  // Finish
+  cleanUp();
+});
