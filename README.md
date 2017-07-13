@@ -126,13 +126,6 @@ A workaround can be found at the zeppelin-solidity project
 [here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), where a
 shell script is used to set an environment variable which `truffle.js` checks before instantiating the wallet.
 
-**Getting `Error: Invalid JSON RPC response: ""`** after the instrumentation or compilation steps. 
-This error is intermittent and mysterious, affecting some projects more than others. 
-Can be resolved by setting the `norpc` option in 
-`.solcover.js` to `true` and launching testrpc-sc from the command line in another window with: 
-+ `./node_modules/ethereumjs-testrpc-sc/bin/testrpc --gasLimit 0xfffffffffff --port 8555`. 
-+ (ProTip courtesy of [@maurelian](https://github.com/maurelian) )
-
 **Running out of memory**: (See [issue #59](https://github.com/sc-forks/solidity-coverage/issues/59)). 
 If your target contains dozens of contracts, you may run up against node's 1.7MB memory cap during the
 contract compilation step. This can be addressed by setting the `testCommand` option in `.solcover.js` as 
@@ -172,3 +165,4 @@ also lint your submission with `npm run lint`. Bugs can be reported in the
 + [@area](https://github.com/area)
 + [@cgewecke](https://github.com/cgewecke)
 + [@adriamb](https://github.com/adriamb)
++ [@cag](https://github.com/cag)
