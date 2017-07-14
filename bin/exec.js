@@ -154,8 +154,12 @@ new Promise((resolve, reject) => {
     const testrpcOptions = config.testrpcOptions || defaultRpcOptions;
     const command = './node_modules/ethereumjs-testrpc-sc/bin/testrpc ';
 
-    testrpcProcess = childprocess.exec(command + testrpcOptions, null, err => {
-      if (err) cleanUp('testRpc errored after launching as a childprocess.');
+    testrpcProcess = childprocess.exec(command + testrpcOptions, null, (err, stdout, stderr) => {
+      if (err) {
+        if(stdout) log(`testRpc stdout:\n${stdout}`);
+        if(stderr) log(`testRpc stderr:\n${stderr}`);
+        cleanUp('testRpc errored after launching as a childprocess.');
+      }
     });
     testrpcProcess.stdout.on('data', data => {
       if (data.includes('Listening')) {
