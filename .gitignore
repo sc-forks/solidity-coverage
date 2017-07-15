@@ -1,5 +1,6 @@
 allFiredEvents
 scTopics
+scDebugLog
 coverage.json
 coverage/
 node_modules/
