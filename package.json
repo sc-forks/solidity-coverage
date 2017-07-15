@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^2.9.0",
+    "death": "^1.1.0",
     "ethereumjs-testrpc-sc": "https://github.com/sc-forks/testrpc-sc.git",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
@@ -44,6 +45,6 @@
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
     "solc": "0.4.8",
-    "truffle": "3.2.5"
+    "truffle": "3.4.4"
   }
 }

@@ -14,7 +14,7 @@ function collectGarbage() {
   if (global.gc) { global.gc(); }
 }
 
-describe('cli', () => {
+describe('app', () => {
   let testrpcProcess = null;
   const script = 'node ./bin/exec.js';
   const port = 8555;
