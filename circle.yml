@@ -2,8 +2,8 @@ machine:
   node:
     version: 6.11.0
 dependencies:
-  pre:
-    rm -rf node_modules/
+  override:
+    - npm install
 test:
   override:
     - npm run test-cov
