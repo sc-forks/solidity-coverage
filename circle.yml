@@ -3,6 +3,7 @@ machine:
     version: 6.11.0
 dependencies:
   override:
+    - rm -rf node_modules/
     - npm install
 test:
   override:
