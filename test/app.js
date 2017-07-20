@@ -27,9 +27,15 @@ describe('app', () => {
     norpc: true,
   };
 
-  before(() => {
+  before(done => {
     const command = `./node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port ${port}`;
     testrpcProcess = childprocess.exec(command);
+
+    testrpcProcess.stdout.on('data', data => {
+      if (data.includes('Listening')) {
+        done();
+      }
+    });
   });
 
   afterEach(() => {
@@ -198,6 +204,14 @@ describe('app', () => {
     collectGarbage();
   });
 
+  it('testrpc-sc signs and recovers messages correctly', () => {
+    // sign.js signs and recovers
+    mock.install('Simple.sol', 'sign.js', config);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+    collectGarbage();
+  });
+
   it('tests require assets outside of test folder: should generate coverage, cleanup & exit(0)', () => {
     // Directory should be clean
     assert(pathExists('./coverage') === false, 'should start without: coverage');
@@ -238,6 +252,7 @@ describe('app', () => {
     assert(produced[path].fnMap['1'].name === 'addTwo', 'coverage.json should map "addTwo"');
     collectGarbage();
   });
+
 
   it('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
     // Run against a contract that 'is' another contract

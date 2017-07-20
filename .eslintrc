@@ -14,7 +14,7 @@
     /* General  */
     "consistent-return": [0],
     "no-return-assign": [0],
-    "complexity": ["error", 6],
+    "complexity": ["error", 20],
     "eol-last": [0],
     "eqeqeq": ["error", "smart"],
     "max-len": ["error", 150, 2],

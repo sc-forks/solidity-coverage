@@ -168,13 +168,13 @@ describe('conditional statements', () => {
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
-        '11': 1, '12': 1,
+        11: 1, 12: 1,
       });
       assert.deepEqual(mapping[filePath].b, {
         1: [0, 1],
       });
       assert.deepEqual(mapping[filePath].s, {
-        '1': 1, '2': 1,
+        1: 1, 2: 1,
       });
       assert.deepEqual(mapping[filePath].f, {
         1: 1,
