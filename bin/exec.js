@@ -2,6 +2,7 @@
 const App = require('./../lib/app.js');
 const reqCwd = require('req-cwd');
 const death = require('death');
+
 const log = console.log;
 
 const config = reqCwd.silent('./.solcover.js') || {};
