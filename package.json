@@ -23,7 +23,7 @@
   "dependencies": {
     "commander": "^2.9.0",
     "death": "^1.1.0",
-    "ethereumjs-testrpc-sc": "https://github.com/sc-forks/testrpc-sc.git",
+    "ethereumjs-testrpc-sc": "https://github.com/sc-forks/testrpc-sc.git#303",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
     "mkdirp": "^0.5.1",
