@@ -87,11 +87,11 @@ module.exports = {
 
 Solutions to common issues people run into using this tool:
 
-+ [Running out of gas]()
-+ [Running out of memory (locally and in CI)]()
-+ [Running out of time (in mocha)]()
-+ [Using alongside HDWalletProvider]()
-+ [Integrating into CI]()
++ [Running out of gas](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas)
++ [Running out of memory (locally and in CI)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory-locally-and-in-ci)
++ [Running out of time (in mocha)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha)
++ [Using alongside HDWalletProvider](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#using-alongside-hdwalletprovider)
++ [Integrating into CI](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration-installing-metacoin-on-travisci-with-coveralls)
 
 ### Example reports 
 + [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
