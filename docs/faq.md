@@ -1,0 +1,154 @@
+# FAQ
+
+### Continuous Integration: installing Metacoin on TravisCI with Coveralls
+
+
+**Step 1: Create a metacoin project & install coverage tools**
+
+```bash
+$ truffle init
+
+# Install coverage dependencies
+$ npm init
+$ npm install --save-dev coveralls
+$ npm install --save-dev solidity-coverage
+```
+
+**Step 2: Add test and coverage scripts to the `package.json`:**
+
+```javascript
+"scripts": {
+    "test": "truffle test",
+    "coverage": "./node_modules/.bin/solidity-coverage"
+},
+```
+
+**Step 3: Create a .travis.yml:**
+
+```yml
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+  - '7'
+install:
+  - npm install -g truffle
+  - npm install -g ethereumjs-testrpc
+  - npm install
+script:
+  - npm test
+before_script:
+  - testrpc > /dev/null & 
+  - sleep 5
+after_script:                                               
+  - npm run coverage && cat coverage/lcov.info | coveralls
+```
+**NB:** It's probably best practice to run coverage in CI as an `after_script` rather than assume its equivalence to `truffle test`. Solidity-coverage's `testrpc` uses gasLimits far above the current blocklimit and rewrites your contracts in ways that might affect their behavior. It's also less robust than Truffle and may fail more frequently. 
+
+**Step 4: Toggle the project on at Travis and Codecov.io and push.** 
+
+[It should look like this](https://coveralls.io/github/sc-forks/metacoin)
+
+**Appendix: Coveralls vs. Codecov**
+
+[Codecov.io](https://codecov.io/) is another CI coverage provider (we use it for this project). They're very reliable, easy to integrate with and have a nice UI. Unfortunately we haven't found a way to get their reports to show branch coverage. Coveralls has excellent branch coverage reporting out of the box (see below).
+
+![missed_branch](https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png)
+
+
+
+
+### Running out of gas
+If you have hardcoded gas costs into your tests some of them may fail when using solidity-coverage.
+This is because the instrumentation process increases the gas costs for using the contracts, due to
+the extra events. If this is the case, then the coverage may be incomplete. To avoid this, using
+`estimateGas` to estimate your gas costs should be more resilient in most cases.
+
+**Example:**
+```javascript
+// Hardcoded Gas Call
+MyContract.deployed().then(instance => {       
+  instance.claimTokens(0, {gasLimit: 3000000}).then(() => {
+      assert(web3.eth.getBalance(instance.address).equals(new BigNumber('0')))
+      done();
+  })
+});
+
+// Using gas estimation
+MyContract.deployed().then(instance => {       
+  const data = instance.contract.claimTokens.getData(0);
+  const gasEstimate = web3.eth.estimateGas({to: instance.address, data: data});
+  instance.claimTokens(0, {gasLimit: gasEstimate}).then(() => {
+      assert(web3.eth.getBalance(instance.address).equals(new BigNumber('0')))
+      done();
+  })
+});
+```
+
+### Running out of memory (Locally and in CI)
+(See [issue #59](https://github.com/sc-forks/solidity-coverage/issues/59)). 
+If your target contains dozens of contracts, you may run up against node's 1.7MB memory cap during the
+contract compilation step. This can be addressed by setting the `testCommand` option in `.solcover.js` as 
+below: 
+```javascript
+testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/truffle test --network coverage'
+``` 
+Note the path: it reaches outside a temporarily generated `coverageEnv` folder to access a locally
+installed version of truffle in your root directory's `node_modules`.
+
+Large projects may also hit their CI container memcap running coverage after unit tests. This can be
+addressed on TravisCI by adding `sudo: required` to the `travis.yml`, which raises the container's 
+limit to 7.5MB (ProTip courtesy of [@federicobond](https://github.com/federicobond).
+
+### Running out of time (in mocha)
+Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under coverage, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `truffle.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))  
+```javascript
+module.exports = {
+    networks: {
+        development: {
+            host: "localhost",
+            port: 8545,
+            network_id: "*" 
+        },
+        ...etc...
+    },
+    mocha: {
+        enableTimeouts: false
+    }
+}
+```
+
+### Using alongside HDWalletProvider
+[See Truffle issue #348](https://github.com/trufflesuite/truffle/issues/348).
+HDWalletProvider crashes solidity-coverage, so its constructor shouldn't be invoked while running this tool.
+One way around this is to instantiate the HDWallet conditionally in `truffle.js`:
+
+```javascript
+var HDWalletProvider = require('truffle-hdwallet-provider');
+var mnemonic = 'bark moss walnuts earth flames felt grateful dead sophia loren'; 
+
+if (!process.env.SOLIDITY_COVERAGE){
+  provider = new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/')
+}
+
+module.exports = {
+  networks: 
+    ropsten: {
+      provider: provider,
+      network_id: 3 
+    },
+    coverage: {
+      host: "localhost",
+      network_id: "*",
+      port: 8555,
+      ...etc..
+    }
+    ...etc...
+```
+
+And set up an npm script to run the coverage tool like this:
+```javascript
+"scripts": {
+    "coverage": "SOLIDITY_COVERAGE=true ./node_modules/.bin/solidity-coverage"
+},
+```

@@ -7,10 +7,12 @@
 ### Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
 
-For more details about what this is, how it works and potential limitations, see
++ For more details about what this is, how it works and potential limitations, see 
 [the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
-
-**solidity-coverage** is a stand-alone fork of [Solcover](https://github.com/JoinColony/solcover)
++ `solidity-coverage` is in development and **its accuracy is unknown.** If you
+find discrepancies between the coverage report and your suite's behavior, please open an
+[issue](https://github.com/sc-forks/solidity-coverage/issues).
++ `solidity-coverage` is [Solcover](https://github.com/JoinColony/solcover)
 
 ### Install
 ```
@@ -24,135 +26,77 @@ $ ./node_modules/.bin/solidity-coverage
 
 Tests run signficantly slower while coverage is being generated. A 1 to 2 minute delay
 between the end of Truffle compilation and the beginning of test execution is possible if your
-test suite is large. Large solidity files can also take a while to instrument.
+test suite is large. Large Solidity files can also take a while to instrument.
 
-### Configuration
+### Network Configuration
 
 By default, solidity-coverage generates a stub `truffle.js` that accomodates its special gas needs and
 connects to a modified version of testrpc on port 8555. If your tests will run on the development network
-using a standard `truffle.js` and a testrpc instance with no special options, you shouldn't have to
-do any configuration. If your tests depend on logic added to `truffle.js` - for example:
-[zeppelin-solidity](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js)
-uses the file to expose a babel polyfill that its suite requires - you can override the
-default behavior by declaring a coverage network in `truffle.js`. solidity-coverage will use your 'truffle.js'
-instead of a dynamically generated one.
+using a standard `truffle.js` and testrpc instance, you shouldn't have to do any configuration. If your tests depend on logic or special options added to `truffle.js` you should declare a coverage network there following the example below.
 
-**Example coverage network config**
+**Example**
 ```javascript
 module.exports = {
   networks: {
     development: {
       host: "localhost",
       port: 8545,
-      network_id: "*" // Match any network id
+      network_id: "*" 
     },
     coverage: {
       host: "localhost",
       network_id: "*",
-      port: 8555,         // <-- Use port 8555  
-      gas: 0xfffffffffff, // <-- Use this high gas value
+      port: 8555,         // <-- If you change this, also set the port option in .solcover.js.  
+      gas: 0xfffffffffff, // <-- Use this high gas value 
       gasPrice: 0x01      // <-- Use this low gas price
-    }
+    },
+    ...etc...
   }
 };
 ```
+### Options
 
 You can also create a `.solcover.js` config file in the root directory of your project and specify
-some additional options:
+additional options if necessary:
 
-
-+ **port**: *{ Number }* Port to run testrpc on / have truffle connect to. (Default: 8555)
-+ **accounts**: *{ Number }* Number of accounts to launch testrpc with. (Default: 35)
-+ **testrpcOptions**: *{ String }* options to append to a command line invocation of testrpc.
-  + ex: `--secure --port 8555 --unlock "0x1234..." --unlock "0xabcd..."`.
-  + NB: you should specify a port in your rpc options string and also declare it in the config's `port` option.
-+ **testCommand**: *{ String }* By default solidity-coverage runs `truffle test`. This option lets
-you run an arbitrary test command instead, like: `mocha --timeout 5000`.
-  + remember to set the config's port option to whatever port your tests use (probably 8545).
-  + make sure you don't have another instance of testrpc running on that port (web3 will error if you do).
-+ **norpc**: *{ Boolean }* When true, solidity-coverage will not launch its own testrpc instance. This
-can be useful if you are using a different vm like the [sc-forks version of pyethereum](https://github.com/sc-forks/pyethereum).  
-+ **dir**: *{ String }* : Solidity-coverage usually looks for `contracts` and `test` folders in your root
-directory. `dir` allows you to define a relative path from the root directory to those assets.
-`dir: "./<dirname>"` would tell solidity-coverage to look for `./<dirname>/contracts/` and `./<dirname>/test/`
-+ **copyNodeModules**: *{ Boolean }* : When true, will copy `node_modules` into the coverage environment. 
-  False by default, and may significantly increase the time for coverage to complete if enabled. Only enable if required.
-+ **skipFiles**: *{ Array }* : An array of contracts (with paths expressed relative to the `contracts` directory) 
-  that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, 
-  and does not need to be added to this configuration option if it is used.
-
-**Example .solcover.js config file**
+**Example:**
 ```javascript
 module.exports = {
     port: 6545,
     testrpcOptions: '-p 6545 -u 0x54fd80d6ae7584d8e9a19fe1df43f04e5282cc43',
     testCommand: 'mocha --timeout 5000',
     norpc: true,
-    dir: './secretDirectory'
+    dir: './secretDirectory',
+    skipFiles: ['Routers/EtherRouter.sol']
 };
 ```
 
-### Known Issues
 
-**Hardcoded gas costs**: If you have hardcoded gas costs into your tests some of them may fail when using solidity-coverage.
-This is because the instrumentation process increases the gas costs for using the contracts, due to
-the extra events. If this is the case, then the coverage may be incomplete. To avoid this, using
-`estimateGas` to estimate your gas costs should be more resilient in most cases.
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| accounts | *Number* | 35 | Number of accounts to launch testrpc with. |
+| port   | *Number* | 8555 | Port to run testrpc on / have truffle connect to |
+| norpc | *Boolean* | false | Prevent solidity-coverage from launching its own testrpc. Useful if you are managing a complex test suite with a [shell script](https://github.com/OpenZeppelin/zeppelin-solidity/blob/ed872ca0a11c4926f8bb91dd103bea1378a3384c/scripts/coverage.sh) |
+| testCommand | *String* | `truffle test` |  Run an arbitrary test command. ex: `mocha --timeout 5000`. NB: Also set the `port` option to whatever your tests require (probably 8545). |
+| testrpcOptions | *String* | `--port 8555` | options to append to a command line invocation of testrpc. NB: Using this overwrites the defaults so always specify a port in this string *and* in the `port` option |
+| copyNodeModules | *Boolean* | false | Copies `node_modules` into the coverage environment. May significantly increase the time for coverage to complete if enabled. Useful if your `npm test` scripts rely on `node_modules` packages | 
+| skipFiles | *Array* | `['Migrations.sol']` | Array of contracts (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used. |
+| dir | *String* | `.` | Solidity-coverage copies all the assets in your root directory (except `node_modules`) to a special folder where it instruments the contracts and executes the tests. `dir` allows you to define a relative path from the root directory to those assets. Useful if your contracts & tests are within their own folder as part of a larger project.|
 
-Example (in a Truffle test):
-```javascript
-// Hardcoded Gas Call
-MyContract.deployed().then(instance => {       
-  instance.claimTokens(0, {gasLimit: 3000000}).then(() => {
-      assert(web3.eth.getBalance(instance.address).equals(new BigNumber('0')))
-      done();
-  })
-});
+### FAQ
 
-// Using gas estimation
-MyContract.deployed().then(instance => {       
-  const data = instance.contract.claimTokens.getData(0);
-  const gasEstimate = web3.eth.estimateGas({to: instance.address, data: data});
-  instance.claimTokens(0, {gasLimit: gasEstimate}).then(() => {
-      assert(web3.eth.getBalance(instance.address).equals(new BigNumber('0')))
-      done();
-  })
-});
-```
+Solutions to common issues people run into using this tool:
 
-**Using HDWalletProvider in `truffle.js`**: [See Truffle issue #348](https://github.com/trufflesuite/truffle/issues/348).
-HDWalletProvider crashes solidity-coverage, so its constructor shouldn't be invoked while running this tool.
-A workaround can be found at the zeppelin-solidity project
-[here](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/truffle.js#L8-L10), where a
-shell script is used to set an environment variable which `truffle.js` checks before instantiating the wallet.
++ [Running out of gas](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas)
++ [Running out of memory (locally and in CI)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory-locally-and-in-ci)
++ [Running out of time (in mocha)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha)
++ [Using alongside HDWalletProvider](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#using-alongside-hdwalletprovider)
++ [Integrating into CI](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration-installing-metacoin-on-travisci-with-coveralls)
 
-**Running out of memory**: (See [issue #59](https://github.com/sc-forks/solidity-coverage/issues/59)). 
-If your target contains dozens of contracts, you may run up against node's 1.7MB memory cap during the
-contract compilation step. This can be addressed by setting the `testCommand` option in `.solcover.js` as 
-below (note the path - it reaches outside a temporarily generated `coverageEnv` folder to access a locally
-installed version of truffle in your root directory's node_modules):
-```javascript
-testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/truffle test --network coverage'
-``` 
-Large projects may also hit their CI container memcap running coverage after unit tests. This can be
-addressed on TravisCI by adding `sudo: required` to the `travis.yml`, which raises the container's 
-limit to 7.5MB (ProTip courtesy of [@federicobond](https://github.com/federicobond).
-
-### Examples
-
-**WARNING**: This utility is in development and its accuracy is unknown. If you
-find discrepancies between the coverage report and your suite's behavior, please open an
-[issue](https://github.com/sc-forks/solidity-coverage/issues).
-
-+ **metacoin**: The default truffle project
-  + [HTML reports](https://sc-forks.github.io/metacoin/)
-  + [Metacoin with solidity-coverage installed](https://github.com/sc-forks/metacoin) (simple, without configuration)
-+ **zeppelin-solidity** at commit [453a198](https://github.com/OpenZeppelin/zeppelin-solidity/tree/453a19825013a586751b87c67bebd551a252fb50)
-  + [HTML reports]( https://sc-forks.github.io/zeppelin-solidity/)(declares own coverage network in truffle.js)
-  + [Zeppelin with solidity-coverage installed](https://github.com/sc-forks/zeppelin-solidity) 
-+ **numeraire** at commit [695b0a0](https://github.com/numerai/contract/tree/695b0a073c1f70199138f5e988e8cc20382205a4)(uses .solcover.js)
-  + [HTML reports](https://sc-forks.github.io/contract/contracts/index.html)
-  + [Numeraire with solidity-coverage installed](https://github.com/sc-forks/contract) 
+### Example reports 
++ [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
++ [zeppelin-solidity](https://coveralls.io/github/OpenZeppelin/zeppelin-solidity?branch=master)  (Coveralls)
++ [gnosis-contracts](https://codecov.io/gh/gnosis/gnosis-contracts/tree/master/contracts)  (Codecov)
 
 ### Contribution Guidelines
 
