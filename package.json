@@ -44,7 +44,7 @@
     "istanbul": "^0.4.5",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
-    "solc": "0.4.8",
+    "solc": "0.4.13",
     "truffle": "3.4.4"
   }
 }

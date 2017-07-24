@@ -53,7 +53,7 @@ function getAbi(source, compilation) {
     throw new Error('Could not parse contract name from source.');
   }
   const contractName = contractNameMatch[1];
-  return JSON.parse(compilation.contracts[contractName].interface);
+  return JSON.parse(compilation.contracts[':' + contractName].interface);
 }
 
 /**
@@ -139,7 +139,7 @@ function callMethod(vm, abi, address, functionName, args) {
  */
 module.exports.execute = function ex(contract, functionName, args) {
   const output = solc.compile(contract, 1);
-  const code = new Buffer(output.contracts.Test.bytecode, 'hex');
+  const code = new Buffer(output.contracts[':Test'].bytecode, 'hex');
   const abi = getAbi(contract, output);
   const stateTrie = new Trie();
   const vm = new VM({
