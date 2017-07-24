@@ -52,6 +52,18 @@ describe('generic statements', () => {
     util.report(output.errors);
   });
 
+  it('should NOT pass tests if the contract has a compilation error', () => {
+    const contract = util.getCode('statements/compilation-error.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = solc.compile(info.contract, 1);
+    try {
+      util.report(output.errors);
+      assert.fail('WRONG'); // We shouldn't hit this.
+    } catch (err) {
+      (err.actual === 'WRONG') ? assert(false): assert(true);
+    }  
+  });
+
   it('should cover a statement following a close brace', done => {
     const contract = util.getCode('statements/post-close-brace.sol');
     const info = getInstrumentedVersion(contract, filePath);
