@@ -11,7 +11,8 @@ module.exports.getCode = function getCode(_path) {
 };
 
 module.exports.report = function report(errors) {
-  if (errors) {
+  
+  if (errors && errors.indexOf('Warning:') !== -1) {
     throw new Error(`Instrumented solidity invalid: ${errors}`);
   }
 };

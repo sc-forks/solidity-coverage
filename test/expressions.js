@@ -13,8 +13,6 @@ const path = require('path');
 describe('generic expressions', () => {
   const filePath = path.resolve('./test.sol');
 
-  before(() => process.env.NO_EVENTS_FILTER = true);
-
   it('should compile after instrumenting a single binary expression', () => {
     const contract = util.getCode('expressions/single-binary-expression.sol');
     const info = getInstrumentedVersion(contract, filePath);

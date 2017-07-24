@@ -1,4 +1,6 @@
 const solc = require('solc');
+const shell = require('shelljs');
+const fs = require('fs');
 const VM = require('ethereumjs-vm');
 const Account = require('ethereumjs-account');
 const Transaction = require('ethereumjs-tx');
@@ -116,15 +118,14 @@ function callMethod(vm, abi, address, functionName, args) {
     vm.runTx({
       tx,
     }, (err, results) => {
-      const seenEvents = [];
-      results.vm.runState.logs.forEach(log => {
-        const toWrite = {};
-        toWrite.address = log[0].toString('hex');
-        toWrite.topics = log[1].map(x => x.toString('hex'));
-        toWrite.data = log[2].toString('hex');
-        seenEvents.push(JSON.stringify(toWrite));
-      });
-      resolve(seenEvents);
+      try {
+        const events = fs.readFileSync('./allFiredEvents').toString().split('\n');
+        events.pop();
+        shell.rm('./allFiredEvents');
+        resolve(events);
+      } catch (err) {
+        resolve([]);
+      }
     });
   });
 }

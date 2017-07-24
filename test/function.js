@@ -17,8 +17,6 @@ describe('function declarations', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
-  before(() => process.env.NO_EVENTS_FILTER = true);
-
   it('should compile after instrumenting an ordinary function declaration', () => {
     const contract = util.getCode('function/function.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
@@ -101,15 +99,15 @@ describe('function declarations', () => {
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
-        9: 0,
+        9: 1,
       });
       assert.deepEqual(mapping[filePath].b, {});
       assert.deepEqual(mapping[filePath].s, {
-        1: 0,
+        1: 1,
       });
       assert.deepEqual(mapping[filePath].f, {
         1: 0,
-        2: 0,
+        2: 1,
       });
       done();
     }).catch(done);
@@ -125,15 +123,15 @@ describe('function declarations', () => {
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
-        10: 0,
+        10: 1,
       });
       assert.deepEqual(mapping[filePath].b, {});
       assert.deepEqual(mapping[filePath].s, {
-        1: 0,
+        1: 1,
       });
       assert.deepEqual(mapping[filePath].f, {
         1: 0,
-        2: 0,
+        2: 1,
       });
       done();
     }).catch(done);

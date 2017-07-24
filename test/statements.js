@@ -17,8 +17,6 @@ describe('generic statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
-  before(() => process.env.NO_EVENTS_FILTER = true);
-
   it('should compile after instrumenting a single statement (first line of function)', () => {
     const contract = util.getCode('statements/single.sol');
     const info = getInstrumentedVersion(contract, filePath);

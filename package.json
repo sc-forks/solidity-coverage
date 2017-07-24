@@ -39,6 +39,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0",
     "ethereumjs-account": "~2.0.4",
+    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#3.0.3",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
     "istanbul": "^0.4.5",
