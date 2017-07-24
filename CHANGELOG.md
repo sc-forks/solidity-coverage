@@ -1,5 +1,16 @@
 # Changelog
 
+0.1.9 / 2017-07-23
+==================
+
+  * Pin testrpc-sc to its 3.0.3 branch as a safe-haven while we upgrade to testrpc v4
+  * Add changelog
+  * Simplify and reorder README, add CI integration guide
+  * Add testrpc-sc signing test and lint
+  * Clear cache on CI, add Maurelian to contributor list
+  * exec.js refactor: modularized and moved logic to lib/app.js
+  * More informative TestRPC failure logging
+
 0.1.8 / 2017-07-13
 ==================
 
