@@ -94,8 +94,8 @@ describe('function declarations', () => {
     const info = getInstrumentedVersion(contract, filePath);
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
-    // The vm runs out of gas here - but we can verify line / statement / fn
-    // coverage is getting mapped.
+    // We try and call a contract at an address where it doesn't exist and the VM
+    // throws, but we can verify line / statement / fn coverage is getting mapped.
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
