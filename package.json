@@ -23,7 +23,7 @@
   "dependencies": {
     "commander": "^2.9.0",
     "death": "^1.1.0",
-    "ethereumjs-testrpc-sc": "git+https://github.com/sc-forks/testrpc-sc.git#coverage",
+    "ethereumjs-testrpc-sc": "4.0.1",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
     "mkdirp": "^0.5.1",
@@ -42,7 +42,7 @@
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
-    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#3.0.3",
+    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git",
     "istanbul": "^0.4.5",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
