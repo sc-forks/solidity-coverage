@@ -23,14 +23,15 @@
   "dependencies": {
     "commander": "^2.9.0",
     "death": "^1.1.0",
-    "ethereumjs-testrpc-sc": "https://github.com/sc-forks/testrpc-sc.git#3.0.3",
+    "ethereumjs-testrpc-sc": "4.0.1",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
     "mkdirp": "^0.5.1",
     "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser": "git+https://github.com/sc-forks/solidity-parser.git"
+    "solidity-parser": "git+https://github.com/sc-forks/solidity-parser.git",
+    "web3": "^0.18.4"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
@@ -39,13 +40,14 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0",
     "ethereumjs-account": "~2.0.4",
-    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#3.0.3",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
+    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git",
     "istanbul": "^0.4.5",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
     "solc": "0.4.13",
+    "request": "^2.81.0",
     "truffle": "3.4.4"
   }
 }
