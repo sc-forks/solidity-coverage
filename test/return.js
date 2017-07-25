@@ -5,8 +5,7 @@ const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
 
 describe('return statements', () => {
-  before(() => process.env.NO_EVENTS_FILTER = true);
-
+  
   it('should compile after instrumenting function that returns true', () => {
     const contract = util.getCode('return/return.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');

@@ -8,7 +8,7 @@ contract Test {
     function f2(uint x){ x = 2; }
 
     address a;
-    
+
     function f3(uint y){
         y = 1;
     }

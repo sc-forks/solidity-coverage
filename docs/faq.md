@@ -152,3 +152,20 @@ And set up an npm script to run the coverage tool like this:
     "coverage": "SOLIDITY_COVERAGE=true ./node_modules/.bin/solidity-coverage"
 },
 ```
+
+### Why has my branch coverage decreased? Why is assert being shown as a branch point?
+
+`assert` and `require` check whether a condition is true or not. If it is, they allow execution to proceed. If not, they throw, and all changes are reverted. Indeed, prior to [Solidity 0.4.10](https://github.com/ethereum/solidity/releases/tag/v0.4.10), when `assert` and `require` were introduced, this functionality was achieved by code that looked like
+
+```
+if (!x) throw;
+```
+rather than 
+
+```
+require(x)
+```
+
+Clearly, the coverage should be the same in these situations, as the code is (functionally) identical. Older versions of solidity-coverage did not treat these as branch points, and they were not considered in the branch coverage filter. Newer versions *do* count these as branch points, so if your tests did not include failure scenarios for `assert` or `require`, you may see a decrease in your coverage figures when upgrading `solidity-coverage`.
+
+If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.

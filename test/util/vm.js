@@ -1,4 +1,6 @@
 const solc = require('solc');
+const shell = require('shelljs');
+const fs = require('fs');
 const VM = require('ethereumjs-vm');
 const Account = require('ethereumjs-account');
 const Transaction = require('ethereumjs-tx');
@@ -53,7 +55,7 @@ function getAbi(source, compilation) {
     throw new Error('Could not parse contract name from source.');
   }
   const contractName = contractNameMatch[1];
-  return JSON.parse(compilation.contracts[contractName].interface);
+  return JSON.parse(compilation.contracts[':' + contractName].interface);
 }
 
 /**
@@ -116,15 +118,14 @@ function callMethod(vm, abi, address, functionName, args) {
     vm.runTx({
       tx,
     }, (err, results) => {
-      const seenEvents = [];
-      results.vm.runState.logs.forEach(log => {
-        const toWrite = {};
-        toWrite.address = log[0].toString('hex');
-        toWrite.topics = log[1].map(x => x.toString('hex'));
-        toWrite.data = log[2].toString('hex');
-        seenEvents.push(JSON.stringify(toWrite));
-      });
-      resolve(seenEvents);
+      try {
+        const events = fs.readFileSync('./allFiredEvents').toString().split('\n');
+        events.pop();
+        shell.rm('./allFiredEvents');
+        resolve(events);
+      } catch (err) {
+        resolve([]);
+      }
     });
   });
 }
@@ -139,7 +140,7 @@ function callMethod(vm, abi, address, functionName, args) {
  */
 module.exports.execute = function ex(contract, functionName, args) {
   const output = solc.compile(contract, 1);
-  const code = new Buffer(output.contracts.Test.bytecode, 'hex');
+  const code = new Buffer(output.contracts[':Test'].bytecode, 'hex');
   const abi = getAbi(contract, output);
   const stateTrie = new Trie();
   const vm = new VM({

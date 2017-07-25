@@ -11,8 +11,6 @@ describe('if, else, and else if statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
-  before(() => process.env.NO_EVENTS_FILTER = true);
-
   it('should cover an if statement with a bracketed consequent', done => {
     const contract = util.getCode('if/if-with-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);
