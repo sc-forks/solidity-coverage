@@ -1,5 +1,13 @@
 # Changelog
 
+0.1.10 / 2017-07-25
+==================
+
+  * Cover assert/require statements as if they were if statements (which, secretly, they are)
+  * Add documentation justifying the above changes
+  * Upgraded solc to 0.4.13 
+  * Switch to using ethereumjs-vm-sc in order to be able to test case where asserts and requires fail
+
 0.1.9 / 2017-07-23
 ==================
 
