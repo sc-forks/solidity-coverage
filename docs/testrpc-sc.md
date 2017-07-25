@@ -1,6 +1,6 @@
 # How to upgrade testrpc-sc
 
-Warning: this is a birds nest. Any ideas for improvement, however small, are welcome. Document may contain inaccuracies.
+Warning: this is a birds nest. Any ideas for improvement, however small, are welcome. 
 
 ### testrpc-sc:
 + published on `npm` as `ethereumjs-testrpc-sc`
@@ -18,7 +18,7 @@ $ yarn install
 $ npm run build       // Check build, just to make sure
 $ npm version patch   // If helpful. If you're tracking the upstream with a ganache-core sync, use theirs.
 $ git push
-$ npm publish         // This also runs build. Emphasizing the need to build here. 
+$ npm publish         // This also runs build.  
 
 // Go to `solidity-coverage` and pin its `testrpc-sc` dependency to the new version. 
 ```
@@ -26,7 +26,7 @@ $ npm publish         // This also runs build. Emphasizing the need to build her
 + is what testrpc-sc used to be
 + set by default to [its `coverage` branch](https://github.com/sc-forks/ganache-core-sc)
 + depends on `sc-forks/ethereumjs-vm-sc.git`
-+ depends on `sc-forks/provider-engine-sc.git#8.1.19` (Don't look too closely at this)
++ depends on `sc-forks/provider-engine-sc.git#8.1.19` 
 + differs from `truffle-suite/ganache-core` by these deps AND 
   [two lines](https://github.com/sc-forks/ganache-core/blob/ae31080cdc581fef416a1c68cbe28ff71b6fb7c9/lib/blockchain_double.js#L36-L37) 
   in `blockchain_double.js` which set the block and transaction default gas limits.
@@ -44,7 +44,7 @@ $ git push
 
 ### How can I modify ethereumjs-vm-sc and test the changes at `solidity-coverage`?
 
-It's a nightmare. You have to cut a channel of branches (say `#vm`) through the entire project:
+Cut a channel of branches (say `#vm`) through the entire project:
 
 `solidity-coverage#vm` with `package.json`
 ```
@@ -53,7 +53,7 @@ It's a nightmare. You have to cut a channel of branches (say `#vm`) through the 
 
 `testrpc-sc#vm` **based on the coverage branch** with `package.json`
 ```
-"ganache-core": "https://github.com/sc-forks/ganache-core.git#vm"
+"ganache-core": "https://github.com/sc-forks/ganache-core-sc.git#vm"
 ```
 
 `ganache-core#vm` with `package.json`
