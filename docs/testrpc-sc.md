@@ -6,8 +6,8 @@ Warning: this is a birds nest. Any ideas for improvement, however small, are wel
 + published on `npm` as `ethereumjs-testrpc-sc`
 + published **from the coverage branch** of [`sc-forks/testrpc-sc`](https://github.com/sc-forks/testrpc-sc/tree/coverage)
 + a webpack bundle of `sc-forks/ganache-core-sc#coverage` and all of its dependencies.
-+ changing `sc-forks/ganache-core#coverage` or any of its dependencies cannot harm `testrpc-sc` (until publication)
-+ publishing `testrpc-sc` cannot harm `solidity-coverage` until its deps are updated.
++ changes to `sc-forks/ganache-core` do not propagate until `testrpc-sc` is rebuilt and published
++ publishing `testrpc-sc` does not propagate until `solidity-coverage`s deps are updated.
 
 To publish a new version:
 
@@ -27,7 +27,7 @@ $ npm publish         // This also runs build.
 + set by default to [its `coverage` branch](https://github.com/sc-forks/ganache-core-sc)
 + depends on `sc-forks/ethereumjs-vm-sc.git`
 + depends on `sc-forks/provider-engine-sc.git#8.1.19` 
-+ differs from `truffle-suite/ganache-core` by these deps AND 
++ differs from `truffle-suite/ganache-core` by these deps and 
   [two lines](https://github.com/sc-forks/ganache-core/blob/ae31080cdc581fef416a1c68cbe28ff71b6fb7c9/lib/blockchain_double.js#L36-L37) 
   in `blockchain_double.js` which set the block and transaction default gas limits.
 
@@ -44,33 +44,20 @@ $ git push
 
 ### How can I modify ethereumjs-vm-sc and test the changes at `solidity-coverage`?
 
-Cut a channel of branches (say `#vm`) through the entire project:
+Since `solidity-coverage@0.1.10`, ethereumjs-vm-sc is an independent dev dependency, 
+required by the coverage unit tests. The new testrpc has a separate webpacked copy. The simplest 
+thing to do is open a branch at `solidity-coverage` and develop directly on the `vm` dep. 
+When you're satisfied that tests pass with your changes, copy your work over to the `ethereumjs-vm-sc` repo itself. 
 
-`solidity-coverage#vm` with `package.json`
-```
-"ethereumjs-testrpc-sc": "https://github.com/sc-forks/testrpc-sc.git#vm"
-```
-
-`testrpc-sc#vm` **based on the coverage branch** with `package.json`
-```
-"ganache-core": "https://github.com/sc-forks/ganache-core-sc.git#vm"
-```
-
-`ganache-core#vm` with `package.json`
-```
-"ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#vm"
-```
-
-`ethereumjs-vm-sc#vm` (This is where you will work).
-
-+ To test your changes: 
-  + freshly install `node_modules` in testrpc-sc#vm and execute `npm run build` 
-  + freshly install `node_modules` in `solidity-coverage#vm`
-
+In `test/util/vm.js` the `results` object passed back by `vm.runTx` at [callMethod](https://github.com/sc-forks/solidity-coverage/blob/master/test/util/vm.js#L120)
+also contains things like the runState and the logs: ex: `results.vm.runState.logs`.
 
 + To merge / publish the changes:
-  + Merge `ethereumjs-vm-sc#vm` to master.
+  + Merge `ethereumjs-vm-sc#my-new-vm` to master.
   + follow the `testrpc-sc` publication steps above.
+
+There's no reason to worry about changing ethereumjs-vm-sc at master. If that affects anyone (unlikely)
+they have safe harbour at any solidity-coverage installation @0.1.9 and up. They can update. 
 
 
 

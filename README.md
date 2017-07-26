@@ -93,6 +93,7 @@ Solutions to common issues people run into using this tool:
 + [Using alongside HDWalletProvider](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#using-alongside-hdwalletprovider)
 + [Integrating into CI](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration-installing-metacoin-on-travisci-with-coveralls)
 + [Why are asserts and requires highlighted as branch points?](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#why-has-my-branch-coverage-decreased-why-is-assert-being-shown-as-a-branch-point)
++ [Running testrpc-sc on its own](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-testrpc-sc-on-its-own)
 
 ### Example reports 
 + [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
