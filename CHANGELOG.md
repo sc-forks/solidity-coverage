@@ -1,5 +1,12 @@
 # Changelog
 
+0.2.0 / 2017-07-26
+=================
+
+  * Stop ignoring package-lock.json - npm version wants it
+  * Add testrpc-sc publication docs
+  * Update to use testrpc-sc v 4.0.1 (tracking testrpc 4.0.1)
+
 0.1.10 / 2017-07-25
 ==================
 
