@@ -169,3 +169,22 @@ require(x)
 Clearly, the coverage should be the same in these situations, as the code is (functionally) identical. Older versions of solidity-coverage did not treat these as branch points, and they were not considered in the branch coverage filter. Newer versions *do* count these as branch points, so if your tests did not include failure scenarios for `assert` or `require`, you may see a decrease in your coverage figures when upgrading `solidity-coverage`.
 
 If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
+
+
+### Running testrpc-sc on its own
+
+Sometimes its useful to launch `testrpc-sc` separately at the command line or with a script, after 
+setting the `norpc` config option in `.solcover.js` to true:
+
+If you installed using npm
+```
+$ ./node_modules/.bin/testrpc-sc <options>
+```
+
+If you installed using yarn
+```                  
+$ ./node_modules/ethereumjs-testrpc-sc/bin/testrpc        // v0.1.10 and below (testrpc v3.0.3)
+$ ./node_modules/ethereumjs-testrpc-sc/build/cli.node.js  // All others (testrpc v4.0.1 +)
+```
+
+
