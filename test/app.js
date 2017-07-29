@@ -60,6 +60,7 @@ describe('app', () => {
       const testConfig = Object.assign({}, config);
 
       testConfig.testrpcOptions = `--account="${privateKey},${balance}" --port 8777`;
+      testConfig.dir = './mock',
       testConfig.norpc = false;
       testConfig.port = 8777;
 
@@ -78,6 +79,7 @@ describe('app', () => {
       const testConfig = Object.assign({}, config);
 
       testConfig.testCommand = 'mocha --timeout 5000 > /dev/null 2>&1';
+      testConfig.dir = './mock',
       testConfig.norpc = false;
       testConfig.port = 8888;
 
@@ -96,6 +98,7 @@ describe('app', () => {
       const testConfig = Object.assign({}, config);
 
       testConfig.testCommand = 'node ../test/util/mockTestCommand.js';
+      testConfig.dir = './mock',
       testConfig.norpc = false;
       testConfig.port = 8888;
 
@@ -115,6 +118,7 @@ describe('app', () => {
 
       const testConfig = Object.assign({}, config);
 
+      testConfig.dir = './mock',
       testConfig.norpc = false;
       testConfig.port = 8889;
 
@@ -155,6 +159,7 @@ describe('app', () => {
       };`;
 
       const testConfig = Object.assign({}, config);
+      testConfig.dir = './mock',
       testConfig.norpc = false;
       testConfig.port = 8555; // Manually inspect that port is actually set to 8999
 
