@@ -60,8 +60,8 @@ describe('generic statements', () => {
       util.report(output.errors);
       assert.fail('WRONG'); // We shouldn't hit this.
     } catch (err) {
-      (err.actual === 'WRONG') ? assert(false): assert(true);
-    }  
+      (err.actual === 'WRONG') ? assert(false) : assert(true);
+    }
   });
 
   it('should cover a statement following a close brace', done => {

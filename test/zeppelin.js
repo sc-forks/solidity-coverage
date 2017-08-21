@@ -5,7 +5,6 @@ const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
 
 describe('Battery test of production contracts: OpenZeppelin', () => {
-  
   it('should compile after instrumenting zeppelin-solidity/Bounty.sol', () => {
     const bounty = getInstrumentedVersion(util.getCode('zeppelin/Bounty.sol'), 'Bounty.sol');
     const ownable = getInstrumentedVersion(util.getCode('zeppelin/Ownable.sol'), 'Ownable.sol');

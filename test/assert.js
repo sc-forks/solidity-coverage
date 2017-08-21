@@ -84,27 +84,26 @@ describe('asserts and requires', () => {
   });
 
   it('should cover multi-line require statements as if they are if statements when they fail', done => {
-      const contract = util.getCode('assert/RequireMultiline.sol');
-      const info = getInstrumentedVersion(contract, filePath);
-      const coverage = new CoverageMap();
-      coverage.addContract(info, filePath);
+    const contract = util.getCode('assert/RequireMultiline.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
 
-      vm.execute(info.contract, 'a', [true, true, false]).then(events => {
-        const mapping = coverage.generate(events, pathPrefix);
-        assert.deepEqual(mapping[filePath].l, {
-          5: 1,
-        });
-        assert.deepEqual(mapping[filePath].b, {
-          1: [0, 1],
-        });
-        assert.deepEqual(mapping[filePath].s, {
-          1: 1,
-        });
-        assert.deepEqual(mapping[filePath].f, {
-          1: 1,
-        });
-        done();
-      }).catch(done);
-    });
-
+    vm.execute(info.contract, 'a', [true, true, false]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        5: 1,
+      });
+      assert.deepEqual(mapping[filePath].b, {
+        1: [0, 1],
+      });
+      assert.deepEqual(mapping[filePath].s, {
+        1: 1,
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+      });
+      done();
+    }).catch(done);
+  });
 });
