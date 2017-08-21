@@ -1,5 +1,12 @@
 # Changelog
 
+0.2.2 / 2017-08-21
+=================
+
+  * Allow truffle.js to be named truffle-config.js for windows compatibility
+  * Remove old logic that handled empty function body instrumentation (lastchar special case)
+  * Correctly instrument comments near function's {
+
 0.2.1 / 2017-07-29
 =================
 
