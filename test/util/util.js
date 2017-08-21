@@ -11,12 +11,11 @@ module.exports.getCode = function getCode(_path) {
 };
 
 module.exports.report = function report(errors) {
-
-  if (errors){
+  if (errors) {
     errors.forEach(error => {
-        if (error.indexOf('Warning') === -1) {
-            throw new Error(`Instrumented solidity invalid: ${errors}`);
-        }
+      if (error.indexOf('Warning') === -1) {
+        throw new Error(`Instrumented solidity invalid: ${errors}`);
+      }
     });
-  } 
+  }
 };

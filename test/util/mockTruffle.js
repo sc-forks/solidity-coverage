@@ -15,7 +15,7 @@ const shell = require('shelljs');
 module.exports.install = function install(contract, test, config, _trufflejs, _trufflejsName) {
   const configjs = `module.exports = ${JSON.stringify(config)}`;
   const contractLocation = `./${contract}`;
-  const trufflejsName = _trufflejsName || 'truffle.js'; 
+  const trufflejsName = _trufflejsName || 'truffle.js';
 
   // Mock migrations
   const initialMigration = `

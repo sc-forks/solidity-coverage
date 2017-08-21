@@ -123,7 +123,7 @@ function callMethod(vm, abi, address, functionName, args) {
         events.pop();
         shell.rm('./allFiredEvents');
         resolve(events);
-      } catch (err) {
+      } catch (e) {
         resolve([]);
       }
     });

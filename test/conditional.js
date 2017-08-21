@@ -199,5 +199,5 @@ describe('conditional statements', () => {
       assert.deepEqual(mapping[filePath].f, {1: 1});
       done();
     }).catch(done);
-  });*/
+  }); */
 });
