@@ -1,5 +1,11 @@
 # Changelog
 
+0.2.1 / 2017-07-29
+=================
+
+  * Verify testrpc-sc's location in node_modules before invoking (yarn / package-lock.json fix)
+  * Fix lcov html report bug introduced in 0.1.9
+
 0.2.0 / 2017-07-26
 =================
 
