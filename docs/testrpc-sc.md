@@ -59,7 +59,15 @@ also contains things like the runState and the logs: ex: `results.vm.runState.lo
 There's no reason to worry about changing ethereumjs-vm-sc at master. If that affects anyone (unlikely)
 they have safe harbour at any solidity-coverage installation @0.1.9 and up. They can update. 
 
+### E2E Testing
 
+[sc-forks/zeppelin-solidity](https://github.com/sc-forks/zeppelin-solidity) has been configured to 
+serve as a simple pre-publication E2E test. By default the package pulls solidity-coverage from the repo's master branch. 
+You can trigger a [CI build](https://travis-ci.org/sc-forks/zeppelin-solidity) and [Coveralls report](https://coveralls.io/github/sc-forks/zeppelin-solidity) by running:
+
+```
+$ npm run ci
+```
 
 
 
