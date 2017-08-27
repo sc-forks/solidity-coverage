@@ -43,7 +43,7 @@ before_script:
 after_script:                                               
   - npm run coverage && cat coverage/lcov.info | coveralls
 ```
-**NB:** It's probably best practice to run coverage in CI as an `after_script` rather than assume its equivalence to `truffle test`. Solidity-coverage's `testrpc` uses gasLimits far above the current blocklimit and rewrites your contracts in ways that might affect their behavior. It's also less robust than Truffle and may fail more frequently. 
+**NB:** It's probably best practice to run coverage in CI as an `after_script` or in a [parallel build](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/.travis.yml) rather than assume its equivalence to `truffle test`. Solidity-coverage's `testrpc` uses gasLimits far above the current blocklimit and rewrites your contracts in ways that might affect their behavior. It's also less robust than Truffle and may fail more frequently. 
 
 **Step 4: Toggle the project on at Travis and Coveralls and push.** 
 
