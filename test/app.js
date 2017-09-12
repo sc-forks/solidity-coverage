@@ -281,7 +281,7 @@ describe('app', () => {
     collectGarbage();
   });
 
-  it.skip('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
+  it('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
     // Validate ethereumjs-vm hack to remove gas constraints on transfer() and send()
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
