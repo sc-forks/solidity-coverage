@@ -3,11 +3,11 @@
   "plugins": ["mocha"],
   "env":{
     "meteor": true,
-    "es6": true,
+    "node": true,
     "commonjs": true
   },
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 2017,
     "sourceType": "module"
   },
   "rules": {
