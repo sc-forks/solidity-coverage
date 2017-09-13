@@ -1,5 +1,11 @@
 # Changelog
 
+0.2.3 / 2017-09-13
+=================
+
+  * Add unit tests for transfers and sends to instrumented fallback fns.
+  * Fix bug in testrpc-sc causing transfers/sends to fail with instrumented fallback fns.
+
 0.2.2 / 2017-08-21
 =================
 
