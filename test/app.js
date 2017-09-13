@@ -281,6 +281,23 @@ describe('app', () => {
     collectGarbage();
   });
 
+  it('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
+    // Validate ethereumjs-vm hack to remove gas constraints on transfer() and send()
+    assert(pathExists('./coverage') === false, 'should start without: coverage');
+    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+
+    mock.install('Wallet.sol', 'wallet.js', config);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+
+    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
+    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+
+    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const path = Object.keys(produced)[0];
+    assert(produced[path].fnMap['1'].name === 'transferPayment', 'should map "transferPayment"');
+    collectGarbage();
+  });
 
   it('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
     // Run against a contract that 'is' another contract
