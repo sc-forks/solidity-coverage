@@ -1,4 +1,9 @@
 # Changelog
+0.2.4 / 2017-09-22
+=================
+
+  * Fix bug where sigint handler wasn't declared early enough in the exec script, resulting
+    in occasional failure to cleanup. 
 
 0.2.3 / 2017-09-13
 =================
