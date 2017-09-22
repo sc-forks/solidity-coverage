@@ -8,6 +8,8 @@ const log = console.log;
 const config = reqCwd.silent('./.solcover.js') || {};
 const app = new App(config);
 
+death((signal, err) => app.cleanUp(err));
+
 app.generateCoverageEnvironment();
 app.instrumentTarget();
 app.launchTestrpc()
@@ -17,5 +19,5 @@ app.launchTestrpc()
   })
   .catch(err => log(err));
 
-death((signal, err) => app.cleanUp(err));
+
 
