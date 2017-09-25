@@ -6,7 +6,7 @@ const util = require('./util/util.js');
 const solc = require('solc');
 
 describe('comments', () => {
-  const filePath = path.resolve('./test.sol');
+  const filePath = path.resolve('./test.sol').split('\\').join('/');
   const pathPrefix = './';
 
   it('should cover functions even if comments are present immediately after the opening {', () => {

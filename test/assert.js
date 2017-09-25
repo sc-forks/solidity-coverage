@@ -8,7 +8,7 @@ const vm = require('./util/vm');
 const assert = require('assert');
 
 describe('asserts and requires', () => {
-  const filePath = path.resolve('./test.sol');
+  const filePath = path.resolve('./test.sol').split('\\').join('/');
   const pathPrefix = './';
 
   it('should cover assert statements as if they are if statements when they pass', done => {
