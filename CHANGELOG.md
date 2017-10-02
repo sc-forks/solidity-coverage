@@ -1,4 +1,10 @@
 # Changelog
+
+0.2.5 / 2017-10-02
+=================
+  * Revert vm stipend fix, it was corrupting balances. `send` & `transfer` to instrumented fallback 
+    will fail now though.
+
 0.2.4 / 2017-09-22
 =================
 
