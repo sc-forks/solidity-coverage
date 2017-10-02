@@ -15,11 +15,17 @@ find discrepancies between the coverage report and your suite's behavior, please
 + `solidity-coverage` is [Solcover](https://github.com/JoinColony/solcover)
 
 ### Install
+
+Run the following command in a Truffle based application or the root directory of your solidity project.
+
 ```
 $ npm install --save-dev solidity-coverage
 ```
 
 ### Run
+
+The command will be run from within your application project, for each project, you will have to install solidity-coverage.
+
 ```
 $ ./node_modules/.bin/solidity-coverage
 ```
