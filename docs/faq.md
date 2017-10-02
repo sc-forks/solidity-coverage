@@ -170,6 +170,12 @@ Clearly, the coverage should be the same in these situations, as the code is (fu
 
 If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
 
+### Why are send and transfer throwing?
+
+If you include contracts that have fallback function in the list of files to instrument and attempt to `send` or `transfer` to them,
+the methods will throw because the instrumentation consumes more gas than these methods allow. See the `skipFiles` option in the 
+README to exclude these files and [issue 118](https://github.com/sc-forks/solidity-coverage/issues/118) for a more detailed discussion of
+this problem.
 
 ### Running testrpc-sc on its own
 
