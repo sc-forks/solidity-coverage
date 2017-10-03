@@ -78,7 +78,7 @@ describe('app', () => {
       assert(pathExists('./allFiredEvents') === false, 'should start without: events log');
       const testConfig = Object.assign({}, config);
 
-      testConfig.testCommand = 'mocha --timeout 5000 > /dev/null 2>&1';
+      testConfig.testCommand = 'mocha --timeout 5000';
       testConfig.dir = './mock';
       testConfig.norpc = false;
       testConfig.port = 8888;
