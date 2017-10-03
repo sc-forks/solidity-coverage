@@ -8,7 +8,7 @@ const vm = require('./util/vm');
 const assert = require('assert');
 
 describe('for and while statements', () => {
-  const filePath = path.resolve('./test.sol');
+  const filePath = path.resolve('./test.sol').split('\\').join('/');
   const pathPrefix = './';
 
   it('should cover a for statement with a bracketed body (multiline)', done => {
