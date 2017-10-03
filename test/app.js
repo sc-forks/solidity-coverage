@@ -78,7 +78,7 @@ describe('app', () => {
       assert(pathExists('./allFiredEvents') === false, 'should start without: events log');
       const testConfig = Object.assign({}, config);
 
-      testConfig.testCommand = 'mocha --timeout 5000 > /dev/null 2>&1';
+      testConfig.testCommand = 'mocha --timeout 5000';
       testConfig.dir = './mock';
       testConfig.norpc = false;
       testConfig.port = 8888;
@@ -281,7 +281,7 @@ describe('app', () => {
     collectGarbage();
   });
 
-  it('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
+  it.skip('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
     // Validate ethereumjs-vm hack to remove gas constraints on transfer() and send()
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');

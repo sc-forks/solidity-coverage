@@ -1,6 +1,6 @@
 {
   "name": "solidity-coverage",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "",
   "bin": {
     "solidity-coverage": "./bin/exec.js"
@@ -23,7 +23,7 @@
   "dependencies": {
     "commander": "^2.9.0",
     "death": "^1.1.0",
-    "ethereumjs-testrpc-sc": "4.0.3",
+    "ethereumjs-testrpc-sc": "4.0.2",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
     "mkdirp": "^0.5.1",
