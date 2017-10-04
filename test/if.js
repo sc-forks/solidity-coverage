@@ -8,7 +8,7 @@ const vm = require('./util/vm');
 const assert = require('assert');
 
 describe('if, else, and else if statements', () => {
-  const filePath = path.resolve('./test.sol').split('\\').join('/');
+  const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
   it('should cover an if statement with a bracketed consequent', done => {

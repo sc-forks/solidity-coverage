@@ -14,7 +14,7 @@ const assert = require('assert');
  *     and passing the error to mocha.
  */
 describe('function declarations', () => {
-  const filePath = path.resolve('./test.sol').split('\\').join('/');
+  const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
   it('should compile after instrumenting an ordinary function declaration', () => {

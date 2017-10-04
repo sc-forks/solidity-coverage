@@ -8,7 +8,7 @@ const vm = require('./util/vm');
 const assert = require('assert');
 
 describe('conditional statements', () => {
-  const filePath = path.resolve('./test.sol').split('\\').join('/');
+  const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
   it('should cover a conditional that reaches the consequent (same-line)', done => {
