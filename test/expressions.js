@@ -11,7 +11,7 @@ const path = require('path');
  *     and passing the error to mocha.
  */
 describe('generic expressions', () => {
-  const filePath = path.resolve('./test.sol').split('\\').join('/');
+  const filePath = path.resolve('./test.sol');
 
   it('should compile after instrumenting a single binary expression', () => {
     const contract = util.getCode('expressions/single-binary-expression.sol');
