@@ -180,7 +180,7 @@ this problem.
 ### Running on windows
 
 Since `v0.2.6` it's possible to produce a report on Windows (thanks to [@phiferd](https://github.com/phiferd),
-who also maintains their own fork windows-compatible fork of solidity-coverage with other useful improvements). However,
+who also maintains their own windows-compatible fork of solidity-coverage with other useful improvements). However,
 problems remain with the tool's internal launch of `testrpc-sc` so you should create a `.solcover.js` config
 file in your root directory and set the `norpc` option to `true`. Then follow the directions below for
 launching `testrpc-sc` on its own from the command line before running `solidity-coverage` itself.
