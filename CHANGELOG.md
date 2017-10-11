@@ -1,15 +1,25 @@
 # Changelog
+0.2.6 / 2017-10-11
+=================
+  * Permit view and pure modifiers
+  * Permit experimental pragma
+  * Upgrade development deps to truffle4 beta and solc 0.4.17
+  * Fix bug causing large suites that use the internal testrpc launch to crash mysteriously
+    by increasing testrpc-sc stdout buffer size. (@rudolfix / Neufund contribution)
+  * Fix bugs that made tool (completely) unrunnable and report unreadable on Windows. (@phiferd contribution)
+  * Fix bug that caused tool to crash when reading the events log from very large test suites by
+    reading the log line by line as a stream. (@rudolfix / Neufund contribution)
 
 0.2.5 / 2017-10-02
 =================
-  * Revert vm stipend fix, it was corrupting balances. `send` & `transfer` to instrumented fallback 
+  * Revert vm stipend fix, it was corrupting balances. `send` & `transfer` to instrumented fallback
     will fail now though.
 
 0.2.4 / 2017-09-22
 =================
 
   * Fix bug where sigint handler wasn't declared early enough in the exec script, resulting
-    in occasional failure to cleanup. 
+    in occasional failure to cleanup.
 
 0.2.3 / 2017-09-13
 =================
@@ -42,7 +52,7 @@
 
   * Cover assert/require statements as if they were if statements (which, secretly, they are)
   * Add documentation justifying the above changes
-  * Upgraded solc to 0.4.13 
+  * Upgraded solc to 0.4.13
   * Switch to using ethereumjs-vm-sc in order to be able to test case where asserts and requires fail
 
 0.1.9 / 2017-07-23
@@ -86,7 +96,7 @@
 0.1.5 / 2017-06-26
 ==================
 
-  * Fix istanbul exiting error 
+  * Fix istanbul exiting error
   * Fix tuple parsing / update tests
 
 0.1.4 / 2017-06-26
@@ -94,7 +104,7 @@
 
   * Change testrpc path for yarn compatibility
   * Small exec.js cleanup, clarify port options settings in README
-  * Unit test copying project into env 
+  * Unit test copying project into env
   * Copy all directories when setting up coverageEnv
     The exception is `node_modules`, which must have copyNodeModules
     set to `true` in .solcover.js in order to be included.
@@ -123,7 +133,7 @@
   * Add npm version badge, update known issues
   * Pin SP to sc-forks#master (has post-install script to build parser)
   * Remove parse.js dummy node list, order nodes alphabetically
-    Note: This change exposes the fact that a number of cases aren't actually being checked in the 
+    Note: This change exposes the fact that a number of cases aren't actually being checked in the
     parse table. Possible test-deficits / parse-table logic defects here.
   * Remove parse.js dummy node list, order nodes alphabetically
   * add waffle.io badge
