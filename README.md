@@ -7,7 +7,7 @@
 ### Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
 
-+ For more details about what this is, how it works and potential limitations, see 
++ For more details about what this is, how it works and potential limitations, see
 [the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
 + `solidity-coverage` is in development and **its accuracy is unknown.** If you
 find discrepancies between the coverage report and your suite's behavior, please open an
@@ -41,13 +41,13 @@ module.exports = {
     development: {
       host: "localhost",
       port: 8545,
-      network_id: "*" 
+      network_id: "*"
     },
     coverage: {
       host: "localhost",
       network_id: "*",
-      port: 8555,         // <-- If you change this, also set the port option in .solcover.js.  
-      gas: 0xfffffffffff, // <-- Use this high gas value 
+      port: 8555,         // <-- If you change this, also set the port option in .solcover.js.
+      gas: 0xfffffffffff, // <-- Use this high gas value
       gasPrice: 0x01      // <-- Use this low gas price
     },
     ...etc...
@@ -79,7 +79,7 @@ module.exports = {
 | norpc | *Boolean* | false | Prevent solidity-coverage from launching its own testrpc. Useful if you are managing a complex test suite with a [shell script](https://github.com/OpenZeppelin/zeppelin-solidity/blob/ed872ca0a11c4926f8bb91dd103bea1378a3384c/scripts/coverage.sh) |
 | testCommand | *String* | `truffle test` |  Run an arbitrary test command. ex: `mocha --timeout 5000`. NB: Also set the `port` option to whatever your tests require (probably 8545). |
 | testrpcOptions | *String* | `--port 8555` | options to append to a command line invocation of testrpc. NB: Using this overwrites the defaults so always specify a port in this string *and* in the `port` option |
-| copyNodeModules | *Boolean* | false | Copies `node_modules` into the coverage environment. May significantly increase the time for coverage to complete if enabled. Useful if your contracts import solidity files from an npm installed package. | 
+| copyNodeModules | *Boolean* | false | Copies `node_modules` into the coverage environment. May significantly increase the time for coverage to complete if enabled. Useful if your contracts import solidity files from an npm installed package. |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used. |
 | dir | *String* | `.` | Solidity-coverage copies all the assets in your root directory (except `node_modules`) to a special folder where it instruments the contracts and executes the tests. `dir` allows you to define a relative path from the root directory to those assets. Useful if your contracts & tests are within their own folder as part of a larger project.|
 
@@ -90,13 +90,15 @@ Solutions to common issues people run into using this tool:
 + [Running out of gas](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas)
 + [Running out of memory (locally and in CI)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory-locally-and-in-ci)
 + [Running out of time (in mocha)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha)
++ [Running on windows](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-on-windows)
++ [Running testrpc-sc on its own](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-testrpc-sc-on-its-own)
 + [Using alongside HDWalletProvider](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#using-alongside-hdwalletprovider)
 + [Integrating into CI](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration-installing-metacoin-on-travisci-with-coveralls)
 + [Why are asserts and requires highlighted as branch points?](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#why-has-my-branch-coverage-decreased-why-is-assert-being-shown-as-a-branch-point)
 + [Why are `send` and `transfer` throwing in my tests?](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#why-are-send-and-transfer-throwing)
-+ [Running testrpc-sc on its own](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-testrpc-sc-on-its-own)
 
-### Example reports 
+
+### Example reports
 + [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
 + [zeppelin-solidity](https://coveralls.io/github/OpenZeppelin/zeppelin-solidity?branch=master)  (Coveralls)
 + [gnosis-contracts](https://codecov.io/gh/gnosis/gnosis-contracts/tree/master/contracts)  (Codecov)
@@ -106,7 +108,7 @@ Solutions to common issues people run into using this tool:
 Contributions are welcome! If you're opening a PR that adds features please consider writing some
 [unit tests](https://github.com/sc-forks/solidity-coverage/tree/master/test) for them. You could
 also lint your submission with `npm run lint`. Bugs can be reported in the
-[issues](https://github.com/sc-forks/solidity-coverage/issues).  
+[issues](https://github.com/sc-forks/solidity-coverage/issues).
 
 ### Contributors
 + [@area](https://github.com/area)
