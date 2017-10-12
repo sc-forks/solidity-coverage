@@ -28,7 +28,7 @@
     "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser": "git+https://github.com/sc-forks/solidity-parser.git",
+    "solidity-parser-sc": "0.4.1",
     "web3": "^0.18.4"
   },
   "devDependencies": {
