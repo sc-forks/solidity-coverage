@@ -5,11 +5,7 @@ contract PureView {
   // Make sure we aren't corrupting anything with the replace
   uint notpureview = 5;
 
-  function isPure(uint a, uint b) pure returns (uint){
-    return a * b;
-  }
-
-  function isView() view returns (uint){
-    return notpureview;
-  }
+  // Abstract functions to inherit from an uninstrumented, imported file.
+  function bePure(uint a, uint b) pure returns (uint);
+  function beView() view returns (uint);
 }

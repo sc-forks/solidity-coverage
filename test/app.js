@@ -246,7 +246,7 @@ describe('app', () => {
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 
     // Run script (exits 0);
-    mock.install('PureView.sol', 'pureview.js', config);
+    mock.install('TotallyPure.sol', 'totallyPure.js', config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
@@ -258,8 +258,8 @@ describe('app', () => {
     // This test is tightly bound to the function names in Simple.sol
     const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'isPure', 'coverage.json should map "isPure"');
-    assert(produced[path].fnMap['2'].name === 'isView', 'coverage.json should map "isView"');
+    assert(produced[path].fnMap['1'].name === 'usesThem', 'coverage.json should map "usesThem"');
+    assert(produced[path].fnMap['2'].name === 'isPure', 'coverage.json should map "getX"');
     collectGarbage();
   })
 
