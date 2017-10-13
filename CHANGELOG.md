@@ -1,4 +1,12 @@
 # Changelog
+
+0.2.7 / 2017-10-12
+=================
+  * Fix bug that prevented overloading abstract pure methods imported from outside the
+    contracts directory (@elenadimitrova)
+  * Begin using npm published solidity-parser-sc / allow upgrading with yarn (@elenadimitrova)
+  * Update README and FAQ for Windows users
+
 0.2.6 / 2017-10-11
 =================
   * Permit view and pure modifiers
