@@ -1,5 +1,11 @@
 # Changelog
 
+0.3.0 / 2017-11-05
+===================
+
+  * Add sanity checks for contracts and coverageEnv folders
+  * Update testrpc-sc to 6.0.3 (Byzantium fork)
+
 0.2.7 / 2017-10-12
 =================
   * Fix bug that prevented overloading abstract pure methods imported from outside the
