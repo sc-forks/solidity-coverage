@@ -8,4 +8,5 @@ contract PureView {
   // Abstract functions to inherit from an uninstrumented, imported file.
   function bePure(uint a, uint b) pure returns (uint);
   function beView() view returns (uint);
+  function beConstant() constant returns (uint);
 }
