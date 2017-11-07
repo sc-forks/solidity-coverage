@@ -18,6 +18,14 @@ contract TotallyPure is PureView {
     return notpureview;
   }
 
+  function isConstant() constant returns (uint){
+    return onehundred;
+  }
+
+  function beConstant() constant returns (uint){
+    return onehundred;
+  }
+
   function bePure(uint a, uint b) pure returns (uint) {
     return a + b;
   }

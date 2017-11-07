@@ -15,9 +15,14 @@ contract('TotallyPure', accounts => {
     const value = await instance.isPure(4,5);
   });
 
-  it('calls an importend, inherited view function', async function(){
+  it('calls an imported, inherited view function', async function(){
     const instance = await TotallyPure.deployed();
     const value = await instance.isView();
+  })
+
+  it('calls an imported, inherited constant function', async function(){
+    const instance = await TotallyPure.deployed();
+    const value = await instance.isConstant();
   })
 
   it('overrides an imported, inherited abstract pure function', async function(){
@@ -28,5 +33,10 @@ contract('TotallyPure', accounts => {
   it('overrides an imported, inherited abstract view function', async function(){
     const instance = await TotallyPure.deployed();
     const value = await instance.beView();
+  });
+
+  it('overrides an imported, inherited abstract constant function', async function(){
+    const instance = await TotallyPure.deployed();
+    const value = await instance.beConstant();
   });
 });
