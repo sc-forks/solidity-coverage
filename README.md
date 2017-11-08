@@ -16,7 +16,9 @@ find discrepancies between the coverage report and your suite's behavior, please
 
 ### Install
 ```
-$ npm install --save-dev solidity-coverage
+$ npm install --save-dev solidity-coverage         // Post-Byzantium fork, testrpc >= 6.0.1
+
+$ npm install --save-dev solidity-coverage@0.2.5   // Pre-Byzantium fork, testrpc ~ 4.0.0
 ```
 
 ### Run
