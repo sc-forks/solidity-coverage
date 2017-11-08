@@ -261,7 +261,7 @@ describe('app', () => {
     assert(produced[path].fnMap['1'].name === 'usesThem', 'coverage.json should map "usesThem"');
     assert(produced[path].fnMap['2'].name === 'isPure', 'coverage.json should map "getX"');
     collectGarbage();
-  })
+  });
 
   it('tests require assets outside of test folder: should generate coverage, cleanup & exit(0)', () => {
     // Directory should be clean
