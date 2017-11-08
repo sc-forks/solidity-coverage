@@ -21,6 +21,18 @@ $ npm install --save-dev solidity-coverage         // Post-Byzantium fork, testr
 $ npm install --save-dev solidity-coverage@0.2.5   // Pre-Byzantium fork, testrpc ~ 4.0.0
 ```
 
+**Important:** `v0.4.0` targets `solidity >= pragma 0.4.18` and introduces a breaking 
+change for projects that rely on Truffle's simplified contract method interface. All uses of `constant` 
+`view` or `pure` methods now need to be explicitly invoked using `.call`. e.g:
+```
+myMethod.getViewValue(param)        // Old way
+myMethod.getViewValue.call(param)   // New way
+```
+Methods invoked the old way will return a transaction object instead of a value when run under coverage. 
+See [issue #146](https://github.com/sc-forks/solidity-coverage/issues/146#issuecomment-342781441) for a more
+detailed explanation. `0.3.5` is an intermediate release that contains the Byzantium
+fork upgrade but does not require other code changes as long as your pragma is `<= 0.4.17`.
+
 ### Run
 ```
 $ ./node_modules/.bin/solidity-coverage
