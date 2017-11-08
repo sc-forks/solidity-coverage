@@ -40,11 +40,11 @@
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
-    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#a5f797299d0e96214af739be3bea4d0e15499c0d",
+    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#6be86e6f12634b711423203e6744cafe07c38e69",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^3.1.0",
-    "solc": "0.4.17",
     "request": "^2.81.0",
+    "solc": "0.4.17",
     "truffle": "4.0.0-beta.2"
   }
 }
