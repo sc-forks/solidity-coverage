@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.0 / 2017-11-08 (Compatible with testrpc >= 6.0 / pragma 0.4.18 and above)
+==================
+
+  * Bug fix to accomodate strict enforcement of constant and view modifiers in pragma 0.4.18
+
 0.3.5 / 2017-11-07 (Compatible with testrpc >= 6.0 / pragma 0.4.17 and below)
 ==================
 
