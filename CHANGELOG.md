@@ -1,5 +1,11 @@
 # Changelog
 
+0.3.5 / 2017-11-07 (Compatible with testrpc >= 6.0 / pragma 0.4.17 and below)
+==================
+
+  * Bug fix to accomodate Truffle's simplified interface for view and constant
+  * Bug fix to accomodate enforcement of EIP 170 (max contract bytes === 24576)
+
 0.3.0 / 2017-11-05
 ===================
 
