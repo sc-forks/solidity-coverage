@@ -1,5 +1,16 @@
 # Changelog
 
+0.4.1 / 2017-11-16 (upgraded a number of dependencies to remove deprecation warnings and updated node version for circle to latest LTS version.  Also tested under Node 9.2.0)
+==================
+
+* `req-cwd` from `^1.0.1` to ``^2.0.0``
+* replaced the old `solidity-parser-sc` `0.4.1` with `solparse ^1.4.0` (fixed lots of deprecations)
+* `eslint` from `^3.19.0` to `^4.11.0`
+* `eslint-config-airbnb-base` from `^11.0.1` to `^12.1.0`
+* `merkle-patricia-tree` from `~2.1.2` to `~2.2.0`
+* `mocha` from `^3.1.0` to `^4.0.1`
+* `truffle` from `4.0.0-beta.2` to `^4.0.1`
+
 0.4.0 / 2017-11-08 (Compatible with testrpc >= 6.0 / pragma 0.4.18 and above)
 ==================
 
