@@ -3,7 +3,9 @@ const App = require('./../lib/app.js');
 const reqCwd = require('req-cwd');
 const death = require('death');
 
-const log = console.log;
+const {
+  log,
+} = console;
 
 const config = reqCwd.silent('./.solcover.js') || {};
 const app = new App(config);
@@ -18,6 +20,4 @@ app.launchTestrpc()
     app.generateReport();
   })
   .catch(err => log(err));
-
-
 

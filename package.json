@@ -1,12 +1,16 @@
 {
   "name": "solidity-coverage",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "",
   "bin": {
     "solidity-coverage": "./bin/exec.js"
   },
   "directories": {
     "test": "test"
+  },
+  "engines": {
+    "node": ">=8.9.1",
+    "npm": ">=5"
   },
   "scripts": {
     "test": "mocha --timeout 60000",
@@ -25,26 +29,26 @@
     "ethereumjs-testrpc-sc": "6.0.7",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
-    "req-cwd": "^1.0.1",
+    "req-cwd": "^2.0.0",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser-sc": "0.4.1",
+    "solparse": "^1.4.0",
     "web3": "^0.18.4"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0",
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
-    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#6be86e6f12634b711423203e6744cafe07c38e69",
-    "merkle-patricia-tree": "~2.1.2",
-    "mocha": "^3.1.0",
+    "ethereumjs-vm": "git+https://github.com/sc-forks/ethereumjs-vm-sc.git#6be86e6f12634b711423203e6744cafe07c38e69",
+    "merkle-patricia-tree": "~2.2.0",
+    "mocha": "^4.0.1",
     "request": "^2.81.0",
-    "solc": "0.4.17",
-    "truffle": "4.0.0-beta.2"
+    "solc": "^0.4.17",
+    "truffle": "4.0.1"
   }
 }

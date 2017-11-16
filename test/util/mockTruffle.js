@@ -69,7 +69,7 @@ module.exports.install = function install(contract, test, config, _trufflejs, _t
   fs.writeFileSync('./mock/assets/asset.js', asset);
   fs.writeFileSync('./.solcover.js', configjs);
 
-  shell.cp(`./test/sources/cli/PureView.sol`, `./mock/assets/PureView.sol`);
+  shell.cp('./test/sources/cli/PureView.sol', './mock/assets/PureView.sol');
   shell.cp(`./test/cli/${test}`, `./mock/test/${test}`);
 };
 
@@ -118,9 +118,7 @@ module.exports.installInheritanceTest = function installInheritanceTest(config) 
                         host: "localhost",
                         port: 8545,
                         network_id: "*"
-                      }}};`
-                  ;
-
+                      }}};`;
   const configjs = `module.exports = ${JSON.stringify(config)}`;
 
   fs.writeFileSync('./mock/truffle.js', trufflejs);

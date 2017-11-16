@@ -4,6 +4,6 @@ const Expensive = artifacts.require('./Expensive.sol');
 
 contract('Expensive', () => {
   it('should deploy', async () => {
-    const instance = await Expensive.new()
+    const instance = await Expensive.new();
   });
 });

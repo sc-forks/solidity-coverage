@@ -16,7 +16,7 @@ contract('Simple', accounts => {
       simple = instance;
       return simple.test(5);
     })
-    .then(() => simple.getX.call())
-    .then(val => assert.equal(val.toNumber(), 5));
+      .then(() => simple.getX.call())
+      .then(val => assert.equal(val.toNumber(), 5));
   });
 });

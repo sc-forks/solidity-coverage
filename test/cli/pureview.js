@@ -4,14 +4,13 @@
 const PureView = artifacts.require('./PureView.sol');
 
 contract('PureView', accounts => {
-
-  it('calls a pure function', async function(){
+  it('calls a pure function', async () => {
     const instance = await PureView.deployed();
-    const value = await instance.isPure(4,5);
+    const value = await instance.isPure(4, 5);
   });
 
-  it('calls a view function', async function(){
+  it('calls a view function', async () => {
     const instance = await PureView.deployed();
     const value = await instance.isView();
-  })
+  });
 });

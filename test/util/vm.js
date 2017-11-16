@@ -11,7 +11,7 @@ const coder = require('web3/lib/solidity/coder.js');
 
 // Don't use this address for anything, obviously!
 const secretKey = 'e81cb653c260ee12c72ec8750e6bfd8a4dc2c3d7e3ede68dd2f150d0a67263d8';
-const accountAddress = new Buffer('7caf6f9bc8b3ba5c7824f934c826bd6dc38c8467', 'hex');
+const accountAddress = Buffer.from('7caf6f9bc8b3ba5c7824f934c826bd6dc38c8467', 'hex');
 
 /**
  * Encodes function data
@@ -76,7 +76,7 @@ function deploy(vm, code) {
   const tx = new Transaction({
     gasPrice: '1', gasLimit: 'ffffff', data: code,
   });
-  tx.sign(new Buffer(secretKey, 'hex'));
+  tx.sign(Buffer.from(secretKey, 'hex'));
 
   return new Promise((resolve, reject) => {
     vm.runTx({
@@ -112,7 +112,7 @@ function callMethod(vm, abi, address, functionName, args) {
   };
 
   const tx = new Transaction(options);
-  tx.sign(new Buffer(secretKey, 'hex'));
+  tx.sign(Buffer.from(secretKey, 'hex'));
 
   return new Promise(resolve => {
     vm.runTx({
@@ -140,7 +140,7 @@ function callMethod(vm, abi, address, functionName, args) {
  */
 module.exports.execute = function ex(contract, functionName, args) {
   const output = solc.compile(contract, 1);
-  const code = new Buffer(output.contracts[':Test'].bytecode, 'hex');
+  const code = Buffer.from(output.contracts[':Test'].bytecode, 'hex');
   const abi = getAbi(contract, output);
   const stateTrie = new Trie();
   const vm = new VM({
