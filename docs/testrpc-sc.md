@@ -68,15 +68,3 @@ You can trigger a [CI build](https://travis-ci.org/sc-forks/zeppelin-solidity) a
 ```
 $ npm run ci
 ```
-
-### solidity-parser-sc
-
-We also publish `solidity-parser-sc` because `consensys/solidity-parser` in its .pegjs form has been
-left to die in the wild, unloved by all. Publish at the publish branch by running `npm version patch`, `npm publish`.
-
-
-
-
-
-
-
