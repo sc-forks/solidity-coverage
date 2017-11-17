@@ -4,7 +4,6 @@
 ==================
 
 * `req-cwd` from `^1.0.1` to ``^2.0.0``
-* replaced the old `solidity-parser-sc` `0.4.1` with `solparse ^1.4.0` (fixed lots of deprecations)
 * `eslint` from `^3.19.0` to `^4.11.0`
 * `eslint-config-airbnb-base` from `^11.0.1` to `^12.1.0`
 * `merkle-patricia-tree` from `~2.1.2` to `~2.2.0`

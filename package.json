@@ -44,7 +44,7 @@
     "req-cwd": "^2.0.0",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solparse": "^1.4.0",
+    "solidity-parser-sc": "^0.4.1",
     "web3": "^0.18.4"
   },
   "devDependencies": {
