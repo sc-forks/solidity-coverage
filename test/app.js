@@ -240,13 +240,13 @@ describe('app', () => {
     collectGarbage();
   });
 
-  it('tests use pure and view modifiers', () => {
+  it('tests use pure and view modifiers, including with libraries', () => {
     // Directory should be clean
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 
     // Run script (exits 0);
-    mock.install('TotallyPure.sol', 'totallyPure.js', config);
+    mock.installLibraryTest(config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
@@ -255,7 +255,7 @@ describe('app', () => {
     assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
 
     // Coverage should be real.
-    // This test is tightly bound to the function names in Simple.sol
+    // This test is tightly bound to the function names in TotallyPure.sol
     const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
     const path = Object.keys(produced)[0];
     assert(produced[path].fnMap['1'].name === 'usesThem', 'coverage.json should map "usesThem"');
