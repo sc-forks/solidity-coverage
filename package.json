@@ -1,21 +1,33 @@
 {
   "name": "solidity-coverage",
   "version": "0.4.0",
-  "description": "",
+  "description": "Code coverage tool for Solidity",
   "bin": {
     "solidity-coverage": "./bin/exec.js"
   },
   "directories": {
-    "test": "test"
+    "test": "test",
+    "docs": "docs",
+    "lib": "lib",
+    "bin": "bin"
   },
   "engines": {
     "node": ">=8.9.1",
     "npm": ">=5"
   },
+  "tags": [
+    "solidity",
+    "code-coverage",
+    "testing",
+    "quality-assurance",
+    "dapps",
+    "blockchain",
+    "ethereum"
+  ],
   "scripts": {
     "test": "mocha --timeout 60000",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000 --exit",
-    "lint": "./node_modules/.bin/eslint --fix ./"
+    "lint": "./node_modules/.bin/eslint ./"
   },
   "homepage": "https://github.com/sc-forks/solidity-coverage",
   "repository": {
