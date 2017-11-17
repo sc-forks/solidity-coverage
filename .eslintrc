@@ -33,7 +33,7 @@
       "arraysInObjects": false
     }],
     "no-unused-expressions": ["error", { "allowShortCircuit": true, "allowTernary": true }],
-    "object-curly-newline": ["error", { "minProperties": 1 }],
+    "object-curly-newline": ["error", { "minProperties": 3 }],
     "object-property-newline": ["error"],
     "prefer-template": [0],
     "quotes": [2, "single"],

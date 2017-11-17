@@ -19,18 +19,10 @@ describe('asserts and requires', () => {
 
     vm.execute(info.contract, 'a', [true]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [1, 0],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -43,18 +35,10 @@ describe('asserts and requires', () => {
 
     vm.execute(info.contract, 'a', [false]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [0, 1],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [0, 1]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -67,18 +51,10 @@ describe('asserts and requires', () => {
 
     vm.execute(info.contract, 'a', [true, true, true]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [1, 0],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -91,18 +67,10 @@ describe('asserts and requires', () => {
 
     vm.execute(info.contract, 'a', [true, true, false]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [0, 1],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [0, 1]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });

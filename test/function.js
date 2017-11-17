@@ -74,17 +74,11 @@ describe('function declarations', () => {
 
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        7: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 7: 1 });
       assert.deepEqual(mapping[filePath].b, {});
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-        2: 1,
-      });
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1,
+        2: 1 });
       done();
     }).catch(done);
   });
@@ -98,17 +92,11 @@ describe('function declarations', () => {
     // throws, but we can verify line / statement / fn coverage is getting mapped.
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        9: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 9: 1 });
       assert.deepEqual(mapping[filePath].b, {});
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 0,
-        2: 1,
-      });
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 0,
+        2: 1 });
       done();
     }).catch(done);
   });
@@ -122,17 +110,11 @@ describe('function declarations', () => {
     // coverage is getting mapped.
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        10: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 10: 1 });
       assert.deepEqual(mapping[filePath].b, {});
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 0,
-        2: 1,
-      });
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 0,
+        2: 1 });
       done();
     }).catch(done);
   });

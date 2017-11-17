@@ -3,9 +3,7 @@ const App = require('./../lib/app.js');
 const reqCwd = require('req-cwd');
 const death = require('death');
 
-const {
-  log,
-} = console;
+const { log } = console;
 
 const config = reqCwd.silent('./.solcover.js') || {};
 const app = new App(config);

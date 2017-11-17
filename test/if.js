@@ -20,18 +20,10 @@ describe('if, else, and else if statements', () => {
     // Runs: a(1) => if (x == 1) { x = 3; }
     vm.execute(info.contract, 'a', [1]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [1, 0],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1, 2: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1, 2: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -46,18 +38,10 @@ describe('if, else, and else if statements', () => {
     // Same results as previous test
     vm.execute(info.contract, 'a', [1]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [1, 0],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1, 2: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1, 2: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -71,18 +55,10 @@ describe('if, else, and else if statements', () => {
     // Runs: a(1) => if (x == 1){\n x = 3; }
     vm.execute(info.contract, 'a', [1]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1, 6: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [1, 0],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1, 2: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1, 6: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1, 2: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -96,18 +72,10 @@ describe('if, else, and else if statements', () => {
     // Same results as previous test
     vm.execute(info.contract, 'a', [1]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1, 6: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [1, 0],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1, 2: 1,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1, 6: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [1, 0]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1, 2: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -121,18 +89,10 @@ describe('if, else, and else if statements', () => {
     // Runs: a(2) => if (x == 1) { x = 3; }
     vm.execute(info.contract, 'a', [2]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1,
-      });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [0, 1],
-      });
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1, 2: 0,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1 });
+      assert.deepEqual(mapping[filePath].b, { 1: [0, 1]});
+      assert.deepEqual(mapping[filePath].s, { 1: 1, 2: 0 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -149,15 +109,11 @@ describe('if, else, and else if statements', () => {
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 0, 8: 1,
       });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [0, 1],
-      });
+      assert.deepEqual(mapping[filePath].b, { 1: [0, 1]});
       assert.deepEqual(mapping[filePath].s, {
         1: 1, 2: 0, 3: 1,
       });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -173,15 +129,11 @@ describe('if, else, and else if statements', () => {
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 0, 8: 1,
       });
-      assert.deepEqual(mapping[filePath].b, {
-        1: [0, 1],
-      });
+      assert.deepEqual(mapping[filePath].b, { 1: [0, 1]});
       assert.deepEqual(mapping[filePath].s, {
         1: 1, 2: 0, 3: 1,
       });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -193,18 +145,14 @@ describe('if, else, and else if statements', () => {
     coverage.addContract(info, filePath);
     vm.execute(info.contract, 'a', [2, 3, 3]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1, 7: 1,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1, 7: 1 });
       assert.deepEqual(mapping[filePath].b, {
         1: [0, 1], 2: [1, 0], 3: [1, 0],
       });
       assert.deepEqual(mapping[filePath].s, {
         1: 1, 2: 1, 3: 1,
       });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });

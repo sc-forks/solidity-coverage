@@ -20,16 +20,10 @@ describe('for and while statements', () => {
     // Runs: a() => for(var x = 1; x < 10; x++){\n sha3(x);\n }
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1, 6: 10,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1, 6: 10 });
       assert.deepEqual(mapping[filePath].b, {});
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1, 2: 10,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].s, { 1: 1, 2: 10 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -43,16 +37,10 @@ describe('for and while statements', () => {
     // Runs: a() => for(var x = 1; x < 10; x++)\n sha3(x);\n
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
-      assert.deepEqual(mapping[filePath].l, {
-        5: 1, 6: 10,
-      });
+      assert.deepEqual(mapping[filePath].l, { 5: 1, 6: 10 });
       assert.deepEqual(mapping[filePath].b, {});
-      assert.deepEqual(mapping[filePath].s, {
-        1: 1, 2: 10,
-      });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].s, { 1: 1, 2: 10 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -73,9 +61,7 @@ describe('for and while statements', () => {
       assert.deepEqual(mapping[filePath].s, {
         1: 1, 2: 1, 3: 1,
       });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });
@@ -96,9 +82,7 @@ describe('for and while statements', () => {
       assert.deepEqual(mapping[filePath].s, {
         1: 1, 2: 1, 3: 1,
       });
-      assert.deepEqual(mapping[filePath].f, {
-        1: 1,
-      });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
       done();
     }).catch(done);
   });

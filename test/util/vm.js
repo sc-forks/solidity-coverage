@@ -19,9 +19,7 @@ const accountAddress = Buffer.from('7caf6f9bc8b3ba5c7824f934c826bd6dc38c8467', '
  */
 function encodeFunctionTxData(functionName, types, args) {
   const fullName = `${functionName}(${types.join()})`;
-  const signature = CryptoJS.SHA3(fullName, {
-    outputLength: 256,
-  }).toString(CryptoJS.enc.Hex).slice(0, 8);
+  const signature = CryptoJS.SHA3(fullName, { outputLength: 256 }).toString(CryptoJS.enc.Hex).slice(0, 8);
   const dataHex = signature + coder.encodeParams(types, args);
   return `0x${dataHex}`;
 }
@@ -79,9 +77,7 @@ function deploy(vm, code) {
   tx.sign(Buffer.from(secretKey, 'hex'));
 
   return new Promise((resolve, reject) => {
-    vm.runTx({
-      tx,
-    }, (err, results) => {
+    vm.runTx({ tx }, (err, results) => {
       if (err) {
         reject(err);
       } else {
@@ -115,9 +111,7 @@ function callMethod(vm, abi, address, functionName, args) {
   tx.sign(Buffer.from(secretKey, 'hex'));
 
   return new Promise(resolve => {
-    vm.runTx({
-      tx,
-    }, (err, results) => {
+    vm.runTx({ tx }, (err, results) => {
       try {
         const events = fs.readFileSync('./allFiredEvents').toString().split('\n');
         events.pop();
@@ -143,9 +137,7 @@ module.exports.execute = function ex(contract, functionName, args) {
   const code = Buffer.from(output.contracts[':Test'].bytecode, 'hex');
   const abi = getAbi(contract, output);
   const stateTrie = new Trie();
-  const vm = new VM({
-    state: stateTrie,
-  });
+  const vm = new VM({ state: stateTrie });
 
   createAccount(stateTrie);
   return deploy(vm, code).then(address => callMethod(vm, abi, address, functionName, args));

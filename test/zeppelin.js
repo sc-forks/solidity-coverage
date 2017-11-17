@@ -16,9 +16,7 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
       'Killable.sol': killable.contract,
       'Bounty.sol': bounty.contract,
     };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -26,13 +24,9 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
     const claimable = getInstrumentedVersion(util.getCode('zeppelin/Claimable.sol'), 'Claimable.sol');
     const ownable = getInstrumentedVersion(util.getCode('zeppelin/Ownable.sol'), 'Ownable.sol');
 
-    const inputs = {
-      'Ownable.sol': ownable.contract,
-      'Claimable.sol': claimable.contract,
-    };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const inputs = { 'Ownable.sol': ownable.contract,
+      'Claimable.sol': claimable.contract };
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -46,22 +40,16 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
       'DayLimit.sol': dayLimit.contract,
       'Shareable.sol': shareable.contract,
     };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
   it('should compile after instrumenting zeppelin-solidity/Killable.sol', () => {
     const ownable = getInstrumentedVersion(util.getCode('zeppelin/Ownable.sol'), 'Ownable.sol');
     const killable = getInstrumentedVersion(util.getCode('zeppelin/Killable.sol'), 'Killable.sol');
-    const inputs = {
-      'Ownable.sol': ownable.contract,
-      'Killable.sol': killable.contract,
-    };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const inputs = { 'Ownable.sol': ownable.contract,
+      'Killable.sol': killable.contract };
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -75,13 +63,9 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
   it('should compile after instrumenting zeppelin-solidity/Migrations.sol', () => {
     const ownable = getInstrumentedVersion(util.getCode('zeppelin/Ownable.sol'), 'Ownable.sol');
     const migrations = getInstrumentedVersion(util.getCode('zeppelin/Migrations.sol'), 'Migrations.sol');
-    const inputs = {
-      'Ownable.sol': ownable.contract,
-      'Migrations.sol': migrations.contract,
-    };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const inputs = { 'Ownable.sol': ownable.contract,
+      'Migrations.sol': migrations.contract };
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -103,9 +87,7 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
       'DayLimit.sol': dayLimit.contract,
       'MultisigWallet.sol': multisigWallet.contract,
     };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -140,13 +122,9 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
   it('should compile after instrumenting zeppelin-solidity/Stoppable.sol', () => {
     const stoppable = getInstrumentedVersion(util.getCode('zeppelin/Stoppable.sol'), 'Stoppable.sol');
     const ownable = getInstrumentedVersion(util.getCode('zeppelin/Ownable.sol'), 'Ownable.sol');
-    const inputs = {
-      'Ownable.sol': ownable.contract,
-      'Stoppable.sol': stoppable.contract,
-    };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const inputs = { 'Ownable.sol': ownable.contract,
+      'Stoppable.sol': stoppable.contract };
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
   // --- Tokens ---
@@ -160,9 +138,7 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
       'SafeMath.sol': safeMath.contract,
       'BasicToken.sol': basicToken.contract,
     };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -180,9 +156,7 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
       'ERC20.sol': ERC20.contract,
       'SafeMath.sol': safeMath.contract,
     };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -212,9 +186,7 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
       'ERC20.sol': ERC20.contract,
       'SafeMath.sol': safeMath.contract,
     };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 
@@ -230,9 +202,7 @@ describe('Battery test of production contracts: OpenZeppelin', () => {
       'StandardToken.sol': standardToken.contract,
       'ERC20.sol': ERC20.contract,
     };
-    const output = solc.compile({
-      sources: inputs,
-    }, 1);
+    const output = solc.compile({ sources: inputs }, 1);
     util.report(output.errors);
   });
 });
