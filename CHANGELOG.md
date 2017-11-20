@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.2 / 2017-11-20
+==================
+
+  * Bug fix to gracefully handle *.sol files that are invalid Solidity during pre-processing.
+
 0.4.1 / 2017-11-19
 ==================
 
