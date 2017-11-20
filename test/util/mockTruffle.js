@@ -51,6 +51,7 @@ module.exports.install = function install(contract, test, config, _trufflejs, _t
   shell.mkdir('./mock/contracts');
   shell.mkdir('./mock/migrations');
   shell.mkdir('./mock/assets');
+  shell.cp('./test/sources/cli/SimpleError.sol', './mock/assets/SimpleError.sol');
   shell.mkdir('./mock/node_modules');
   shell.mkdir('./mock/test');
 
