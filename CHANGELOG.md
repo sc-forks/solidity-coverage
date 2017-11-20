@@ -1,5 +1,11 @@
 # Changelog
 
+0.4.1 / 2017-11-19
+==================
+
+  * Bug fix to allow `constant` keyword for variables by only removing visibility modifiers from
+    functions. Uses the preprocessor walking over the AST rather than a regex
+
 0.4.0 / 2017-11-08 (Compatible with testrpc >= 6.0 / pragma 0.4.18 and above)
 ==================
 
