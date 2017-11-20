@@ -2,6 +2,7 @@
 pragma solidity ^0.4.17;
 
 import "./../assets/PureView.sol";
+import "./../assets/CLibrary.sol";
 
 contract TotallyPure is PureView {
   uint onehundred = 99;
@@ -33,5 +34,9 @@ contract TotallyPure is PureView {
 
   function beView() view returns (uint){
     return onehundred;
+  }
+
+  function usesLibrary() constant returns (uint){
+    return CLibrary.a();
   }
 }

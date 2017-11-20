@@ -69,7 +69,6 @@ module.exports.install = function install(contract, test, config, _trufflejs, _t
   fs.writeFileSync('./mock/assets/asset.js', asset);
   fs.writeFileSync('./.solcover.js', configjs);
 
-  shell.cp('./test/sources/cli/PureView.sol', './mock/assets/PureView.sol');
   shell.cp(`./test/cli/${test}`, `./mock/test/${test}`);
 };
 
@@ -110,6 +109,60 @@ module.exports.installInheritanceTest = function installInheritanceTest(config) 
 
   // Mock test
   shell.cp('./test/cli/inheritance.js', './mock/test/inheritance.js');
+
+  // Mock truffle.js
+  const trufflejs = `module.exports = {
+                    networks: {
+                      development: {
+                        host: "localhost",
+                        port: 8545,
+                        network_id: "*"
+                      }}};`;
+  const configjs = `module.exports = ${JSON.stringify(config)}`;
+
+  fs.writeFileSync('./mock/truffle.js', trufflejs);
+  fs.writeFileSync('./.solcover.js', configjs);
+};
+
+/**
+ * Installs mock truffle project at ./mock with two contracts - one is a library the other
+ * uses, and test specified by the params.
+ * @param  {config} .solcover.js configuration
+ */
+module.exports.installLibraryTest = function installInheritanceTest(config) {
+  shell.mkdir('./mock');
+  shell.mkdir('./mock/contracts');
+  shell.mkdir('./mock/migrations');
+  shell.mkdir('./mock/test');
+  shell.mkdir('./mock/assets');
+
+  // Mock contracts
+  shell.cp('./test/sources/cli/TotallyPure.sol', './mock/contracts/TotallyPure.sol');
+  shell.cp('./test/sources/cli/Migrations.sol', './mock/contracts/Migrations.sol');
+
+  // Mock migrations
+  const initialMigration = `
+    let Migrations = artifacts.require('Migrations.sol');
+    module.exports = function(deployer) {
+      deployer.deploy(Migrations);
+    };`;
+
+  const deployContracts = `
+    var CLibrary = artifacts.require('CLibrary.sol');
+    var TotallyPure = artifacts.require('./TotallyPure.sol');
+    module.exports = function(deployer) {
+      deployer.deploy(CLibrary);
+      deployer.link(CLibrary, TotallyPure);
+      deployer.deploy(TotallyPure);
+    };`;
+
+  fs.writeFileSync('./mock/migrations/1_initial_migration.js', initialMigration);
+  fs.writeFileSync('./mock/migrations/2_deploy_contracts.js', deployContracts);
+
+  // Mock test
+  shell.cp('./test/cli/totallyPure.js', './mock/test/totallyPure.js');
+  shell.cp('./test/sources/cli/PureView.sol', './mock/assets/PureView.sol');
+  shell.cp('./test/sources/cli/CLibrary.sol', './mock/assets/CLibrary.sol');
 
   // Mock truffle.js
   const trufflejs = `module.exports = {
