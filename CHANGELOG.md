@@ -1,6 +1,6 @@
 # Changelog
 
-0.4.2 / 2017-11-20 (upgraded a number of dependencies to remove deprecation warnings and updated node version for circle to latest LTS version.  Also tested under Node 9.2.0)
+0.4.3 / 2017-11-20 (upgraded a number of dependencies to remove deprecation warnings and updated node version for circle to latest LTS version.  Also tested under Node 9.2.0)
 ==================
 
 * `req-cwd` from `^1.0.1` to ``^2.0.0``
@@ -10,6 +10,10 @@
 * `mocha` from `^3.1.0` to `^4.0.1`
 * `truffle` from `4.0.0-beta.2` to `^4.0.1`
 
+0.4.2 / 2017-11-20
+==================
+
+  * Bug fix to gracefully handle *.sol files that are invalid Solidity during pre-processing.
 
 0.4.1 / 2017-11-19
 ==================
