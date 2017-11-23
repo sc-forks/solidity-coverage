@@ -33,7 +33,7 @@ myMethod.getViewValue.call(param)   // New way
 Methods invoked the old way will return a transaction object instead of a value when run under coverage.
 See [issue #146](https://github.com/sc-forks/solidity-coverage/issues/146#issuecomment-342781441) for a more
 detailed explanation. `0.3.5` is an intermediate release that contains the Byzantium
-fork upgrade but does not require other code changes as long as your pragma is `<= 0.4.17` and you invoke `pure`
+fork upgrade but does not require other code changes as long as your pragma is `<= 0.5.0` and you invoke `pure`
 methods using the `.call` postfix.
 
 ### Run
