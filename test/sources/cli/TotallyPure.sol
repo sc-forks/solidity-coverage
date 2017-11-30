@@ -1,5 +1,5 @@
-//pragma experimental "v0.5.0";
-pragma solidity ^0.4.17;
+pragma experimental "v0.5.0";
+//pragma solidity ^0.4.17;
 
 import "./../assets/PureView.sol";
 import "./../assets/CLibrary.sol";
