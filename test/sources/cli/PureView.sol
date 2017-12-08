@@ -10,4 +10,16 @@ contract PureView {
   function bePure(uint a, uint b) pure returns (uint);
   function beView() view returns (uint);
   function beConstant() constant returns (uint);
+
+  function inheritedPure(uint a, uint b) pure returns(uint){
+    return a + b;
+  }
+
+  function inheritedView() view returns (uint){
+    return notpureview;
+  }
+
+  function inheritedConstant() constant returns (uint){
+    return notpureview;
+  }
 }

@@ -50,4 +50,22 @@ contract('TotallyPure', accounts => {
     const value = await instance.beConstant.call();
     assert.equal(value.toNumber(), 99);
   });
+
+  it('calls a pure method implemented in an inherited class', async() => {
+    const instance = await TotallyPure.deployed();
+    const value = await instance.inheritedPure(4, 5);
+    assert.equal(value.toNumber(), 9);
+  });
+
+  it('calls a view method implemented in an inherited class', async () => {
+    const instance = await TotallyPure.deployed();
+    const value = await instance.inheritedView();
+    assert.equal(value.toNumber(), 5);
+  });
+
+  it('calls a constant method implemented in an inherited class', async () => {
+    const instance = await TotallyPure.deployed();
+    const value = await instance.inheritedConstant();
+    assert.equal(value.toNumber(), 5);
+  });
 });
