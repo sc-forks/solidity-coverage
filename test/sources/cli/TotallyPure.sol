@@ -12,31 +12,31 @@ contract TotallyPure is PureView {
     uint z = isView();
   }
 
-  function isPure(uint a, uint b) pure returns (uint){
+  function isPure(uint a, uint b) public pure returns (uint){
     return a * b;
   }
 
-  function isView() view returns (uint){
+  function isView() public view returns (uint){
     return notpureview;
   }
 
-  function isConstant() constant returns (uint){
+  function isConstant() public constant returns (uint){
     return onehundred;
   }
 
-  function beConstant() constant returns (uint){
+  function beConstant() public constant returns (uint){
     return onehundred;
   }
 
-  function bePure(uint a, uint b) pure returns (uint) {
+  function bePure(uint a, uint b) public pure returns (uint) {
     return a + b;
   }
 
-  function beView() view returns (uint){
+  function beView() public view returns (uint){
     return onehundred;
   }
 
-  function usesLibrary() constant returns (uint){
+  function usesLibrary() public constant returns (uint){
     return CLibrary.a();
   }
 }
