@@ -124,3 +124,4 @@ also lint your submission with `npm run lint`. Bugs can be reported in the
 + [@maurelian](https://github.com/maurelian)
 + [@rudolfix](https://github.com/rudolfix)
 + [@phiferd](https://github.com/phiferd)
++ [@e11io](https://github.com/e11io)
