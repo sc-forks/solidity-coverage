@@ -6,6 +6,7 @@
   * Stop requiring that `view` `pure` and `constant` methods be invoked by `.call` (solution: spalladino @ zeppelin)
   * Add ability to include specific node_modules packages (contribution: e11io), dramatically speeding
     up coverage env generation for larger projects.
+  * Add ability to skip instrumentation for an entire folder.
 
 0.4.2 / 2017-11-20
 ==================
