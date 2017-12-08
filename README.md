@@ -18,40 +18,25 @@ find discrepancies between the coverage report and your suite's behavior, please
 
 ### Install
 ```
-$ npm install --save-dev solidity-coverage         // Testrpc >= 6.0.1, pragma >= 0.5.0
-
-$ npm install --save-dev solidity-coverage@0.3.5   // Testrpc >= 6.0.1, pragma < 0.5.0 
-
-$ npm install --save-dev solidity-coverage@0.2.5   // Pre-Byzantium fork, testrpc ~ 4.0.0
+$ npm install --save-dev solidity-coverage
 ```
-
-**Important:** `v0.4.0` targets `solidity >= pragma 0.5.0` and (temporarily) introduces a breaking
-change for projects that rely on Truffle's simplified contract method interface. All `constant`
-`view` or `pure` methods will need to be explicitly invoked using `.call`. e.g:
-```
-myMethod.getViewValue(param)        // Old way
-myMethod.getViewValue.call(param)   // New way
-```
-Methods invoked the old way will return a transaction object instead of a value when run under coverage.
-See [issue #146](https://github.com/sc-forks/solidity-coverage/issues/146#issuecomment-342781441) for a more
-detailed explanation. `0.3.5` is an intermediate release that contains the Byzantium
-fork upgrade but does not require other code changes as long as your pragma is `<= 0.5.0` and you invoke `pure`
-methods using the `.call` postfix.
 
 ### Run
 ```
 $ ./node_modules/.bin/solidity-coverage
 ```
 
-Tests run signficantly slower while coverage is being generated. A 1 to 2 minute delay
-between the end of Truffle compilation and the beginning of test execution is possible if your
-test suite is large. Large Solidity files can also take a while to instrument.
+Tests run signficantly slower while coverage is being generated. Your contracts are double-compiled
+and a 1 to 2 minute delay between the end of the second compilation and the beginning of test execution
+is possible if your test suite is large. Large Solidity files can also take a while to instrument.
 
 ### Network Configuration
 
 By default, solidity-coverage generates a stub `truffle.js` that accomodates its special gas needs and
 connects to a modified version of testrpc on port 8555. If your tests will run on the development network
-using a standard `truffle.js` and testrpc instance, you shouldn't have to do any configuration. If your tests depend on logic or special options added to `truffle.js` you should declare a coverage network there following the example below.
+using a standard `truffle.js` and testrpc instance, you shouldn't have to do any configuration.
+If your tests depend on logic or special options added to `truffle.js` you should declare a coverage
+network there following the example below.
 
 **Example**
 ```javascript
