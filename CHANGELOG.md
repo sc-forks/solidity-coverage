@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.4 / 2017-12-19
+==================
+  * Fix build folder management by only deleting its contracts folder (contribution: ukstv)
+  * Document problems/solutions when Truffle must be a local dependency.
+
 0.4.3 / 2017-12-08
 ==================
 
