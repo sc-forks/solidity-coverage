@@ -131,4 +131,5 @@ also lint your submission with `npm run lint`. Bugs can be reported in the
 + [@rudolfix](https://github.com/rudolfix)
 + [@phiferd](https://github.com/phiferd)
 + [@e11io](https://github.com/e11io)
++ [@elenadimitrova](https://github.com/elenadimitrova)
 + [@ukstv](htpps://github.com/ukstv)
