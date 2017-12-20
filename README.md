@@ -30,6 +30,11 @@ Tests run signficantly slower while coverage is being generated. Your contracts 
 and a 1 to 2 minute delay between the end of the second compilation and the beginning of test execution
 is possible if your test suite is large. Large Solidity files can also take a while to instrument.
 
+**Important: breaking change for versions >= `0.4.3`**
++ solidity-coverage now expects a globally installed truffle in your environment / on CI. If you
+prefer to control which Truffle version your tests are run with, please see the FAQ for
+[running truffle as a local dependency](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency).
+
 ### Network Configuration
 
 By default, solidity-coverage generates a stub `truffle.js` that accomodates its special gas needs and
@@ -98,6 +103,7 @@ Solutions to common issues people run into using this tool:
 + [Running out of time (in mocha)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha)
 + [Running on windows](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-on-windows)
 + [Running testrpc-sc on its own](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-testrpc-sc-on-its-own)
++ [Running truffle as a local dependency](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency)
 + [Using alongside HDWalletProvider](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#using-alongside-hdwalletprovider)
 + [Integrating into CI](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration-installing-metacoin-on-travisci-with-coveralls)
 + [Why are asserts and requires highlighted as branch points?](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#why-has-my-branch-coverage-decreased-why-is-assert-being-shown-as-a-branch-point)
@@ -125,3 +131,4 @@ also lint your submission with `npm run lint`. Bugs can be reported in the
 + [@rudolfix](https://github.com/rudolfix)
 + [@phiferd](https://github.com/phiferd)
 + [@e11io](https://github.com/e11io)
++ [@ukstv](htpps://github.com/ukstv)

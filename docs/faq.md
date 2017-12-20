@@ -201,4 +201,20 @@ $ ./node_modules/ethereumjs-testrpc-sc/bin/testrpc        // v0.1.10 and below (
 $ ./node_modules/ethereumjs-testrpc-sc/build/cli.node.js  // All others (testrpc v4.0.1 +)
 ```
 
+### Running truffle as a local dependency
+
+If your project ships with Truffle as a dev dependency and expects that instance to be
+invoked when running tests, you should either set the `copyNodeModules` option to `true`
+in your`.solcover.js` config file OR (if doing so results in poor run time performance), set
+the config's `testCommand` and `compileCommand` options as below:
+
+```javascript
+compileCommand: '../node_modules/.bin/truffle compile',
+testCommand: '../node_modules/.bin/truffle test --network coverage',
+```
+
+
+
+
+
 
