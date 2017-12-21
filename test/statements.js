@@ -17,6 +17,13 @@ describe('generic statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
+  it('should compile function defined in a struct', () => {
+    const contract = util.getCode('statements/fn-struct.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = solc.compile(info.contract, 1);
+    util.report(output.errors);
+  })
+
   it('should compile after instrumenting a single statement (first line of function)', () => {
     const contract = util.getCode('statements/single.sol');
     const info = getInstrumentedVersion(contract, filePath);
