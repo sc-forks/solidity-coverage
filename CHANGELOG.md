@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.5 / 2017-12-21
+==================
+
+  * Fix parsing bug preventing fn definition in structs. Bump parser to 0.4.2
+
 0.4.4 / 2017-12-19
 ==================
   * Fix build folder management by only deleting its contracts folder (contribution: ukstv)
