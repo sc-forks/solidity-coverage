@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.8 / 2018-01-02
+==================
+
+  * Fix windows html report bug caused by failure to pass path relativized mapping to Istanbul
+
 0.4.5 - 0.4.7 / 2017-12-21
 ==================
 
