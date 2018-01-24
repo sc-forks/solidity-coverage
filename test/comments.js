@@ -4,6 +4,7 @@ const path = require('path');
 const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
 const solc = require('solc');
+const assert = require('assert');
 
 describe('comments', () => {
   const filePath = path.resolve('./test.sol');
@@ -19,6 +20,7 @@ describe('comments', () => {
     const contract = util.getCode('comments/postLineComment.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const output = solc.compile(info.contract, 1);
+    assert.deepEqual([6, 5], info.runnableLines);
     util.report(output.errors);
   });
   it('should cover contracts even if comments are present', () => {
