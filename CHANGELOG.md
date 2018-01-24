@@ -1,5 +1,9 @@
 # Changelog
 
+0.4.9 / 2018-01-23
+==================
+  * Fix bug that ommitted line-coverage for lines with trailing '//' comment
+
 0.4.8 / 2018-01-02
 ==================
 
