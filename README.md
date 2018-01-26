@@ -35,7 +35,7 @@ is possible if your test suite is large. Large Solidity files can also take a wh
 prefer to control which Truffle version your tests are run with, please see the FAQ for
 [running truffle as a local dependency](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency).
 
-+ Solidity fixtures / mocks / tests stored in the `tests/` directory are no longer supported. If your suite uses native Soldity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it's unable to rewrite your contract ABI's appropriately. Mocks should be relocated to the root folder's `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
++ Solidity fixtures / mocks / tests stored in the `tests/` directory are no longer supported. If your suite uses native Soldity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it's unable to rewrite your contract ABIs appropriately. Mocks should be relocated to the root folder's `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
 
 ### Network Configuration
 
