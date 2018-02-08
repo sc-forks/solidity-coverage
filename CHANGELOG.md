@@ -1,6 +1,6 @@
 # Changelog
 
-0.4.3 / 2017-11-20 (upgraded a number of dependencies to remove deprecation warnings and updated node version for circle to latest LTS version.  Also tested under Node 9.2.0)
+0.4.10 / 2018-02-08 (upgraded a number of dependencies to remove deprecation warnings and updated node version for circle to latest LTS version.  Also tested under Node 9.2.0)
 ==================
 
 * `req-cwd` from `^1.0.1` to ``^2.0.0``
@@ -9,6 +9,33 @@
 * `merkle-patricia-tree` from `~2.1.2` to `~2.2.0`
 * `mocha` from `^3.1.0` to `^4.0.1`
 * `truffle` from `4.0.0-beta.2` to `^4.0.1`
+
+0.4.9 / 2018-01-23
+==================
+  * Fix bug that ommitted line-coverage for lines with trailing '//' comment
+
+0.4.8 / 2018-01-02
+==================
+
+  * Fix windows html report bug caused by failure to pass path relativized mapping to Istanbul
+
+0.4.5 - 0.4.7 / 2017-12-21
+==================
+
+  * Fix parsing bug preventing fn definition in structs. Bump parser to 0.4.4
+
+0.4.4 / 2017-12-19
+==================
+  * Fix build folder management by only deleting its contracts folder (contribution: ukstv)
+  * Document problems/solutions when Truffle must be a local dependency.
+
+0.4.3 / 2017-12-08
+==================
+
+  * Stop requiring that `view` `pure` and `constant` methods be invoked by `.call` (solution: spalladino @ zeppelin)
+  * Add ability to include specific node_modules packages (contribution: e11io), dramatically speeding
+    up coverage env generation for larger projects.
+  * Add ability to skip instrumentation for an entire folder.
 
 0.4.2 / 2017-11-20
 ==================
@@ -19,7 +46,7 @@
 ==================
 
 * Bug fix to allow `constant` keyword for variables by only removing visibility modifiers from
-functions. Uses the preprocessor walking over the AST rather than a regex
+functions. Uses the preprocessor walking over the AST rather than a regex.
 
 0.4.0 / 2017-11-08 (Compatible with testrpc >= 6.0 / pragma 0.4.18 and above)
 ==================
