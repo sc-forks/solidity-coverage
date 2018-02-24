@@ -39,4 +39,14 @@ contract TotallyPure is PureView {
   function usesLibrary() public constant returns (uint){
     return CLibrary.a();
   }
+
+  function multiline(uint x,
+                     uint y)
+                     public
+                     view
+                     returns (uint)
+  {
+    return onehundred;
+  }
+
 }

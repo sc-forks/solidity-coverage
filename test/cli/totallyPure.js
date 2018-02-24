@@ -68,4 +68,10 @@ contract('TotallyPure', accounts => {
     const value = await instance.inheritedConstant();
     assert.equal(value.toNumber(), 5);
   });
+
+  it('calls a view method whose modifiers span lines', async () => {
+    const instance = await TotallyPure.deployed();
+    const value = await instance.multiline(5, 7)
+    assert.equal(value.toNumber(), 99);
+  });
 });
