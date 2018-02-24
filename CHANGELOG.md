@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.10 / 2018-02-24
+===================
+  * Fix bug that corrupted the line coverage alignment in reports when view/pure modifiers
+    occupied their own line.
+
 0.4.9 / 2018-01-23
 ==================
   * Fix bug that ommitted line-coverage for lines with trailing '//' comment
