@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.11 / 2018-03-04
+===================
+  * Add @vdrg to contributor list
+  * Update parser to allow function types as function parameters (contribution: vrdg)
+
 0.4.10 / 2018-02-24
 ===================
   * Fix bug that corrupted the line coverage alignment in reports when view/pure modifiers
