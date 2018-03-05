@@ -135,3 +135,4 @@ also lint your submission with `npm run lint`. Bugs can be reported in the
 + [@e11io](https://github.com/e11io)
 + [@elenadimitrova](https://github.com/elenadimitrova)
 + [@ukstv](https://github.com/ukstv)
++ [@vdrg](https://github.com/vdrg)
