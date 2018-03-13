@@ -74,4 +74,10 @@ contract('TotallyPure', accounts => {
     const value = await instance.multiline(5, 7)
     assert.equal(value.toNumber(), 99);
   });
+
+  it('calls a method who signature is defined by an interface', async () => {
+    const instance = await TotallyPure.deployed();
+    await instance.cry();
+  });
+
 });

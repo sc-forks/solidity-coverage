@@ -1,10 +1,11 @@
 pragma experimental "v0.5.0";
 //pragma solidity ^0.4.17;
 
+import "./../assets/Face.sol";
 import "./../assets/PureView.sol";
 import "./../assets/CLibrary.sol";
 
-contract TotallyPure is PureView {
+contract TotallyPure is PureView, Face {
   uint onehundred = 99;
 
   function usesThem() {
@@ -49,4 +50,11 @@ contract TotallyPure is PureView {
     return onehundred;
   }
 
+  function stare(uint a, uint b) external {
+    uint z = a + b;
+  }
+
+  function cry() external {
+
+  }
 }
