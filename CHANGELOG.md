@@ -1,5 +1,11 @@
 # Changelog
 
+0.4.12 / 2018-03-13
+===================
+  * Fix bug that caused parser to crash on JS future-reserved keywords like `class`
+  * Use newer more stable `ganache-cli` as core of testrpc-sc.
+  * Update instrumentation to allow interface contracts.
+
 0.4.11 / 2018-03-04
 ===================
   * Add @vdrg to contributor list
