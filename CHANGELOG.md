@@ -1,5 +1,9 @@
 # Changelog
 
+0.4.13 / 2018-03-15
+====================
+  * Fix bug introduced in 0.4.12 that broke internal rpc server launch. (contribution @andresilva)
+
 0.4.12 / 2018-03-13
 ===================
   * Fix bug that caused parser to crash on JS future-reserved keywords like `class`
