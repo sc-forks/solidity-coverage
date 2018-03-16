@@ -1,5 +1,10 @@
 # Changelog
 
+0.4.14 / 2018-03-15
+====================
+* Fix misc bugs related to testrpc-sc using an older version of `ganache-cli` to webpack testrpc-sc
+  by bumping to testrpc-sc 6.1.2
+
 0.4.13 / 2018-03-15
 ====================
   * Fix bug introduced in 0.4.12 that broke internal rpc server launch. (contribution @andresilva)
@@ -7,7 +12,7 @@
 0.4.12 / 2018-03-13
 ===================
   * Fix bug that caused parser to crash on JS future-reserved keywords like `class`
-  * Use newer more stable `ganache-cli` as core of testrpc-sc.
+  * Use newer more stable `ganache-core` as core of testrpc-sc.
   * Update instrumentation to allow interface contracts.
 
 0.4.11 / 2018-03-04
