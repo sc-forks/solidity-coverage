@@ -1,6 +1,6 @@
 {
   "name": "solidity-coverage",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "description": "",
   "bin": {
     "solidity-coverage": "./bin/exec.js"
