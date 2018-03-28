@@ -1,5 +1,9 @@
 # Changelog
 
+0.4.15 / 2018-03-28
+===================
+  * Update parser to allow `emit` keyword (contribution @andresilva). 
+
 0.4.14 / 2018-03-15
 ====================
 * Fix misc bugs related to testrpc-sc using an older version of `ganache-cli` to webpack testrpc-sc
