@@ -40,9 +40,8 @@ prefer to control which Truffle version your tests are run with, please see the 
 ### Network Configuration
 
 By default, solidity-coverage generates a stub `truffle.js` that accomodates its special gas needs and
-connects to a modified version of testrpc on port 8555. If your tests will run on the development network
-using a standard `truffle.js` and testrpc instance, you shouldn't have to do any configuration.
-If your tests depend on logic or special options added to `truffle.js` you should declare a coverage
+connects to a coverage-enabled fork of the ganache-cli client called **testrpc-sc** on port 8555. This special client ships with `solidity-coverage` - there's nothing extra to download. If your tests will run on truffle's development network
+using a standard `truffle.js` and ganache-cli instance, you shouldn't have to do any configuration or launch the coverage client separately. If your tests depend on logic or special options added to `truffle.js` you should declare a coverage
 network there following the example below.
 
 **Example**
