@@ -7,13 +7,14 @@ const CoverageMap = require('./../lib/coverageMap');
 const vm = require('./util/vm');
 const assert = require('assert');
 
-describe('conditional statements', () => {
+describe.skip('conditional statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
 
   it('should cover a conditional that reaches the consequent (same-line)', done => {
     const contract = util.getCode('conditional/sameline-consequent.sol');
     const info = getInstrumentedVersion(contract, filePath);
+    console.log(info.contract)
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
