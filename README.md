@@ -30,6 +30,12 @@ Tests run signficantly slower while coverage is being generated. Your contracts 
 and a 1 to 2 minute delay between the end of the second compilation and the beginning of test execution
 is possible if your test suite is large. Large Solidity files can also take a while to instrument.
 
+**Important: breaking change for versions >= `0.5.0`**
++ `solidity-coverage` requires compilation with `solc` >= `0.4.21`. We're prefixing our own
+instrumentation events with the `emit` keyword to reduce warnings volume when running the tool.
++ Ternary conditionals (ex: `(x) ? y : z;`) no longer receive branch coverage. There's more info about
+why this isn't currently possible at [solidity 3887](https://github.com/ethereum/solidity/issues/3887).
+
 **Important: breaking change for versions >= `0.4.3`**
 + solidity-coverage now expects a globally installed truffle in your environment / on CI. If you
 prefer to control which Truffle version your tests are run with, please see the FAQ for
