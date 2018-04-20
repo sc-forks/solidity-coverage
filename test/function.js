@@ -89,6 +89,29 @@ describe('function declarations', () => {
     }).catch(done);
   });
 
+  it('should cover a constructor that uses the `constructor` keyword', done  => {
+    const contract = util.getCode('function/constructor-keyword.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        6: 1, 11: 1
+      });
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {
+        1: 1,
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+        2: 1,
+      });
+      done();
+    }).catch(done);
+  });
+
   it('should cover a constructor call that chains to a method call', done => {
     const contract = util.getCode('function/chainable.sol');
     const info = getInstrumentedVersion(contract, filePath);
