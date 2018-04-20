@@ -1,8 +1,19 @@
 # Changelog
 
+0.5.0 / 2018-04-20
+==================
+  * Update README for 0.5.0
+  * Cleanup stdout/stderr streams on exit. This might stop testrpc-sc from running as a background
+    zombie on Linux systems, post-exit.
+  * Support `constructor` keyword
+  * Prefix instrumentation events with `emit` keyword
+  * (Temporarily) remove support for ternary conditional branch coverage. Solidity no longer allows
+    us to emit instrumentationevents within the grammatical construction @area devised to
+    make this possible.
+
 0.4.15 / 2018-03-28
 ===================
-  * Update parser to allow `emit` keyword (contribution @andresilva). 
+  * Update parser to allow `emit` keyword (contribution @andresilva).
 
 0.4.14 / 2018-03-15
 ====================
