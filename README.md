@@ -26,7 +26,7 @@ $ npm install --save-dev solidity-coverage
 $ ./node_modules/.bin/solidity-coverage
 ```
 
-Tests run signficantly slower while coverage is being generated. Your contracts are double-compiled
+Tests run significantly slower while coverage is being generated. Your contracts are double-compiled
 and a 1 to 2 minute delay between the end of the second compilation and the beginning of test execution
 is possible if your test suite is large. Large Solidity files can also take a while to instrument.
 
@@ -41,11 +41,11 @@ why this isn't currently possible at [solidity 3887](https://github.com/ethereum
 prefer to control which Truffle version your tests are run with, please see the FAQ for
 [running truffle as a local dependency](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency).
 
-+ Solidity fixtures / mocks / tests stored in the `tests/` directory are no longer supported. If your suite uses native Soldity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it's unable to rewrite your contract ABIs appropriately. Mocks should be relocated to the root folder's `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
++ Solidity fixtures / mocks / tests stored in the `tests/` directory are no longer supported. If your suite uses native Solidity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it's unable to rewrite your contract ABIs appropriately. Mocks should be relocated to the root folder's `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
 
 ### Network Configuration
 
-By default, solidity-coverage generates a stub `truffle.js` that accomodates its special gas needs and
+By default, solidity-coverage generates a stub `truffle.js` that accommodates its special gas needs and
 connects to a coverage-enabled fork of the ganache-cli client called **testrpc-sc** on port 8555. This special client ships with `solidity-coverage` - there's nothing extra to download. If your tests will run on truffle's development network
 using a standard `truffle.js` and ganache-cli instance, you shouldn't have to do any configuration or launch the coverage client separately. If your tests depend on logic or special options added to `truffle.js` you should declare a coverage
 network there following the example below.
