@@ -1,5 +1,10 @@
 # Changelog
 
+0.5.1 / 2018-05-19
+==================
+  * Silence security warnings coming from the parser by upgrading mocha there to v3.
+  * Kill testrpc w/ tree-kill so that the childprocess actually dies in linux.
+
 0.5.0 / 2018-04-20
 ==================
   * Update README for 0.5.0
