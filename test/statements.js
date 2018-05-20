@@ -59,6 +59,7 @@ describe('generic statements', () => {
     util.report(output.errors);
   });
 
+
   it('should NOT pass tests if the contract has a compilation error', () => {
     const contract = util.getCode('statements/compilation-error.sol');
     const info = getInstrumentedVersion(contract, filePath);
@@ -69,6 +70,29 @@ describe('generic statements', () => {
     } catch (err) {
       (err.actual === 'WRONG') ? assert(false) : assert(true);
     }
+  });
+
+  it('should compile after instrumenting an emit statement after an un-enclosed if statement', () => {
+    const contract = util.getCode('statements/emit-instrument.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = solc.compile(info.contract, 1);
+    util.report(output.errors);
+  });
+
+  it('should cover an emitted event statement', done => {
+    const contract = util.getCode('statements/emit-coverage.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', []).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, { 6: 1 });
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, { 1: 1 });
+      assert.deepEqual(mapping[filePath].f, { 1: 1 });
+      done();
+    }).catch(done);
   });
 
   it('should cover a statement following a close brace', done => {

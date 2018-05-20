@@ -164,6 +164,7 @@ module.exports.installLibraryTest = function installInheritanceTest(config) {
   shell.cp('./test/cli/totallyPure.js', './mock/test/totallyPure.js');
   shell.cp('./test/sources/cli/PureView.sol', './mock/assets/PureView.sol');
   shell.cp('./test/sources/cli/CLibrary.sol', './mock/assets/CLibrary.sol');
+  shell.cp('./test/sources/cli/Face.sol', './mock/assets/Face.sol');
 
   // Mock truffle.js
   const trufflejs = `module.exports = {

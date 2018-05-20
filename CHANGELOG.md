@@ -1,18 +1,71 @@
 # Changelog
 
-0.4.10 / 2018-02-08 (upgraded a number of dependencies to remove deprecation warnings and updated node version for circle to latest LTS version.  Also tested under Node 9.2.0)
+0.5.2 / 2018-05-21
 ==================
 
-* `req-cwd` from `^1.0.1` to ``^2.0.0``
-* `eslint` from `^3.19.0` to `^4.11.0`
-* `eslint-config-airbnb-base` from `^11.0.1` to `^12.1.0`
-* `merkle-patricia-tree` from `~2.1.2` to `~2.2.0`
-* `mocha` from `^3.1.0` to `^4.0.1`
-* `truffle` from `4.0.0-beta.2` to `^4.0.1`
+  * upgraded a number of dependencies to remove some deprecation warnings
+  * updated node version for circle to test under Node 10
+  * updated circleci config to version 2 format
+  * removed the `--fix` option from the default lint command. (use `npm run lint -- --fix` to fix.)
+  * cleaned up all linting errors
+
+0.5.1 / 2018-05-19
+==================
+
+  * Silence security warnings coming from the parser by upgrading mocha there to v3.
+  * Kill testrpc w/ tree-kill so that the childprocess actually dies in linux.
+
+0.5.0 / 2018-04-20
+==================
+
+  * Update README for 0.5.0
+  * Cleanup stdout/stderr streams on exit. This might stop `testrpc-sc` from running as a background
+    zombie on Linux systems, post-exit.
+  * Support `constructor` keyword
+  * Prefix instrumentation events with `emit` keyword
+  * (Temporarily) remove support for ternary conditional branch coverage. Solidity no longer allows
+    us to emit instrumentation events within the grammatical construction @area devised to
+    make this possible.
+
+0.4.15 / 2018-03-28
+===================
+
+  * Update parser to allow `emit` keyword (contribution @andresilva).
+
+0.4.14 / 2018-03-15
+====================
+
+* Fix misc bugs related to testrpc-sc using an older version of `ganache-cli` to webpack testrpc-sc
+  by bumping to testrpc-sc 6.1.2
+
+0.4.13 / 2018-03-15
+====================
+
+  * Fix bug introduced in 0.4.12 that broke internal rpc server launch. (contribution @andresilva)
+
+0.4.12 / 2018-03-13
+===================
+
+  * Fix bug that caused parser to crash on JS future-reserved keywords like `class`
+  * Use newer more stable `ganache-core` as core of testrpc-sc.
+  * Update instrumentation to allow interface contracts.
+
+0.4.11 / 2018-03-04
+===================
+
+  * Add @vdrg to contributor list
+  * Update parser to allow function types as function parameters (contribution: vrdg)
+
+0.4.10 / 2018-02-24
+===================
+
+  * Fix bug that corrupted the line coverage alignment in reports when view/pure modifiers
+    occupied their own line.
 
 0.4.9 / 2018-01-23
 ==================
-  * Fix bug that ommitted line-coverage for lines with trailing '//' comment
+
+  * Fix bug that omitted line-coverage for lines with trailing '//' comment
 
 0.4.8 / 2018-01-02
 ==================
@@ -26,6 +79,7 @@
 
 0.4.4 / 2017-12-19
 ==================
+
   * Fix build folder management by only deleting its contracts folder (contribution: ukstv)
   * Document problems/solutions when Truffle must be a local dependency.
 
@@ -40,7 +94,7 @@
 0.4.2 / 2017-11-20
 ==================
 
-  * Bug fix to gracefully handle *.sol files that are invalid Solidity during pre-processing.
+  * Bug fix to gracefully handle `*.sol` files that are invalid Solidity during pre-processing.
 
 0.4.1 / 2017-11-19
 ==================
