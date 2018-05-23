@@ -1,5 +1,10 @@
 # Changelog
 
+0.5.3 / 2018-05-22
+=================
+  * Add -L flag when copying packages specified in the copyPackages option (following symlinks) (contribution
+    @vdrg)
+
 0.5.2 / 2018-05-20
 ==================
   * Silence security warnings coming from the parser by upgrading mocha there to v4.
