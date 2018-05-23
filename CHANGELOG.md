@@ -1,8 +1,11 @@
 # Changelog
-
+0.5.4 / 2018-05-23
+==================
+  * Use require.resolve() to get the path of testrpc-sc (lerna + yarn workspaces compatibility) (contribution @vdrg)
+ 
 0.5.3 / 2018-05-22
 =================
-  * Add -L flag when copying packages specified in the copyPackages option (following symlinks) (contribution
+  * Add -L flag when copying packages specified in the copyPackages option (following symlinks | lerna + yarn workspaces compatibility) (contribution
     @vdrg)
 
 0.5.2 / 2018-05-20
