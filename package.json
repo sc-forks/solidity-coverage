@@ -28,7 +28,7 @@
     "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser-sc": "0.4.10",
+    "solidity-parser-sc": "0.4.11",
     "tree-kill": "^1.2.0",
     "web3": "^0.18.4"
   },
