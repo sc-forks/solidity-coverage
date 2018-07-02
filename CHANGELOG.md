@@ -1,4 +1,10 @@
 # Changelog
+
+0.5.5 / 2018-07-01
+==================
+  * Also copy files starting with '.' into coverage environment - they might be necessary. 
+  * Parse pragma ABIEncoderV2
+
 0.5.4 / 2018-05-23
 ==================
   * Use require.resolve() to get the path of testrpc-sc (lerna + yarn workspaces compatibility) (contribution @vdrg)
