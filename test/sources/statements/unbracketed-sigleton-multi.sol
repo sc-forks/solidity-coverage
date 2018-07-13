@@ -1070,6 +1070,13 @@ contract usingOraclize {
         for (i = 0; i < _bc.length; i++) babcde[k++] = _bc[i];
         for (i = 0; i < _bd.length; i++) babcde[k++] = _bd[i];
         for (i = 0; i < _be.length; i++) babcde[k++] = _be[i];
+        if (_be[0] < _bd[0])
+            return;
+        else if (babcde[0] > _bd[0])
+            if (_bd[0] < _bc[0])
+                return;
+            if (_bd[0] == _bc[0])
+                return;
     }
 
 }
