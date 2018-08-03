@@ -22,7 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "death": "^1.1.0",
-    "ethereumjs-testrpc-sc": "6.1.2",
+    "ethereumjs-testrpc-sc": "https://github.com/sc-forks/testrpc-sc.git#e58fe168ea54aea14f0e3a9dc0d240dce7895378",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
     "req-cwd": "^1.0.1",
@@ -41,7 +41,7 @@
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
-    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#6be86e6f12634b711423203e6744cafe07c38e69",
+    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#ca57d6db1e837af72294db71011d532e2d22ea56",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^4.1.0",
     "request": "^2.81.0",
