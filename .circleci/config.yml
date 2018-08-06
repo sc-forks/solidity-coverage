@@ -1,0 +1,23 @@
+version: 2.0
+jobs:
+ build:
+   docker:
+     - image: circleci/node:7.10.0
+   steps:
+     - checkout
+     - run:
+         name: Delete any old node_modules
+         command: |
+           rm -rf node_modules/
+     - run:
+         name: Install dependencies
+         command: |
+           npm install
+     - run:
+         name: Run tests
+         command: |
+           npm run test-cov
+     - run:
+         name: Upload coverage
+         command: |
+           bash <(curl -s https://codecov.io/bash)
