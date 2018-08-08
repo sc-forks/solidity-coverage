@@ -1,14 +1,20 @@
 # Changelog
 
+0.5.7 / 2018-08-07
+==================
+  * Add new parameter for build directory path (contribution @DimitarSD)
+  * Upgrade testrpc-sc to 6.1.6 (to support reason strings) (@area)
+  * Switch to CircleCI v2 (@area)
+
 0.5.5 / 2018-07-01
 ==================
-  * Also copy files starting with '.' into coverage environment - they might be necessary. 
+  * Also copy files starting with '.' into coverage environment - they might be necessary.
   * Parse pragma ABIEncoderV2
 
 0.5.4 / 2018-05-23
 ==================
   * Use require.resolve() to get the path of testrpc-sc (lerna + yarn workspaces compatibility) (contribution @vdrg)
- 
+
 0.5.3 / 2018-05-22
 =================
   * Add -L flag when copying packages specified in the copyPackages option (following symlinks | lerna + yarn workspaces compatibility) (contribution
