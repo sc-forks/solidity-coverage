@@ -12,9 +12,18 @@ Warning: this is a birds nest. Any ideas for improvement, however small, are wel
 To publish a new version:
 
 ```
+$ git checkout develop
+$ git pull upstream develop
 $ git checkout coverage
+$ git rebase develop
+
+> Update your ganache-core hash
+> NOTE TO CGEWECKE: MAKE SURE YOU RENAMED THE PACKAGE (and the .bin command)!!!!
+> OTHERWISE YOU WILL PUBLISH OVER THE REAL GANACHE-CLI
+>
+
 $ rm -rf node_modules
-$ yarn install
+$ yarn install        // This step seems to be absolutely necessary.
 $ npm run build       // Check build, just to make sure
 $ npm version patch   // If helpful. If you're tracking the upstream with a ganache-core sync, use theirs.
 $ git push
