@@ -1,5 +1,9 @@
 # Changelog
 
+0.5.8 / 2018-08-26
+=================
+  * Fix instrumentation algo so SC doesn't instrument entire codebase twice (contribution @sohkai)
+
 0.5.7 / 2018-08-07
 ==================
   * Add new parameter for build directory path (contribution @DimitarSD)
