@@ -1,6 +1,6 @@
 # Changelog
 
-0.5.9 / 2018-08-29
+0.5.10 / 2018-08-29
 ==================
   * Add deep skip option to provide relief from instrumentation hangs for contracts like Oraclize
 
