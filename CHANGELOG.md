@@ -1,5 +1,9 @@
 # Changelog
 
+0.5.9 / 2018-08-29
+==================
+  * Add deep skip option to provide relief from instrumentation hangs for contracts like Oraclize
+
 0.5.8 / 2018-08-26
 =================
   * Fix instrumentation algo so SC doesn't instrument entire codebase twice (contribution @sohkai)
