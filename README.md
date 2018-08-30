@@ -99,6 +99,7 @@ module.exports = {
 | copyNodeModules | *Boolean* | false | :warning:  **DEPRECATED** use `copyPackages` instead :warning: Copies `node_modules` into the coverage environment. May significantly increase the time for coverage to complete if enabled. Useful if your contracts import solidity files from an npm installed package (and your node_modules is small). |
 | copyPackages | *Array* | `[]` | Copies specific `node_modules` packages into the coverage environment. May significantly reduce the time for coverage to complete compared to `copyNodeModules`. Useful if your contracts import solidity files from an npm installed package. |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used. |
+| deepSkip | boolean | false | Use this if instrumentation hangs on large, skipped files (like Oraclize). It's faster. |
 | dir | *String* | `.` | Solidity-coverage copies all the assets in your root directory (except `node_modules`) to a special folder where it instruments the contracts and executes the tests. `dir` allows you to define a relative path from the root directory to those assets. Useful if your contracts & tests are within their own folder as part of a larger project.|
 | buildDirPath | *String* | `/build/contracts` | Build directory path for compiled smart contracts
 
