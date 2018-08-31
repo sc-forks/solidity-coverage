@@ -146,3 +146,4 @@ also lint your submission with `npm run lint`. Bugs can be reported in the
 + [@andresliva](https://github.com/andresilva)
 + [@DimitarSD](https://github.com/DimitarSD)
 + [@sohkai](https://github.com/sohkai)
++ [@bingen](https://github.com/bingen)
