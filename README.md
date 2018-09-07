@@ -22,8 +22,17 @@ $ npm install --save-dev solidity-coverage
 ```
 
 ### Run
+
+#### Option 1
+
 ```
 $ ./node_modules/.bin/solidity-coverage
+```
+
+#### Option 2
+
+```
+$ $(npm bin)/solidity-coverage
 ```
 
 Tests run significantly slower while coverage is being generated. Your contracts are double-compiled
