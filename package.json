@@ -24,7 +24,7 @@
     "death": "^1.1.0",
     "ethereumjs-testrpc-sc": "6.1.6",
     "istanbul": "^0.4.5",
-    "keccakjs": "^0.2.1",
+    "keccak": "^1.4.0",
     "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
