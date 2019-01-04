@@ -46,6 +46,7 @@
     "mocha": "^5.2.0",
     "request": "^2.88.0",
     "solc": "^0.5.2",
-    "truffle": "^5.0.1"
+    "truffle": "^5.0.1",
+    "web3-eth-abi": "^1.0.0-beta.37"
   }
 }
