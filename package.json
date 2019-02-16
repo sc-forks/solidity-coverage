@@ -28,7 +28,7 @@
     "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser-sc": "https://github.com/leapdao/solidity-parser.git#898896cff7d22a729e5af3bc32f53a72edb1f1bf",
+    "solidity-parser-sc": "https://github.com/leapdao/solidity-parser.git#master",
     "tree-kill": "^1.2.0",
     "web3": "^0.20.6"
   },
