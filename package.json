@@ -28,7 +28,7 @@
     "req-cwd": "^1.0.1",
     "shelljs": "^0.7.4",
     "sol-explore": "^1.6.2",
-    "solidity-parser-sc": "0.4.11",
+    "solidity-parser-sc": "https://github.com/leapdao/solidity-parser.git#898896cff7d22a729e5af3bc32f53a72edb1f1bf",
     "tree-kill": "^1.2.0",
     "web3": "^0.20.6"
   },
@@ -46,6 +46,6 @@
     "mocha": "^4.1.0",
     "request": "^2.81.0",
     "solc": "^0.4.24",
-    "truffle": "^4.1.14"
+    "truffle": "^5.0.0"
   }
 }
