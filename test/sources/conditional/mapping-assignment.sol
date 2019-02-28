@@ -7,7 +7,7 @@ contract Test {
 
   Vote vote;
 
-  function a(){
+  function a() public {
     var isYay = false;  
     vote.voted[msg.sender] = isYay ? 1 : 2;
   }
