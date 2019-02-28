@@ -14,6 +14,10 @@ jobs:
          command: |
            npm install
      - run:
+         name: Get submodules 
+         command: |
+           git submodule update --init
+     - run:
          name: Run tests
          command: |
            npm run test-cov
