@@ -13,9 +13,27 @@ module.exports.getCode = function getCode(_path) {
 module.exports.report = function report(errors) {
   if (errors) {
     errors.forEach(error => {
-      if (error.indexOf('Warning') === -1) {
-        throw new Error(`Instrumented solidity invalid: ${errors}`);
+      if (error.severity === 'error') {
+        throw new Error(`Instrumented solidity invalid: ${JSON.stringify(errors)}`);
       }
     });
   }
 };
+
+module.exports.codeToCompilerInput = function codeToCompilerInput(code) {
+	return JSON.stringify({
+    language: 'Solidity',
+    sources: {
+      'test.sol': {
+        content: code
+      }
+    },
+    settings: {
+      outputSelection: {
+        '*': {
+          '*': [ '*' ]
+        }
+      }
+    }
+  });
+}

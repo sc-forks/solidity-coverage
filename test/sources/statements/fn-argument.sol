@@ -1,11 +1,11 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Test {  
-    function a(bytes32 x) {
+    function a(bytes32 x) public {
         x;
     }
     
-    function b (){
-        a(sha3(0));
+    function b () public {
+        a(keccak256(abi.encodePacked(uint256(0))));
     }   
 }

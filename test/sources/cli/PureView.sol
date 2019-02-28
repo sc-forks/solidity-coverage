@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.5.0;
 
 contract PureView {
 
@@ -8,17 +8,12 @@ contract PureView {
   // Abstract functions to inherit from an uninstrumented, imported file.
   function bePure(uint a, uint b) public pure returns (uint);
   function beView() public view returns (uint);
-  function beConstant() public constant returns (uint);
 
   function inheritedPure(uint a, uint b) public pure returns(uint){
     return a + b;
   }
 
   function inheritedView() public view returns (uint){
-    return notpureview;
-  }
-
-  function inheritedConstant() public constant returns (uint){
     return notpureview;
   }
 }

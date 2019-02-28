@@ -11,7 +11,9 @@ const app = new App(config);
 death((signal, err) => app.cleanUp(err));
 
 app.generateCoverageEnvironment();
+console.log('generated')
 app.instrumentTarget();
+console.log('instrumented')
 app.launchTestrpc()
   .then(() => {
     app.runTestCommand();

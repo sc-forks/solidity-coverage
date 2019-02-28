@@ -1,7 +1,7 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Test {  
-    function a(uint x) returns (bool) {
+    function a(uint x) public returns (bool) {
         return true;
     }
 }

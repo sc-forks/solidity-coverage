@@ -21,12 +21,6 @@ contract('TotallyPure', accounts => {
     assert.equal(value.toNumber(), 5);
   });
 
-  it('calls an imported, inherited constant function', async () => {
-    const instance = await TotallyPure.deployed();
-    const value = await instance.isConstant();
-    assert.equal(value.toNumber(), 99);
-  });
-
   it('overrides an imported, inherited abstract pure function', async () => {
     const instance = await TotallyPure.deployed();
     const value = await instance.bePure(4, 5);
@@ -39,18 +33,6 @@ contract('TotallyPure', accounts => {
     assert.equal(value.toNumber(), 99);
   });
 
-  it('overrides an imported, inherited abstract constant function', async () => {
-    const instance = await TotallyPure.deployed();
-    const value = await instance.beConstant();
-    assert.equal(value.toNumber(), 99);
-  });
-
-  it('overrides an imported, inherited abstract constant function, and uses .call()', async () => {
-    const instance = await TotallyPure.deployed();
-    const value = await instance.beConstant.call();
-    assert.equal(value.toNumber(), 99);
-  });
-
   it('calls a pure method implemented in an inherited class', async() => {
     const instance = await TotallyPure.deployed();
     const value = await instance.inheritedPure(4, 5);
@@ -60,12 +42,6 @@ contract('TotallyPure', accounts => {
   it('calls a view method implemented in an inherited class', async () => {
     const instance = await TotallyPure.deployed();
     const value = await instance.inheritedView();
-    assert.equal(value.toNumber(), 5);
-  });
-
-  it('calls a constant method implemented in an inherited class', async () => {
-    const instance = await TotallyPure.deployed();
-    const value = await instance.inheritedConstant();
     assert.equal(value.toNumber(), 5);
   });
 

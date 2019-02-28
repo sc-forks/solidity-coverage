@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.5.0;
 
 import "./../assets/Face.sol";
 import "./../assets/PureView.sol";
@@ -7,7 +7,7 @@ import "./../assets/CLibrary.sol";
 contract TotallyPure is PureView, Face {
   uint onehundred = 99;
 
-  function usesThem() {
+  function usesThem() public view {
     uint y = isPure(1,2);
     uint z = isView();
   }
@@ -20,11 +20,7 @@ contract TotallyPure is PureView, Face {
     return notpureview;
   }
 
-  function isConstant() public constant returns (uint){
-    return onehundred;
-  }
-
-  function beConstant() public constant returns (uint){
+  function isConstant() public view returns (uint){
     return onehundred;
   }
 
@@ -36,7 +32,7 @@ contract TotallyPure is PureView, Face {
     return onehundred;
   }
 
-  function usesLibrary() public constant returns (uint){
+  function usesLibrary() public view returns (uint){
     return CLibrary.a();
   }
 

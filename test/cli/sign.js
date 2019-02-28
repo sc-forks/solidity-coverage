@@ -11,13 +11,16 @@ const Simple = artifacts.require('./Simple.sol');
 contract('Simple', accounts => {
   it('should set x to 5', () => {
     let simple;
+    let messageSha3;
     return Simple.deployed()
         .then(instance => instance.test(5)) // We need this line to generate some coverage
         .then(() => {
           const message = 'Enclosed is my formal application for permanent residency in New Zealand';
-          const messageSha3 = web3.sha3(message);
-          const signature = web3.eth.sign(accounts[0], messageSha3);
-
+          messageSha3 = web3.utils.sha3(message);
+          const signature = web3.eth.sign(messageSha3, accounts[0]);
+          return signature;
+        })
+        .then((signature) => {
           const messageBuffer = new Buffer(messageSha3.replace('0x', ''), 'hex');
           const messagePersonalHash = ethUtil.hashPersonalMessage(messageBuffer);
 
@@ -25,7 +28,7 @@ contract('Simple', accounts => {
           const publicKey = ethUtil.ecrecover(messagePersonalHash, sigParams.v, sigParams.r, sigParams.s);
           const senderBuffer = ethUtil.pubToAddress(publicKey);
           const sender = ethUtil.bufferToHex(senderBuffer);
-          assert.equal(sender, accounts[0]);
+          assert.equal(sender, accounts[0].toLowerCase());
         });
   });
 });

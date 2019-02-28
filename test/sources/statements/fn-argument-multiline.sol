@@ -1,4 +1,4 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Test {  
 
@@ -6,17 +6,17 @@ contract Test {
         uint a, 
         uint b, 
         uint c, 
-        bytes32 d) 
+        bytes32 d) public 
     {
-        var x = a;
+        uint x = a;
     }
     
-    function Test(){
+    constructor() public {
         multiline(
             1,
             2,
             3,
-            sha3('hello')
+            keccak256(abi.encodePacked('hello'))
         );
     }
 }

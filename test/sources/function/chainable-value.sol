@@ -1,12 +1,12 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 // This is for a test that verifies solcover can instrument a 
 // another kind of long CallExpression chain
 contract Test {
-    function paySomeone(address x, address y) payable {
+    function paySomeone(address x, address y) public payable {
     }
 
-    function a() payable {
-        Test(0x00).paySomeone.value(msg.value)(0x00, 0x00);
+    function a() public payable {
+        Test(0x00).paySomeone.value(msg.value)(0x0000000000000000000000000000000000000000, 0x0000000000000000000000000000000000000000);
     }
 }

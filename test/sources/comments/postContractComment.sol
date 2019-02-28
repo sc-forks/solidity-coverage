@@ -1,8 +1,8 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.5.0;
 
 contract Test {//Comment immediately after contract declaration
-  function a(bool test){
-    var x = 1;
-    var y = 2;
+  function a(bool test) public {
+    uint8 x = 1;
+    uint8 y = 2;
   }
 }

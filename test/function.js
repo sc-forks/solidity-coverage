@@ -20,49 +20,49 @@ describe('function declarations', () => {
   it('should compile after instrumenting an ordinary function declaration', () => {
     const contract = util.getCode('function/function.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting an abstract function declaration', () => {
     const contract = util.getCode('function/abstract.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a function declaration with an empty body', () => {
     const contract = util.getCode('function/empty-body.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting lots of declarations in row', () => {
     const contract = util.getCode('function/multiple.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a new->constructor-->method chain', () => {
     const contract = util.getCode('function/chainable-new.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a constructor call that chains to a method call', () => {
     const contract = util.getCode('function/chainable.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a constructor-->method-->value chain', () => {
     const contract = util.getCode('function/chainable-value.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 

@@ -16,14 +16,14 @@ describe('generic expressions', () => {
   it('should compile after instrumenting a single binary expression', () => {
     const contract = util.getCode('expressions/single-binary-expression.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a new expression', () => {
     const contract = util.getCode('expressions/new-expression.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 });

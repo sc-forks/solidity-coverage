@@ -6,6 +6,21 @@
 const fs = require('fs');
 const shell = require('shelljs');
 
+const defaultTruffleJs = `module.exports = {
+    networks: {
+      development: {
+        host: "localhost",
+        port: 8545,
+        network_id: "*"
+      }
+    },
+    compilers: {
+      solc: {
+        version: "0.5.3",
+      }
+    }
+  };`
+
 /**
  * Installs mock truffle project at ./mock with a single contract
  * and test specified by the params.
@@ -34,17 +49,7 @@ module.exports.install = function install(contract, test, config, _trufflejs, _t
   const asset = 'module.exports = { value: true };';
 
   // Mock truffle.js
-  const trufflejs = _trufflejs ||
-
-  `module.exports = {
-    networks: {
-      development: {
-        host: "localhost",
-        port: 8545,
-        network_id: "*"
-      }
-    }
-  };`;
+  const trufflejs = _trufflejs || defaultTruffleJs;
 
   // Generate mock
   shell.mkdir('./mock');
@@ -112,14 +117,7 @@ module.exports.installInheritanceTest = function installInheritanceTest(config) 
   shell.cp('./test/cli/inheritance.js', './mock/test/inheritance.js');
 
   // Mock truffle.js
-  const trufflejs = `module.exports = {
-                    networks: {
-                      development: {
-                        host: "localhost",
-                        port: 8545,
-                        network_id: "*"
-                      }}};`
-                  ;
+  const trufflejs = defaultTruffleJs;
 
   const configjs = `module.exports = ${JSON.stringify(config)}`;
 
@@ -170,18 +168,11 @@ module.exports.installLibraryTest = function installInheritanceTest(config) {
   shell.cp('./test/sources/cli/Face.sol', './mock/assets/Face.sol');
 
   // Mock truffle.js
-  const trufflejs = `module.exports = {
-                    networks: {
-                      development: {
-                        host: "localhost",
-                        port: 8545,
-                        network_id: "*"
-                      }}};`
-                  ;
+  const trufflejs = defaultTruffleJs;
 
   const configjs = `module.exports = ${JSON.stringify(config)}`;
 
-  fs.writeFileSync('./mock/truffle.js', trufflejs);
+  fs.writeFileSync('./mock/truffle-config.js', trufflejs);
   fs.writeFileSync('./.solcover.js', configjs);
 };
 
