@@ -92,7 +92,7 @@ module.exports = {
     testCommand: 'mocha --timeout 5000',
     norpc: true,
     dir: './secretDirectory',
-    copyPackages: ['zeppelin-solidity'],
+    copyPackages: ['openzeppelin-solidity'],
     skipFiles: ['Routers/EtherRouter.sol']
 };
 ```
@@ -102,7 +102,7 @@ module.exports = {
 | ------ | ---- | ------- | ----------- |
 | accounts | *Number* | 35 | Number of accounts to launch testrpc with. |
 | port   | *Number* | 8555 | Port to run testrpc on / have truffle connect to |
-| norpc | *Boolean* | false | Prevent solidity-coverage from launching its own testrpc. Useful if you are managing a complex test suite with a [shell script](https://github.com/OpenZeppelin/zeppelin-solidity/blob/ed872ca0a11c4926f8bb91dd103bea1378a3384c/scripts/coverage.sh) |
+| norpc | *Boolean* | false | Prevent solidity-coverage from launching its own testrpc. Useful if you are managing a complex test suite with a [shell script](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/ed872ca0a11c4926f8bb91dd103bea1378a3384c/scripts/coverage.sh) |
 | testCommand | *String* | `truffle test` |  Run an arbitrary test command. ex: `mocha --timeout 5000`. NB: Also set the `port` option to whatever your tests require (probably 8545). |
 | testrpcOptions | *String* | `--port 8555` | options to append to a command line invocation of testrpc. NB: Using this overwrites the defaults so always specify a port in this string *and* in the `port` option |
 | copyNodeModules | *Boolean* | false | :warning:  **DEPRECATED** use `copyPackages` instead :warning: Copies `node_modules` into the coverage environment. May significantly increase the time for coverage to complete if enabled. Useful if your contracts import solidity files from an npm installed package (and your node_modules is small). |
@@ -130,7 +130,7 @@ Solutions to common issues people run into using this tool:
 
 ### Example reports
 + [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
-+ [zeppelin-solidity](https://coveralls.io/github/OpenZeppelin/zeppelin-solidity?branch=master)  (Coveralls)
++ [openzeppelin-solidity](https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master)  (Coveralls)
 + [gnosis-contracts](https://codecov.io/gh/gnosis/gnosis-contracts/tree/master/contracts)  (Codecov)
 
 ### Contribution Guidelines
