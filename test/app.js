@@ -53,7 +53,7 @@ describe('app', () => {
   //
   // #2: Creating repeated instances of testrpc hits the container memory limit on
   // CI so these tests are disabled for that context
-  it('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
+  it.only('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
     if (!process.env.CI) {
       const privateKey = '0x3af46c9ac38ee1f01b05f9915080133f644bf57443f504d339082cb5285ccae4';
       const balance = '0xfffffffffffffff';
@@ -237,7 +237,7 @@ describe('app', () => {
     collectGarbage();
   });
 
-  it('testrpc-sc signs and recovers messages correctly', () => {
+  it.only('testrpc-sc signs and recovers messages correctly', () => {
     // sign.js signs and recovers
     mock.install('Simple.sol', 'sign.js', config);
     shell.exec(script);

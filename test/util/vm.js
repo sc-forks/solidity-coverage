@@ -142,7 +142,6 @@ function callMethod(vm, abi, address, functionName, args) {
 module.exports.execute = function ex(contract, functionName, args) {
   const input = codeToCompilerInput(contract);
   const output = JSON.parse(solc.compile(input));
-  console.log(output)
   const code = new Buffer(output.contracts['test.sol']['Test'].evm.bytecode.object, 'hex');
   const abi = getAbi(contract, output);
   const stateTrie = new Trie();

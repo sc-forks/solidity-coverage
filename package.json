@@ -45,7 +45,7 @@
     "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#6be86e6f12634b711423203e6744cafe07c38e69",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^4.1.0",
-    "request": "^2.81.0",
+    "request": "^2.88.0",
     "solc": "^0.5.3",
     "truffle": "^5.0.0"
   }
