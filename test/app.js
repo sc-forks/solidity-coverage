@@ -23,7 +23,7 @@ describe('app', () => {
     dir: './mock',
     port,
     testing: true,
-    silent: false, // <-- Set to false to debug tests
+    silent: true, // <-- Set to false to debug tests
     norpc: true,
   };
 
