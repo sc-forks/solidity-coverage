@@ -157,7 +157,7 @@ describe('generic statements', () => {
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
-        6: 1, 10: 1, 11: 1, 12: 1, 13: 1
+        6: 1, 10: 1, 11: 1
       });
       assert.deepEqual(mapping[filePath].b, {});
       assert.deepEqual(mapping[filePath].s, {

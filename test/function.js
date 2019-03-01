@@ -102,7 +102,7 @@ describe('function declarations', () => {
       });
       assert.deepEqual(mapping[filePath].b, {});
       assert.deepEqual(mapping[filePath].s, {
-        1: 1,
+        1: 1, 2: 1
       });
       assert.deepEqual(mapping[filePath].f, {
         1: 1,

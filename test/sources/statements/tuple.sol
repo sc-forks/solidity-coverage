@@ -7,9 +7,7 @@ contract Test {
     }
 
     function a() public {
-    	uint a;
-    	uint b;
-        (a, b) = (10, 20);
+        (uint a, uint b) = (10, 20);
         (a, b) = returnTuple();
     }
 }
