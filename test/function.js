@@ -59,6 +59,13 @@ describe('function declarations', () => {
     util.report(output.errors);
   });
 
+  it('should compile after instrumenting a function with calldata keyword', () => {
+    const contract = util.getCode('function/calldata.sol');
+    const info = getInstrumentedVersion(contract, 'test.sol');
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
+    util.report(output.errors);
+  });
+
   it('should compile after instrumenting a constructor-->method-->value chain', () => {
     const contract = util.getCode('function/chainable-value.sol');
     const info = getInstrumentedVersion(contract, 'test.sol');
