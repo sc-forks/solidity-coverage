@@ -208,4 +208,27 @@ describe('if, else, and else if statements', () => {
       done();
     }).catch(done);
   });
+
+  it('should cover if-elseif-else statements that are at the same depth as each other', done => {
+    const contract = util.getCode('if/if-elseif-else.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+    vm.execute(info.contract, 'a', [2, 3, 3]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        5: 1, 6: 0, 8: 1, 10: 0, 13: 1, 14: 0, 16: 1, 18: 0,
+      });
+      assert.deepEqual(mapping[filePath].b, {
+        1: [0, 1], 2: [1, 0], 3: [0, 1], 4: [1, 0]
+      });
+      assert.deepEqual(mapping[filePath].s, {
+        1: 1, 2: 0, 3: 1, 4: 1, 5: 0, 6: 1, 7: 0, 8: 1, 9: 1, 10: 0,
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+      });
+      done();
+    }).catch(done);
+  });
 });
