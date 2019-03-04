@@ -96,6 +96,29 @@ describe('function declarations', () => {
     }).catch(done);
   });
 
+  it('should cover a modifier used on a function', done => {
+    const contract = util.getCode('function/modifier.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', [0]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        5: 1, 6: 1, 9: 1,
+      });
+      assert.deepEqual(mapping[filePath].b, {});
+      assert.deepEqual(mapping[filePath].s, {
+        1: 1
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+        2: 1,
+      });
+      done();
+    }).catch(done);
+  });
+
   it('should cover a constructor that uses the `constructor` keyword', done  => {
     const contract = util.getCode('function/constructor-keyword.sol');
     const info = getInstrumentedVersion(contract, filePath);
