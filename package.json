@@ -22,7 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "death": "^1.1.0",
-    "ethereumjs-testrpc-sc": "6.1.6",
+    "ethereumjs-testrpc-sc": "6.4.1",
     "istanbul": "^0.4.5",
     "keccakjs": "^0.2.1",
     "req-cwd": "^1.0.1",
@@ -30,8 +30,8 @@
     "sol-explore": "^1.6.2",
     "solidity-parser-antlr": "^0.4.1",
     "tree-kill": "^1.2.0",
-    "web3": "^1.0.0-beta.37",
-    "web3-eth-abi": "1.0.0-beta.37"
+    "web3": "^1.0.0-beta.50",
+    "web3-eth-abi": "1.0.0-beta.50"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
@@ -42,7 +42,7 @@
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
-    "ethereumjs-vm": "https://github.com/sc-forks/ethereumjs-vm-sc.git#6be86e6f12634b711423203e6744cafe07c38e69",
+    "ethereumjs-vm": "git+https://github.com/sc-forks/ethereumjs-vm-sc.git#3c328147a2c48a379af775930f52c439813a21e2",
     "merkle-patricia-tree": "~2.1.2",
     "mocha": "^4.1.0",
     "request": "^2.88.0",

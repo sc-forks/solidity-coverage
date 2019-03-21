@@ -111,7 +111,7 @@ describe('app', () => {
     }
   });
 
-  it.skip('contract tests events: tests should pass without errors', () => {
+  it('contract tests events: tests should pass without errors', () => {
     if (!process.env.CI) {
       assert(pathExists('./coverage') === false, 'should start without: coverage');
       assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
@@ -159,6 +159,9 @@ describe('app', () => {
         compilers: {
           solc: {
             version: "0.5.3",
+            settings: {
+              evmVersion: "constantinople"
+            }
           }
         }
       };`;
@@ -328,7 +331,7 @@ describe('app', () => {
     collectGarbage();
   });
 
-  it.skip('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
+  it('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
     // Run against a contract that 'is' another contract
     assert(pathExists('./coverage') === false, 'should start without: coverage');
     assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
@@ -343,7 +346,6 @@ describe('app', () => {
     const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
     const ownedPath = Object.keys(produced)[0];
     const proxyPath = Object.keys(produced)[1];
-
     assert(produced[ownedPath].fnMap['1'].name === 'constructor', 'coverage.json should map "constructor"');
     assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'coverage.json should map "isOwner"');
     collectGarbage();

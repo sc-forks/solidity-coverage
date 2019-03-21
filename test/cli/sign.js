@@ -1,11 +1,8 @@
 /* eslint-env node, mocha */
 /* global artifacts, contract, assert */
 
-const Web3 = require('web3');
 const ethUtil = require('ethereumjs-util');
 
-const provider = new Web3.providers.HttpProvider('http://localhost:8555'); // testrpc-sc
-const web3 = new Web3(provider);
 const Simple = artifacts.require('./Simple.sol');
 
 contract('Simple', accounts => {

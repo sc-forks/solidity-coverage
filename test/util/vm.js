@@ -7,7 +7,9 @@ const Transaction = require('ethereumjs-tx');
 const utils = require('ethereumjs-util');
 const CryptoJS = require('crypto-js');
 const Trie = require('merkle-patricia-tree');
-const coder = require('web3-eth-abi');
+const { AbiCoder } = require('web3-eth-abi');
+const SolidityCoder = AbiCoder();
+
 const codeToCompilerInput = require('./util').codeToCompilerInput;
 
 // Don't use this address for anything, obviously!
@@ -23,7 +25,7 @@ function encodeFunctionTxData(functionName, types, args) {
   const signature = CryptoJS.SHA3(fullName, {
     outputLength: 256,
   }).toString(CryptoJS.enc.Hex).slice(0, 8);
-  const dataHex = signature + coder.encodeParameters(types, args).slice(2);
+  const dataHex = signature + SolidityCoder.encodeParameters(types, args).slice(2);
   return `0x${dataHex}`;
 }
 
@@ -147,6 +149,7 @@ module.exports.execute = function ex(contract, functionName, args) {
   const stateTrie = new Trie();
   const vm = new VM({
     state: stateTrie,
+    hardfork: "constantinople"
   });
 
   createAccount(stateTrie);
