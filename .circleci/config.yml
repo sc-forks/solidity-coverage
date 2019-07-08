@@ -12,9 +12,9 @@ jobs:
      - run:
          name: Install dependencies
          command: |
-           npm install
+           yarn
      - run:
-         name: Get submodules 
+         name: Get submodules
          command: |
            git submodule update --init
      - run:
