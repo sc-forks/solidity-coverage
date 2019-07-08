@@ -1,4 +1,4 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Test {
   struct Vote {
@@ -7,7 +7,7 @@ contract Test {
 
   Vote vote;
 
-  function a(){
+  function a() public {
     var isYay = false;  
     vote.voted[msg.sender] = isYay ? 1 : 2;
   }

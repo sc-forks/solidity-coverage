@@ -9,14 +9,17 @@ contract('Wallet', accounts => {
     const walletB = await Wallet.new();
 
     await walletA.sendTransaction({
-      value: web3.toBigNumber(100), from: accounts[0],
+      value: web3.utils.toBN(100), from: accounts[0],
     });
+    console.log('transaction done')
     await walletA.sendPayment(50, walletB.address, {
       from: accounts[0],
     });
+    console.log('transaction done')
     await walletA.transferPayment(50, walletB.address, {
       from: accounts[0],
     });
+    console.log('transaction done')
     const balance = await walletB.getBalance();
     assert.equal(balance.toNumber(), 100);
   });

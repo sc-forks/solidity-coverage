@@ -7,7 +7,10 @@ const Transaction = require('ethereumjs-tx');
 const utils = require('ethereumjs-util');
 const CryptoJS = require('crypto-js');
 const Trie = require('merkle-patricia-tree');
-const coder = require('web3/lib/solidity/coder.js');
+const { AbiCoder } = require('web3-eth-abi');
+const SolidityCoder = AbiCoder();
+
+const codeToCompilerInput = require('./util').codeToCompilerInput;
 
 // Don't use this address for anything, obviously!
 const secretKey = 'e81cb653c260ee12c72ec8750e6bfd8a4dc2c3d7e3ede68dd2f150d0a67263d8';
@@ -22,7 +25,7 @@ function encodeFunctionTxData(functionName, types, args) {
   const signature = CryptoJS.SHA3(fullName, {
     outputLength: 256,
   }).toString(CryptoJS.enc.Hex).slice(0, 8);
-  const dataHex = signature + coder.encodeParams(types, args);
+  const dataHex = signature + SolidityCoder.encodeParameters(types, args).slice(2);
   return `0x${dataHex}`;
 }
 
@@ -55,7 +58,7 @@ function getAbi(source, compilation) {
     throw new Error('Could not parse contract name from source.');
   }
   const contractName = contractNameMatch[1];
-  return JSON.parse(compilation.contracts[':' + contractName].interface);
+  return compilation.contracts['test.sol'][contractName].abi;
 }
 
 /**
@@ -139,12 +142,14 @@ function callMethod(vm, abi, address, functionName, args) {
  * @return {Promise}             resolves array of logged events.
  */
 module.exports.execute = function ex(contract, functionName, args) {
-  const output = solc.compile(contract, 1);
-  const code = new Buffer(output.contracts[':Test'].bytecode, 'hex');
+  const input = codeToCompilerInput(contract);
+  const output = JSON.parse(solc.compile(input));
+  const code = new Buffer(output.contracts['test.sol']['Test'].evm.bytecode.object, 'hex');
   const abi = getAbi(contract, output);
   const stateTrie = new Trie();
   const vm = new VM({
     state: stateTrie,
+    hardfork: "constantinople"
   });
 
   createAccount(stateTrie);

@@ -14,7 +14,6 @@ describe.skip('conditional statements', () => {
   it('should cover a conditional that reaches the consequent (same-line)', done => {
     const contract = util.getCode('conditional/sameline-consequent.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    console.log(info.contract)
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 

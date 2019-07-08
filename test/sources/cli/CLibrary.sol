@@ -1,8 +1,8 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.5.0;
 
 library CLibrary {
     uint constant x = 1;
-    function a() public constant returns (uint) {
+    function a() public view returns (uint) {
         return x;
     }
 }

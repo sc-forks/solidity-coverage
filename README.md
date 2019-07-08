@@ -156,3 +156,5 @@ also lint your submission with `npm run lint`. Bugs can be reported in the
 + [@DimitarSD](https://github.com/DimitarSD)
 + [@sohkai](https://github.com/sohkai)
 + [@bingen](https://github.com/bingen)
++ [@pinkiebell](https://github.com/pinkiebell)
++ [@obernardovieira](https://github.com/obernardovieira)

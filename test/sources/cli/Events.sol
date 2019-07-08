@@ -1,4 +1,4 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Events {
     uint x = 0;
@@ -7,14 +7,14 @@ contract Events {
     event LogEventOne( uint x, address y);
     event LogEventTwo( uint x, address y);
 
-    function test(uint val) {
+    function test(uint val) public {
         // Assert / Require events
         require(true);
         
         // Contract Events
-        LogEventOne(100, msg.sender);
+        emit LogEventOne(100, msg.sender);
         x = x + val; 
-        LogEventTwo(200, msg.sender);
+        emit LogEventTwo(200, msg.sender);
         
         // Branch events
         if (true) {
@@ -24,7 +24,7 @@ contract Events {
         }
     }
 
-    function getX() returns (uint){
+    function getX() public view returns (uint){
         return x;
     }
 }

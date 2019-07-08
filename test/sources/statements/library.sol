@@ -15,7 +15,7 @@ contract Test {
     using Boolean for Boolean.Value;
     Boolean.Value b;
   
-    function not() returns (bool) {
+    function not() public returns (bool) {
         return b.flip();
     }
 }

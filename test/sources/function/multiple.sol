@@ -1,15 +1,15 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Test {  
-    function f1(bytes32 x) {
+    function f1(uint x) public {
         x = 1;
     }
     
-    function f2(uint x){ x = 2; }
+    function f2(uint x) public { x = 2; }
 
     address a;
 
-    function f3(uint y){
+    function f3(uint y) public {
         y = 1;
     }
 }

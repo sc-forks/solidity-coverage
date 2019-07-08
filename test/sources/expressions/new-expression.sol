@@ -1,12 +1,12 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Test {
-    function a(uint x) {
+    function a(uint x) public {
       new Test2(x);
     }
 }
 contract Test2 {
-    function Test2(uint x) {
+    constructor(uint x) public {
       x+1;
     }
 }

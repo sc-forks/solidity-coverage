@@ -1,13 +1,13 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.3;
 
 contract Simple {
     uint x = 0;
     
-    function test(uint val) {
+    function test(uint val) public {
         x = x + val; 
     }
 
-    function getX() returns (uint){
+    function getX() public view returns (uint){
         return x;
     }
 }

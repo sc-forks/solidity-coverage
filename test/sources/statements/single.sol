@@ -1,7 +1,7 @@
-pragma solidity ^0.4.3;
+pragma solidity ^0.5.0;
 
 contract Test {  
-    function a(uint x) {
-        sha3(x);
+    function a(uint x) public {
+        keccak256(abi.encodePacked(x));
     }
 }

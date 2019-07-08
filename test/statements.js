@@ -20,42 +20,42 @@ describe('generic statements', () => {
   it('should compile function defined in a struct', () => {
     const contract = util.getCode('statements/fn-struct.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   })
 
   it('should compile after instrumenting a single statement (first line of function)', () => {
     const contract = util.getCode('statements/single.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting multiple statements', () => {
     const contract = util.getCode('statements/multiple.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a statement that is a function argument (single line)', () => {
     const contract = util.getCode('statements/fn-argument.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting a statement that is a function argument (multi-line)', () => {
     const contract = util.getCode('statements/fn-argument-multiline.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
   it('should compile after instrumenting an empty-contract-body', () => {
     const contract = util.getCode('statements/empty-contract-ala-melonport.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
@@ -64,7 +64,7 @@ describe('generic statements', () => {
   it('should NOT pass tests if the contract has a compilation error', () => {
     const contract = util.getCode('statements/compilation-error.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     try {
       util.report(output.errors);
       assert.fail('WRONG'); // We shouldn't hit this.
@@ -76,7 +76,7 @@ describe('generic statements', () => {
   it('should compile after instrumenting an emit statement after an un-enclosed if statement', () => {
     const contract = util.getCode('statements/emit-instrument.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const output = solc.compile(info.contract, 1);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
     util.report(output.errors);
   });
 
@@ -86,7 +86,7 @@ describe('generic statements', () => {
     const coverage = new CoverageMap();
     coverage.addContract(info, filePath);
 
-    vm.execute(info.contract, 'a', []).then(events => {
+    vm.execute(info.contract, 'a', [0]).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         6: 1
@@ -157,7 +157,7 @@ describe('generic statements', () => {
     vm.execute(info.contract, 'a', []).then(events => {
       const mapping = coverage.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
-        6: 1, 10: 1, 11: 1,
+        6: 1, 10: 1, 11: 1
       });
       assert.deepEqual(mapping[filePath].b, {});
       assert.deepEqual(mapping[filePath].s, {
