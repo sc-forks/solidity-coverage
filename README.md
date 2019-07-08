@@ -140,6 +140,12 @@ Contributions are welcome! If you're opening a PR that adds features please cons
 also lint your submission with `npm run lint`. Bugs can be reported in the
 [issues](https://github.com/sc-forks/solidity-coverage/issues).
 
+Set up the development environment with:
+```
+$ git clone https://github.com/sc-forks/solidity-coverage.git
+$ yarn
+```
+
 ### Contributors
 + [@area](https://github.com/area)
 + [@cgewecke](https://github.com/cgewecke)
