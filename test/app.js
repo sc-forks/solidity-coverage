@@ -28,7 +28,7 @@ describe('app', () => {
   };
 
   before(done => {
-    const command = `./node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port ${port}`;
+    const command = `./node_modules/.bin/testrpc-sc --allowUnlimitedContractSize --gasLimit 0xfffffffffff --port ${port}`;
     testrpcProcess = childprocess.exec(command);
 
     testrpcProcess.stdout.on('data', data => {
@@ -192,6 +192,36 @@ describe('app', () => {
       assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
       collectGarbage();
     }
+  });
+
+  it('large contract w/ many unbracketed statements (Oraclize)', () => {
+    const trufflejs =
+    `module.exports = {
+      networks: {
+        coverage: {
+          host: "localhost",
+          network_id: "*",
+          port: 8555,
+          gas: 0xfffffffffff,
+          gasPrice: 0x01
+        },
+      },
+      compilers: {
+        solc: {
+          version: "0.4.24",
+        }
+      }
+    };`;
+
+    // Directory should be clean
+    assert(pathExists('./coverage') === false, 'should start without: coverage');
+    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+
+    // Run script (exits 0);
+    mock.install('Oraclize.sol', 'oraclize.js', config, trufflejs, null, true);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+
   });
 
   it('simple contract: should generate coverage, cleanup & exit(0)', () => {

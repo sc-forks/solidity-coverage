@@ -27,7 +27,14 @@ const defaultTruffleJs = `module.exports = {
  * @param  {String} contract <contractName.sol> located in /test/sources/cli/
  * @param  {[type]} test     <testName.js> located in /test/cli/
  */
-module.exports.install = function install(contract, test, config, _trufflejs, _trufflejsName) {
+module.exports.install = function install(
+  contract,
+  test,
+  config,
+  _trufflejs,
+  _trufflejsName,
+  noMigrations
+) {
   const configjs = `module.exports = ${JSON.stringify(config)}`;
   const contractLocation = `./${contract}`;
   const trufflejsName = _trufflejsName || 'truffle.js';
@@ -68,9 +75,12 @@ module.exports.install = function install(contract, test, config, _trufflejs, _t
     shell.cp(`./test/sources/cli/${contract}`, `./mock/contracts/${contract}`);
   }
 
-  shell.cp('./test/sources/cli/Migrations.sol', './mock/contracts/Migrations.sol');
-  fs.writeFileSync('./mock/migrations/1_initial_migration.js', initialMigration);
-  fs.writeFileSync('./mock/migrations/2_deploy_contracts.js', deployContracts);
+  if (!noMigrations){
+    shell.cp('./test/sources/cli/Migrations.sol', './mock/contracts/Migrations.sol');
+    fs.writeFileSync('./mock/migrations/1_initial_migration.js', initialMigration);
+    fs.writeFileSync('./mock/migrations/2_deploy_contracts.js', deployContracts);
+  }
+
   fs.writeFileSync(`./mock/${trufflejsName}`, trufflejs);
   fs.writeFileSync('./mock/assets/asset.js', asset);
   fs.writeFileSync('./.solcover.js', configjs);

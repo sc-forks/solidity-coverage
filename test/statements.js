@@ -59,8 +59,6 @@ describe('generic statements', () => {
     util.report(output.errors);
   });
 
-
-
   it('should NOT pass tests if the contract has a compilation error', () => {
     const contract = util.getCode('statements/compilation-error.sol');
     const info = getInstrumentedVersion(contract, filePath);
