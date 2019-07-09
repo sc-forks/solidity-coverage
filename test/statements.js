@@ -59,13 +59,6 @@ describe('generic statements', () => {
     util.report(output.errors);
   });
 
-  it.only('should compile after instrumenting many unbracketed statements', () => {
-    const contract = util.getCode('statements/oraclize-plus.sol');
-    const info = getInstrumentedVersion(contract, filePath);
-    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
-    util.report(output.errors);
-  });
-
   it('should NOT pass tests if the contract has a compilation error', () => {
     const contract = util.getCode('statements/compilation-error.sol');
     const info = getInstrumentedVersion(contract, filePath);

@@ -1,4 +1,3 @@
-pragma solidity ^0.4.0;
 // <ORACLIZE_API>
 /*
 Copyright (c) 2015-2016 Oraclize SRL
@@ -30,7 +29,7 @@ THE SOFTWARE.
 */
 
 // This api is currently targeted at 0.4.18, please import oraclizeAPI_pre0.4.sol or oraclizeAPI_0.4 where necessary
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 contract OraclizeI {
     address public cbAddress;
@@ -44,7 +43,7 @@ contract OraclizeI {
     function getPrice(string _datasource, uint gaslimit) public returns (uint _dsprice);
     function setProofType(byte _proofType) external;
     function setCustomGasPrice(uint _gasPrice) external;
-    function randomDS_getSessionPubKeyHash() external constant returns(bytes32);
+    function randomDS_getSessionPubKeyHash() external view returns(bytes32);
 }
 contract OraclizeAddrResolverI {
     function getAddress() public returns (address _addr);
@@ -525,7 +524,7 @@ contract usingOraclize {
         return oraclize.randomDS_getSessionPubKeyHash();
     }
 
-    function getCodeSize(address _addr) constant internal returns(uint _size) {
+    function getCodeSize(address _addr) view internal returns(uint _size) {
         assembly {
             _size := extcodesize(_addr)
         }
@@ -551,7 +550,7 @@ contract usingOraclize {
         return address(iaddr);
     }
 
-    function strCompare(string _a, string _b) internal pure returns (int) {
+    /*function strCompare(string _a, string _b) internal pure returns (int) {
         bytes memory a = bytes(_a);
         bytes memory b = bytes(_b);
         uint minLength = a.length;
@@ -567,7 +566,7 @@ contract usingOraclize {
             return 1;
         else
             return 0;
-    }
+    }*/
 
     function indexOf(string _haystack, string _needle) internal pure returns (int) {
         bytes memory h = bytes(_haystack);
@@ -638,8 +637,9 @@ contract usingOraclize {
         for (uint i=0; i<bresult.length; i++){
             if ((bresult[i] >= 48)&&(bresult[i] <= 57)){
                 if (decimals){
-                    if (_b == 0) break;
-                    else _b--;
+                    if (_b == 0) {
+                        break;
+                    } else _b--;
                 }
                 mint *= 10;
                 mint += uint(bresult[i]) - 48;
@@ -1043,29 +1043,39 @@ contract usingOraclize {
     }
 
     function nestingTest(string _a, string _b, string _c, string _d, string _e) {
+        uint i;
+        uint k;
+
+        uint[]  _ba;
+        uint[]  _bb;
+        uint[]  _bc;
+        uint[]  _bd;
+        uint[]  _be;
+        uint[]  babcde;
+
         for (i = 0; i < _bb.length; i++)
             for (i = 0; i < _bb.length; i++)
-                if (i = 0)
+                if (i == 0)
                     babcde[k++] = _bb[i];
         for (i = 0; i < _bb.length; i++)
             for (i = 0; i < _bb.length; i++)
-                if (i = 0)
-                    while (i)
+                if (i == 0)
+                    while (true)
                         babcde[k++] = _bb[i];
         for (i = 0; i < _bb.length; i++)
             for (i = 0; i < _bb.length; i++)
-                if (i = 0)
+                if (i == 0)
                     babcde[k++] = _bb[i];
         for (i = 0; i < _bb.length; i++)
             for (i = 0; i < _bb.length; i++)
-                if (i = 0)
+                if (i == 0)
                     babcde[k++] = _bb[i];
         for (i = 0; i < _be.length; i++) babcde[k++] = _be[i];
-        for (uint i = 0; i < _ba.length; i++) babcde[k++] = _ba[i];
+        for (i = 0; i < _ba.length; i++) babcde[k++] = _ba[i];
         for (i = 0; i < _bb.length; i++) babcde[k++] = _bb[i];
         for (i = 0; i < _bb.length; i++)
             for (i = 0; i < _bb.length; i++)
-                if (i = 0)
+                if (i == 0)
                     babcde[k++] = _bb[i];
         for (i = 0; i < _bc.length; i++) babcde[k++] = _bc[i];
         for (i = 0; i < _bd.length; i++) babcde[k++] = _bd[i];
@@ -1077,6 +1087,10 @@ contract usingOraclize {
                 return;
             if (_bd[0] == _bc[0])
                 return;
+    }
+
+    function test() public {
+        uint tls = 5;
     }
 
 }

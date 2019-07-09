@@ -186,6 +186,30 @@ describe('if, else, and else if statements', () => {
     }).catch(done);
   });
 
+  it('should cover an else if statement with an unbracketed alternate', done => {
+    const contract = util.getCode('if/else-if-without-brackets.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const coverage = new CoverageMap();
+    coverage.addContract(info, filePath);
+
+    vm.execute(info.contract, 'a', [2]).then(events => {
+      const mapping = coverage.generate(events, pathPrefix);
+      assert.deepEqual(mapping[filePath].l, {
+        5: 1, 6: 0, 8: 0,
+      });
+      assert.deepEqual(mapping[filePath].b, {
+        1: [0, 1], 2: [0, 1]
+      });
+      assert.deepEqual(mapping[filePath].s, {
+        1: 1, 2: 0, 3: 1, 4: 0
+      });
+      assert.deepEqual(mapping[filePath].f, {
+        1: 1,
+      });
+      done();
+    }).catch(done);
+  });
+
   it('should cover nested if statements with missing else statements', done => {
     const contract = util.getCode('if/nested-if-missing-else.sol');
     const info = getInstrumentedVersion(contract, filePath);
