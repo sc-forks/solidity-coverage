@@ -17,7 +17,7 @@ find discrepancies between the coverage report and your suite's behavior, please
 
 ### Install
 ```
-$ npm install --save-dev solidity-coverage
+$ npm install --save-dev solidity-coverage@beta
 ```
 
 ### Run
