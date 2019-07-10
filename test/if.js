@@ -1,5 +1,6 @@
 /* eslint-env node, mocha */
 
+const solc = require('solc');
 const path = require('path');
 const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
@@ -10,6 +11,13 @@ const assert = require('assert');
 describe('if, else, and else if statements', () => {
   const filePath = path.resolve('./test.sol');
   const pathPrefix = './';
+
+  it('should compile after instrumenting multiple if-elses', () => {
+    const contract = util.getCode('if/else-if-unbracketed-multi.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
+    util.report(output.errors);
+  });
 
   it('should cover an if statement with a bracketed consequent', done => {
     const contract = util.getCode('if/if-with-brackets.sol');
