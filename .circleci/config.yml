@@ -1,27 +1,54 @@
 version: 2.0
 jobs:
- build:
-   docker:
-     - image: circleci/node:8.15.0
-   steps:
-     - checkout
-     - run:
-         name: Delete any old node_modules
-         command: |
-           rm -rf node_modules/
-     - run:
-         name: Install dependencies
-         command: |
-           yarn
-     - run:
-         name: Get submodules
-         command: |
-           git submodule update --init
-     - run:
-         name: Run tests
-         command: |
-           npm run test-cov
-     - run:
-         name: Upload coverage
-         command: |
-           bash <(curl -s https://codecov.io/bash)
+  unit-test:
+    docker:
+      - image: circleci/node:8.15.0
+    steps:
+      - checkout
+      - run:
+          name: Delete any old node_modules
+          command: |
+            rm -rf node_modules/
+      - run:
+          name: Install dependencies
+          command: |
+            yarn
+      - run:
+          name: Get submodules
+          command: |
+            git submodule update --init
+      - run:
+          name: Run tests
+          command: |
+            npm run test-cov
+      - run:
+          name: Upload coverage
+          command: |
+            bash <(curl -s https://codecov.io/bash)
+  e2e-colony:
+    docker:
+      - image: circleci/node:10.12-stretch
+    working_directory: ~/colonyNetwork
+    steps:
+      - checkout
+      - run:
+          name: ColonyNetwork E2E
+          command: |
+            ./scripts/run-colony.sh
+  e2e-zeppelin:
+    docker:
+      - image: circleci/node:10.12-stretch
+    steps:
+      - checkout
+      - run:
+          name: OpenZeppelin E2E
+          command: |
+            ./scripts/run-zeppelin.sh
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - unit-test
+      - e2e-colony
+      - e2e-zeppelin
