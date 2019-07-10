@@ -164,3 +164,4 @@ $ yarn
 + [@bingen](https://github.com/bingen)
 + [@pinkiebell](https://github.com/pinkiebell)
 + [@obernardovieira](https://github.com/obernardovieira)
++ [@angus-hamill](https://github.com/angus-hamill)

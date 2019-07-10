@@ -55,3 +55,4 @@ contract Test {
     return balances[addr];
   }
 }
+
