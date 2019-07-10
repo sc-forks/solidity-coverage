@@ -17,7 +17,6 @@ describe('generic expressions', () => {
     const contract = util.getCode('assembly/spaces-in-function.sol');
     const info = getInstrumentedVersion(contract, filePath);
     const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
-    console.log(info)
     util.report(output.errors);
   });
 
