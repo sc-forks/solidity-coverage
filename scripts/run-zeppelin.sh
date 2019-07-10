@@ -8,8 +8,11 @@ set -o errexit
 PR_PATH=$(echo "$URL#$BRANCH" | sed 's/git@github.com:/https:\/\/github.com\//')
 echo "Installing $PR_PATH"
 
+# Circle caches really agressively?
+sudo rm -rf node_modules
 sudo git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git
 cd openzeppelin-solidity || exit
+sudo rm -rf node_modules
 
 # EDITS
 # Use testrpc-sc ...
