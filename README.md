@@ -32,7 +32,7 @@ truffle-config.js. See the Network Configuration guide below.
 ### Usage notes:
 + Requires Solidity pragmas >= `0.5.0`.
 + Tests run more slowly while coverage is being generated.
-+ Your contracts will be double-compiled and a (moderately alarming) delay between compilation and
++ Your contracts will be double-compiled and a delay between compilation and
 the beginning of test execution is possible if your contracts are large.
 + solidity-coverage expects a globally installed truffle in your environment / on CI. If you
 prefer to control which Truffle version your tests are run with, please see the FAQ for
