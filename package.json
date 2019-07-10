@@ -10,8 +10,7 @@
   },
   "scripts": {
     "test": "mocha --timeout 60000",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000 --exit",
-    "lint": "./node_modules/.bin/eslint --fix ./"
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000 --exit"
   },
   "homepage": "https://github.com/sc-forks/solidity-coverage",
   "repository": {
@@ -35,10 +34,6 @@
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "^11.0.1",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-mocha": "^4.8.0",
     "ethereumjs-account": "~2.0.4",
     "ethereumjs-tx": "^1.2.2",
     "ethereumjs-util": "^5.0.1",
