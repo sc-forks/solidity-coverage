@@ -25,16 +25,23 @@ jobs:
           name: Upload coverage
           command: |
             bash <(curl -s https://codecov.io/bash)
-  e2e-colony:
-    docker:
-      - image: circleci/node:10.12-stretch
-    working_directory: ~/colonyNetwork
-    steps:
-      - checkout
-      - run:
-          name: ColonyNetwork E2E
-          command: |
-            ./scripts/run-colony.sh
+
+  # This works but takes a while....
+  # e2e-colony:
+  #  docker:
+  #    - image: circleci/node:10.12-stretch
+  #  working_directory: ~/colonyNetwork
+  #  branches:
+  #    only:
+  #      - master
+  #      - next
+  #  steps:
+  #    - checkout
+  #    - run:
+  #        name: ColonyNetwork E2E
+  #        command: |
+  #          ./scripts/run-colony.sh
+
   e2e-zeppelin:
     docker:
       - image: circleci/node:10.12-stretch
@@ -43,12 +50,12 @@ jobs:
       - run:
           name: OpenZeppelin E2E
           command: |
-            ./scripts/run-zeppelin.sh
+            sudo URL=$CIRCLE_REPOSITORY_URL BRANCH=$CIRCLE_BRANCH ./scripts/run-zeppelin.sh
 
 workflows:
   version: 2
   build:
     jobs:
       - unit-test
-      - e2e-colony
       - e2e-zeppelin
+      #- e2e-colony
