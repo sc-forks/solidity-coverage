@@ -38,12 +38,7 @@ jobs:
   #        command: |
   #          ./scripts/run-colony.sh
 
-  # It would be nice if all this could be a shell script but Circle is
-  # extremely annoying about
-  # a) cacheing
-  # b) sudo
-  # c) scripts
-  # d) being in a docker container.
+  # It would be nice if all this could be a shell script... :/
   e2e-zeppelin:
     docker:
       - image: circleci/node:10.12-stretch
@@ -55,15 +50,35 @@ jobs:
           sudo git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git &&
           cd openzeppelin-solidity &&
           sudo sed -i 's/cat coverage\/lcov.info | npx coveralls/echo "No coveralls"/g' scripts/test.sh &&
+          sudo sed -i 's/ganache-cli-coverage/testrpc-sc/g' scripts/test.sh &&
+          sudo sed -i 's/--emitFreeLogs true/ /g' scripts/test.sh &&
           sudo yarn &&
           sudo yarn remove solidity-coverage --dev &&
           sudo yarn add "$PR_PATH" --dev &&
           sudo npm run coverage
 
+  # AND...this doesn't work either! Thanks to truffle "obtain" and circle permission denied.
+  e2e-metacoin:
+    docker:
+      - image: circleci/node:10.12-stretch
+    steps:
+      - checkout
+      - run: >
+          sudo npm config set user 0 &&
+          sudo npm config set unsafe-perm true &&
+          sudo rm -rf node_modules &&
+          PR_PATH=$(echo "$CIRCLE_REPOSITORY_URL#$CIRCLE_BRANCH" | sudo sed 's/git@github.com:/https:\/\/github.com\//') &&
+          sudo mkdir metacoin &&
+          cd metacoin &&
+          sudo npx truffle unbox metacoin &&
+          sudo rm test/TestMetacoin.sol &&
+          sudo yarn add $PR_PATH --dev &&
+          sudo npx solidity-coverage
 workflows:
   version: 2
   build:
     jobs:
       - unit-test
       - e2e-zeppelin
+      - e2e-metacoin
       #- e2e-colony

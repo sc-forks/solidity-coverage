@@ -28,7 +28,7 @@ describe('app', () => {
   };
 
   before(done => {
-    const command = `./node_modules/.bin/testrpc-sc --allowUnlimitedContractSize --gasLimit 0xfffffffffff --port ${port}`;
+    const command = `npx testrpc-sc --gasLimit 0xfffffffffff --port ${port}`;
     testrpcProcess = childprocess.exec(command);
 
     testrpcProcess.stdout.on('data', data => {
@@ -153,15 +153,14 @@ describe('app', () => {
           coverage: {
             host: "localhost",
             port: 8999,
-            network_id: "*"
+            network_id: "*",
+            gas: 0xfffffffffff,
+            gasPrice: 0x01
           }
         },
         compilers: {
           solc: {
             version: "0.5.3",
-            settings: {
-              evmVersion: "constantinople"
-            }
           }
         }
       };`;
