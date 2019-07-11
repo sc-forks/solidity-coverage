@@ -37,7 +37,7 @@ module.exports.install = function install(
 ) {
   const configjs = `module.exports = ${JSON.stringify(config)}`;
   const contractLocation = `./${contract}`;
-  const trufflejsName = _trufflejsName || 'truffle.js';
+  const trufflejsName = _trufflejsName || 'truffle-config.js';
 
   // Mock migrations
   const initialMigration = `
@@ -55,7 +55,7 @@ module.exports.install = function install(
   // Mock external asset
   const asset = 'module.exports = { value: true };';
 
-  // Mock truffle.js
+  // Mock truffle-config.js
   const trufflejs = _trufflejs || defaultTruffleJs;
 
   // Generate mock
@@ -126,12 +126,12 @@ module.exports.installInheritanceTest = function installInheritanceTest(config) 
   // Mock test
   shell.cp('./test/cli/inheritance.js', './mock/test/inheritance.js');
 
-  // Mock truffle.js
+  // Mock truffle-config.js
   const trufflejs = defaultTruffleJs;
 
   const configjs = `module.exports = ${JSON.stringify(config)}`;
 
-  fs.writeFileSync('./mock/truffle.js', trufflejs);
+  fs.writeFileSync('./mock/truffle-config.js', trufflejs);
   fs.writeFileSync('./.solcover.js', configjs);
 };
 
@@ -177,7 +177,7 @@ module.exports.installLibraryTest = function installInheritanceTest(config) {
   shell.cp('./test/sources/cli/CLibrary.sol', './mock/assets/CLibrary.sol');
   shell.cp('./test/sources/cli/Face.sol', './mock/assets/Face.sol');
 
-  // Mock truffle.js
+  // Mock truffle-config.js
   const trufflejs = defaultTruffleJs;
 
   const configjs = `module.exports = ${JSON.stringify(config)}`;
