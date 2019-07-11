@@ -13,7 +13,7 @@ contract Test {
     returns (bool _isWhitelisted)
   {
     bytes4 _signature = bytes4(keccak256("whitelisted(address)"));
-    address _whitelistContract = getContractAddress("Whitelist");
+    address _whitelistContract = address(this);
 
     assembly {
       let _pointer := mload(0x40)  // Set _pointer to free memory pointer
