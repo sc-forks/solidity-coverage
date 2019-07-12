@@ -9,7 +9,7 @@ contract('Wallet', accounts => {
     const walletB = await Wallet.new();
 
     await walletA.sendTransaction({
-      value: web3.utils.toBN(100), from: accounts[0],
+      value: web3.utils.toBN(500), from: accounts[0],
     });
     console.log('transaction done')
     await walletA.sendPayment(50, walletB.address, {

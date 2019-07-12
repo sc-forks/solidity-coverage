@@ -9,14 +9,13 @@ contract Wallet {
     }
 
     function sendPayment(uint payment, address payable recipient) public {
-        if (!recipient.send(payment))
-            revert();
+        require(recipient.send(payment), 'sendPayment failed');
     }
 
     function getBalance() public view returns(uint){
         return address(this).balance;
     }
-    
+
     function() external payable
     {
         if (msg.value > 0)
