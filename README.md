@@ -17,7 +17,7 @@ find discrepancies between the coverage report and your suite's behavior, please
 
 ### Install
 ```
-$ npm install --save-dev solidity-coverage@beta
+$ npm install --save-dev solidity-coverage
 ```
 
 ### Run
@@ -30,7 +30,7 @@ $ npx solidity-coverage
 truffle-config.js. See [Network Configuration](#network-configuration).
 
 ### Usage notes:
-+ For solidity pragma >= `0.5.0`.
++ For solidity pragma >= `0.5.0` and Petersburg.
 + Tests run more slowly while coverage is being generated.
 + Your contracts will be double-compiled and a (long) delay between compilation and
 the beginning of test execution is possible if your contracts are large.
