@@ -20,4 +20,11 @@ describe('generic expressions', () => {
     util.report(output.errors);
   });
 
+  it('should compile after instrumenting an assembly if statement', () => {
+    const contract = util.getCode('assembly/if.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
+    util.report(output.errors);
+  });
+
 });
