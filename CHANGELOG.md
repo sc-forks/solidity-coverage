@@ -1,5 +1,9 @@
 # Changelog
 
+0.6.1 / 2019-07-12
+==================
+  * Fix bug preprocessing unbracketed if else statements
+
 0.6.0 / 2019-07-11
 ==================
   * Add E2E vs Zeppelin and Colony in CI
