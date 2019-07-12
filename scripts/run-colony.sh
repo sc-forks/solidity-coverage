@@ -23,6 +23,3 @@ git submodule update --init
 sed -i 's/docker: true,/ /g' truffle.js
 sudo yarn run provision:token:contracts
 sudo yarn run test:contracts:coverage
-
-# Trick to 'allowFailure' on CIRCLE
-set -o errexit
