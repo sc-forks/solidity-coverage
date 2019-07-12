@@ -30,13 +30,13 @@ $ npx solidity-coverage
 truffle-config.js. See [Network Configuration](#network-configuration).
 
 ### Usage notes:
-+ For solidity pragma >= `0.5.0` and Petersburg.
++ For pragma solidity >=0.4.22 <0.6.0 / Petersburg.
 + Tests run more slowly while coverage is being generated.
 + Your contracts will be double-compiled and a (long) delay between compilation and
 the beginning of test execution is possible if your contracts are large.
 + Truffle should be globallly installed in your environment.. If you prefer running truffle as
 a local dependency, please see [this section](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency) of the FAQ.
-+ If your suite uses native Solidity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it's unable to control truffle's compilation of that folder. Mocks should be relocated to the root `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
++ If your suite uses native Solidity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it can't control the way truffle compiles that folder. Mocks should be relocated to the root `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
 
 ### Network Configuration
 
