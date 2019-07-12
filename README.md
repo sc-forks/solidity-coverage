@@ -26,24 +26,22 @@ $ npm install --save-dev solidity-coverage@beta
 $ npx solidity-coverage
 ```
 
-**NB:** for most projects you'll also need to configure a 'coverage' network in
-truffle-config.js. See the Network Configuration guide below.
+**NB:** Most projects will also need to set a `coverage` network in
+truffle-config.js. See [Network Configuration](#network-configuration).
 
 ### Usage notes:
-+ Requires Solidity pragmas >= `0.5.0`.
++ For solidity pragma >= `0.5.0`.
 + Tests run more slowly while coverage is being generated.
-+ Your contracts will be double-compiled and a delay between compilation and
++ Your contracts will be double-compiled and a (long) delay between compilation and
 the beginning of test execution is possible if your contracts are large.
-+ solidity-coverage expects a globally installed truffle in your environment / on CI. If you
-prefer to control which Truffle version your tests are run with, please see the FAQ for
-[running truffle as a local dependency](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency).
-+ Solidity fixtures / mocks stored in the `tests/` directory are no longer supported. If your suite uses native Solidity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it's unable to rewrite your contract ABIs appropriately. Mocks should be relocated to the root folder's `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
++ Truffle should be globallly installed in your environment.. If you prefer running truffle as
+a local dependency, please see [this section](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency) of the FAQ.
++ If your suite uses native Solidity testing or accesses contracts via mocks stored in `tests/` (a la Zeppelin), coverage will trigger test errors because it's unable to control truffle's compilation of that folder. Mocks should be relocated to the root `contracts` directory. More on why this is necessary at issue [146](https://github.com/sc-forks/solidity-coverage/issues/146)
 
 ### Network Configuration
 
-By default, solidity-coverage connects to a coverage-enabled fork of the ganache-cli client
-called **testrpc-sc** on port 8555. (It ships with `solidity-coverage` -
-there's nothing extra to download.)
+By default, this tool connects to a coverage-enabled fork of ganache-cli
+called **testrpc-sc** on port 8555. (It's a dependency - there's nothing extra to download.)
 
 In `truffle-config.js`, add a coverage network following the example below.
 
@@ -69,8 +67,8 @@ module.exports = {
 ```
 ### Options
 
-You can also create a `.solcover.js` config file in the root directory of your project and specify
-additional options if necessary:
+Additional options can be specified in a `.solcover.js` config file located in
+the root directory of your project.
 
 **Example:**
 ```javascript
@@ -102,7 +100,7 @@ module.exports = {
 
 ### FAQ
 
-Solutions to common issues people run into using this tool:
+Solutions to common problems people run into:
 
 + [Running out of gas](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas)
 + [Running out of memory (locally and in CI)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory-locally-and-in-ci)
@@ -110,7 +108,6 @@ Solutions to common issues people run into using this tool:
 + [Running on windows](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-on-windows)
 + [Running testrpc-sc on its own](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-testrpc-sc-on-its-own)
 + [Running truffle as a local dependency](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-truffle-as-a-local-dependency)
-+ [Using alongside HDWalletProvider](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#using-alongside-hdwalletprovider)
 + [Integrating into CI](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration-installing-metacoin-on-travisci-with-coveralls)
 + [Why are asserts and requires highlighted as branch points?](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#why-has-my-branch-coverage-decreased-why-is-assert-being-shown-as-a-branch-point)
 + [Why are `send` and `transfer` throwing in my tests?](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#why-are-send-and-transfer-throwing)
@@ -119,14 +116,12 @@ Solutions to common issues people run into using this tool:
 ### Example reports
 + [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
 + [openzeppelin-solidity](https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master)  (Coveralls)
-+ [gnosis-contracts](https://codecov.io/gh/gnosis/gnosis-contracts/tree/master/contracts)  (Codecov)
 
 ### Contribution Guidelines
 
 Contributions are welcome! If you're opening a PR that adds features please consider writing some
-[unit tests](https://github.com/sc-forks/solidity-coverage/tree/master/test) for them. You could
-also lint your submission with `npm run lint`. Bugs can be reported in the
-[issues](https://github.com/sc-forks/solidity-coverage/issues).
+[unit tests](https://github.com/sc-forks/solidity-coverage/tree/master/test) for them.  Bugs can be
+reported in the [issues](https://github.com/sc-forks/solidity-coverage/issues).
 
 Set up the development environment with:
 ```
