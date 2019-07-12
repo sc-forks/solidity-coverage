@@ -23,20 +23,16 @@ jobs:
             bash <(curl -s https://codecov.io/bash)
 
   # This works but takes a while....
-  # e2e-colony:
-  #  docker:
-  #    - image: circleci/node:10.12-stretch
-  #  working_directory: ~/colonyNetwork
-  #  branches:
-  #    only:
-  #      - master
-  #      - next
-  #  steps:
-  #    - checkout
-  #    - run:
-  #        name: ColonyNetwork E2E
-  #        command: |
-  #          ./scripts/run-colony.sh
+  e2e-colony:
+    docker:
+      - image: circleci/node:10.12-stretch
+    working_directory: ~/colonyNetwork
+    steps:
+      - checkout
+      - run:
+          name: ColonyNetwork E2E
+          command: |
+            ./scripts/run-colony.sh
 
   # It would be nice if all this could be a shell script... :/
   e2e-zeppelin:
@@ -81,4 +77,14 @@ workflows:
       - unit-test
       - e2e-zeppelin
       - e2e-metacoin
-      #- e2e-colony
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 1 * * *" # 1am UTC
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - e2e-zeppelin
+      - e2e-colony
