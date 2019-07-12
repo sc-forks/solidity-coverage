@@ -19,6 +19,14 @@ describe('if, else, and else if statements', () => {
     util.report(output.errors);
   });
 
+  it('should compile after instrumenting unbracketed if-elses', () => {
+    const contract = util.getCode('if/if-else-no-brackets.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
+    util.report(output.errors);
+  });
+
+
   it('should cover an if statement with a bracketed consequent', done => {
     const contract = util.getCode('if/if-with-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);
