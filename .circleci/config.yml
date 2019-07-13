@@ -87,4 +87,4 @@ workflows:
                 - master
     jobs:
       - e2e-zeppelin
-      - e2e-colony
+      #- e2e-colony
