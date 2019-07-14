@@ -1,4 +1,7 @@
 # Changelog
+0.6.2 / 2019-07-13
+==================
+  * Fix coverage for solidity `send` and `transfer` (upgrade testrpc-sc to 6.4.5-sc.3)
 
 0.6.1 / 2019-07-12
 ==================
