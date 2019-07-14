@@ -341,7 +341,7 @@ describe('app', () => {
     collectGarbage();
   });
 
-  it.skip('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
+  it('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
     // Skipped due to https://github.com/sc-forks/solidity-coverage/issues/106
     // Validate ethereumjs-vm hack to remove gas constraints on transfer() and send()
     assert(pathExists('./coverage') === false, 'should start without: coverage');
