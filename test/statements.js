@@ -24,6 +24,13 @@ describe('generic statements', () => {
     util.report(output.errors);
   })
 
+  it('should compile when using the type keyword', () => {
+    const contract = util.getCode('statements/type-keyword.sol');
+    const info = getInstrumentedVersion(contract, filePath);
+    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
+    util.report(output.errors);
+  })
+
   it('should compile after instrumenting a single statement (first line of function)', () => {
     const contract = util.getCode('statements/single.sol');
     const info = getInstrumentedVersion(contract, filePath);
