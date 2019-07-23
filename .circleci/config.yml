@@ -17,10 +17,12 @@ jobs:
           name: Run tests
           command: |
             npm run test-cov
-      - run:
-          name: Upload coverage
-          command: |
-            bash <(curl -s https://codecov.io/bash)
+
+      # TODO: Re-enable
+      #- run:
+      #    name: Upload coverage
+      #    command: |
+      #      bash <(curl -s https://codecov.io/bash)
 
   # This works but takes a while....
   e2e-colony:
@@ -53,7 +55,7 @@ jobs:
           sudo yarn add "$PR_PATH" --dev &&
           sudo npm run coverage
 
-  # AND...this doesn't work either! Thanks to truffle "obtain" and circle permission denied.
+  # AND...this is trouble too thanks to truffle "obtain" and circle permission denied.
   e2e-metacoin:
     docker:
       - image: circleci/node:10.12-stretch
@@ -75,8 +77,9 @@ workflows:
   build:
     jobs:
       - unit-test
-      - e2e-zeppelin
-      - e2e-metacoin
+      # TODO: re-enable
+      #- e2e-zeppelin
+      #- e2e-metacoin
   nightly:
     triggers:
       - schedule:
@@ -86,5 +89,6 @@ workflows:
               only:
                 - master
     jobs:
-      - e2e-zeppelin
+      # TODO: re-enable
+      #- e2e-zeppelin
       #- e2e-colony
