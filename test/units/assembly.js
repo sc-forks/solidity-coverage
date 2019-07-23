@@ -1,31 +1,16 @@
-/* eslint-env node, mocha */
+const assert = require('assert');
+const util = require('./../util/util.js');
 
-/*const solc = require('solc');
-const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
-const util = require('./util/util.js');
-const path = require('path');*/
-
-/**
- * NB: passing '1' to solc as an option activates the optimiser
- * NB: solc will throw if there is a compilation error, causing the test to fail
- *     and passing the error to mocha.
- */
-
-/*describe('generic expressions', () => {
-  const filePath = path.resolve('./test.sol');
+describe('assembly expressions', () => {
 
   it('should compile after instrumenting an assembly function with spaces in parameters', () => {
-    const contract = util.getCode('assembly/spaces-in-function.sol');
-    const info = getInstrumentedVersion(contract, filePath);
-    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
-    util.report(output.errors);
+    const info = util.instrumentAndCompile('assembly/spaces-in-function');
+    util.report(info.solcOutput.errors);
   });
 
   it('should compile after instrumenting an assembly if statement', () => {
-    const contract = util.getCode('assembly/if.sol');
-    const info = getInstrumentedVersion(contract, filePath);
-    const output = JSON.parse(solc.compile(util.codeToCompilerInput(info.contract)));
-    util.report(output.errors);
+    const info = util.instrumentAndCompile('assembly/if');
+    util.report(info.solcOutput.errors);
   });
 
-});*/
+});
