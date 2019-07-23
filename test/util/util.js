@@ -59,6 +59,7 @@ function instrumentAndCompile(sourceName) {
   const contract = getCode(`${sourceName}.sol`)
   const instrumenter = new Instrumenter();
   const instrumented = instrumenter.instrument(contract, filePath);
+
   return {
     contract: contract,
     instrumented: instrumented,
