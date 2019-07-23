@@ -5,7 +5,7 @@ const ganache = require('ganache-core');
 const Coverage = require('./../../lib/coverage');
 const DataCollector = require('./../../lib/collector');
 
-describe.only('if, else, and else if statements', () => {
+describe('if, else, and else if statements', () => {
   let coverage;
   let provider;
   let collector;
