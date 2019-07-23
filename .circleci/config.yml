@@ -30,10 +30,12 @@ jobs:
           name: Run tests
           command: |
             npm run test-cov
-      - run:
-          name: Upload coverage
-          command: |
-            bash <(curl -s https://codecov.io/bash)
+
+      # TODO: Re-enable
+      #- run:
+      #    name: Upload coverage
+      #    command: |
+      #      bash <(curl -s https://codecov.io/bash)
 
   # This works but takes a while....
   e2e-colony:
@@ -56,7 +58,6 @@ jobs:
           name: Zeppelin E2E
           command: |
             ./scripts/run-zeppelin.sh
-
   e2e-metacoin:
     machine: true
     steps:
@@ -71,8 +72,9 @@ workflows:
   build:
     jobs:
       - unit-test
-      - e2e-zeppelin
-      - e2e-metacoin
+      # TODO: re-enable
+      #- e2e-zeppelin
+      #- e2e-metacoin
   nightly:
     triggers:
       - schedule:
@@ -82,5 +84,6 @@ workflows:
               only:
                 - master
     jobs:
-      - e2e-zeppelin
+      # TODO: re-enable
+      #- e2e-zeppelin
       #- e2e-colony
