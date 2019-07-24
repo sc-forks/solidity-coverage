@@ -75,15 +75,15 @@ workflows:
       # TODO: re-enable
       #- e2e-zeppelin
       #- e2e-metacoin
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 1 * * *" # 1am UTC
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
+  #nightly:
+  #  triggers:
+  #    - schedule:
+  #        cron: "0 1 * * *" # 1am UTC
+  #        filters:
+  #          branches:
+  #            only:
+  #              - master
+  #  jobs:
       # TODO: re-enable
       #- e2e-zeppelin
       #- e2e-colony
