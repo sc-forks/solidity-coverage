@@ -21,7 +21,6 @@
   "dependencies": {
     "death": "^1.1.0",
     "ganache-cli": "^6.5.0",
-    "ganache-core": "^2.6.0",
     "istanbul": "^0.4.5",
     "req-cwd": "^1.0.1",
     "sha1": "^1.1.1",
