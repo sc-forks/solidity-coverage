@@ -25,7 +25,7 @@
     "req-cwd": "^1.0.1",
     "sha1": "^1.1.1",
     "shelljs": "^0.8.3",
-    "solidity-parser-antlr": "0.4.5",
+    "solidity-parser-antlr": "^0.4.7",
     "web3-utils": "^1.0.0"
   },
   "devDependencies": {
