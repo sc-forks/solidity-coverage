@@ -3481,12 +3481,7 @@ solc@^0.5.10:
     tmp "0.0.33"
     yargs "^13.2.0"
 
-solidity-parser-antlr@0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/solidity-parser-antlr/-/solidity-parser-antlr-0.4.5.tgz#4de1867f1a12df4553886209225bc80328aeb0c1"
-  integrity sha512-5GzhIs4hpY3XnGwMndgrOksD567O5WdUQPbpy2n2WA1m3algzUKYMf+Ne/QHd36TTUNvVV+iTWD5tKaCZfaOjg==
-
-solidity-parser-antlr@^0.4.2:
+solidity-parser-antlr@^0.4.2, solidity-parser-antlr@^0.4.7:
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/solidity-parser-antlr/-/solidity-parser-antlr-0.4.11.tgz#af43e1f13b3b88309a875455f5d6e565b05ee5f1"
   integrity sha512-4jtxasNGmyC0midtjH/lTFPZYvTTUMy6agYcF+HoMnzW8+cqo3piFrINb4ZCzpPW+7tTVFCGa5ubP34zOzeuMg==
