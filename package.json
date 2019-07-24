@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "mocha test/units --timeout 70000 --no-warnings",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 70000 --exit"
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- test/units --timeout 70000 --exit"
   },
   "homepage": "https://github.com/sc-forks/solidity-coverage",
   "repository": {
