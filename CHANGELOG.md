@@ -1,5 +1,9 @@
 # Changelog
 
+0.6.4 / 2019-08-01
+==================
+  * Upgrade testrpc-sc to track ganache-cli 6.5.1
+
 0.6.3 / 2019-07-17
 ==================
   * Fix parsing bug for soldity `type` keyword (upgrade solidity-parser-antlr to ^0.4.7)
