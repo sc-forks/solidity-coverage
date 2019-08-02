@@ -21,13 +21,10 @@ $ npm install --save-dev solidity-coverage
 ```
 
 ### Run
-
+Set a `coverage` network in truffle-config.js (see [Network Configuration](#network-configuration)) and then run:
 ```
 $ npx solidity-coverage
 ```
-
-**NB:** Most projects will also need to set a `coverage` network in
-truffle-config.js. See [Network Configuration](#network-configuration).
 
 ### Usage notes:
 + For pragma solidity >=0.4.22 <0.6.0 / Petersburg / Truffle v4 and v5
@@ -41,7 +38,9 @@ a local dependency, please see [this section](https://github.com/sc-forks/solidi
 ### Network Configuration
 
 By default, this tool connects to a coverage-enabled fork of ganache-cli
-called **testrpc-sc** on port 8555. (It's a dependency - there's nothing extra to download.)
+called **testrpc-sc** on port 8555. 
++ it's a dependency - there's nothing extra to download.
++ the solidity-coverage command launches it automatically in the background. (See [this section of the FAQ](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-testrpc-sc-on-its-own) if you need to launch it separately yourself)
 
 In `truffle-config.js`, add a coverage network following the example below.
 
