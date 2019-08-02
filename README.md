@@ -30,7 +30,7 @@ $ npx solidity-coverage
 truffle-config.js. See [Network Configuration](#network-configuration).
 
 ### Usage notes:
-+ For pragma solidity >=0.4.22 <0.6.0 / Petersburg.
++ For pragma solidity >=0.4.22 <0.6.0 / Petersburg / Truffle v4 and v5
 + Tests run more slowly while coverage is being generated.
 + Your contracts will be double-compiled and a (long) delay between compilation and
 the beginning of test execution is possible if your contracts are large.
