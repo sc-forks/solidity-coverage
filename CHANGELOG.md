@@ -1,4 +1,9 @@
 # Changelog
+
+0.6.3 / 2019-07-17
+==================
+  * Fix parsing bug for soldity `type` keyword (upgrade solidity-parser-antlr to ^0.4.7)
+
 0.6.2 / 2019-07-13
 ==================
   * Fix coverage for solidity `send` and `transfer` (upgrade testrpc-sc to 6.4.5-sc.3)
