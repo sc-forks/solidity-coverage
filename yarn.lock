@@ -4467,10 +4467,10 @@ tree-kill@^1.2.0:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.1.tgz#5398f374e2f292b9dcc7b2e71e30a5c3bb6c743a"
   integrity sha512-4hjqbObwlh2dLyW4tcz0Ymw0ggoaVDMveUB9w8kFSQScdRLo0gxO9J7WFcUBo+W3C1TLdFIEwNOWebgZZ0RH9Q==
 
-truffle@^5.0.26:
-  version "5.0.26"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.0.26.tgz#cb9a6dcd77501821ba6e8ba51b2d4eef58da7458"
-  integrity sha512-gf3Khot59ZM2Tegqb2md0lpr1SXGUHKJkSajCyXsiFCiiHUbX6NpXn/mgJgk1SXt7FAHpL0zYdLI1pYfqzvBFw==
+truffle@^5.0.30:
+  version "5.0.30"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.0.30.tgz#13ac335939fc6c908c615c25cd94c7a56ba674d5"
+  integrity sha512-l13cUq5QUEPfW89b4dDBIahNmDWazpey4Y8UJXhNn+YTkHxVM5h8L8eNNIBTD1SiYerrXfw49QMIQubEcz3erA==
   dependencies:
     app-module-path "^2.2.0"
     mocha "5.2.0"
