@@ -14,8 +14,8 @@
   Test options override
   ---------------------
   contracts_directory,       /users/myPath/to/someProject/.coverageContracts
-  contracts_build_directory, /users/myPath/to/someProject/.coverageArtifact/contracts
-  provider                   ganache.provider (w/ vm resolved)
+  contracts_build_directory, /users/myPath/to/someProject/.coverageArtifacts/contracts
+  provider                   ganache.provider (async b/c vm must be resolved)
   logger                     add filter for unused variables...
 
   Truffle Lib API
@@ -26,62 +26,72 @@
 */
 
 const SolidityCoverage = require('./../lib/app.js');
+const req = require('req-cwd');
 
 module.exports = async (config) =>
-  let truffle;
+  let error;
 
   try {
-    truffle = loadTruffleLibrary();
 
-    const coverageConfigPath = coveragePaths.config(config)
-    const coverageConfig = req.silent(coverageConfigPath) || {};
+    // Load truffle lib & coverage config
+    const truffle = loadTruffleLibrary();
+    const coverageConfig = req.silent('./.solcover.js') || {};
 
-    app.contractsDir = coveragePaths.contracts(config, coverageConfig);
-
+    // Start
     const app = new SolidityCoverage(coverageConfig);
-    app.generateEnvironment();
-    app.instrument(config.contracts_directory);
 
-    // Compile instrumented sources / optimization off
-    config.contracts_directory = app.contractsDir;
-    config.build_directory = coveragePaths.artifacts.root(config, coverageConfig);
-    config.contracts_build_directory = coveragePaths.artifacts.contracts(config, coverageConfig);
+    // Write instrumented sources to temp folder
+    app.contractsDirectory = coveragePaths.contracts(config, app);
+    app.generateEnvironment(config.contracts_directory, app.contractsDirectory);
+    app.instrument();
+
+    // Have truffle use temp folders
+    config.contracts_directory = app.contractsDirectory;
+    config.build_directory = coveragePaths.artifacts.root(config, app);
+    config.contracts_build_directory = coveragePaths.artifacts.contracts(config, app);
+
+    // Compile w/out optimization
     config.compilers.solc.settings.optimization.enabled = false;
     await truffle.contracts.compile(config);
 
-    // Test using compiled, instrumented sources
-    config.provider = await app.getCoverageProvider();
+    // Launch provider & run tests
+    config.provider = await app.getCoverageProvider(truffle);
     try {
       await truffle.test.run(config)
-    } catch (err) {
+    } catch (e) {
+      error = e;
       app.testsErrored = true;
     }
 
+    // Produce report
     app.generateCoverage();
 
-  } catch(err){
-    return app.cleanUp(err);
+  } catch(e){
+    error = e;
   }
 
-  return app.cleanUp();
+  // Finish
+  return app.cleanUp(error);
 }
 
 // -------------------------------------- Helpers --------------------------------------------------
 function loadTruffleLibrary(){
 
   try { return require("truffle") }   catch(err) {};
-  try { return require("sc-truffle")} catch(err) {};
+  try { return require("./truffle.library")} catch(err) {};
 
   throw new Error(utils.errors.NO_TRUFFLE_LIB)
 }
 
 const coveragePaths = {
-  contracts: (t, c) =>     path.join(path.dirname(t.contracts_directory), c.contractsDirName)),
-  config:    (t)    =>     path.join(t.working_directory, '.solcover.js'),
+  contracts: (t, c) => path.join(path.dirname(t.contracts_directory), c.contractsDirName)),
 
   artifacts: {
-    root:      (t, c)   => path.join(path.dirname(t.build_directory), c.artifactsDirName),
-    contracts: (c, t) => path.join(c.build_directory, path.basename(t.contracts_build_directory))
+    root:      (t, c) => path.join(path.dirname(t.build_directory), c.artifactsDirName),
+    contracts: (t, c) => {
+      const root = path.join(path.dirname(t.build_directory), c.artifactsDirName);
+      return path.join(root, path.basename(t.contracts_build_directory));
+    }
   }
 }
 
