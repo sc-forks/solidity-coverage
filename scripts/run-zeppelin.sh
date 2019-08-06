@@ -6,7 +6,6 @@
 set -o errexit
 # Get path to PR branch
 PR_PATH=$(echo "$URL#$BRANCH" | sed 's/git@github.com:/https:\/\/github.com\//')
-echo $PR_PATH
 echo "Installing $PR_PATH"
 
 # Circle caches really agressively?
