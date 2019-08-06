@@ -42,7 +42,7 @@ jobs:
       - checkout
       - run: >
           sudo rm -rf node_modules &&
-          PR_PATH=https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}#${CIRCLE_BRANCH} &&
+          PR_PATH=https://github.com/${CIRCLE_PR_USERNAME}/${CIRCLE_PR_REPONAME}#${CIRCLE_SHA1} &&
           echo $PR_PATH &&
           sudo git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git &&
           cd openzeppelin-solidity &&
