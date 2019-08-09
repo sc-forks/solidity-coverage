@@ -1,4 +1,17 @@
 version: 2.0
+# Necessary for running in machine mode, which is necessary to execute the
+# Zeppelin and MetaCoin E2E scripts
+step_install_nvm: &step_install_nvm
+  run:
+    name: "Install nvm for machine"
+    command: |
+      set +e
+      export NVM_DIR="/opt/circleci/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+      nvm install v8.15.0
+      nvm alias default v8.15.0
+      echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+      echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 jobs:
   unit-test:
     docker:
@@ -56,28 +69,20 @@ jobs:
 
   # AND...this doesn't work either! Thanks to truffle "obtain" and circle permission denied.
   e2e-metacoin:
-    docker:
-      - image: circleci/node:10.12-stretch
+    machine: true
     steps:
       - checkout
-      - run: >
-          sudo npm config set user 0 &&
-          sudo npm config set unsafe-perm true &&
-          sudo rm -rf node_modules &&
-          PR_PATH=$(echo "$CIRCLE_REPOSITORY_URL#$CIRCLE_SHA1" | sudo sed 's/git@github.com:/https:\/\/github.com\//') &&
-          echo "PR_PATH >>>>> $PR_PATH" &&
-          sudo mkdir metacoin &&
-          cd metacoin &&
-          sudo npx truffle unbox metacoin &&
-          sudo rm test/TestMetacoin.sol &&
-          sudo yarn add $PR_PATH --dev &&
-          sudo npx solidity-coverage
+      - <<: *step_install_nvm
+      - run:
+          name: MetaCoin E2E
+          command: |
+            ./scripts/run-metacoin.sh
 workflows:
   version: 2
   build:
     jobs:
-      - unit-test
-      - e2e-zeppelin
+      #- unit-test
+      #- e2e-zeppelin
       - e2e-metacoin
   nightly:
     triggers:
