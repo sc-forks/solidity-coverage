@@ -3,40 +3,40 @@
 # E2E CI: installs PR candidate on openzeppelin-solidity and runs coverage
 #
 
-set -o errexit
-# Get path to PR branch
-PR_PATH=$(echo "$URL#$BRANCH" | sed 's/git@github.com:/https:\/\/github.com\//')
-echo "Installing $PR_PATH"
-
-# Circle caches really agressively?
+# Get rid of any caches
 sudo rm -rf node_modules
-sudo git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git
-cd openzeppelin-solidity || exit
-sudo rm -rf node_modules
+echo "NVM CURRENT >>>>>" && nvm current
 
-# EDITS
-# Use testrpc-sc ...
-# sed -i 's/ganache-cli-coverage/testrpc-sc/g' scripts/test.sh
-# sed -i 's/--emitFreeLogs true/ /g' scripts/test.sh
+# Use PR env variables (for forks) or fallback on local if PR not available
+SED_REGEX="s/git@github.com:/https:\/\/github.com\//"
 
-# Do not ping coveralls
-sed -i 's/cat coverage\/lcov.info | npx coveralls/echo "No coveralls"/g' scripts/test.sh
+if [[ -v CIRCLE_PR_REPONAME ]]; then
+  PR_PATH="https://github.com/$CIRCLE_PR_USERNAME/$CIRCLE_PR_REPONAME#$CIRCLE_SHA1"
+else
+  PR_PATH=$(echo "$CIRCLE_REPOSITORY_URL#$CIRCLE_SHA1" | sudo sed "$SED_REGEX")
+fi
 
-# Doesn't install inside docker (thanks Circle!)
-echo "Uninstalling solidity-docgen"
-sudo npm uninstall --save-dev solidity-docgen
+echo "PR_PATH >>>>> $PR_PATH"
+
+# Install Zeppelin
+git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git
+cd openzeppelin-solidity
+
+# Update Zeppelin's script to use 0.6.x
+sed -i 's/if/# /g' scripts/coverage.sh
+sed -i 's/curl/# /g' scripts/coverage.sh
+sed -i 's/fi/# /g' scripts/coverage.sh
+sed -i 's/ganache-cli-coverage/testrpc-sc/g' scripts/test.sh
+sed -i 's/--emitFreeLogs true/ /g' scripts/test.sh
 
 # Swap installed coverage for PR branch version
-echo "Running: npm install"
-sudo npm install
+echo ">>>>> npm install"
+npm install
 
-echo "Running npm uninstall solidity-coverage"
-sudo npm uninstall --save-dev solidity-coverage
+echo ">>>>> npm uninstall --save-dev solidity-coverage"
+npm uninstall --save-dev solidity-coverage
 
-echo "Running npm install PR_PATH"
-sudo npm install --save-dev "$PR_PATH"
+echo ">>>>> npm install --save-dev PR_PATH"
+npm install --save-dev "$PR_PATH"
 
-sudo npm run coverage
-
-# Trick to 'allowFailure' on CIRCLE
-set -o errexit
+npm run coverage
