@@ -23,7 +23,7 @@ git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git
 cd openzeppelin-solidity
 
 # Update Zeppelin's script to use 0.6.x
-sed -i 's/cat coverage\/lcov.info | npx coveralls/echo "No coveralls"/g' scripts/test.sh
+sed -i 's/curl/# curl/g' scripts/coverage.sh
 sed -i 's/ganache-cli-coverage/testrpc-sc/g' scripts/test.sh
 sed -i 's/--emitFreeLogs true/ /g' scripts/test.sh
 
