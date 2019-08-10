@@ -25,10 +25,10 @@
   test:         await truffle.test.run(config)
 */
 
-const SolidityCoverage = require('./../lib/app.js');
+const App = require('./../lib/app');
 const req = require('req-cwd');
 
-module.exports = async (config) =>
+module.exports = async (truffleConfig) =>
   let error;
 
   try {
@@ -38,26 +38,26 @@ module.exports = async (config) =>
     const coverageConfig = req.silent('./.solcover.js') || {};
 
     // Start
-    const app = new SolidityCoverage(coverageConfig);
+    const app = new App(coverageConfig);
 
     // Write instrumented sources to temp folder
-    app.contractsDirectory = coveragePaths.contracts(config, app);
-    app.generateEnvironment(config.contracts_directory, app.contractsDirectory);
+    app.contractsDirectory = coveragePaths.contracts(truffleConfig, app);
+    app.generateEnvironment(truffleConfig.contracts_directory, app.contractsDirectory);
     app.instrument();
 
     // Have truffle use temp folders
-    config.contracts_directory = app.contractsDirectory;
-    config.build_directory = coveragePaths.artifacts.root(config, app);
-    config.contracts_build_directory = coveragePaths.artifacts.contracts(config, app);
+    truffleConfig.contracts_directory = app.contractsDirectory;
+    truffleConfig.build_directory = coveragePaths.artifacts.root(truffleConfig, app);
+    truffleConfig.contracts_build_directory = coveragePaths.artifacts.contracts(truffleConfig, app);
 
     // Compile w/out optimization
-    config.compilers.solc.settings.optimization.enabled = false;
-    await truffle.contracts.compile(config);
+    truffleConfig.compilers.solc.settings.optimization.enabled = false;
+    await truffle.contracts.compile(truffleConfig);
 
     // Launch provider & run tests
-    config.provider = await app.getCoverageProvider(truffle);
+    truffleConfig.provider = await app.getCoverageProvider(truffle);
     try {
-      await truffle.test.run(config)
+      await truffle.test.run(truffleConfig)
     } catch (e) {
       error = e;
       app.testsErrored = true;
