@@ -35,6 +35,25 @@ function assertExecutionFails(){
 describe.skip('app', function() {
   afterEach(() => mock.remove());
 
+  it('simple contract: should generate coverage, cleanup & exit(0)', () => {
+    assertCleanInitialState();
+
+    // Run script (exits 0);
+    mock.install('Simple.sol', 'simple.js', config);
+    shell.exec(script);
+    assert(shell.error() === null, 'script should not error');
+
+    assertCoverageGenerated();
+
+    // Coverage should be real.
+    // This test is tightly bound to the function names in Simple.sol
+    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const path = Object.keys(produced)[0];
+    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
+    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+
+  });
+
   it('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
 
     const privateKey = '0x3af46c9ac38ee1f01b05f9915080133f644bf57443f504d339082cb5285ccae4';
@@ -68,25 +87,6 @@ describe.skip('app', function() {
     mock.install('Simple.sol', 'command-options.js', testConfig);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
-
-  });
-
-  it('simple contract: should generate coverage, cleanup & exit(0)', () => {
-    assertCleanInitialState();
-
-    // Run script (exits 0);
-    mock.install('Simple.sol', 'simple.js', config);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
-
-    assertCoverageGenerated();
-
-    // Coverage should be real.
-    // This test is tightly bound to the function names in Simple.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
 
   });
 

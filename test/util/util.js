@@ -10,7 +10,7 @@ const filePath = path.resolve('./test.sol');
 const pathPrefix = './';
 
 function getCode(_path) {
-  const pathToSources = `./../soliditySources/contracts/${_path}`;
+  const pathToSources = `./../sources/solidity/contracts/${_path}`;
   return fs.readFileSync(path.join(__dirname, pathToSources), 'utf8');
 };
 
