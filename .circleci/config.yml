@@ -14,14 +14,18 @@ step_install_nvm: &step_install_nvm
       echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 jobs:
   unit-test:
-    docker:
-      - image: circleci/node:8.15.0
+    machine: true
     steps:
       - checkout
+      - <<: *step_install_nvm
       - run:
           name: Delete any old node_modules
           command: |
             rm -rf node_modules/
+      - run:
+          name: Install yarn
+          command: |
+            npm install -g yarn
       - run:
           name: Install dependencies
           command: |
@@ -30,12 +34,10 @@ jobs:
           name: Run tests
           command: |
             npm run test-cov
-
-      # TODO: Re-enable
-      #- run:
-      #    name: Upload coverage
-      #    command: |
-      #      bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Upload coverage
+          command: |
+            bash <(curl -s https://codecov.io/bash)
 
   # This works but takes a while....
   e2e-colony:

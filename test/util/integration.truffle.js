@@ -9,7 +9,7 @@ const shell = require('shelljs');
 const TruffleConfig = require('truffle-config');
 const decache = require('decache');
 
-const temp =              './temp';
+const temp =              './sc_temp';
 const truffleConfigName = 'truffle-config.js';
 const configPath =        `${temp}/.solcover.js`;
 const testPath =          './test/sources/js/';
@@ -155,7 +155,7 @@ function installDouble(contracts, test, config) {
 function clean() {
   shell.config.silent = true;
 
-  shell.rm('-Rf', 'temp');
+  shell.rm('-Rf', temp);
   shell.rm('-Rf', 'coverage');
   shell.rm('coverage.json');
 
