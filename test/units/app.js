@@ -1,12 +1,14 @@
-/* eslint-env node, mocha */
-
 const assert = require('assert');
-const shell = require('shelljs');
 const fs = require('fs');
-const childprocess = require('child_process');
-const mock = require('../util/mockTruffle.js');
+const shell = require('shelljs');
+const mock = require('../util/integration.truffle');
+const plugin = require('../../dist/truffle.plugin');
+const util = require('util')
+const opts = { compact: false, depth: 5, breakLength: 80 };
 
-// shell.test alias for legibility
+// =======
+// Helpers
+// =======
 function pathExists(path) { return shell.test('-e', path); }
 
 function assertCleanInitialState(){
@@ -15,114 +17,73 @@ function assertCleanInitialState(){
 }
 
 function assertCoverageGenerated(){
-  assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-  assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+  assert(pathExists('./coverage') === true, 'should gen coverage folder');
+  assert(pathExists('./coverage.json') === true, 'should gen coverage.json');
 }
 
 function assertCoverageNotGenerated(){
-  assert(pathExists('./coverage') !== true, 'script should NOT gen coverage folder');
-  assert(pathExists('./coverage.json') !== true, 'script should NOT gen coverage.json');
+  assert(pathExists('./coverage') !== true, 'should NOT gen coverage folder');
+  assert(pathExists('./coverage.json') !== true, 'should NOT gen coverage.json');
 }
 
-function assertExecutionSucceeds(){
-
+function getOutput(){
+  return JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
 }
 
-function assertExecutionFails(){
+// ========
+// Tests
+// ========
+describe('app', function() {
+  let truffleConfig;
+  let solcoverConfig;
 
-}
+  beforeEach(() => {
+    mock.clean();
+    truffleConfig = mock.getDefaultTruffleConfig();
+    solcoverConfig = {};
 
-describe.skip('app', function() {
-  afterEach(() => mock.remove());
+    if (process.env.SILENT)
+      solcoverConfig.silent = true;
+  })
 
-  it('simple contract: should generate coverage, cleanup & exit(0)', () => {
+  //afterEach(() => mock.clean());
+
+  it('simple contract: should generate coverage, cleanup & exit(0)', async function(){
     assertCleanInitialState();
 
-    // Run script (exits 0);
-    mock.install('Simple.sol', 'simple.js', config);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
 
     assertCoverageGenerated();
 
-    // Coverage should be real.
-    // This test is tightly bound to the function names in Simple.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+    const output = getOutput();
+    const path = Object.keys(output)[0];
 
+    assert(output[path].fnMap['1'].name === 'test', 'coverage.json missing "test"');
+    assert(output[path].fnMap['2'].name === 'getX', 'coverage.json missing "getX"');
   });
 
-  it('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
+  // Truffle test asserts balance is 777 ether
+  it('config with providerOptions', async function() {
+    solcoverConfig.providerOptions = { default_balance_ether: 777 }
 
-    const privateKey = '0x3af46c9ac38ee1f01b05f9915080133f644bf57443f504d339082cb5285ccae4';
-    const balance = '0xfffffffffffffff';
-    const testConfig = Object.assign({}, config);
-
-    testConfig.testrpcOptions = `--account="${privateKey},${balance}" --port 8777`;
-    testConfig.dir = './mock';
-    testConfig.norpc = false;
-    testConfig.port = 8777;
-
-    // Installed test will process.exit(1) and crash truffle if the test isn't
-    // loaded with the account specified above
-    mock.install('Simple.sol', 'testrpc-options.js', testConfig);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
-
+    mock.install('Simple', 'testrpc-options.js', solcoverConfig);
+    await plugin(truffleConfig);
   });
 
-  it('config with test command options string: should run test', () => {
-    assert(pathExists('./allFiredEvents') === false, 'should start without: events log');
-    const testConfig = Object.assign({}, config);
-
-    testConfig.testCommand = 'mocha --timeout 5000';
-    testConfig.dir = './mock';
-    testConfig.norpc = false;
-    testConfig.port = 8888;
-
-    // Installed test will write a fake allFiredEvents to ./ after 4000ms
-    // allowing test to pass
-    mock.install('Simple.sol', 'command-options.js', testConfig);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
-
-  });
-
-  it('Oraclize @ solc v.0.4.24 (large, many unbracketed statements)', () => {
-    const trufflejs =
-    `module.exports = {
-      networks: {
-        coverage: {
-          host: "localhost",
-          network_id: "*",
-          port: 8555,
-          gas: 0xfffffffffff,
-          gasPrice: 0x01
-        },
-      },
-      compilers: {
-        solc: {
-          version: "0.4.24",
-        }
-      }
-    };`;
-
+  it('large contract with many unbracketed statements (time check)', async function() {
     assertCleanInitialState();
 
-    // Run script (exits 0);
-    mock.install('Oraclize.sol', 'oraclize.js', config, trufflejs, null, true);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
+    truffleConfig.compilers.solc.version = "0.4.24";
 
+    mock.install('Oraclize', 'oraclize.js', solcoverConfig, truffleConfig, true);
+    await plugin(truffleConfig);
   });
 
-  it('tests use pure and view modifiers, including with libraries', () => {
+  it.skip('with pure and view modifiers and libraries', () => {
     assertCleanInitialState();
 
-    // Run script (exits 0);
-    mock.installLibraryTest(config);
+    mock.installDouble(config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
@@ -132,139 +93,122 @@ describe.skip('app', function() {
     // This test is tightly bound to the function names in TotallyPure.sol
     const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'usesThem', 'coverage.json should map "usesThem"');
-    assert(produced[path].fnMap['2'].name === 'isPure', 'coverage.json should map "getX"');
+    assert(produced[path].fnMap['1'].name === 'usesThem', 'should map "usesThem"');
+    assert(produced[path].fnMap['2'].name === 'isPure', 'should map "getX"');
 
   });
 
-  it('tests require assets outside of test folder: should generate coverage, cleanup & exit(0)', () => {
+  it('contract only uses ".call"', async function(){
     assertCleanInitialState();
 
-    // Run script (exits 0);
-    mock.install('Simple.sol', 'requires-externally.js', config);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
+    mock.install('OnlyCall', 'only-call.js', solcoverConfig);
+    await plugin(truffleConfig);
 
     assertCoverageGenerated();
 
-    // Coverage should be real.
-    // This test is tightly bound to the function names in Simple.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
-
+    const output = getOutput();
+    const path = Object.keys(output)[0];
+    assert(output[path].fnMap['1'].name === 'addTwo', 'cov should map "addTwo"');
   });
 
-  it('contract only uses .call: should generate coverage, cleanup & exit(0)', () => {
+  it('contract sends / transfers to instrumented fallback', async function(){
     assertCleanInitialState();
 
-    mock.install('OnlyCall.sol', 'only-call.js', config);
-
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
+    mock.install('Wallet', 'wallet.js', solcoverConfig);
+    await plugin(truffleConfig);
 
     assertCoverageGenerated();
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'addTwo', 'coverage.json should map "addTwo"');
-
+    const output = getOutput();
+    const path = Object.keys(output)[0];
+    assert(output[path].fnMap['1'].name === 'transferPayment', 'cov should map "transferPayment"');
   });
 
-  it('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
+  it('contracts are skipped', async function() {
     assertCleanInitialState();
 
-    mock.install('Wallet.sol', 'wallet.js', config);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
+    solcoverConfig.skipFiles = ['Owned.sol'];
+
+    mock.installDouble(['Proxy', 'Owned'], 'inheritance.js', solcoverConfig);
+    await plugin(truffleConfig);
 
     assertCoverageGenerated();
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'transferPayment', 'should map "transferPayment"');
-
+    const output = getOutput();
+    const firstKey = Object.keys(output)[0];
+    assert(Object.keys(output).length === 1, 'Wrong # of contracts covered');
+    assert(firstKey.substr(firstKey.length - 9) === 'Proxy.sol', 'Wrong contract covered');
   });
 
-  it('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
+  it('contract uses inheritance', async function() {
     assertCleanInitialState();
 
-    mock.installInheritanceTest(config);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
+    mock.installDouble(['Proxy', 'Owned'], 'inheritance.js', solcoverConfig);
+    await plugin(truffleConfig);
 
     assertCoverageGenerated();
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const ownedPath = Object.keys(produced)[0];
-    const proxyPath = Object.keys(produced)[1];
-    assert(produced[ownedPath].fnMap['1'].name === 'constructor', 'coverage.json should map "constructor"');
-    assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'coverage.json should map "isOwner"');
+    const output = getOutput();
+    const ownedPath = Object.keys(output)[0];
+    const proxyPath = Object.keys(output)[1];
+    assert(output[ownedPath].fnMap['1'].name === 'constructor', '"constructor" not covered');
+    assert(output[proxyPath].fnMap['1'].name === 'isOwner', '"isOwner" not covered');
   });
 
-  it('contracts are skipped: should generate coverage, cleanup & exit(0)', () => {
+  // Simple.sol with a failing assertion in a truffle test
+  it('truffle tests failing', async function() {
     assertCleanInitialState();
 
-    const testConfig = Object.assign({}, config);
+    mock.install('Simple', 'truffle-test-fail.js', solcoverConfig);
 
-    testConfig.skipFiles = ['Owned.sol'];
-    mock.installInheritanceTest(testConfig);
-
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(err.message.includes('failed under coverage'));
+    }
 
     assertCoverageGenerated();
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const firstKey = Object.keys(produced)[0];
-    assert(Object.keys(produced).length === 1, 'coverage.json should only contain instrumentation for one contract');
-    assert(firstKey.substr(firstKey.length - 9) === 'Proxy.sol', 'coverage.json should only contain instrumentation for Proxy.sol');
+    const output = getOutput();
+    const path = Object.keys(output)[0];
 
+    assert(output[path].fnMap['1'].name === 'test', 'cov missing "test"');
+    assert(output[path].fnMap['2'].name === 'getX', 'cov missing "getX"');
   });
 
-  it('truffle tests failing: should generate coverage, cleanup & exit(1)', () => {
+  // Truffle test asserts deployment cost is greater than 20,000,000 gas
+  it('deployment cost > block gasLimit', async function() {
+    mock.install('Expensive', 'block-gas-limit.js', solcoverConfig);
+    await plugin(truffleConfig);
+  });
+
+  // Truffle test contains syntax error
+  it('truffle crashes', async function() {
     assertCleanInitialState();
 
-    // Run with Simple.sol and a failing assertion in a truffle test
-    mock.install('Simple.sol', 'truffle-test-fail.js', config);
-    shell.exec(script);
-    assert(shell.error() !== null, 'script should exit 1');
-
-    assertCoverageGenerated();
-
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
-
+    mock.install('Simple', 'truffle-crash.js', solcoverConfig);
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(err.message.includes('SyntaxError'));
+    }
   });
 
-  it('deployment cost > block gasLimit: should generate coverage, cleanup & exit(0)', () => {
-    // Just making sure Expensive.sol compiles and deploys here.
-    mock.install('Expensive.sol', 'block-gas-limit.js', config);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
-
-  });
-
-  it('truffle crashes: should generate NO coverage, cleanup and exit(1)', () => {
+  // Solidity syntax errors
+  it('compilation failure', async function(){
     assertCleanInitialState();
 
-    // Run with Simple.sol and a syntax error in the truffle test
-    mock.install('Simple.sol', 'truffle-crash.js', config);
-    shell.exec(script);
-    assert(shell.error() !== null, 'script should error');
-    assertCoverageNotGenerated();
-  });
+    mock.install('SimpleError', 'simple.js', solcoverConfig);
 
-  it('instrumentation errors: should generate NO coverage, cleanup and exit(1)', () => {
-    assertCleanInitialState();
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(err.message.includes('Compilation failed'));
+    }
 
-    // Run with SimpleError.sol (has syntax error) and working truffle test
-    mock.install('SimpleError.sol', 'simple.js', config);
-    shell.exec(script);
-    assert(shell.error() !== null, 'script should error');
     assertCoverageNotGenerated();
   });
 

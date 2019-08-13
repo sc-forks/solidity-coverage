@@ -27,71 +27,128 @@
 
 const App = require('./../lib/app');
 const req = require('req-cwd');
+const path = require('path');
+const dir = require('node-dir');
+const Web3 = require('web3');
+const util = require('util');
+const ganache = require('ganache-core-sc');
 
-module.exports = async (truffleConfig) =>
+module.exports = async function(truffleConfig){
+  let app;
   let error;
+  let testsErrored = false;
 
   try {
-
     // Load truffle lib & coverage config
     const truffle = loadTruffleLibrary();
-    const coverageConfig = req.silent('./.solcover.js') || {};
+
+    const coverageConfigPath = path.join(truffleConfig.working_directory, '.solcover.js');
+    const coverageConfig = req.silent(coverageConfigPath) || {};
+
+    coverageConfig.cwd = truffleConfig.working_directory;
+    coverageConfig.contractsDir = truffleConfig.contracts_directory;
 
     // Start
-    const app = new App(coverageConfig);
+    app = new App(coverageConfig);
 
     // Write instrumented sources to temp folder
-    app.contractsDirectory = coveragePaths.contracts(truffleConfig, app);
-    app.generateEnvironment(truffleConfig.contracts_directory, app.contractsDirectory);
     app.instrument();
 
-    // Have truffle use temp folders
-    truffleConfig.contracts_directory = app.contractsDirectory;
-    truffleConfig.build_directory = coveragePaths.artifacts.root(truffleConfig, app);
-    truffleConfig.contracts_build_directory = coveragePaths.artifacts.contracts(truffleConfig, app);
+    // Ask truffle to use temp folders
+    truffleConfig.contracts_directory = paths.contracts(app);
+    truffleConfig.build_directory = paths.build(app);
+    truffleConfig.contracts_build_directory = paths.artifacts(truffleConfig, app);
 
-    // Compile w/out optimization
-    truffleConfig.compilers.solc.settings.optimization.enabled = false;
+    // Additional config
+    truffleConfig.all = true;
+    truffleConfig.test_files = tests(truffleConfig);
+    truffleConfig.compilers.solc.settings.optimizer.enabled = false;
+
+    // Compile
     await truffle.contracts.compile(truffleConfig);
 
-    // Launch provider & run tests
-    truffleConfig.provider = await app.getCoverageProvider(truffle);
-    try {
-      await truffle.test.run(truffleConfig)
-    } catch (e) {
-      error = e;
-      app.testsErrored = true;
+    // Launch in-process provider
+    const networkName = 'soliditycoverage';
+    const provider = await app.provider(ganache);
+    const accounts = await (new Web3(provider)).eth.getAccounts();
+
+    truffleConfig.provider = provider;
+    truffleConfig.network = networkName;
+    truffleConfig.network_id = "*";
+    truffleConfig.networks[networkName] = {
+      network_id: truffleConfig.network_id,
+      provider: truffleConfig.provider,
+      gas: app.gasLimit,
+      gasPrice: app.gasPrice,
+      from: accounts[0]
     }
 
-    // Produce report
-    app.generateCoverage();
+    // Run tests
+    try {
+      failures = await truffle.test.run(truffleConfig)
+    } catch (e) {
+      error = e.stack;
+    }
+
+    // Run Istanbul
+    await app.report();
 
   } catch(e){
     error = e;
   }
 
   // Finish
-  return app.cleanUp(error);
+  await app.cleanUp();
+
+  if (error !== undefined) throw new Error(error)
+  if (failures > 0) throw new Error(`${failures} test(s) failed under coverage.`)
 }
 
 // -------------------------------------- Helpers --------------------------------------------------
+
+function tests(truffle){
+  const regex = /.*\.(js|ts|es|es6|jsx|sol)$/;
+  const files = dir.files(truffle.test_directory, { sync: true }) || [];
+  return files.filter(f => f.match(regex) != null);
+}
+
+
 function loadTruffleLibrary(){
 
   try { return require("truffle") }   catch(err) {};
   try { return require("./truffle.library")} catch(err) {};
 
-  throw new Error(utils.errors.NO_TRUFFLE_LIB)
+  throw new Error('Missing truffle lib...')
 }
 
-const coveragePaths = {
-  contracts: (t, c) => path.join(path.dirname(t.contracts_directory), c.contractsDirName)),
+/**
+ * Functions to generate substitute paths for instrumented contracts and artifacts.
+ * @type {Object}
+ */
+const paths = {
+  // "contracts_directory":
+  contracts: (app) => {
+     return path.join(
+      app.coverageDir,
+      app.contractsDirName
+    )
+  },
 
-  artifacts: {
-    root:      (t, c) => path.join(path.dirname(t.build_directory), c.artifactsDirName),
-    contracts: (t, c) => {
-      const root = path.join(path.dirname(t.build_directory), c.artifactsDirName);
-      return path.join(root, path.basename(t.contracts_build_directory));
-    }
+  // "build_directory":
+  build: (app) => {
+    return path.join(
+      app.coverageDir,
+      app.artifactsDirName
+    )
+  },
+
+  // "contracts_build_directory":
+  artifacts: (truffle, app) => {
+    return path.join(
+      app.coverageDir,
+      app.artifactsDirName,
+      path.basename(truffle.contracts_build_directory)
+    )
   }
 }
 

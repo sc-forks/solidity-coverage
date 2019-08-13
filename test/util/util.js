@@ -1,3 +1,7 @@
+/**
+ * Setup and reporting helpers for the suites which test instrumentation
+ * and coverage correctness. (Integration test helpers are elsewhere)
+ */
 const fs = require('fs');
 const path = require('path');
 const solc = require('solc');
@@ -6,14 +10,15 @@ const TruffleContract = require('truffle-contract');
 const Instrumenter = require('./../../lib/instrumenter');
 const DataCollector = require('./../../lib/collector')
 
+// ====================
+// Path constants
+// ====================
 const filePath = path.resolve('./test.sol');
 const pathPrefix = './';
 
-function getCode(_path) {
-  const pathToSources = `./../sources/solidity/contracts/${_path}`;
-  return fs.readFileSync(path.join(__dirname, pathToSources), 'utf8');
-};
-
+// ====================
+// Contract deployments
+// ====================
 function getABI(solcOutput, testFile="test.sol", testName="Test"){
   return solcOutput.contracts[testFile][testName].abi;
 }
@@ -30,6 +35,7 @@ async function getDeployedContractInstance(info, provider){
   })
 
   contract.setProvider(provider);
+  contract.autoGas = false;
 
   const accounts = await contract.web3.eth.getAccounts();
   contract.defaults({
@@ -41,20 +47,30 @@ async function getDeployedContractInstance(info, provider){
   return contract.new();
 }
 
+// ============
+// Compilation
+// ============
+function getCode(_path) {
+  const pathToSources = `./../sources/solidity/contracts/${_path}`;
+  return fs.readFileSync(path.join(__dirname, pathToSources), 'utf8');
+};
+
 function compile(source){
   const compilerInput = codeToCompilerInput(source);
   return JSON.parse(solc.compile(compilerInput));
 }
 
-function report(output=[]) {
-  output.forEach(item => {
-    if (item.severity === 'error') {
-      const errors = JSON.stringify(output, null, ' ');
-      throw new Error(`Instrumentation fault: ${errors}`);
-    }
+function codeToCompilerInput(code) {
+  return JSON.stringify({
+    language: 'Solidity',
+    sources: { 'test.sol': { content: code } },
+    settings: { outputSelection: {'*': { '*': [ '*' ] }} }
   });
 }
 
+// ============================
+// Instrumentation Correctness
+// ============================
 function instrumentAndCompile(sourceName) {
   const contract = getCode(`${sourceName}.sol`)
   const instrumenter = new Instrumenter();
@@ -68,14 +84,18 @@ function instrumentAndCompile(sourceName) {
   }
 }
 
-function codeToCompilerInput(code) {
-	return JSON.stringify({
-    language: 'Solidity',
-    sources: { 'test.sol': { content: code } },
-    settings: { outputSelection: {'*': { '*': [ '*' ] }} }
+function report(output=[]) {
+  output.forEach(item => {
+    if (item.severity === 'error') {
+      const errors = JSON.stringify(output, null, ' ');
+      throw new Error(`Instrumentation fault: ${errors}`);
+    }
   });
 }
 
+// =====================
+// Coverage Correctness
+// =====================
 async function bootstrapCoverage(file, provider, collector){
   const info = instrumentAndCompile(file);
   info.instance = await getDeployedContractInstance(info, provider);
@@ -83,22 +103,18 @@ async function bootstrapCoverage(file, provider, collector){
   return info;
 }
 
-async function initializeProvider(ganache){
-  const provider = ganache.provider();
+// =========
+// Provider
+// =========
+function initializeProvider(ganache){
+  const collector = new DataCollector();
+  const options = { logger: { log: collector.step.bind(collector) }};
+  const provider = ganache.provider(options);
 
-  return new Promise(resolve => {
-    const interval = setInterval(() => {
-
-      if (provider.engine.manager.state.blockchain.vm !== undefined){
-        clearInterval(interval);
-
-        resolve({
-          provider: provider,
-          collector: new DataCollector({provider: provider})
-        });
-      }
-    });
-  })
+  return {
+    provider: provider,
+    collector: collector
+  }
 }
 
 module.exports = {

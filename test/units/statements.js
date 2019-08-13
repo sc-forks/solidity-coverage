@@ -1,7 +1,7 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 
-const ganache = require('ganache-cli');
+const ganache = require('ganache-core-sc');
 const Coverage = require('./../../lib/coverage');
 
 describe('generic statements', () => {
@@ -49,7 +49,7 @@ describe('generic statements', () => {
   });
 
   it('should NOT pass tests if the contract has a compilation error', () => {
-    const info = util.instrumentAndCompile('../errors/compilation-error');
+    const info = util.instrumentAndCompile('app/SimpleError');
     try {
       util.report(output.errors);
       assert.fail('failure'); // We shouldn't hit this.
