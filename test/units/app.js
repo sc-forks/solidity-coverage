@@ -46,7 +46,7 @@ describe('app', function() {
       solcoverConfig.silent = true;
   })
 
-  //afterEach(() => mock.clean());
+  afterEach(() => mock.clean());
 
   it('simple contract: should generate coverage, cleanup & exit(0)', async function(){
     assertCleanInitialState();

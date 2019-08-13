@@ -33,7 +33,7 @@ const Web3 = require('web3');
 const util = require('util');
 const ganache = require('ganache-core-sc');
 
-module.exports = async function(truffleConfig){
+async function plugin(truffleConfig){
   let app;
   let error;
   let testsErrored = false;
@@ -152,4 +152,4 @@ const paths = {
   }
 }
 
-
+module.exports = plugin;

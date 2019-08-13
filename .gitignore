@@ -6,3 +6,5 @@ node_modules/
 test/artifacts
 test/cache
 yarn.lock
+temp
+.nyc_output/
