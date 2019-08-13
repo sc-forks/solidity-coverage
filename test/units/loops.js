@@ -1,7 +1,7 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 
-const ganache = require('ganache-cli');
+const ganache = require('ganache-core-sc');
 const Coverage = require('./../../lib/coverage');
 
 describe('for and while statements', () => {

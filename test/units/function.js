@@ -1,7 +1,7 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 
-const ganache = require('ganache-cli');
+const ganache = require('ganache-core-sc');
 const Coverage = require('./../../lib/coverage');
 
 describe('function declarations', () => {
@@ -112,7 +112,9 @@ describe('function declarations', () => {
 
   // We try and call a contract at an address where it doesn't exist and the VM
   // throws, but we can verify line / statement / fn coverage is getting mapped.
-  it('should cover a constructor call that chains to a method call', async function() {
+  //
+  // NB: 2x values are result of Truffle replaying failing txs to get reason string...
+  it('should cover a constructor --> method call chain', async function() {
     const contract = await util.bootstrapCoverage('function/chainable', provider, collector);
     coverage.addContract(contract.instrumented, util.filePath);
 
@@ -121,21 +123,23 @@ describe('function declarations', () => {
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      9: 1,
+      9: 2,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1,
+      1: 2,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 0,
-      2: 1,
+      2: 2,
     });
   });
 
   // The vm runs out of gas here - but we can verify line / statement / fn
   // coverage is getting mapped.
-  it('should cover a constructor call that chains to a method call', async function() {
+  //
+  // NB: 2x values are result of Truffle replaying failing txs to get reason string...
+  it('should cover a constructor --> method --> value call chain', async function() {
     const contract = await util.bootstrapCoverage('function/chainable-value', provider, collector);
     coverage.addContract(contract.instrumented, util.filePath);
 
@@ -144,15 +148,15 @@ describe('function declarations', () => {
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      10: 1,
+      10: 2,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1,
+      1: 2,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 0,
-      2: 1,
+      2: 2,
     });
   });
 });
