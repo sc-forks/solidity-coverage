@@ -27,10 +27,10 @@
     "req-cwd": "^1.0.1",
     "shelljs": "^0.8.3",
     "sol-explore": "^1.6.2",
-    "solidity-parser-antlr": "^0.4.7",
+    "solidity-parser-antlr": "0.4.7",
     "tree-kill": "^1.2.0",
-    "web3": "1.0.0-beta.50",
-    "web3-eth-abi": "1.0.0-beta.50"
+    "web3": "1.2.1",
+    "web3-eth-abi": "1.0.0-beta.55"
   },
   "devDependencies": {
     "crypto-js": "^3.1.9-1",
