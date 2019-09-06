@@ -27,6 +27,7 @@
 
 const App = require('./../lib/app');
 const req = require('req-cwd');
+const death = require('death');
 const path = require('path');
 const dir = require('node-dir');
 const Web3 = require('web3');
@@ -50,6 +51,7 @@ async function plugin(truffleConfig){
 
     // Start
     app = new App(coverageConfig);
+    death(app.cleanUp);
 
     // Write instrumented sources to temp folder
     app.instrument();
@@ -72,12 +74,18 @@ async function plugin(truffleConfig){
     const provider = await app.provider(ganache);
     const accounts = await (new Web3(provider)).eth.getAccounts();
 
-    truffleConfig.provider = provider;
     truffleConfig.network = networkName;
-    truffleConfig.network_id = "*";
+
+    // Truffle alternately complains that fields are and
+    // are not manually set
+    try {
+      truffleConfig.network_id = "*";
+      truffleConfig.provider = provider;
+    } catch (err){}
+
     truffleConfig.networks[networkName] = {
-      network_id: truffleConfig.network_id,
-      provider: truffleConfig.provider,
+      network_id: "*",
+      provider: provider,
       gas: app.gasLimit,
       gasPrice: app.gasPrice,
       from: accounts[0]
