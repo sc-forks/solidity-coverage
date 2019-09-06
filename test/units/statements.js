@@ -48,6 +48,11 @@ describe('generic statements', () => {
     util.report(info.solcOutput.errors);
   });
 
+  it('should instrument without triggering stack-too-deep', () => {
+    const info = util.instrumentAndCompile('statements/stack-too-deep');
+    util.report(info.solcOutput.errors);
+  });
+
   it('should NOT pass tests if the contract has a compilation error', () => {
     const info = util.instrumentAndCompile('app/SimpleError');
     try {
