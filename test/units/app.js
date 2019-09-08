@@ -80,6 +80,12 @@ describe('app', function() {
     await plugin(truffleConfig);
   });
 
+  it('project uses multiple migrations', async function() {
+    assertCleanInitialState();
+    mock.installFullProject('multiple-migrations');
+    await plugin(truffleConfig);
+  });
+
   it.skip('with pure and view modifiers and libraries', () => {
     assertCleanInitialState();
 
