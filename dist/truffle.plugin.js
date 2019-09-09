@@ -33,6 +33,7 @@ const dir = require('node-dir');
 const Web3 = require('web3');
 const util = require('util');
 const ganache = require('ganache-core-sc');
+const globby = require('globby');
 
 async function plugin(truffleConfig){
   let app;
@@ -116,16 +117,21 @@ async function plugin(truffleConfig){
   // Finish
   await app.cleanUp();
 
-  if (error !== undefined) throw new Error(error)
+  if (error !== undefined) throw error;
   if (failures > 0) throw new Error(`${failures} test(s) failed under coverage.`)
 }
 
 // -------------------------------------- Helpers --------------------------------------------------
 
 function tests(truffle){
+  let target;
+
+  (typeof truffle.file === 'string')
+    ? target = globby.sync([truffle.file])
+    : target = dir.files(truffle.test_directory, { sync: true }) || [];
+
   const regex = /.*\.(js|ts|es|es6|jsx|sol)$/;
-  const files = dir.files(truffle.test_directory, { sync: true }) || [];
-  return files.filter(f => f.match(regex) != null);
+  return target.filter(f => f.match(regex) != null);
 }
 
 
