@@ -12,6 +12,20 @@ const opts = { compact: false, depth: 5, breakLength: 80 };
 // =======
 function pathExists(path) { return shell.test('-e', path); }
 
+function pathToContract(config, file) {
+  return path.join('contracts', file);
+}
+
+function assertLineCoverage(expected=[]){
+  let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
+  expected.forEach(item => assert(summary[item.file].lines.pct === item.pct))
+}
+
+function assertCoverageMissing(expected=[]){
+  let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
+  expected.forEach(item => assert(summary[item.file] === undefined))
+}
+
 function assertCleanInitialState(){
   assert(pathExists('./coverage') === false, 'should start without: coverage');
   assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
@@ -88,12 +102,41 @@ describe('app', function() {
     assertCleanInitialState();
     mock.installFullProject('multiple-migrations');
     await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 100
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractB.sol'),
+        pct: 100,
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractC.sol'),
+        pct: 100,
+      },
+    ];
+
+    assertLineCoverage(expected);
   });
 
   it('project skips a folder', async function() {
     assertCleanInitialState();
     mock.installFullProject('skipping');
     await plugin(truffleConfig);
+
+    const expected = [{
+     file: pathToContract(truffleConfig, 'ContractA.sol'),
+     pct: 100
+    }];
+
+    const missing = [{
+     file: pathToContract(truffleConfig, 'ContractB.sol'),
+    }];
+
+    assertLineCoverage(expected);
+    assertCoverageMissing(missing);
   });
 
   it('project with relative path solidity imports', async function() {
@@ -109,6 +152,23 @@ describe('app', function() {
     truffleConfig.file = testPath;
     mock.installFullProject('test-files');
     await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 100
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractB.sol'),
+        pct: 0,
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractC.sol'),
+        pct: 0,
+      },
+    ];
+
+    assertLineCoverage(expected);
   });
 
   it('truffle run coverage --file test/<glob*>', async function() {
@@ -118,6 +178,23 @@ describe('app', function() {
     truffleConfig.file = testPath;
     mock.installFullProject('test-files');
     await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 0,
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractB.sol'),
+        pct: 100,
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractC.sol'),
+        pct: 100,
+      },
+    ];
+
+    assertLineCoverage(expected);
   });
 
   it('truffle run coverage --file test/gl{o,b}*.js', async function() {
@@ -127,6 +204,23 @@ describe('app', function() {
     truffleConfig.file = testPath;
     mock.installFullProject('test-files');
     await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 0,
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractB.sol'),
+        pct: 100,
+      },
+      {
+        file: pathToContract(truffleConfig, 'ContractC.sol'),
+        pct: 100,
+      },
+    ];
+
+    assertLineCoverage(expected);
   });
 
   it('contract only uses ".call"', async function(){
