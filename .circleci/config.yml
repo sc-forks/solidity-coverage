@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            npm run test-cov
+            npm run test:ci
       - run:
           name: Upload coverage
           command: |
