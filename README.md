@@ -147,3 +147,4 @@ $ yarn
 + [@pinkiebell](https://github.com/pinkiebell)
 + [@obernardovieira](https://github.com/obernardovieira)
 + [@angus-hamill](https://github.com/angus-hamill)
++ [@kandrianov](https://github.com/kandrianov)
