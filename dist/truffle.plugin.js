@@ -37,20 +37,29 @@ const ganache = require('ganache-core-sc');
 async function plugin(truffleConfig){
   let app;
   let error;
+  let truffle;
   let testsErrored = false;
+  let coverageConfig;
+  let coverageConfigPath;
 
+  // Load truffle lib, .solcover.js & launch app
   try {
-    // Load truffle lib & coverage config
-    const truffle = loadTruffleLibrary();
+    truffle = loadTruffleLibrary();
 
-    const coverageConfigPath = path.join(truffleConfig.working_directory, '.solcover.js');
-    const coverageConfig = req.silent(coverageConfigPath) || {};
+    coverageConfigPath = path.join(truffleConfig.working_directory, '.solcover.js');
+    coverageConfig = req.silent(coverageConfigPath) || {};
 
     coverageConfig.cwd = truffleConfig.working_directory;
     coverageConfig.contractsDir = truffleConfig.contracts_directory;
 
-    // Start
     app = new App(coverageConfig);
+
+  } catch (err) {
+    throw err;
+  }
+
+  // Instrument and test..
+  try {
     death(app.cleanUp);
 
     // Write instrumented sources to temp folder
@@ -97,7 +106,6 @@ async function plugin(truffleConfig){
     } catch (e) {
       error = e.stack;
     }
-
     // Run Istanbul
     await app.report();
 

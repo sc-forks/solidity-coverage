@@ -80,23 +80,24 @@ describe('app', function() {
     await plugin(truffleConfig);
   });
 
-  it.skip('with pure and view modifiers and libraries', () => {
+  it('project uses multiple migrations', async function() {
     assertCleanInitialState();
-
-    mock.installDouble(config);
-    shell.exec(script);
-    assert(shell.error() === null, 'script should not error');
-
-    assertCoverageGenerated();
-
-    // Coverage should be real.
-    // This test is tightly bound to the function names in TotallyPure.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
-    const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'usesThem', 'should map "usesThem"');
-    assert(produced[path].fnMap['2'].name === 'isPure', 'should map "getX"');
-
+    mock.installFullProject('multiple-migrations');
+    await plugin(truffleConfig);
   });
+
+  it('project skips a folder', async function() {
+    assertCleanInitialState();
+    mock.installFullProject('skipping');
+    await plugin(truffleConfig);
+  });
+
+  it.skip('project with node_modules packages and relative path solidity imports', async function() {
+    assertCleanInitialState();
+    mock.installFullProject('import-paths');
+    await plugin(truffleConfig);
+  });
+
 
   it('contract only uses ".call"', async function(){
     assertCleanInitialState();

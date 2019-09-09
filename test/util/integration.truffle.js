@@ -16,6 +16,7 @@ const testPath =          './test/sources/js/';
 const sourcesPath =       './test/sources/solidity/contracts/app/';
 const migrationPath =     `${temp}/migrations/2_deploy.js`;
 const templatePath =      './test/integration/truffle/*';
+const projectPath =       './test/integration/projects/'
 
 function getDefaultTruffleConfig(){
   const logger = process.env.SILENT ? { log: () => {} } : console;
@@ -77,6 +78,11 @@ function deployDouble(contractNames){
   `;
 }
 
+function decacheConfigs(){
+  decache(`${process.cwd()}/${temp}/.solcover.js`);
+  decache(`${process.cwd()}/${temp}/${truffleConfigName}`);
+}
+
 /**
  * Installs mock truffle project at ./temp with a single contract
  * and test specified by the params.
@@ -112,8 +118,7 @@ function install(
   fs.writeFileSync(`${temp}/${truffleConfigName}`, trufflejs);
   fs.writeFileSync(configPath, configjs);
 
-  decache(`${process.cwd()}/${temp}/.solcover.js`);
-  decache(`${process.cwd()}/${temp}/${truffleConfigName}`);
+  decacheConfigs();
 
 };
 
@@ -144,9 +149,15 @@ function installDouble(contracts, test, config) {
   fs.writeFileSync(`${temp}/${truffleConfigName}`, getTruffleConfigJS());
   fs.writeFileSync(configPath, configjs);
 
-  decache(`${process.cwd()}/${temp}/.solcover.js`);
-  decache(`${process.cwd()}/${temp}/${truffleConfigName}`);
+  decacheConfigs();
 };
+
+function installFullProject(name) {
+  shell.mkdir(temp);
+  shell.cp('-Rf', `${projectPath}${name}/{.,}*`, temp);
+
+  decacheConfigs();
+}
 
 
 /**
@@ -167,6 +178,7 @@ module.exports = {
   getDefaultTruffleConfig: getDefaultTruffleConfig,
   install: install,
   installDouble: installDouble,
+  installFullProject: installFullProject,
   clean: clean
 }
 
