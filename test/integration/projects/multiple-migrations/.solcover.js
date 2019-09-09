@@ -1,1 +1,3 @@
-module.exports = {};
+module.exports = {
+  silent: process.env.SILENT ? true : false,
+};

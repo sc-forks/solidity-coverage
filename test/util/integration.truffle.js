@@ -154,7 +154,7 @@ function installDouble(contracts, test, config) {
 
 function installFullProject(name) {
   shell.mkdir(temp);
-  shell.cp('-Rf', `${projectPath}${name}/*`, temp);
+  shell.cp('-Rf', `${projectPath}${name}/{.,}*`, temp);
 
   decacheConfigs();
 }
