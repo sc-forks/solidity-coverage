@@ -63,6 +63,16 @@ async function plugin(truffleConfig){
   try {
     death(app.cleanUp);
 
+    // Launch in-process provider
+    const provider = await app.provider(ganache);
+    const web3 = new Web3(provider);
+    const accounts = await web3.eth.getAccounts();
+    const nodeInfo = await web3.eth.getNodeInfo();
+    const ganacheVersion = nodeInfo.split('/')[1];
+
+    app.ui.report('truffle-version', [truffle.version]);
+    app.ui.report('ganache-version', [ganacheVersion]);
+
     // Write instrumented sources to temp folder
     app.instrument();
 
@@ -81,9 +91,6 @@ async function plugin(truffleConfig){
 
     // Launch in-process provider
     const networkName = 'soliditycoverage';
-    const provider = await app.provider(ganache);
-    const accounts = await (new Web3(provider)).eth.getAccounts();
-
     truffleConfig.network = networkName;
 
     // Truffle alternately complains that fields are and
@@ -136,11 +143,10 @@ function tests(truffle){
 
 
 function loadTruffleLibrary(){
-
   try { return require("truffle") }   catch(err) {};
   try { return require("./truffle.library")} catch(err) {};
 
-  throw new Error('Missing truffle lib...')
+  // TO DO: throw error? This point should never be reached.
 }
 
 /**
