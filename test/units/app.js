@@ -3,6 +3,7 @@ const fs = require('fs');
 const shell = require('shelljs');
 const mock = require('../util/integration.truffle');
 const plugin = require('../../dist/truffle.plugin');
+const path = require('path')
 const util = require('util')
 const opts = { compact: false, depth: 5, breakLength: 80 };
 
@@ -16,18 +17,21 @@ function assertCleanInitialState(){
   assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 }
 
-function assertCoverageGenerated(){
+function assertCoverageGenerate(truffleConfig){
+  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
   assert(pathExists('./coverage') === true, 'should gen coverage folder');
-  assert(pathExists('./coverage.json') === true, 'should gen coverage.json');
+  assert(pathExists(jsonPath) === true, 'should gen coverage.json');
 }
 
-function assertCoverageNotGenerated(){
+function assertCoverageNotGenerated(truffleConfig){
+  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
   assert(pathExists('./coverage') !== true, 'should NOT gen coverage folder');
-  assert(pathExists('./coverage.json') !== true, 'should NOT gen coverage.json');
+  assert(pathExists(jsonPath) !== true, 'should NOT gen coverage.json');
 }
 
-function getOutput(){
-  return JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+function getOutput(truffleConfig){
+  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
+  return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 }
 
 // ========
@@ -54,9 +58,9 @@ describe('app', function() {
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
 
-    assertCoverageGenerated();
+    assertCoverageGenerate(truffleConfig);
 
-    const output = getOutput();
+    const output = getOutput(truffleConfig);
     const path = Object.keys(output)[0];
 
     assert(output[path].fnMap['1'].name === 'test', 'coverage.json missing "test"');
@@ -92,7 +96,7 @@ describe('app', function() {
     await plugin(truffleConfig);
   });
 
-  it.skip('project with node_modules packages and relative path solidity imports', async function() {
+  it('project with node_modules packages and relative path solidity imports', async function() {
     assertCleanInitialState();
     mock.installFullProject('import-paths');
     await plugin(truffleConfig);
@@ -105,9 +109,9 @@ describe('app', function() {
     mock.install('OnlyCall', 'only-call.js', solcoverConfig);
     await plugin(truffleConfig);
 
-    assertCoverageGenerated();
+    assertCoverageGenerate(truffleConfig);
 
-    const output = getOutput();
+    const output = getOutput(truffleConfig);
     const path = Object.keys(output)[0];
     assert(output[path].fnMap['1'].name === 'addTwo', 'cov should map "addTwo"');
   });
@@ -118,9 +122,9 @@ describe('app', function() {
     mock.install('Wallet', 'wallet.js', solcoverConfig);
     await plugin(truffleConfig);
 
-    assertCoverageGenerated();
+    assertCoverageGenerate(truffleConfig);
 
-    const output = getOutput();
+    const output = getOutput(truffleConfig);
     const path = Object.keys(output)[0];
     assert(output[path].fnMap['1'].name === 'transferPayment', 'cov should map "transferPayment"');
   });
@@ -133,9 +137,9 @@ describe('app', function() {
     mock.installDouble(['Proxy', 'Owned'], 'inheritance.js', solcoverConfig);
     await plugin(truffleConfig);
 
-    assertCoverageGenerated();
+    assertCoverageGenerate(truffleConfig);
 
-    const output = getOutput();
+    const output = getOutput(truffleConfig);
     const firstKey = Object.keys(output)[0];
     assert(Object.keys(output).length === 1, 'Wrong # of contracts covered');
     assert(firstKey.substr(firstKey.length - 9) === 'Proxy.sol', 'Wrong contract covered');
@@ -147,9 +151,9 @@ describe('app', function() {
     mock.installDouble(['Proxy', 'Owned'], 'inheritance.js', solcoverConfig);
     await plugin(truffleConfig);
 
-    assertCoverageGenerated();
+    assertCoverageGenerate(truffleConfig);
 
-    const output = getOutput();
+    const output = getOutput(truffleConfig);
     const ownedPath = Object.keys(output)[0];
     const proxyPath = Object.keys(output)[1];
     assert(output[ownedPath].fnMap['1'].name === 'constructor', '"constructor" not covered');
@@ -169,9 +173,9 @@ describe('app', function() {
       assert(err.message.includes('failed under coverage'));
     }
 
-    assertCoverageGenerated();
+    assertCoverageGenerate(truffleConfig);
 
-    const output = getOutput();
+    const output = getOutput(truffleConfig);
     const path = Object.keys(output)[0];
 
     assert(output[path].fnMap['1'].name === 'test', 'cov missing "test"');
@@ -210,7 +214,7 @@ describe('app', function() {
       assert(err.message.includes('Compilation failed'));
     }
 
-    assertCoverageNotGenerated();
+    assertCoverageNotGenerated(truffleConfig);
   });
 
 });
