@@ -96,12 +96,38 @@ describe('app', function() {
     await plugin(truffleConfig);
   });
 
-  it('project with node_modules packages and relative path solidity imports', async function() {
+  it('project with relative path solidity imports', async function() {
     assertCleanInitialState();
     mock.installFullProject('import-paths');
     await plugin(truffleConfig);
   });
 
+  it('truffle run coverage --file test/<fileName>', async function() {
+    assertCleanInitialState();
+
+    const testPath = path.join(truffleConfig.working_directory, 'test/specific_a.js');
+    truffleConfig.file = testPath;
+    mock.installFullProject('test-files');
+    await plugin(truffleConfig);
+  });
+
+  it('truffle run coverage --file test/<glob*>', async function() {
+    assertCleanInitialState();
+
+    const testPath = path.join(truffleConfig.working_directory, 'test/globby*');
+    truffleConfig.file = testPath;
+    mock.installFullProject('test-files');
+    await plugin(truffleConfig);
+  });
+
+  it('truffle run coverage --file test/gl{o,b}*.js', async function() {
+    assertCleanInitialState();
+
+    const testPath = path.join(truffleConfig.working_directory, 'test/gl{o,b}*.js');
+    truffleConfig.file = testPath;
+    mock.installFullProject('test-files');
+    await plugin(truffleConfig);
+  });
 
   it('contract only uses ".call"', async function(){
     assertCleanInitialState();
@@ -197,7 +223,7 @@ describe('app', function() {
       await plugin(truffleConfig);
       assert.fail()
     } catch(err){
-      assert(err.message.includes('SyntaxError'));
+      assert(err.toString().includes('SyntaxError'));
     }
   });
 
@@ -211,7 +237,7 @@ describe('app', function() {
       await plugin(truffleConfig);
       assert.fail()
     } catch(err){
-      assert(err.message.includes('Compilation failed'));
+      assert(err.toString().includes('Compilation failed'));
     }
 
     assertCoverageNotGenerated(truffleConfig);

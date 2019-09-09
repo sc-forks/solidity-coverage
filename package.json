@@ -23,6 +23,7 @@
   "dependencies": {
     "death": "^1.1.0",
     "ganache-core-sc": "2.7.0-sc.0",
+    "globby": "^10.0.1",
     "istanbul": "^0.4.5",
     "node-dir": "^0.1.17",
     "req-cwd": "^1.0.1",
