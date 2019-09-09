@@ -50,7 +50,7 @@ async function plugin(truffleConfig){
     coverageConfig = req.silent(coverageConfigPath) || {};
 
     coverageConfig.cwd = truffleConfig.working_directory;
-    coverageConfig.contractsDir = truffleConfig.contracts_directory;
+    coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
 
     app = new App(coverageConfig);
 
@@ -66,8 +66,8 @@ async function plugin(truffleConfig){
     app.instrument();
 
     // Ask truffle to use temp folders
-    truffleConfig.contracts_directory = paths.contracts(app);
-    truffleConfig.build_directory = paths.build(app);
+    truffleConfig.contracts_directory = app.contractsDir;
+    truffleConfig.build_directory = app.artifactsDir;
     truffleConfig.contracts_build_directory = paths.artifacts(truffleConfig, app);
 
     // Additional config
@@ -142,27 +142,11 @@ function loadTruffleLibrary(){
  * @type {Object}
  */
 const paths = {
-  // "contracts_directory":
-  contracts: (app) => {
-     return path.join(
-      app.coverageDir,
-      app.contractsDirName
-    )
-  },
-
-  // "build_directory":
-  build: (app) => {
-    return path.join(
-      app.coverageDir,
-      app.artifactsDirName
-    )
-  },
 
   // "contracts_build_directory":
   artifacts: (truffle, app) => {
     return path.join(
-      app.coverageDir,
-      app.artifactsDirName,
+      app.artifactsDir,
       path.basename(truffle.contracts_build_directory)
     )
   }
