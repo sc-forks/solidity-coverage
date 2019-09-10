@@ -41,19 +41,25 @@ async function plugin(truffleConfig){
   let truffle;
   let testsErrored = false;
   let coverageConfig;
-  let coverageConfigPath;
+  let solcoverjs;
 
   // Load truffle lib, .solcover.js & launch app
   try {
-    truffle = loadTruffleLibrary();
+    (truffleConfig.solcoverjs)
+      ? solcoverjs = path.join(truffleConfig.working_directory, truffleConfig.solcoverjs)
+      : solcoverjs = path.join(truffleConfig.working_directory, '.solcover.js');
 
-    coverageConfigPath = path.join(truffleConfig.working_directory, '.solcover.js');
-    coverageConfig = req.silent(coverageConfigPath) || {};
-
+    coverageConfig = req.silent(solcoverjs) || {};
     coverageConfig.cwd = truffleConfig.working_directory;
     coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
 
     app = new App(coverageConfig);
+
+    if (truffleConfig.help){
+      return app.ui.report('truffle-help')
+    }
+
+    truffle = loadTruffleLibrary();
 
   } catch (err) {
     throw err;

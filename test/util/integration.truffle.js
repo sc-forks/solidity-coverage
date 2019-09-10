@@ -97,7 +97,9 @@ function install(
   noMigrations
 ) {
 
-  const configjs = getSolcoverJS(config);
+  let configjs;
+  if(config) configjs = getSolcoverJS(config);
+
   const trufflejs = getTruffleConfigJS(_truffleConfig);
   const migration = deploySingle(contract);
 
@@ -116,7 +118,7 @@ function install(
 
   // Configs
   fs.writeFileSync(`${temp}/${truffleConfigName}`, trufflejs);
-  fs.writeFileSync(configPath, configjs);
+  if(config) fs.writeFileSync(configPath, configjs);
 
   decacheConfigs();
 
@@ -169,6 +171,7 @@ function clean() {
   shell.rm('-Rf', temp);
   shell.rm('-Rf', 'coverage');
   shell.rm('coverage.json');
+  shell.rm('.solcover.js');
 
   shell.config.silent = false;
 };

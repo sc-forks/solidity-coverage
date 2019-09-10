@@ -54,11 +54,13 @@ function getOutput(truffleConfig){
 describe('app', function() {
   let truffleConfig;
   let solcoverConfig;
+  let collector;
 
   beforeEach(() => {
     mock.clean();
-    truffleConfig = mock.getDefaultTruffleConfig();
+
     solcoverConfig = {};
+    truffleConfig = mock.getDefaultTruffleConfig();
 
     if (process.env.SILENT)
       solcoverConfig.silent = true;
@@ -144,6 +146,40 @@ describe('app', function() {
     mock.installFullProject('import-paths');
     await plugin(truffleConfig);
   });
+
+  it('truffle run coverage --config ../.solcover.js', async function() {
+    assertCleanInitialState();
+
+    solcoverConfig = {
+      silent: process.env.SILENT ? true : false,
+      istanbulReporter: ['json-summary', 'text']
+    };
+    fs.writeFileSync('.solcover.js', `module.exports=${JSON.stringify(solcoverConfig)}`);
+
+    // This relative path has to be ./ prefixed
+    // (because it's path.joined to truffle's working_directory)
+    truffleConfig.solcoverjs = './../.solcover.js';
+
+    mock.install('Simple', 'simple.js');
+    await plugin(truffleConfig);
+
+    // The relative solcoverjs uses the json-summary reporter which
+    // this assertion requires
+    const expected = [{
+      file: pathToContract(truffleConfig, 'Simple.sol'),
+      pct: 100
+    }];
+
+    assertLineCoverage(expected);
+    shell.rm('.solcover.js');
+  });
+
+  it('truffle run coverage --help', async function(){
+    assertCleanInitialState();
+    truffleConfig.help = "true";
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+  })
 
   it('truffle run coverage --file test/<fileName>', async function() {
     assertCleanInitialState();
