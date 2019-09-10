@@ -27,7 +27,7 @@ $ npm install --save-dev solidity-coverage
   set [ganache options](https://github.com/trufflesuite/ganache-core#options) via
   the `providerOptions` key in your `.solcover.js` config file.
 
-### Truffle >= V5: setup and run
+### Truffle V5
 
 Add "solidity-coverage" to your plugins array in `truffle-config.js`
 ```javascript
@@ -49,7 +49,7 @@ truffle run coverage [options]
 | --solcoverjs | --solcoverjs ./../.solcover.js | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | --version    |                                | Version info |
 | --help       |                                | Usage notes  |
-|<img width=170/>|<img width=500/>              |<img width=100/>|
+|<img width=250/>|<img width=500/>              |<img width=100/>|
 
 ### Config Options
 
