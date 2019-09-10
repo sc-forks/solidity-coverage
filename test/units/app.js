@@ -183,6 +183,13 @@ describe('app', function() {
     await plugin(truffleConfig);
   })
 
+  it('truffle run coverage --version', async function(){
+    assertCleanInitialState();
+    truffleConfig.version = "true";
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+  })
+
   it('truffle run coverage --file test/<fileName>', async function() {
     assertCleanInitialState();
 
