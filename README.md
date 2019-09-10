@@ -24,8 +24,8 @@ $ npm install --save-dev solidity-coverage
 + Tests run more slowly while coverage is being generated.
 + Contracts consume more gas while coverage is being generated.
 + solidity-coverage launches its own in-process ganache instance. You can
-  set its [options] via the `providerOptions` key in your .solcover.js
-  config file.
+  set its [options](https://github.com/trufflesuite/ganache-core#options) via
+  the `providerOptions` key in your `.solcover.js` config file.
 
 ### Truffle >= V5: setup and run
 
