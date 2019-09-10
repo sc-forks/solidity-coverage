@@ -26,6 +26,7 @@
 */
 
 const App = require('./../lib/app');
+const pkg = require('./../package.json');
 const req = require('req-cwd');
 const death = require('death');
 const path = require('path');
@@ -66,7 +67,7 @@ async function plugin(truffleConfig){
 
   // Instrument and test..
   try {
-    death(app.cleanUp);
+    death(app.cleanUp); // This doesn't work...
 
     // Launch in-process provider
     const provider = await app.provider(truffle.ganache);
@@ -77,6 +78,10 @@ async function plugin(truffleConfig){
 
     app.ui.report('truffle-version', [truffle.version]);
     app.ui.report('ganache-version', [ganacheVersion]);
+    app.ui.report('coverage-version',[pkg.version]);
+
+    // Bail early if user ran: --version
+    if (truffleConfig.version) return;
 
     // Write instrumented sources to temp folder
     app.instrument();
