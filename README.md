@@ -21,10 +21,10 @@ $ npm install --save-dev solidity-coverage
 ```
 ### Usage notes:
 + For pragma solidity >=0.4.22 <0.6.0 / Petersburg
-+ Tests run more slowly while coverage is being generated.
-+ Contracts consume more gas while coverage is being generated.
-+ solidity-coverage launches its own in-process ganache instance. You can
-  set its [options](https://github.com/trufflesuite/ganache-core#options) via
++ Coverage runs tests a little more slowly.
++ Coverage distorts gas consumption. 
++ Coverage launches its own in-process ganache instance. You can
+  set [ganache options](https://github.com/trufflesuite/ganache-core#options) via
   the `providerOptions` key in your `.solcover.js` config file.
 
 ### Truffle >= V5: setup and run
@@ -43,12 +43,13 @@ truffle run coverage [options]
 
 
 ### Command Options
-| Option       | Example                        | Description                                                                                                                    |
-|--------------|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| --file       | --file="test/registry/*.js"    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)                                   |
+| Option       | Example                        | Description |
+|--------------|--------------------------------|-------------|
+| --file       | --file="test/registry/*.js"    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | --solcoverjs | --solcoverjs ./../.solcover.js | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| --version    |                                | Version info                                                                                                                   |
-| --help       |                                | Usage notes                                                                                                                    |
+| --version    |                                | Version info |
+| --help       |                                | Usage notes  |
+|<img width=170/>|<img width=500/>              |<img width=100/>|
 
 ### Config Options
 
