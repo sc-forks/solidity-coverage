@@ -100,7 +100,9 @@ describe('app', function() {
     await plugin(truffleConfig);
   });
 
-  it('project uses multiple migrations', async function() {
+  // This project has three contract suites and uses .deployed() instances which
+  // depend on truffle's migratons and the inter-test evm_revert / evm_snapshot mechanism.
+  it('project evm_reverts repeatedly', async function() {
     assertCleanInitialState();
     mock.installFullProject('multiple-migrations');
     await plugin(truffleConfig);
