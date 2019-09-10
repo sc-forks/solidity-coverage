@@ -32,7 +32,6 @@ const path = require('path');
 const dir = require('node-dir');
 const Web3 = require('web3');
 const util = require('util');
-const ganache = require('ganache-core-sc');
 const globby = require('globby');
 
 async function plugin(truffleConfig){
@@ -70,7 +69,7 @@ async function plugin(truffleConfig){
     death(app.cleanUp);
 
     // Launch in-process provider
-    const provider = await app.provider(ganache);
+    const provider = await app.provider(truffle.ganache);
     const web3 = new Web3(provider);
     const accounts = await web3.eth.getAccounts();
     const nodeInfo = await web3.eth.getNodeInfo();
@@ -153,6 +152,8 @@ function loadTruffleLibrary(){
   try { return require("./truffle.library")} catch(err) {};
 
   // TO DO: throw error? This point should never be reached.
+  // Validate that truffle.ganache exists? Have checked that
+  // a non-existent prop defaults to the ganache-core-sc fallback FWIW.
 }
 
 /**
