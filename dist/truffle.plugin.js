@@ -148,8 +148,12 @@ function tests(truffle){
 
 
 function loadTruffleLibrary(){
-  try { return require("truffle") }   catch(err) {};
-  try { return require("./truffle.library")} catch(err) {};
+  try { return require("truffle") }   catch(err) {
+    console.log('require("truffle") failed with ' + err)
+  };
+  try { return require("./truffle.library")} catch(err) {
+    console.log('require("./truffle.library") failed with ' + err)
+  };
 
   // TO DO: throw error? This point should never be reached.
   // Validate that truffle.ganache exists? Have checked that
