@@ -23,8 +23,8 @@ echo "PR_PATH >>>>> $PR_PATH"
 # Install sc-forks Zeppelin fork (temporarily). It's setup to
 # consume the plugin and skips a small set of GSN tests that rely on
 # the client being stand-alone. (See OZ issue #1918 for discussion)
-git clone https://github.com/sc-forks/openzeppelin-solidity.git
-cd openzeppelin-solidity
+git clone https://github.com/sc-forks/openzeppelin-contracts.git
+cd openzeppelin-contracts
 
 echo ">>>>> checkout provider-benchmarks branch"
 git checkout provider-benchmarks
