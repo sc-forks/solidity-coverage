@@ -3,6 +3,8 @@
 # E2E CI: installs PR candidate on openzeppelin-solidity and runs coverage
 #
 
+set -o errexit
+
 # Get rid of any caches
 sudo rm -rf node_modules
 echo "NVM CURRENT >>>>>" && nvm current
@@ -18,16 +20,11 @@ fi
 
 echo "PR_PATH >>>>> $PR_PATH"
 
-# Install Zeppelin
-git clone https://github.com/OpenZeppelin/openzeppelin-solidity.git
+# Install sc-forks Zeppelin fork (temporarily). It's setup to
+# consume the plugin and skips a small set of GSN tests that rely on
+# the client being stand-alone. (See OZ issue #1918 for discussion)
+git clone https://github.com/sc-forks/openzeppelin-solidity.git#provider-benchmarks
 cd openzeppelin-solidity
-
-# Update Zeppelin's script to use 0.6.x
-sed -i 's/if/# /g' scripts/coverage.sh
-sed -i 's/curl/# /g' scripts/coverage.sh
-sed -i 's/fi/# /g' scripts/coverage.sh
-sed -i 's/ganache-cli-coverage/testrpc-sc/g' scripts/test.sh
-sed -i 's/--emitFreeLogs true/ /g' scripts/test.sh
 
 # Swap installed coverage for PR branch version
 echo ">>>>> npm install"
@@ -39,4 +36,5 @@ npm uninstall --save-dev solidity-coverage
 echo ">>>>> npm install --save-dev PR_PATH"
 npm install --save-dev "$PR_PATH"
 
-npm run coverage
+# Track perf
+time npx truffle run coverage

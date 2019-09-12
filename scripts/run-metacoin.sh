@@ -3,6 +3,8 @@
 # E2E CI: installs PR candidate on Truffle's MetaCoin and runs coverage
 #
 
+set -o errexit
+
 # Get rid of any caches
 sudo rm -rf node_modules
 echo "NVM CURRENT >>>>>" && nvm current
@@ -23,9 +25,12 @@ npm install -g truffle
 mkdir metacoin
 cd metacoin
 truffle unbox metacoin --force
-rm test/TestMetacoin.sol
-npm init --yes
+rm truffle-config.js
+echo "module.exports={plugins:['solidity-coverage']}" > truffle-config.js
+cat truffle-config.js
+
 
 # Install and run solidity-coverage @ PR
+npm init --yes
 npm install --save-dev $PR_PATH
-npx solidity-coverage
+npx truffle run coverage
