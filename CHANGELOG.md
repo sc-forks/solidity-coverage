@@ -1,5 +1,10 @@
 # Changelog
 
+0.6.5 - 0.67 / 2019-09-12
+=========================
+  * Ugrapde testrpc-sc to 6.5.1-sc.1 (using eth-sig-util 2.3.0)
+  * Pin solidity-parser-antlr to 0.4.7
+
 0.6.4 / 2019-08-01
 ==================
   * Upgrade testrpc-sc to track ganache-cli 6.5.1
