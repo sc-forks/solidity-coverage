@@ -76,11 +76,9 @@ async function plugin(truffleConfig){
     //const web3 = new Web3(provider);
     await app.provider(truffle.ganache);
     const web3 = new Web3('http://localhost:8777');
-    console.log('post web3 in plugin');
     const accounts = await web3.eth.getAccounts();
     const nodeInfo = await web3.eth.getNodeInfo();
     const ganacheVersion = nodeInfo.split('/')[1];
-    console.log('post initial web3 calls')
 
     app.ui.report('truffle-version', [truffle.version]);
     app.ui.report('ganache-version', [ganacheVersion]);
@@ -112,8 +110,9 @@ async function plugin(truffleConfig){
     const networkName = 'soliditycoverage';
     truffleConfig.network = networkName;
 
-    // Truffle alternately complains that fields are and
-    // are not manually set
+    // Truffle alternately complains that fields *are*
+    // and *are not* manually set depending on the execution
+    // context (npm installed vs. our tests': await plugin())
     try {
       truffleConfig.network_id = "*";
       truffleConfig.port = 8777;
@@ -125,7 +124,7 @@ async function plugin(truffleConfig){
 
     truffleConfig.networks[networkName] = {
       network_id: "*",
-      provider: TruffleProvider.create(truffleConfig),
+      host: "127.0.0.1",
       port: 8777,
       gas: app.gasLimit,
       gasPrice: app.gasPrice,
