@@ -20,6 +20,8 @@ fi
 
 echo "PR_PATH >>>>> $PR_PATH"
 
+npm install -g yarn;
+
 # Install sc-forks Zeppelin fork (temporarily). It's setup to
 # consume the plugin and skips a small set of GSN tests that rely on
 # the client being stand-alone. (See OZ issue #1918 for discussion)
