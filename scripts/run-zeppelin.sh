@@ -36,10 +36,10 @@ echo ">>>>> yarn install"
 yarn install
 
 echo ">>>>> yarn remove --dev solidity-coverage"
-yarn remove --dev solidity-coverage
+yarn remove solidity-coverage --dev
 
 echo ">>>>> yarn add -dev $PR_PATH"
-yarn add -dev "$PR_PATH"
+yarn add "$PR_PATH" --dev
 
 # Track perf
 time npx truffle run coverage
