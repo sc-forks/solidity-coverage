@@ -33,6 +33,7 @@ const dir = require('node-dir');
 const Web3 = require('web3');
 const util = require('util');
 const globby = require('globby');
+const globalModules = require('global-modules');
 
 async function plugin(truffleConfig){
   let app;
@@ -58,7 +59,7 @@ async function plugin(truffleConfig){
       return app.ui.report('truffle-help')
     }
 
-    truffle = loadTruffleLibrary();
+    truffle = loadTruffleLibrary(app);
 
   } catch (err) {
     throw err;
@@ -147,17 +148,36 @@ function tests(truffle){
 }
 
 
-function loadTruffleLibrary(){
-  try { return require("truffle") }   catch(err) {
-    console.log('require("truffle") failed with ' + err)
-  };
-  try { return require("./truffle.library")} catch(err) {
-    console.log('require("./truffle.library") failed with ' + err)
+function loadTruffleLibrary(app){
+
+  // Case: from local node_modules
+  try {
+    const lib = require("truffle");
+    app.ui.report('truffle-local');
+    return lib;
+
+  } catch(err) {};
+
+  // Case: global
+  try {
+    const globalTruffle = path.join(globalModules, 'truffle');
+    const lib = require(globalTruffle);
+    app.ui.report('truffle-global');
+    return lib;
+
+  } catch(err) {};
+
+  // Default: fallback
+  try {
+
+    app.ui.report('truffle-warn');
+    return require("./truffle.library")}
+
+  catch(err) {
+    const msg = app.ui.generate('truffle-fail', [err]);
+    throw new Error(msg);
   };
 
-  // TO DO: throw error? This point should never be reached.
-  // Validate that truffle.ganache exists? Have checked that
-  // a non-existent prop defaults to the ganache-core-sc fallback FWIW.
 }
 
 /**
