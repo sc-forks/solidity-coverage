@@ -27,6 +27,7 @@
     "global-modules": "^2.0.0",
     "globby": "^10.0.1",
     "istanbul": "^0.4.5",
+    "memdown": "^5.0.0",
     "node-dir": "^0.1.17",
     "node-emoji": "^1.10.0",
     "req-cwd": "^1.0.1",

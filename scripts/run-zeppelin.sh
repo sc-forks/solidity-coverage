@@ -30,14 +30,14 @@ echo ">>>>> checkout provider-benchmarks branch"
 git checkout provider-benchmarks
 
 # Swap installed coverage for PR branch version
-echo ">>>>> npm install"
-npm install
+echo ">>>>> yarn install"
+yarn install
 
-echo ">>>>> npm uninstall --save-dev solidity-coverage"
-npm uninstall --save-dev solidity-coverage
+echo ">>>>> yarn remove --dev solidity-coverage"
+yarn remove --dev solidity-coverage
 
-echo ">>>>> npm install --save-dev PR_PATH"
-npm install --save-dev "$PR_PATH"
+echo ">>>>> yarn add -dev $PR_PATH"
+yarn add -dev "$PR_PATH"
 
 # Track perf
 time npx truffle run coverage
