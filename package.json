@@ -21,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@truffle/provider": "^0.1.17",
     "chalk": "^2.4.2",
     "death": "^1.1.0",
     "ganache-core-sc": "2.7.0-sc.0",
@@ -30,6 +31,7 @@
     "memdown": "^5.0.0",
     "node-dir": "^0.1.17",
     "node-emoji": "^1.10.0",
+    "pify": "^4.0.1",
     "req-cwd": "^1.0.1",
     "shelljs": "^0.8.3",
     "solidity-parser-antlr": "^0.4.7",

@@ -35,6 +35,7 @@ const Web3 = require('web3');
 const util = require('util');
 const globby = require('globby');
 const globalModules = require('global-modules');
+const TruffleProvider = require('@truffle/provider');
 
 async function plugin(truffleConfig){
   let app;
@@ -71,18 +72,25 @@ async function plugin(truffleConfig){
     death(app.cleanUp); // This doesn't work...
 
     // Launch in-process provider
-    const provider = await app.provider(truffle.ganache);
-    const web3 = new Web3(provider);
+    //const provider = await app.provider(truffle.ganache);
+    //const web3 = new Web3(provider);
+    await app.provider(truffle.ganache);
+    const web3 = new Web3('http://localhost:8777');
+    console.log('post web3 in plugin');
     const accounts = await web3.eth.getAccounts();
     const nodeInfo = await web3.eth.getNodeInfo();
     const ganacheVersion = nodeInfo.split('/')[1];
+    console.log('post initial web3 calls')
 
     app.ui.report('truffle-version', [truffle.version]);
     app.ui.report('ganache-version', [ganacheVersion]);
     app.ui.report('coverage-version',[pkg.version]);
 
     // Bail early if user ran: --version
-    if (truffleConfig.version) return;
+    if (truffleConfig.version){
+      await app.cleanUp();
+      return;
+    };
 
     // Write instrumented sources to temp folder
     app.instrument();
@@ -108,12 +116,17 @@ async function plugin(truffleConfig){
     // are not manually set
     try {
       truffleConfig.network_id = "*";
-      truffleConfig.provider = provider;
-    } catch (err){}
+      truffleConfig.port = 8777;
+      truffleConfig.host = "127.0.0.1";
+      truffleConfig.provider = TruffleProvider.create(truffleConfig);
+    } catch (err){
+      console.log('errored on initial setting of truffleConfig.provider...')
+    }
 
     truffleConfig.networks[networkName] = {
       network_id: "*",
-      provider: provider,
+      provider: TruffleProvider.create(truffleConfig),
+      port: 8777,
       gas: app.gasLimit,
       gasPrice: app.gasPrice,
       from: accounts[0]
