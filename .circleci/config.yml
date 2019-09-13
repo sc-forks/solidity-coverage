@@ -74,9 +74,10 @@ workflows:
   build:
     jobs:
       - unit-test
-      # TODO: re-enable
-      #- e2e-zeppelin
-      #- e2e-metacoin
+      - e2e-zeppelin
+      - e2e-metacoin
+  # TODO: re-enable.
+  # At the moment we're using forks so this is pointless
   #nightly:
   #  triggers:
   #    - schedule:
@@ -86,6 +87,5 @@ workflows:
   #            only:
   #              - master
   #  jobs:
-      # TODO: re-enable
       #- e2e-zeppelin
       #- e2e-colony
