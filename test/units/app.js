@@ -59,11 +59,9 @@ describe('app', function() {
   beforeEach(() => {
     mock.clean();
 
+    mock.loggerOutput.val = '';
     solcoverConfig = {};
     truffleConfig = mock.getDefaultTruffleConfig();
-
-    if (process.env.SILENT)
-      solcoverConfig.silent = true;
   })
 
   afterEach(() => mock.clean());
@@ -149,6 +147,20 @@ describe('app', function() {
     await plugin(truffleConfig);
   });
 
+  it('project contains native solidity tests', async function(){
+    assertCleanInitialState();
+
+    mock.install('Simple', 'TestSimple.sol', solcoverConfig);
+
+    truffleConfig.logger = mock.testLogger;
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('native solidity tests'),
+      `Should warn it is skipping native solidity tests (output --> ${mock.loggerOutput.val}`
+    );
+  });
+
   it('truffle run coverage --config ../.solcover.js', async function() {
     assertCleanInitialState();
 
@@ -179,15 +191,40 @@ describe('app', function() {
   it('truffle run coverage --help', async function(){
     assertCleanInitialState();
     truffleConfig.help = "true";
+
+    truffleConfig.logger = mock.testLogger;
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('Usage'),
+      `Should output help with Usage instruction  (output --> ${mock.loggerOutput.val}`
+    );
   })
 
   it('truffle run coverage --version', async function(){
     assertCleanInitialState();
     truffleConfig.version = "true";
+
+    truffleConfig.logger = mock.testLogger;
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('truffle'),
+      `Should output truffle version (output --> ${mock.loggerOutput.val}`
+    );
+
+    assert(
+      mock.loggerOutput.val.includes('ganache-core'),
+      `Should output ganache-core version (output --> ${mock.loggerOutput.val}`
+    );
+
+    assert(
+      mock.loggerOutput.val.includes('solidity-coverage'),
+      `Should output solidity-coverage version (output --> ${mock.loggerOutput.val}`
+    );
+
   })
 
   it('truffle run coverage --file test/<fileName>', async function() {

@@ -53,6 +53,7 @@ async function plugin(truffleConfig){
     coverageConfig = req.silent(solcoverjs) || {};
     coverageConfig.cwd = truffleConfig.working_directory;
     coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
+    coverageConfig.log = coverageConfig.log || truffleConfig.logger.log;
 
     app = new App(coverageConfig);
 
@@ -94,7 +95,7 @@ async function plugin(truffleConfig){
 
     // Additional config
     truffleConfig.all = true;
-    truffleConfig.test_files = tests(truffleConfig);
+    truffleConfig.test_files = tests(app, truffleConfig);
     truffleConfig.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile
@@ -141,15 +142,20 @@ async function plugin(truffleConfig){
 
 // -------------------------------------- Helpers --------------------------------------------------
 
-function tests(truffle){
+function tests(app, truffle){
   let target;
 
   (typeof truffle.file === 'string')
     ? target = globby.sync([truffle.file])
     : target = dir.files(truffle.test_directory, { sync: true }) || [];
 
-  const regex = /.*\.(js|ts|es|es6|jsx|sol)$/;
-  return target.filter(f => f.match(regex) != null);
+  const solregex = /.*\.(sol)$/;
+  const hasSols = target.filter(f => f.match(solregex) != null);
+
+  if (hasSols.length > 0) app.ui.report('sol-tests', [hasSols.length]);
+
+  const testregex = /.*\.(js|ts|es|es6|jsx)$/;
+  return target.filter(f => f.match(testregex) != null);
 }
 
 

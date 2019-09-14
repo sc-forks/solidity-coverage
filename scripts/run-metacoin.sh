@@ -2,6 +2,8 @@
 #
 # E2E CI: installs PR candidate on Truffle's MetaCoin and runs coverage
 #
+# Also verifies that everything works w/ truffle installed globally.
+#
 
 set -o errexit
 
@@ -22,18 +24,18 @@ echo "PR_PATH >>>>> $PR_PATH"
 
 # Install truffle and metacoin box
 npm install -g truffle
+npm install -g yarn
+
 mkdir metacoin
 cd metacoin
 truffle unbox metacoin --force
+
+# Install config with plugin
 rm truffle-config.js
 echo "module.exports={plugins:['solidity-coverage']}" > truffle-config.js
 cat truffle-config.js
 
-# TODO: Remove this rm.
-# Unknown bug running truffle native solidity tests
-rm test/TestMetaCoin.sol
-
 # Install and run solidity-coverage @ PR
 npm init --yes
-npm install --save-dev $PR_PATH
+yarn add $PR_PATH --dev
 npx truffle run coverage
