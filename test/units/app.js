@@ -51,7 +51,7 @@ function getOutput(truffleConfig){
 // ========
 // Tests
 // ========
-describe('app', function() {
+describe.only('app', function() {
   let truffleConfig;
   let solcoverConfig;
   let collector;
