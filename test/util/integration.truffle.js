@@ -194,7 +194,7 @@ const loggerOutput = {
 
 const testLogger = {
   log: (val) => {
-    loggerOutput.val += val;
+    if (val !== undefined) loggerOutput.val += val;
     if (!process.env.SILENT && val !== undefined)
        console.log(val)
   }

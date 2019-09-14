@@ -51,7 +51,7 @@ function getOutput(truffleConfig){
 // ========
 // Tests
 // ========
-describe.only('app', function() {
+describe('app', function() {
   let truffleConfig;
   let solcoverConfig;
   let collector;
@@ -62,9 +62,6 @@ describe.only('app', function() {
     mock.loggerOutput.val = '';
     solcoverConfig = {};
     truffleConfig = mock.getDefaultTruffleConfig();
-
-    if (process.env.SILENT)
-      solcoverConfig.silent = true;
   })
 
   afterEach(() => mock.clean());
@@ -160,7 +157,7 @@ describe.only('app', function() {
 
     assert(
       mock.loggerOutput.val.includes('native solidity tests'),
-      `Should warn it is skipping native solidity tests (output --> ${mock.loggerOutput}`
+      `Should warn it is skipping native solidity tests (output --> ${mock.loggerOutput.val}`
     );
   });
 
@@ -201,7 +198,7 @@ describe.only('app', function() {
 
     assert(
       mock.loggerOutput.val.includes('Usage'),
-      `Should output help with Usage instruction  (output --> ${mock.loggerOutput}`
+      `Should output help with Usage instruction  (output --> ${mock.loggerOutput.val}`
     );
   })
 
@@ -215,17 +212,17 @@ describe.only('app', function() {
 
     assert(
       mock.loggerOutput.val.includes('truffle'),
-      `Should output truffle version (output --> ${mock.loggerOutput}`
+      `Should output truffle version (output --> ${mock.loggerOutput.val}`
     );
 
     assert(
       mock.loggerOutput.val.includes('ganache-core'),
-      `Should output ganache-core version (output --> ${mock.loggerOutput}`
+      `Should output ganache-core version (output --> ${mock.loggerOutput.val}`
     );
 
     assert(
       mock.loggerOutput.val.includes('solidity-coverage'),
-      `Should output solidity-coverage version (output --> ${mock.loggerOutput}`
+      `Should output solidity-coverage version (output --> ${mock.loggerOutput.val}`
     );
 
   })

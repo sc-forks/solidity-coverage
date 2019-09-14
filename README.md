@@ -22,7 +22,7 @@ $ npm install --save-dev solidity-coverage
 ### Usage notes:
 + For pragma solidity >=0.4.22 <0.6.0 / Petersburg
 + Coverage runs tests a little more slowly.
-+ Coverage distorts gas consumption. 
++ Coverage distorts gas consumption.
 + Coverage launches its own in-process ganache instance. You can
   set [ganache options](https://github.com/trufflesuite/ganache-core#options) via
   the `providerOptions` key in your `.solcover.js` config file.
@@ -45,10 +45,10 @@ truffle run coverage [options]
 ### Command Options
 | Option       | Example                        | Description |
 |--------------|--------------------------------|-------------|
-| --file       | --file="test/registry/*.js"    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
-| --solcoverjs | --solcoverjs ./../.solcover.js | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| --version    |                                | Version info |
-| --help       |                                | Usage notes  |
+| `--file`       | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| `--solcoverjs` | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
+| `--version`    |                                | Version info |
+| `--help`       |                                | Usage notes  |
 |<img width=250/>|<img width=500/>              |<img width=100/>|
 
 ### Config Options
@@ -70,6 +70,7 @@ module.exports = {
 | providerOptions | *Object* | {} | ganache-core options (ex: `network_id: 55`). Complete list of options [here](https://github.com/trufflesuite/ganache-core#options).  |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used. |
 | istanbulReporter | *Array* | ['html', 'lcov', 'text'] | Coverage reporters for Istanbul. Optional reporter replaces the default reporters. |
+| silent | *Boolean* | false | suppress logging output |
 
 ### FAQ
 
