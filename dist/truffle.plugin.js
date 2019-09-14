@@ -192,6 +192,7 @@ function loadTruffleLibrary(ui, truffleConfig){
 
   // Plugin Copy @ v 5.0.31
   try {
+    if (truffleConfig.forceLibFailure) throw null; // For err unit testing
 
     ui.report('lib-warn');
     return require("./plugin-assets/truffle.library")}

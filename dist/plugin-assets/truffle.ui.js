@@ -28,8 +28,7 @@ class PluginUI extends UI {
       'lib-local':  `\n${ct} ${c.grey('Using Truffle library from local node_modules.')}\n`,
       'lib-global': `\n${ct} ${c.grey('Using Truffle library from global node_modules.')}\n`,
 
-      'lib-warn':   `${w}  ${c.red('Unable to require Truffle library locally or globally. ')} `+
-                          `${c.red('(Expected to find installed Truffle >= v5.0.31)')}\n` +
+      'lib-warn':   `${w}  ${c.red('Unable to require Truffle library locally or globally.\n')}`+
                     `${w}  ${c.red('Using fallback Truffle library module instead (v5.0.31)')}\n` +
                     `${w}  ${c.red('Truffle V5 must be a local dependency for fallback to work.')}\n`,
 
@@ -56,9 +55,12 @@ class PluginUI extends UI {
    * @return {String}         message
    */
   generate(kind, args=[]){
+    const c = this.chalk;
+
     const kinds = {
-      'lib-fail':  `${c.red('Unable to load fail-safe Truffle library. Caught: ')} ${args[0]}\n` +
-                   `${c.red('Try installing Truffle >= v5.0.31 locally or globally.\n')}`,
+      'lib-fail':  `${c.red('Unable to load plugin copy of Truffle library module. ')}` +
+                   `${c.red('Try installing Truffle >= v5.0.31 locally or globally.\n')}` +
+                   `Caught error message: ${args[0]}\n`,
     }
 
 

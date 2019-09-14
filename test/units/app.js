@@ -227,6 +227,52 @@ describe.only('app', function() {
 
   })
 
+  it('truffle run coverage --useGlobalTruffle', async function(){
+    assertCleanInitialState();
+    truffleConfig.useGlobalTruffle = true;
+
+    truffleConfig.logger = mock.testLogger;
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('global node_modules'),
+      `Should notify it's using global truffle (output --> ${mock.loggerOutput.val}`
+    );
+  });
+
+  it('truffle run coverage --usePluginTruffle', async function(){
+    assertCleanInitialState();
+    truffleConfig.usePluginTruffle = true;
+
+    truffleConfig.logger = mock.testLogger;
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('fallback Truffle library module'),
+      `Should notify it's using plugin truffle lib copy (output --> ${mock.loggerOutput.val}`
+    );
+  });
+
+  it.only('lib module load failure', async function(){
+    assertCleanInitialState();
+    truffleConfig.usePluginTruffle = true;
+    truffleConfig.forceLibFailure = true;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch (err) {
+      assert(
+        err.message.includes('Unable to load plugin copy of Truffle library module'),
+        `Should error on failed lib module load (output --> ${err.message}`
+      );
+    }
+  });
+
   it('truffle run coverage --file test/<fileName>', async function() {
     assertCleanInitialState();
 
