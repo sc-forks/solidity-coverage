@@ -51,7 +51,7 @@ function getOutput(truffleConfig){
 // ========
 // Tests
 // ========
-describe.only('app', function() {
+describe('app', function() {
   let truffleConfig;
   let solcoverConfig;
   let collector;
@@ -182,6 +182,23 @@ describe.only('app', function() {
       `Should warn it is skipping native solidity tests (output --> ${mock.loggerOutput.val}`
     );
   });
+
+  it('project .solcover.js has syntax error', async function(){
+    assertCleanInitialState();
+
+    mock.installFullProject('bad-solcoverjs');
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(
+        err.message.includes('Could not load .solcover.js config file.'),
+        `Should notify when solcoverjs has syntax error: (output --> ${err.message}`
+      );
+    }
+
+    assertCoverageNotGenerated(truffleConfig);
+  })
 
   it('truffle run coverage --config ../.solcover.js', async function() {
     assertCleanInitialState();

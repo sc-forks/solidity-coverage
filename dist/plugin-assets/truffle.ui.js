@@ -61,6 +61,11 @@ class PluginUI extends UI {
       'lib-fail':  `${c.red('Unable to load plugin copy of Truffle library module. ')}` +
                    `${c.red('Try installing Truffle >= v5.0.31 locally or globally.\n')}` +
                    `Caught error message: ${args[0]}\n`,
+
+      'solcoverjs-fail': `${c.red('Could not load .solcover.js config file. ')}` +
+                         `${c.red('This can happen if it has a syntax error or ')}` +
+                         `${c.red('the path you specified for it is wrong.')}`,
+
     }
 
 

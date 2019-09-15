@@ -9,6 +9,7 @@ const dir = require('node-dir');
 const Web3 = require('web3');
 const util = require('util');
 const globby = require('globby');
+const shell = require('shelljs');
 const globalModules = require('global-modules');
 
 /**
@@ -22,35 +23,20 @@ async function plugin(truffleConfig){
   let error;
   let truffle;
   let testsErrored = false;
-  let coverageConfig;
-  let solcoverjs;
 
-  // Asset loading. NB: this logic in its own try catch because
-  // there's nothing to cleanup on signal interrupt.
+  // This needs it's own try block because this logic
+  // runs before app.cleanUp is defined.
   try {
     ui = new PluginUI(truffleConfig.logger.log);
 
-    if(truffleConfig.help) return ui.report('help');
+    if(truffleConfig.help) return ui.report('help'); // Bail if --help
 
-    (truffleConfig.solcoverjs)
-      ? solcoverjs = path.join(truffleConfig.working_directory, truffleConfig.solcoverjs)
-      : solcoverjs = path.join(truffleConfig.working_directory, '.solcover.js');
-
-    coverageConfig = req.silent(solcoverjs) || {};
-
-    coverageConfig.log = truffleConfig.logger.log;
-    coverageConfig.cwd = truffleConfig.working_directory;
-    coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
-
-    app = new App(coverageConfig);
     truffle = loadTruffleLibrary(ui, truffleConfig);
+    app = new App(loadSolcoverJS(ui, truffleConfig));
 
-  } catch (err) {
-    throw err;
-  }
+  } catch (err) { throw err }
 
   try {
-
     // Catch interrupt signals
     death(app.cleanUp);
 
@@ -83,7 +69,7 @@ async function plugin(truffleConfig){
     );
 
     truffleConfig.all = true;
-    truffleConfig.test_files = getTestFiles(ui, truffleConfig);
+    truffleConfig.test_files = getTestFilePaths(ui, truffleConfig);
     truffleConfig.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts
@@ -93,8 +79,8 @@ async function plugin(truffleConfig){
     const networkName = 'soliditycoverage';
     truffleConfig.network = networkName;
 
-    // When invoking plugin directly as fn Truffle complains that these keys *are not* set.
-    // When invoking w/ 'truffle run coverage', it throws saying they *cannot* be manually set.
+    // Truffle complains that these keys *are not* set when running plugin fn directly.
+    // But throws saying they *cannot* be manually set when running as truffle command.
     try {
       truffleConfig.network_id = "*";
       truffleConfig.provider = provider;
@@ -137,7 +123,7 @@ async function plugin(truffleConfig){
  * @param  {Object}   truffle truffleConfig
  * @return {String[]}         list of files to pass to mocha
  */
-function getTestFiles(ui, truffle){
+function getTestFilePaths(ui, truffle){
   let target;
 
   // Handle --file <path|glob> cli option (subset of tests)
@@ -156,6 +142,8 @@ function getTestFiles(ui, truffle){
   return target.filter(f => f.match(testregex) != null);
 }
 
+
+
 /**
  * Tries to load truffle module library and reports source. User can force use of
  * a non-local version using cli flags (see option). Load order is:
@@ -166,7 +154,7 @@ function getTestFiles(ui, truffle){
  *
  * @param  {Object} ui            reporter utility
  * @param  {Object} truffleConfig config
- * @return {Module}               e.g require('truffle')
+ * @return {Module}
  */
 function loadTruffleLibrary(ui, truffleConfig){
 
@@ -203,6 +191,37 @@ function loadTruffleLibrary(ui, truffleConfig){
     throw new Error(msg);
   };
 
+}
+
+function loadSolcoverJS(ui, truffleConfig){
+  let coverageConfig;
+  let solcoverjs;
+
+  // Handle --solcoverjs flag
+  (truffleConfig.solcoverjs)
+    ? solcoverjs = path.join(truffleConfig.working_directory, truffleConfig.solcoverjs)
+    : solcoverjs = path.join(truffleConfig.working_directory, '.solcover.js');
+
+  // Catch solcoverjs syntax errors
+  if (shell.test('-e', solcoverjs)){
+
+    try {
+      coverageConfig = require(solcoverjs);
+    } catch(error){
+      error.message = ui.generate('solcoverjs-fail') + error.message;
+      throw new Error(error)
+    }
+
+  // Config is optional
+  } else {
+    coverageConfig = {};
+  }
+
+  coverageConfig.log = truffleConfig.logger.log;
+  coverageConfig.cwd = truffleConfig.working_directory;
+  coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
+
+  return coverageConfig;
 }
 
 
