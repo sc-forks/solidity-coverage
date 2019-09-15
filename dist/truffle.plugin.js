@@ -1,31 +1,6 @@
-/*
-  TruffleConfig Paths
-  ===========================
-  build_directory            /users/myPath/to/someProject/build
-  contracts_directory.       /users/myPath/to/someProject/contracts
-  working_directory          /users/myPath/to/someProject
-  contracts_build_directory  /users/myPath/to/someProject/build/contracts
-
-  Compilation options override
-  ----------------------------
-  build_directory            /users/myPath/to/someProject/.coverageArtifacts
-  contracts_directory        /users/myPath/to/someProject/.coverageContracts
-
-  Test options override
-  ---------------------
-  contracts_directory,       /users/myPath/to/someProject/.coverageContracts
-  contracts_build_directory, /users/myPath/to/someProject/.coverageArtifacts/contracts
-  provider                   ganache.provider (async b/c vm must be resolved)
-  logger                     add filter for unused variables...
-
-  Truffle Lib API
-  ===============
-  load:         const truffle = require("truffle") (or require("sc-truffle"))
-  compilation:  await truffle.contracts.compile(config)
-  test:         await truffle.test.run(config)
-*/
-
 const App = require('./../lib/app');
+const PluginUI = require('./plugin-assets/truffle.ui');
+
 const pkg = require('./../package.json');
 const req = require('req-cwd');
 const death = require('death');
@@ -34,79 +9,78 @@ const dir = require('node-dir');
 const Web3 = require('web3');
 const util = require('util');
 const globby = require('globby');
+const shell = require('shelljs');
 const globalModules = require('global-modules');
 
+/**
+ * Truffle Plugin: `truffle run coverage [options]`
+ * @param  {Object}   truffleConfig   @truffle/config config
+ * @return {Promise}
+ */
 async function plugin(truffleConfig){
+  let ui;
   let app;
   let error;
   let truffle;
   let testsErrored = false;
-  let coverageConfig;
-  let solcoverjs;
 
-  // Load truffle lib, .solcover.js & launch app
+  // This needs it's own try block because this logic
+  // runs before app.cleanUp is defined.
   try {
-    (truffleConfig.solcoverjs)
-      ? solcoverjs = path.join(truffleConfig.working_directory, truffleConfig.solcoverjs)
-      : solcoverjs = path.join(truffleConfig.working_directory, '.solcover.js');
+    ui = new PluginUI(truffleConfig.logger.log);
 
-    coverageConfig = req.silent(solcoverjs) || {};
-    coverageConfig.cwd = truffleConfig.working_directory;
-    coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
-    coverageConfig.log = coverageConfig.log || truffleConfig.logger.log;
+    if(truffleConfig.help) return ui.report('help'); // Bail if --help
 
-    app = new App(coverageConfig);
+    truffle = loadTruffleLibrary(ui, truffleConfig);
+    app = new App(loadSolcoverJS(ui, truffleConfig));
 
-    if (truffleConfig.help){
-      return app.ui.report('truffle-help')
-    }
+  } catch (err) { throw err }
 
-    truffle = loadTruffleLibrary(app);
-
-  } catch (err) {
-    throw err;
-  }
-
-  // Instrument and test..
   try {
-    death(app.cleanUp); // This doesn't work...
+    // Catch interrupt signals
+    death(app.cleanUp);
 
-    // Launch in-process provider
+    // Provider / Server launch
     const provider = await app.provider(truffle.ganache);
     const web3 = new Web3(provider);
     const accounts = await web3.eth.getAccounts();
     const nodeInfo = await web3.eth.getNodeInfo();
     const ganacheVersion = nodeInfo.split('/')[1];
 
-    app.ui.report('truffle-version', [truffle.version]);
-    app.ui.report('ganache-version', [ganacheVersion]);
-    app.ui.report('coverage-version',[pkg.version]);
+    // Version Info
+    ui.report('truffle-version', [truffle.version]);
+    ui.report('ganache-version', [ganacheVersion]);
+    ui.report('coverage-version',[pkg.version]);
 
-    // Bail early if user ran: --version
-    if (truffleConfig.version) return;
+    if (truffleConfig.version) return app.cleanUp(); // Bail if --version
 
-    // Write instrumented sources to temp folder
+    // Instrument
+    app.sanityCheckContext();
+    app.generateStandardEnvironment();
     app.instrument();
 
-    // Ask truffle to use temp folders
+    // Filesystem & Compiler Re-configuration
     truffleConfig.contracts_directory = app.contractsDir;
     truffleConfig.build_directory = app.artifactsDir;
-    truffleConfig.contracts_build_directory = paths.artifacts(truffleConfig, app);
 
-    // Additional config
+    truffleConfig.contracts_build_directory = path.join(
+      app.artifactsDir,
+      path.basename(truffleConfig.contracts_build_directory)
+    );
+
     truffleConfig.all = true;
-    truffleConfig.test_files = tests(app, truffleConfig);
+    truffleConfig.test_files = getTestFilePaths(ui, truffleConfig);
     truffleConfig.compilers.solc.settings.optimizer.enabled = false;
 
-    // Compile
+    // Compile Instrumented Contracts
     await truffle.contracts.compile(truffleConfig);
 
-    // Launch in-process provider
+    // Network Re-configuration
     const networkName = 'soliditycoverage';
     truffleConfig.network = networkName;
 
-    // Truffle alternately complains that fields are and
-    // are not manually set
+    // Truffle complains that these keys *are not* set when running plugin fn directly.
+    // But throws saying they *cannot* be manually set when running as truffle command.
     try {
       truffleConfig.network_id = "*";
       truffleConfig.provider = provider;
@@ -133,6 +107,7 @@ async function plugin(truffleConfig){
     error = e;
   }
 
+
   // Finish
   await app.cleanUp();
 
@@ -142,68 +117,112 @@ async function plugin(truffleConfig){
 
 // -------------------------------------- Helpers --------------------------------------------------
 
-function tests(app, truffle){
+/**
+ * Returns a list of test files to pass to mocha.
+ * @param  {Object}   ui      reporter utility
+ * @param  {Object}   truffle truffleConfig
+ * @return {String[]}         list of files to pass to mocha
+ */
+function getTestFilePaths(ui, truffle){
   let target;
 
+  // Handle --file <path|glob> cli option (subset of tests)
   (typeof truffle.file === 'string')
     ? target = globby.sync([truffle.file])
     : target = dir.files(truffle.test_directory, { sync: true }) || [];
 
+  // Filter native solidity tests and warn that they're skipped
   const solregex = /.*\.(sol)$/;
   const hasSols = target.filter(f => f.match(solregex) != null);
 
-  if (hasSols.length > 0) app.ui.report('sol-tests', [hasSols.length]);
+  if (hasSols.length > 0) ui.report('sol-tests', [hasSols.length]);
 
+  // Return list of test files
   const testregex = /.*\.(js|ts|es|es6|jsx)$/;
   return target.filter(f => f.match(testregex) != null);
 }
 
 
-function loadTruffleLibrary(app){
 
-  // Case: from local node_modules
+/**
+ * Tries to load truffle module library and reports source. User can force use of
+ * a non-local version using cli flags (see option). Load order is:
+ *
+ * 1. local node_modules
+ * 2. global node_modules
+ * 3. fail-safe (truffle lib v 5.0.31 at ./plugin-assets/truffle.library)
+ *
+ * @param  {Object} ui            reporter utility
+ * @param  {Object} truffleConfig config
+ * @return {Module}
+ */
+function loadTruffleLibrary(ui, truffleConfig){
+
+  // Local
   try {
+    if (truffleConfig.useGlobalTruffle || truffleConfig.usePluginTruffle) throw null;
+
     const lib = require("truffle");
-    app.ui.report('truffle-local');
+    ui.report('lib-local');
     return lib;
 
   } catch(err) {};
 
-  // Case: global
+  // Global
   try {
+    if (truffleConfig.usePluginTruffle) throw null;
+
     const globalTruffle = path.join(globalModules, 'truffle');
     const lib = require(globalTruffle);
-    app.ui.report('truffle-global');
+    ui.report('lib-global');
     return lib;
 
   } catch(err) {};
 
-  // Default: fallback
+  // Plugin Copy @ v 5.0.31
   try {
+    if (truffleConfig.forceLibFailure) throw null; // For err unit testing
 
-    app.ui.report('truffle-warn');
-    return require("./truffle.library")}
+    ui.report('lib-warn');
+    return require("./plugin-assets/truffle.library")
 
-  catch(err) {
-    const msg = app.ui.generate('truffle-fail', [err]);
+  } catch(err) {
+    const msg = ui.generate('lib-fail', [err]);
     throw new Error(msg);
   };
 
 }
 
-/**
- * Functions to generate substitute paths for instrumented contracts and artifacts.
- * @type {Object}
- */
-const paths = {
+function loadSolcoverJS(ui, truffleConfig){
+  let coverageConfig;
+  let solcoverjs;
 
-  // "contracts_build_directory":
-  artifacts: (truffle, app) => {
-    return path.join(
-      app.artifactsDir,
-      path.basename(truffle.contracts_build_directory)
-    )
+  // Handle --solcoverjs flag
+  (truffleConfig.solcoverjs)
+    ? solcoverjs = path.join(truffleConfig.working_directory, truffleConfig.solcoverjs)
+    : solcoverjs = path.join(truffleConfig.working_directory, '.solcover.js');
+
+  // Catch solcoverjs syntax errors
+  if (shell.test('-e', solcoverjs)){
+
+    try {
+      coverageConfig = require(solcoverjs);
+    } catch(error){
+      error.message = ui.generate('solcoverjs-fail') + error.message;
+      throw new Error(error)
+    }
+
+  // Config is optional
+  } else {
+    coverageConfig = {};
   }
+
+  coverageConfig.log = truffleConfig.logger.log;
+  coverageConfig.cwd = truffleConfig.working_directory;
+  coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
+
+  return coverageConfig;
 }
+
 
 module.exports = plugin;

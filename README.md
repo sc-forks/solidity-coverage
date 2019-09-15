@@ -47,6 +47,8 @@ truffle run coverage [options]
 |--------------|--------------------------------|-------------|
 | `--file`       | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | `--solcoverjs` | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
+| `--useGlobalTruffle`    |                       | Force use of truffle library module from globally installed truffle. (Default: false)|
+| `--usePluginTruffle`    |                       | Force use of truffle library module from plugin provided copy (Truffle v5.0.31.) Requires you have locally installed Truffle V5 <= 5.0.30 (Default: false)|
 | `--version`    |                                | Version info |
 | `--help`       |                                | Usage notes  |
 |<img width=250/>|<img width=500/>              |<img width=100/>|
