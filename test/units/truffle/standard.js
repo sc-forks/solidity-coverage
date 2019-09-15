@@ -82,6 +82,40 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
+  // This project has [ @skipForCoverage ] tags in the test descriptions
+  // at selected 'contract' and 'it' blocks.
+  it('uses solcoverjs mocha options', async function() {
+    verify.cleanInitialState();
+
+    solcoverConfig.mocha = {
+      grep: '@skipForCoverage',
+      invert: true,
+    };
+
+    solcoverConfig.silent = process.env.SILENT ? true : false,
+    solcoverConfig.istanbulReporter = ['json-summary', 'text']
+
+    mock.installFullProject('multiple-migrations', solcoverConfig);
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 0
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractB.sol'),
+        pct: 0,
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractC.sol'),
+        pct: 100,
+      },
+    ];
+
+    verify.lineCoverage(expected);
+  });
+
   it('project skips a folder', async function() {
     verify.cleanInitialState();
     mock.installFullProject('skipping');

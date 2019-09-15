@@ -5,11 +5,11 @@ contract("contracta", function(accounts) {
 
   before(async () => instance = await ContractA.deployed())
 
-  it('sends', async function(){
+  it('sends [ @skipForCoverage ]', async function(){
     await instance.sendFn();
   });
 
-  it('calls', async function(){
+  it('calls [ @skipForCoverage ]', async function(){
     await instance.callFn();
   })
 });

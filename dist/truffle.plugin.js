@@ -22,6 +22,7 @@ async function plugin(truffleConfig){
   let app;
   let error;
   let truffle;
+  let solcoverjs;
   let testsErrored = false;
 
   // This needs it's own try block because this logic
@@ -220,6 +221,16 @@ function loadSolcoverJS(ui, truffleConfig){
   coverageConfig.log = truffleConfig.logger.log;
   coverageConfig.cwd = truffleConfig.working_directory;
   coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
+
+  //Merge solcoverjs mocha opts into truffle's
+  truffleConfig.mocha = truffleConfig.mocha || {};
+
+  if (coverageConfig.mocha && typeof coverageConfig.mocha === 'object'){
+    truffleConfig.mocha = Object.assign(
+      truffleConfig.mocha,
+      coverageConfig.mocha
+    );
+  }
 
   return coverageConfig;
 }
