@@ -7,6 +7,10 @@ const verify = require('../../util/verifiers')
 const mock = require('../../util/integration.truffle');
 const plugin = require('../../../dist/truffle.plugin');
 
+// =======
+// Errors
+// =======
+
 describe('Truffle Plugin: error cases', function() {
   let truffleConfig;
   let solcoverConfig;
@@ -31,12 +35,12 @@ describe('Truffle Plugin: error cases', function() {
     } catch(err){
       assert(
         err.message.includes('Cannot locate expected contract sources folder'),
-        `Should error when contract sources cannot be found: (output --> ${err.message}`
+        `Should error when contract sources cannot be found:: ${err.message}`
       );
 
       assert(
         err.message.includes('sc_temp/contracts'),
-        `Error message should contain path: (output --> ${err.message}`
+        `Error message should contain path:: ${err.message}`
       );
     }
 
@@ -53,7 +57,7 @@ describe('Truffle Plugin: error cases', function() {
     } catch(err){
       assert(
         err.message.includes('Could not load .solcover.js config file.'),
-        `Should notify when solcoverjs has syntax error: (output --> ${err.message}`
+        `Should notify when solcoverjs has syntax error:: ${err.message}`
       );
     }
 
@@ -72,8 +76,8 @@ describe('Truffle Plugin: error cases', function() {
       assert.fail()
     } catch (err) {
       assert(
-        err.message.includes('Unable to load plugin copy of Truffle library module'),
-        `Should error on failed lib module load (output --> ${err.message}`
+        err.message.includes('Unable to load plugin copy'),
+        `Should error on failed lib module load: ${err.message}`
       );
     }
   });
@@ -140,7 +144,7 @@ describe('Truffle Plugin: error cases', function() {
     } catch(err){
       assert(
         err.toString().includes('/Unparseable.sol.'),
-        `Should throw instrumentation errors with file name (output --> ${err.toString()}`
+        `Should throw instrumentation errors with file name: ${err.toString()}`
       );
 
       assert(err.stack !== undefined, 'Should have error trace')

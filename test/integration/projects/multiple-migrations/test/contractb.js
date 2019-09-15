@@ -1,6 +1,6 @@
 const ContractB = artifacts.require("ContractB");
 
-contract("contractB", function(accounts) {
+contract("contractB [ @skipForCoverage ]", function(accounts) {
   let instance;
 
   before(async () => instance = await ContractB.deployed())

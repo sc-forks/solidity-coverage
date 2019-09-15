@@ -7,7 +7,15 @@ function pathExists(path) { return shell.test('-e', path); }
 
 function lineCoverage(expected=[]){
   let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
-  expected.forEach(item => assert(summary[item.file].lines.pct === item.pct))
+
+  expected.forEach((item, idx) => {
+    assert(
+      summary[item.file].lines.pct === item.pct,
+
+      `For condition ${idx} - expected ${item.pct} %,` +
+      `saw - ${summary[item.file].lines.pct} %`
+    )
+  });
 }
 
 function coverageMissing(expected=[]){
