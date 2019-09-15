@@ -11,7 +11,7 @@ const Instrumenter = require('./../../lib/instrumenter');
 const DataCollector = require('./../../lib/collector')
 
 // ====================
-// Path constants
+// Paths / Files
 // ====================
 const filePath = path.resolve('./test.sol');
 const pathPrefix = './';
@@ -124,4 +124,5 @@ module.exports = {
   instrumentAndCompile: instrumentAndCompile,
   bootstrapCoverage: bootstrapCoverage,
   initializeProvider: initializeProvider,
+
 }
