@@ -150,7 +150,7 @@ describe('Truffle Plugin: standard use cases', function() {
 
     assert(
       mock.loggerOutput.val.includes('native solidity tests'),
-      `Should warn it is skipping native solidity tests (output --> ${mock.loggerOutput.val}`
+      `Should warn it is skipping native solidity tests: ${mock.loggerOutput.val}`
     );
   });
 
