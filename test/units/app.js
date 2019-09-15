@@ -141,6 +141,28 @@ describe('app', function() {
     assertCoverageMissing(missing);
   });
 
+  it('project contains no contract sources folder', async function() {
+    assertCleanInitialState();
+    mock.installFullProject('no-sources');
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(
+        err.message.includes('Cannot locate expected contract sources folder'),
+        `Should error when contract sources cannot be found: (output --> ${err.message}`
+      );
+
+      assert(
+        err.message.includes('sc_temp/contracts'),
+        `Error message should contain path: (output --> ${err.message}`
+      );
+    }
+
+    assertCoverageNotGenerated(truffleConfig);
+  });
+
   it('project with relative path solidity imports', async function() {
     assertCleanInitialState();
     mock.installFullProject('import-paths');
@@ -160,6 +182,23 @@ describe('app', function() {
       `Should warn it is skipping native solidity tests (output --> ${mock.loggerOutput.val}`
     );
   });
+
+  it('project .solcover.js has syntax error', async function(){
+    assertCleanInitialState();
+
+    mock.installFullProject('bad-solcoverjs');
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(
+        err.message.includes('Could not load .solcover.js config file.'),
+        `Should notify when solcoverjs has syntax error: (output --> ${err.message}`
+      );
+    }
+
+    assertCoverageNotGenerated(truffleConfig);
+  })
 
   it('truffle run coverage --config ../.solcover.js', async function() {
     assertCleanInitialState();
@@ -226,6 +265,52 @@ describe('app', function() {
     );
 
   })
+
+  it('truffle run coverage --useGlobalTruffle', async function(){
+    assertCleanInitialState();
+    truffleConfig.useGlobalTruffle = true;
+
+    truffleConfig.logger = mock.testLogger;
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('global node_modules'),
+      `Should notify it's using global truffle (output --> ${mock.loggerOutput.val}`
+    );
+  });
+
+  it('truffle run coverage --usePluginTruffle', async function(){
+    assertCleanInitialState();
+    truffleConfig.usePluginTruffle = true;
+
+    truffleConfig.logger = mock.testLogger;
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('fallback Truffle library module'),
+      `Should notify it's using plugin truffle lib copy (output --> ${mock.loggerOutput.val}`
+    );
+  });
+
+  it('lib module load failure', async function(){
+    assertCleanInitialState();
+    truffleConfig.usePluginTruffle = true;
+    truffleConfig.forceLibFailure = true;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch (err) {
+      assert(
+        err.message.includes('Unable to load plugin copy of Truffle library module'),
+        `Should error on failed lib module load (output --> ${err.message}`
+      );
+    }
+  });
 
   it('truffle run coverage --file test/<fileName>', async function() {
     assertCleanInitialState();
@@ -418,5 +503,25 @@ describe('app', function() {
 
     assertCoverageNotGenerated(truffleConfig);
   });
+
+  it('instrumentation failure', async function(){
+    assertCleanInitialState();
+
+    mock.install('Unparseable', 'simple.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(
+        err.toString().includes('/Unparseable.sol.'),
+        `Should throw instrumentation errors with file name (output --> ${err.toString()}`
+      );
+
+      assert(err.stack !== undefined, 'Should have error trace')
+    }
+
+    assertCoverageNotGenerated(truffleConfig);
+  })
 
 });
