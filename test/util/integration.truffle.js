@@ -38,6 +38,15 @@ function clean() {
   shell.config.silent = false;
 };
 
+function pathToContract(config, file) {
+  return path.join('contracts', file);
+}
+
+function getOutput(truffleConfig){
+  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
+  return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+}
+
 // ==========================
 // Configuration
 // ==========================
@@ -208,6 +217,8 @@ module.exports = {
   install: install,
   installDouble: installDouble,
   installFullProject: installFullProject,
-  clean: clean
+  clean: clean,
+  pathToContract: pathToContract,
+  getOutput: getOutput
 }
 
