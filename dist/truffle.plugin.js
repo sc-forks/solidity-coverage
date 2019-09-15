@@ -69,6 +69,8 @@ async function plugin(truffleConfig){
     if (truffleConfig.version) return app.cleanUp(); // Bail if --version
 
     // Instrument
+    app.sanityCheckContext();
+    app.generateStandardEnvironment();
     app.instrument();
 
     // Filesystem & Compiler Re-configuration
@@ -81,12 +83,11 @@ async function plugin(truffleConfig){
     );
 
     truffleConfig.all = true;
-    truffleConfig.test_files = tests(ui, truffleConfig);
+    truffleConfig.test_files = getTestFiles(ui, truffleConfig);
     truffleConfig.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts
     await truffle.contracts.compile(truffleConfig);
-
 
     // Network Re-configuration
     const networkName = 'soliditycoverage';
@@ -136,7 +137,7 @@ async function plugin(truffleConfig){
  * @param  {Object}   truffle truffleConfig
  * @return {String[]}         list of files to pass to mocha
  */
-function tests(ui, truffle){
+function getTestFiles(ui, truffle){
   let target;
 
   // Handle --file <path|glob> cli option (subset of tests)
@@ -195,9 +196,9 @@ function loadTruffleLibrary(ui, truffleConfig){
     if (truffleConfig.forceLibFailure) throw null; // For err unit testing
 
     ui.report('lib-warn');
-    return require("./plugin-assets/truffle.library")}
+    return require("./plugin-assets/truffle.library")
 
-  catch(err) {
+  } catch(err) {
     const msg = ui.generate('lib-fail', [err]);
     throw new Error(msg);
   };

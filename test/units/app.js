@@ -141,6 +141,28 @@ describe.only('app', function() {
     assertCoverageMissing(missing);
   });
 
+  it('project contains no contract sources folder', async function() {
+    assertCleanInitialState();
+    mock.installFullProject('no-sources');
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(
+        err.message.includes('Cannot locate expected contract sources folder'),
+        `Should error when contract sources cannot be found: (output --> ${err.message}`
+      );
+
+      assert(
+        err.message.includes('sc_temp/contracts'),
+        `Error message should contain path: (output --> ${err.message}`
+      );
+    }
+
+    assertCoverageNotGenerated(truffleConfig);
+  });
+
   it('project with relative path solidity imports', async function() {
     assertCleanInitialState();
     mock.installFullProject('import-paths');
@@ -255,7 +277,7 @@ describe.only('app', function() {
     );
   });
 
-  it.only('lib module load failure', async function(){
+  it('lib module load failure', async function(){
     assertCleanInitialState();
     truffleConfig.usePluginTruffle = true;
     truffleConfig.forceLibFailure = true;
@@ -464,5 +486,25 @@ describe.only('app', function() {
 
     assertCoverageNotGenerated(truffleConfig);
   });
+
+  it('instrumentation failure', async function(){
+    assertCleanInitialState();
+
+    mock.install('Unparseable', 'simple.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(
+        err.toString().includes('/Unparseable.sol.'),
+        `Should throw instrumentation errors with file name (output --> ${err.toString()}`
+      );
+
+      assert(err.stack !== undefined, 'Should have error trace')
+    }
+
+    assertCoverageNotGenerated(truffleConfig);
+  })
 
 });
