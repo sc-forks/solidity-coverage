@@ -8,7 +8,7 @@ const mock = require('../../util/integration.truffle');
 const plugin = require('../../../dist/truffle.plugin');
 
 // =======================
-// Standard Use-case Tests
+// CLI Options / Flags
 // =======================
 
 describe('Truffle Plugin: command line options', function() {
@@ -28,8 +28,11 @@ describe('Truffle Plugin: command line options', function() {
   it('truffle run coverage --file test/<fileName>', async function() {
     verify.cleanInitialState();
 
-    const testPath = path.join(truffleConfig.working_directory, 'test/specific_a.js');
-    truffleConfig.file = testPath;
+    truffleConfig.file = path.join(
+      truffleConfig.working_directory,
+      'test/specific_a.js'
+    );
+
     mock.installFullProject('test-files');
     await plugin(truffleConfig);
 
@@ -54,8 +57,11 @@ describe('Truffle Plugin: command line options', function() {
   it('truffle run coverage --file test/<glob*>', async function() {
     verify.cleanInitialState();
 
-    const testPath = path.join(truffleConfig.working_directory, 'test/globby*');
-    truffleConfig.file = testPath;
+    truffleConfig.file = path.join(
+      truffleConfig.working_directory,
+      'test/globby*'
+    );
+
     mock.installFullProject('test-files');
     await plugin(truffleConfig);
 
@@ -80,8 +86,11 @@ describe('Truffle Plugin: command line options', function() {
   it('truffle run coverage --file test/gl{o,b}*.js', async function() {
     verify.cleanInitialState();
 
-    const testPath = path.join(truffleConfig.working_directory, 'test/gl{o,b}*.js');
-    truffleConfig.file = testPath;
+    truffleConfig.file = path.join(
+      truffleConfig.working_directory,
+      'test/gl{o,b}*.js'
+    );
+
     mock.installFullProject('test-files');
     await plugin(truffleConfig);
 
@@ -110,17 +119,20 @@ describe('Truffle Plugin: command line options', function() {
       silent: process.env.SILENT ? true : false,
       istanbulReporter: ['json-summary', 'text']
     };
-    fs.writeFileSync('.solcover.js', `module.exports=${JSON.stringify(solcoverConfig)}`);
 
-    // This relative path has to be ./ prefixed
-    // (because it's path.joined to truffle's working_directory)
+    // Write solcoverjs to parent dir of sc_temp (where the test project is installed)
+    fs.writeFileSync(
+      '.solcover.js',
+      `module.exports=${JSON.stringify(solcoverConfig)}`
+    );
+
+    // This relative path has to be ./ prefixed (it's path.joined to truffle's working_directory)
     truffleConfig.solcoverjs = './../.solcover.js';
 
     mock.install('Simple', 'simple.js');
     await plugin(truffleConfig);
 
-    // The relative solcoverjs uses the json-summary reporter which
-    // this assertion requires
+    // The relative solcoverjs uses the json-summary reporter
     const expected = [{
       file: mock.pathToContract(truffleConfig, 'Simple.sol'),
       pct: 100
@@ -132,68 +144,72 @@ describe('Truffle Plugin: command line options', function() {
 
   it('truffle run coverage --help', async function(){
     verify.cleanInitialState();
-    truffleConfig.help = "true";
 
+    truffleConfig.help = "true";
     truffleConfig.logger = mock.testLogger;
+
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
 
     assert(
       mock.loggerOutput.val.includes('Usage'),
-      `Should output help with Usage instruction  (output --> ${mock.loggerOutput.val}`
+      `Should output help with Usage instruction : ${mock.loggerOutput.val}`
     );
   })
 
   it('truffle run coverage --version', async function(){
     verify.cleanInitialState();
-    truffleConfig.version = "true";
 
+    truffleConfig.version = "true";
     truffleConfig.logger = mock.testLogger;
+
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
 
     assert(
       mock.loggerOutput.val.includes('truffle'),
-      `Should output truffle version (output --> ${mock.loggerOutput.val}`
+      `Should output truffle version: ${mock.loggerOutput.val}`
     );
 
     assert(
       mock.loggerOutput.val.includes('ganache-core'),
-      `Should output ganache-core version (output --> ${mock.loggerOutput.val}`
+      `Should output ganache-core version: ${mock.loggerOutput.val}`
     );
 
     assert(
       mock.loggerOutput.val.includes('solidity-coverage'),
-      `Should output solidity-coverage version (output --> ${mock.loggerOutput.val}`
+      `Should output solidity-coverage version: ${mock.loggerOutput.val}`
     );
 
   })
 
   it('truffle run coverage --useGlobalTruffle', async function(){
     verify.cleanInitialState();
-    truffleConfig.useGlobalTruffle = true;
 
+    truffleConfig.useGlobalTruffle = true;
     truffleConfig.logger = mock.testLogger;
+
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
 
     assert(
       mock.loggerOutput.val.includes('global node_modules'),
-      `Should notify it's using global truffle (output --> ${mock.loggerOutput.val}`
+      `Should notify it's using global truffle: ${mock.loggerOutput.val}`
     );
   });
 
   it('truffle run coverage --usePluginTruffle', async function(){
     verify.cleanInitialState();
-    truffleConfig.usePluginTruffle = true;
 
+    truffleConfig.usePluginTruffle = true;
     truffleConfig.logger = mock.testLogger;
+
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
 
     assert(
       mock.loggerOutput.val.includes('fallback Truffle library module'),
-      `Should notify it's using plugin truffle lib copy (output --> ${mock.loggerOutput.val}`
+      `Should notify it's using plugin truffle lib copy: ${mock.loggerOutput.val}`
     );
   });
 });

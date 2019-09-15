@@ -1,4 +1,4 @@
 module.exports = {
-  silent: process.env.SILENT ? true : false,
-  istanbulReporter: ['json-summary', 'text']
-};
+ "silent": false,
+ "istanbulReporter": [ "json-summary", "text"]
+}
