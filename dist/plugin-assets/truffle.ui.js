@@ -21,9 +21,17 @@ class PluginUI extends UI {
 
     const kinds = {
 
-      'sol-tests': `\n${w}  ${c.red("This plugin cannot run Truffle's native solidity tests: ")}`+
-                           `${args[0]} test(s) will be skipped.\n`,
+      'sol-tests': `${w}  ${c.red("This plugin cannot run Truffle's native solidity tests: ")}`+
+                         `${args[0]} test(s) will be skipped.\n`,
 
+      'id-clash': `${w}  ${c.red("The 'network_id' values in your truffle network ")}` +
+                        `${c.red("and .solcover.js are different. Using truffle's: ")} ${c.bold(args[0])}.\n`,
+
+      'port-clash': `${w}  ${c.red("The 'port' values in your truffle network ")}` +
+                          `${c.red("and .solcover.js are different. Using truffle's: ")} ${c.bold(args[0])}.\n`,
+
+      'no-port': `${w}  ${c.red("No 'port' was declared in your truffle network. ")}` +
+                       `${c.red("Using solidity-coverage's: ")} ${c.bold(args[0])}.\n`,
 
       'lib-local':  `\n${ct} ${c.grey('Using Truffle library from local node_modules.')}\n`,
       'lib-global': `\n${ct} ${c.grey('Using Truffle library from global node_modules.')}\n`,
@@ -43,6 +51,15 @@ class PluginUI extends UI {
       'truffle-version':  `${ct} ${c.bold('truffle')}:           v${args[0]}`,
       'ganache-version':  `${ct} ${c.bold('ganache-core')}:      ${args[0]}`,
       'coverage-version': `${ct} ${c.bold('solidity-coverage')}: v${args[0]}`,
+
+      'network': `\n${c.bold('Network Info')}` +
+                 `\n${c.bold('============')}\n` +
+                 `${ct} ${c.bold('id')}:      ${args[1]}\n` +
+                 `${ct} ${c.bold('port')}:    ${args[2]}\n` +
+                 `${ct} ${c.bold('network')}: ${args[0]}\n`,
+
+
+
     }
 
     this._write(kinds[kind]);
@@ -65,6 +82,9 @@ class PluginUI extends UI {
       'solcoverjs-fail': `${c.red('Could not load .solcover.js config file. ')}` +
                          `${c.red('This can happen if it has a syntax error or ')}` +
                          `${c.red('the path you specified for it is wrong.')}`,
+
+      'no-network': `${c.red('Network: ')} ${args[0]} ` +
+                    `${c.red(' is not defined in your truffle-config networks. ')}`,
 
     }
 
