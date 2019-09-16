@@ -78,8 +78,7 @@ workflows:
   build:
     jobs:
       - unit-test
-      # TODO: re-enable when server logic is added
-      #- e2e-zeppelin
+      - e2e-zeppelin
       - e2e-metacoin
   # TODO: re-enable.
   # At the moment we're using forks so this is pointless

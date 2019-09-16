@@ -20,6 +20,8 @@ fi
 
 echo "PR_PATH >>>>> $PR_PATH"
 
+npm install -g yarn;
+
 # Install sc-forks Zeppelin fork (temporarily). It's setup to
 # consume the plugin and skips a small set of GSN tests that rely on
 # the client being stand-alone. (See OZ issue #1918 for discussion)
@@ -30,14 +32,14 @@ echo ">>>>> checkout provider-benchmarks branch"
 git checkout provider-benchmarks
 
 # Swap installed coverage for PR branch version
-echo ">>>>> npm install"
-npm install
+echo ">>>>> yarn install"
+yarn install
 
-echo ">>>>> npm uninstall --save-dev solidity-coverage"
-npm uninstall --save-dev solidity-coverage
+echo ">>>>> yarn remove --dev solidity-coverage"
+yarn remove solidity-coverage --dev
 
-echo ">>>>> npm install --save-dev PR_PATH"
-npm install --save-dev "$PR_PATH"
+echo ">>>>> yarn add -dev $PR_PATH"
+yarn add "$PR_PATH" --dev
 
 # Track perf
 time npx truffle run coverage
