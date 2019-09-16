@@ -218,4 +218,43 @@ describe('Truffle Plugin: standard use cases', function() {
     mock.install('Expensive', 'block-gas-limit.js', solcoverConfig);
     await plugin(truffleConfig);
   });
+
+  // Simple.sol with a failing assertion in a truffle test
+  it('truffle tests failing', async function() {
+    verify.cleanInitialState();
+
+    mock.install('Simple', 'truffle-test-fail.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch(err){
+      assert(err.message.includes('failed under coverage'));
+    }
+
+    verify.coverageGenerated(truffleConfig);
+
+    const output = mock.getOutput(truffleConfig);
+    const path = Object.keys(output)[0];
+
+    assert(output[path].fnMap['1'].name === 'test', 'cov missing "test"');
+    assert(output[path].fnMap['2'].name === 'getX', 'cov missing "getX"');
+  });
+
+  it('uses the fallback server', async function(){
+    verify.cleanInitialState();
+
+    truffleConfig.logger = mock.testLogger;
+
+    solcoverConfig = { forceBackupServer: true }
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes("Using ganache-core-sc"),
+      `Should notify about backup server module: ${mock.loggerOutput.val}`
+    );
+
+  });
 })

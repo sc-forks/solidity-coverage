@@ -25,7 +25,7 @@ describe('Truffle Plugin: command line options', function() {
 
   afterEach(() => mock.clean());
 
-  it('truffle run coverage --file test/<fileName>', async function() {
+  it('--file test/<fileName>', async function() {
     verify.cleanInitialState();
 
     truffleConfig.file = path.join(
@@ -54,7 +54,7 @@ describe('Truffle Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it('truffle run coverage --file test/<glob*>', async function() {
+  it('--file test/<glob*>', async function() {
     verify.cleanInitialState();
 
     truffleConfig.file = path.join(
@@ -83,7 +83,7 @@ describe('Truffle Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it('truffle run coverage --file test/gl{o,b}*.js', async function() {
+  it('--file test/gl{o,b}*.js', async function() {
     verify.cleanInitialState();
 
     truffleConfig.file = path.join(
@@ -112,7 +112,7 @@ describe('Truffle Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-    it('truffle run coverage --config ../.solcover.js', async function() {
+  it('--config ../.solcover.js', async function() {
     verify.cleanInitialState();
 
     solcoverConfig = {
@@ -142,7 +142,7 @@ describe('Truffle Plugin: command line options', function() {
     shell.rm('.solcover.js');
   });
 
-  it('truffle run coverage --help', async function(){
+  it('--help', async function(){
     verify.cleanInitialState();
 
     truffleConfig.help = "true";
@@ -157,7 +157,7 @@ describe('Truffle Plugin: command line options', function() {
     );
   })
 
-  it('truffle run coverage --version', async function(){
+  it('--version', async function(){
     verify.cleanInitialState();
 
     truffleConfig.version = "true";
@@ -183,7 +183,7 @@ describe('Truffle Plugin: command line options', function() {
 
   })
 
-  it('truffle run coverage --useGlobalTruffle', async function(){
+  it('--useGlobalTruffle', async function(){
     verify.cleanInitialState();
 
     truffleConfig.useGlobalTruffle = true;
@@ -198,7 +198,7 @@ describe('Truffle Plugin: command line options', function() {
     );
   });
 
-  it('truffle run coverage --usePluginTruffle', async function(){
+  it('--usePluginTruffle', async function(){
     verify.cleanInitialState();
 
     truffleConfig.usePluginTruffle = true;
@@ -211,6 +211,86 @@ describe('Truffle Plugin: command line options', function() {
       mock.loggerOutput.val.includes('fallback Truffle library module'),
       `Should notify it's using plugin truffle lib copy: ${mock.loggerOutput.val}`
     );
+  });
+
+  it('--usePluginTruffle', async function(){
+    verify.cleanInitialState();
+
+    truffleConfig.usePluginTruffle = true;
+    truffleConfig.logger = mock.testLogger;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('fallback Truffle library module'),
+      `Should notify it's using plugin truffle lib copy: ${mock.loggerOutput.val}`
+    );
+  });
+
+  it('--network (network_id mismatch in configs)', async function(){
+    verify.cleanInitialState();
+
+    truffleConfig.logger = mock.testLogger;
+
+    solcoverConfig = { providerOptions: { network_id: 5 }}
+
+    truffleConfig.network = 'development';
+    truffleConfig.networks['development'].network_id = 7;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes("'network_id' values"),
+      `Should notify about network_id values: ${mock.loggerOutput.val}`
+    );
+  });
+
+  it('--network (truffle config missing port)', async function(){
+    verify.cleanInitialState();
+
+    truffleConfig.logger = mock.testLogger;
+
+    truffleConfig.network = 'development';
+    truffleConfig.networks['development'].port = undefined;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes("No 'port' was declared"),
+      `Should notify about missing port: ${mock.loggerOutput.val}`
+    );
+
+    assert(
+      mock.loggerOutput.val.includes("8555"),
+      `Should have used default coverage port 8555: ${mock.loggerOutput.val}`
+    );
+
+  });
+
+  it('--network (declared port mismatches)', async function(){
+    verify.cleanInitialState();
+
+    truffleConfig.logger = mock.testLogger;
+
+    truffleConfig.network = 'development'; // 8545
+    solcoverConfig = { port: 8222 }
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes("The 'port' values"),
+      `Should notify about mismatched port values: ${mock.loggerOutput.val}`
+    );
+
+    assert(
+      mock.loggerOutput.val.includes("8545"),
+      `Should have used default coverage port 8545: ${mock.loggerOutput.val}`
+    );
+
   });
 });
 

@@ -64,6 +64,8 @@ describe('Truffle Plugin: error cases', function() {
     verify.coverageNotGenerated(truffleConfig);
   })
 
+
+
   it('lib module load failure', async function(){
     verify.cleanInitialState();
     truffleConfig.usePluginTruffle = true;
@@ -82,26 +84,28 @@ describe('Truffle Plugin: error cases', function() {
     }
   });
 
-  // Simple.sol with a failing assertion in a truffle test
-  it('truffle tests failing', async function() {
+  it('--network <target> is not declared in truffle-config.js', async function(){
     verify.cleanInitialState();
 
-    mock.install('Simple', 'truffle-test-fail.js', solcoverConfig);
+    truffleConfig.network = 'does-not-exist';
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
 
     try {
       await plugin(truffleConfig);
       assert.fail()
-    } catch(err){
-      assert(err.message.includes('failed under coverage'));
+    } catch (err) {
+
+      assert(
+        err.message.includes('is not defined'),
+        `Should notify network 'is not defined': ${err.message}`
+      );
+
+      assert(
+        err.message.includes('does-not-exist'),
+        `Should name missing network: 'does-not-exist': ${err.message}`
+      );
     }
-
-    verify.coverageGenerated(truffleConfig);
-
-    const output = mock.getOutput(truffleConfig);
-    const path = Object.keys(output)[0];
-
-    assert(output[path].fnMap['1'].name === 'test', 'cov missing "test"');
-    assert(output[path].fnMap['2'].name === 'getX', 'cov missing "getX"');
   });
 
   // Truffle test contains syntax error
@@ -127,7 +131,7 @@ describe('Truffle Plugin: error cases', function() {
       await plugin(truffleConfig);
       assert.fail()
     } catch(err){
-      assert(err.toString().includes('Compilation failed'));
+      assert(err.message.includes('Compilation failed'));
     }
 
     verify.coverageNotGenerated(truffleConfig);
@@ -143,7 +147,7 @@ describe('Truffle Plugin: error cases', function() {
       assert.fail()
     } catch(err){
       assert(
-        err.toString().includes('/Unparseable.sol.'),
+        err.message.includes('/Unparseable.sol.'),
         `Should throw instrumentation errors with file name: ${err.toString()}`
       );
 

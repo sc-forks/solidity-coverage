@@ -11,6 +11,7 @@ const util = require('util');
 const globby = require('globby');
 const shell = require('shelljs');
 const globalModules = require('global-modules');
+const TruffleProvider = require('@truffle/provider');
 
 /**
  * Truffle Plugin: `truffle run coverage [options]`
@@ -25,12 +26,12 @@ async function plugin(truffleConfig){
   let solcoverjs;
   let testsErrored = false;
 
-  // This needs it's own try block because this logic
+  // Separate try block because this logic
   // runs before app.cleanUp is defined.
   try {
     ui = new PluginUI(truffleConfig.logger.log);
 
-    if(truffleConfig.help) return ui.report('help'); // Bail if --help
+    if(truffleConfig.help) return ui.report('help'); // Exit if --help
 
     truffle = loadTruffleLibrary(ui, truffleConfig);
     app = new App(loadSolcoverJS(ui, truffleConfig));
@@ -41,19 +42,30 @@ async function plugin(truffleConfig){
     // Catch interrupt signals
     death(app.cleanUp);
 
+    setNetwork(ui, app, truffleConfig);
+
     // Provider / Server launch
-    const provider = await app.provider(truffle.ganache);
-    const web3 = new Web3(provider);
+    const address = await app.ganache(truffle.ganache);
+
+    const web3 = new Web3(address);
     const accounts = await web3.eth.getAccounts();
     const nodeInfo = await web3.eth.getNodeInfo();
     const ganacheVersion = nodeInfo.split('/')[1];
+
+    setNetworkFrom(truffleConfig, accounts);
 
     // Version Info
     ui.report('truffle-version', [truffle.version]);
     ui.report('ganache-version', [ganacheVersion]);
     ui.report('coverage-version',[pkg.version]);
 
-    if (truffleConfig.version) return app.cleanUp(); // Bail if --version
+    if (truffleConfig.version) return app.cleanUp(); // Exit if --version
+
+    ui.report('network', [
+      truffleConfig.network,
+      truffleConfig.networks[truffleConfig.network].network_id,
+      truffleConfig.networks[truffleConfig.network].port
+    ]);
 
     // Instrument
     app.sanityCheckContext();
@@ -75,25 +87,6 @@ async function plugin(truffleConfig){
 
     // Compile Instrumented Contracts
     await truffle.contracts.compile(truffleConfig);
-
-    // Network Re-configuration
-    const networkName = 'soliditycoverage';
-    truffleConfig.network = networkName;
-
-    // Truffle complains that these keys *are not* set when running plugin fn directly.
-    // But throws saying they *cannot* be manually set when running as truffle command.
-    try {
-      truffleConfig.network_id = "*";
-      truffleConfig.provider = provider;
-    } catch (err){}
-
-    truffleConfig.networks[networkName] = {
-      network_id: "*",
-      provider: provider,
-      gas: app.gasLimit,
-      gasPrice: app.gasPrice,
-      from: accounts[0]
-    }
 
     // Run tests
     try {
@@ -143,7 +136,101 @@ function getTestFilePaths(ui, truffle){
   return target.filter(f => f.match(testregex) != null);
 }
 
+/**
+ * Configures the network. Runs before the server is launched.
+ * User can request a network from truffle-config with "--network <name>".
+ * There are overlapping options in solcoverjs (like port and providerOptions.network_id).
+ * Where there are mismatches user is warned & the truffle network settings are preferred.
+ *
+ * Also generates a default config & sets the default gas high / gas price low.
+ *
+ * @param {SolidityCoverage}   app
+ * @param {TruffleConfig}      config
+ */
+function setNetwork(ui, app, config){
 
+  // --network <network-name>
+  if (config.network){
+    const network = config.networks[config.network];
+
+    // Check network:
+    if (!network){
+      throw new Error(ui.generate('no-network', [config.network]));
+    }
+
+    // Check network id
+    if (!isNaN(parseInt(network.network_id))){
+
+      // Warn: non-matching provider options id and network id
+      if (app.providerOptions.network_id &&
+          app.providerOptions.network_id !== parseInt(network.network_id)){
+
+        ui.report('id-clash', [ parseInt(network.network_id) ]);
+      }
+
+      // Prefer network defined id.
+      app.providerOptions.network_id = parseInt(network.network_id);
+
+    } else {
+      network.network_id = "*";
+    }
+
+    // Check port: use solcoverjs || default if undefined
+    if (!network.port) {
+      ui.report('no-port', [app.port]);
+      network.port = app.port;
+    }
+
+    // Warn: port conflicts
+    if (app.port !== app.defaultPort && app.port !== network.port){
+      ui.report('port-clash', [ network.port ])
+    }
+
+    // Prefer network port if defined;
+    app.port = network.port;
+
+    network.gas = app.gasLimit;
+    network.gasPrice = app.gasPrice;
+
+    setOuterConfigKeys(config, app, network.network_id);
+    return;
+  }
+
+  // Default Network Configuration
+  config.network = 'soliditycoverage';
+  setOuterConfigKeys(config, app, "*");
+
+  config.networks[config.network] = {
+    network_id: "*",
+    port: app.port,
+    host: app.host,
+    gas: app.gasLimit,
+    gasPrice: app.gasPrice
+  }
+}
+
+/**
+ * Sets the default `from` account field in the truffle network that will be used.
+ * This needs to be done after accounts are fetched from the launched client.
+ * @param {TruffleConfig} config
+ * @param {Array}         accounts
+ */
+function setNetworkFrom(config, accounts){
+  if (!config.networks[config.network].from){
+    config.networks[config.network].from = accounts[0];
+  }
+}
+
+// Truffle complains that these outer keys *are not* set when running plugin fn directly.
+// But throws saying they *cannot* be manually set when running as truffle command.
+function setOuterConfigKeys(config, app, id){
+  try {
+    config.network_id = id;
+    config.port = app.port;
+    config.host = app.host;
+    config.provider = TruffleProvider.create(config);
+  } catch (err){}
+}
 
 /**
  * Tries to load truffle module library and reports source. User can force use of
@@ -188,8 +275,7 @@ function loadTruffleLibrary(ui, truffleConfig){
     return require("./plugin-assets/truffle.library")
 
   } catch(err) {
-    const msg = ui.generate('lib-fail', [err]);
-    throw new Error(msg);
+    throw new Error(ui.generate('lib-fail', [err]));
   };
 
 }
@@ -218,11 +304,12 @@ function loadSolcoverJS(ui, truffleConfig){
     coverageConfig = {};
   }
 
+  // Truffle writes to coverage config
   coverageConfig.log = truffleConfig.logger.log;
   coverageConfig.cwd = truffleConfig.working_directory;
   coverageConfig.originalContractsDir = truffleConfig.contracts_directory;
 
-  //Merge solcoverjs mocha opts into truffle's
+  // Solidity-Coverage writes to Truffle config
   truffleConfig.mocha = truffleConfig.mocha || {};
 
   if (coverageConfig.mocha && typeof coverageConfig.mocha === 'object'){
