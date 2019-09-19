@@ -1,7 +1,9 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path')
+const pify = require('pify')
 const shell = require('shelljs');
+const ganache = require('ganache-core-sc');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration.truffle');
@@ -121,6 +123,26 @@ describe('Truffle Plugin: error cases', function() {
         `Should name missing network: 'does-not-exist': ${err.message}`
       );
     }
+  });
+
+  // This case *does* throw an error, but it's uncatch-able;
+  it.skip('tries to launch with a port already in use', async function(){
+    verify.cleanInitialState();
+    const server = ganache.server();
+
+    truffleConfig.network = 'development';
+    mock.install('Simple', 'simple.js', solcoverConfig);
+
+    await pify(server.listen)(8545);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail();
+    } catch(err){
+      assert(err.message.includes('EADDRINUSE: address already in use :::8545'))
+    }
+
+    await pify(server.close)();
   });
 
   // Truffle test contains syntax error
