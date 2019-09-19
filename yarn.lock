@@ -3230,10 +3230,10 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-ghost-testrpc@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/ghost-testrpc/-/ghost-testrpc-0.0.1.tgz#c72cdc96acda344d40e9eeb2cf3c39fd5b931813"
-  integrity sha512-EYaK/iPb8wesxDlJrzOHjoSY9teYaM3A/zXKQKNhOI6Z1rI4V6ZVuTikshyF2x0KV0zgdQtiQlZDXLqYpMHq9g==
+ghost-testrpc@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/ghost-testrpc/-/ghost-testrpc-0.0.2.tgz#c4de9557b1d1ae7b2d20bbe474a91378ca90ce92"
+  integrity sha512-i08dAEgJ2g8z5buJIrCTduwPIhih3DP+hOCTyyryikfV8T0bNvHnGXO67i0DD1H4GBDETTclPy9njZbfluQYrQ==
   dependencies:
     chalk "^2.4.2"
     node-emoji "^1.10.0"
