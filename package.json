@@ -28,6 +28,7 @@
     "global-modules": "^2.0.0",
     "globby": "^10.0.1",
     "istanbul": "^0.4.5",
+    "jsonschema": "^1.2.4",
     "node-dir": "^0.1.17",
     "node-emoji": "^1.10.0",
     "pify": "^4.0.1",
