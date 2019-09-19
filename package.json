@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "buidler": "dist/buidler.coverage.js",
+  "bin": {
+    "solidity-coverage": "./dist/bin.js"
+  },
   "directories": {
     "test": "test"
   },
@@ -25,6 +28,7 @@
     "chalk": "^2.4.2",
     "death": "^1.1.0",
     "ganache-core-sc": "2.7.0-sc.0",
+    "ghost-testrpc": "^0.0.2",
     "global-modules": "^2.0.0",
     "globby": "^10.0.1",
     "istanbul": "^0.4.5",

@@ -193,4 +193,30 @@ describe('Truffle Plugin: error cases', function() {
 
     verify.coverageNotGenerated(truffleConfig);
   })
+
+  it('user runs "solidity-coverage" as shell command', function(){
+    const pathToCommand = './dist/bin.js';
+    const pkg = require('../../../package.json');
+
+    assert(
+      pkg.bin['solidity-coverage'] === pathToCommand,
+      'bin.js should be pkg.bin'
+    );
+
+    const output = shell.exec(`node ${pathToCommand}`, {silent:true}).stdout;
+
+    assert(
+      output.includes('no longer a shell command'),
+      `should have right info: ${output}`
+    );
+  });
+
+  it('user runs "testrpc-sc" as shell command', function(){
+    const output = shell.exec(`testrpc-sc`, {silent:true}).stdout;
+
+    assert(
+      output.includes('does not use "testrpc-sc"'),
+      `should have right info: ${output}`
+    );
+  });
 })
