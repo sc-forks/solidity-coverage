@@ -47,7 +47,7 @@ describe('Truffle Plugin: error cases', function() {
     verify.coverageNotGenerated(truffleConfig);
   });
 
-  it('project .solcover.js has syntax error', async function(){
+  it('.solcover.js has syntax error', async function(){
     verify.cleanInitialState();
 
     mock.installFullProject('bad-solcoverjs');
@@ -64,7 +64,22 @@ describe('Truffle Plugin: error cases', function() {
     verify.coverageNotGenerated(truffleConfig);
   })
 
+  it('.solcover.js has incorrectly formatted option', async function(){
+    verify.cleanInitialState();
+    solcoverConfig.port = "Antwerpen";
 
+    mock.install('Simple', 'simple.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail()
+    } catch (err) {
+      assert(
+        err.message.includes('config option'),
+        `Should error on incorrect config options: ${err.message}`
+      );
+    }
+  });
 
   it('lib module load failure', async function(){
     verify.cleanInitialState();
