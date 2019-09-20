@@ -127,3 +127,4 @@ $ yarn
 + [@obernardovieira](https://github.com/obernardovieira)
 + [@angus-hamill](https://github.com/angus-hamill)
 + [@kandrianov](https://github.com/kandrianov)
++ [@yxliang01](https://github.com/yxliang01)
