@@ -126,7 +126,7 @@ describe('Truffle Plugin: error cases', function() {
   });
 
   // This case *does* throw an error, but it's uncatch-able;
-  it.skip('tries to launch with a port already in use', async function(){
+  it.only('tries to launch with a port already in use', async function(){
     verify.cleanInitialState();
     const server = ganache.server();
 
@@ -139,7 +139,11 @@ describe('Truffle Plugin: error cases', function() {
       await plugin(truffleConfig);
       assert.fail();
     } catch(err){
-      assert(err.message.includes('EADDRINUSE: address already in use :::8545'))
+      assert(
+        err.message.includes('is already in use') &&
+        err.message.includes('lsof'),
+        `Should error on port-in-use with advice: ${err.message}`
+      )
     }
 
     await pify(server.close)();
