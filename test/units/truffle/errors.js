@@ -149,6 +149,29 @@ describe('Truffle Plugin: error cases', function() {
     await pify(server.close)();
   });
 
+  it('uses an invalid istanbul reporter', async function() {
+    verify.cleanInitialState();
+
+    solcoverConfig = {
+      silent: process.env.SILENT ? true : false,
+      istanbulReporter: ['does-not-exist']
+    };
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail();
+    } catch(err){
+      assert(
+        err.message.includes('does-not-exist') &&
+        err.message.includes('coverage reports could not be generated'),
+        `Should error on invalid reporter: ${err.message}`
+      )
+    }
+
+  });
+
   // Truffle test contains syntax error
   it('truffle crashes', async function() {
     verify.cleanInitialState();

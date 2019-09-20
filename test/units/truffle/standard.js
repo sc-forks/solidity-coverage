@@ -36,8 +36,15 @@ describe('Truffle Plugin: standard use cases', function() {
     const output = mock.getOutput(truffleConfig);
     const path = Object.keys(output)[0];
 
-    assert(output[path].fnMap['1'].name === 'test', 'coverage.json missing "test"');
-    assert(output[path].fnMap['2'].name === 'getX', 'coverage.json missing "getX"');
+    assert(
+      output[path].fnMap['1'].name === 'test',
+      'coverage.json missing "test"'
+    );
+
+    assert(
+      output[path].fnMap['2'].name === 'getX',
+      'coverage.json missing "getX"'
+    );
   });
 
   // Truffle test asserts balance is 777 ether
@@ -181,7 +188,10 @@ describe('Truffle Plugin: standard use cases', function() {
 
     const output = mock.getOutput(truffleConfig);
     const path = Object.keys(output)[0];
-    assert(output[path].fnMap['1'].name === 'addTwo', 'cov should map "addTwo"');
+    assert(
+      output[path].fnMap['1'].name === 'addTwo',
+      'cov should map "addTwo"'
+    );
   });
 
   it('contract sends / transfers to instrumented fallback', async function(){
@@ -194,7 +204,10 @@ describe('Truffle Plugin: standard use cases', function() {
 
     const output = mock.getOutput(truffleConfig);
     const path = Object.keys(output)[0];
-    assert(output[path].fnMap['1'].name === 'transferPayment', 'cov should map "transferPayment"');
+    assert(
+      output[path].fnMap['1'].name === 'transferPayment',
+      'cov should map "transferPayment"'
+    );
   });
 
   it('contracts are skipped', async function() {
@@ -210,8 +223,15 @@ describe('Truffle Plugin: standard use cases', function() {
     const output = mock.getOutput(truffleConfig);
     const firstKey = Object.keys(output)[0];
 
-    assert(Object.keys(output).length === 1, 'Wrong # of contracts covered');
-    assert(firstKey.substr(firstKey.length - 9) === 'Proxy.sol', 'Wrong contract covered');
+    assert(
+      Object.keys(output).length === 1,
+      'Wrong # of contracts covered'
+    );
+
+    assert(
+      firstKey.substr(firstKey.length - 9) === 'Proxy.sol',
+      'Wrong contract covered'
+    );
   });
 
   it('contract uses inheritance', async function() {
@@ -226,8 +246,15 @@ describe('Truffle Plugin: standard use cases', function() {
     const ownedPath = Object.keys(output)[0];
     const proxyPath = Object.keys(output)[1];
 
-    assert(output[ownedPath].fnMap['1'].name === 'constructor', '"constructor" not covered');
-    assert(output[proxyPath].fnMap['1'].name === 'isOwner', '"isOwner" not covered');
+    assert(
+      output[ownedPath].fnMap['1'].name === 'constructor',
+      '"constructor" not covered'
+    );
+
+    assert(
+      output[proxyPath].fnMap['1'].name === 'isOwner',
+      '"isOwner" not covered'
+    );
   });
 
   // Truffle test asserts deployment cost is greater than 20,000,000 gas
