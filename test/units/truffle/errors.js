@@ -184,7 +184,7 @@ describe('Truffle Plugin: error cases', function() {
       assert.fail()
     } catch(err){
       assert(
-        err.message.includes('/Unparseable.sol.'),
+        err.message.includes('Unparseable.sol.'),
         `Should throw instrumentation errors with file name: ${err.toString()}`
       );
 

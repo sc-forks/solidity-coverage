@@ -21,6 +21,11 @@ class PluginUI extends UI {
 
     const kinds = {
 
+      'instr-skip':  `\n${c.bold('Coverage skipped for:')}` +
+                     `\n${c.bold('=====================')}\n`,
+
+      'instr-skipped': `${ds} ${c.grey(args[0])}`,
+
       'sol-tests': `${w}  ${c.red("This plugin cannot run Truffle's native solidity tests: ")}`+
                          `${args[0]} test(s) will be skipped.\n`,
 
@@ -48,9 +53,9 @@ class PluginUI extends UI {
               `  --version:    version info\n`,
 
 
-      'truffle-version':  `${ct} ${c.bold('truffle')}:           v${args[0]}`,
-      'ganache-version':  `${ct} ${c.bold('ganache-core')}:      ${args[0]}`,
-      'coverage-version': `${ct} ${c.bold('solidity-coverage')}: v${args[0]}`,
+      'versions':  `${ct} ${c.bold('truffle')}:           v${args[0]}\n` +
+                   `${ct} ${c.bold('ganache-core')}:      ${args[0]}\n` +
+                   `${ct} ${c.bold('solidity-coverage')}: v${args[0]}`,
 
       'network': `\n${c.bold('Network Info')}` +
                  `\n${c.bold('============')}\n` +
@@ -75,6 +80,9 @@ class PluginUI extends UI {
     const c = this.chalk;
 
     const kinds = {
+
+      'sources-fail': `${c.red('Cannot locate expected contract sources folder: ')} ${args[0]}`,
+
       'lib-fail':  `${c.red('Unable to load plugin copy of Truffle library module. ')}` +
                    `${c.red('Try installing Truffle >= v5.0.31 locally or globally.\n')}` +
                    `Caught error message: ${args[0]}\n`,

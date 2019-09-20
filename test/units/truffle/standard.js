@@ -25,7 +25,7 @@ describe('Truffle Plugin: standard use cases', function() {
 
   afterEach(() => mock.clean());
 
-  it('simple contract: should generate coverage, cleanup & exit(0)', async function(){
+  it('simple contract', async function(){
     verify.cleanInitialState();
 
     mock.install('Simple', 'simple.js', solcoverConfig);
@@ -116,7 +116,7 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
-  it('project skips a folder', async function() {
+  it('skips a folder', async function() {
     verify.cleanInitialState();
     mock.installFullProject('skipping');
     await plugin(truffleConfig);
@@ -127,7 +127,7 @@ describe('Truffle Plugin: standard use cases', function() {
     }];
 
     const missing = [{
-     file: mock.pathToContract(truffleConfig, 'ContractB.sol'),
+     file: mock.pathToContract(truffleConfig, 'skipped-folder/ContractB.sol'),
     }];
 
     verify.lineCoverage(expected);
