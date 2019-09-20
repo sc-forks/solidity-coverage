@@ -126,7 +126,7 @@ describe('Truffle Plugin: error cases', function() {
   });
 
   // This case *does* throw an error, but it's uncatch-able;
-  it.only('tries to launch with a port already in use', async function(){
+  it('tries to launch with a port already in use', async function(){
     verify.cleanInitialState();
     const server = ganache.server();
 
@@ -135,6 +135,7 @@ describe('Truffle Plugin: error cases', function() {
 
     await pify(server.listen)(8545);
 
+    await plugin(truffleConfig);
     try {
       await plugin(truffleConfig);
       assert.fail();
