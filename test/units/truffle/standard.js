@@ -134,6 +134,23 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.coverageMissing(missing);
   });
 
+  it('uses "onServerReady", "onTestsComplete", "onIstanbulComplete"', async function() {
+    verify.cleanInitialState();
+
+    truffleConfig.logger = mock.testLogger;
+    mock.installFullProject('test-files');
+
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('running onServerReady')     &&
+      mock.loggerOutput.val.includes('running onTestsComplete')   &&
+      mock.loggerOutput.val.includes('running onIstanbulComplete'),
+
+      `Should run "on" hooks : ${mock.loggerOutput.val}`
+    );
+  });
+
   it('project with relative path solidity imports', async function() {
     verify.cleanInitialState();
     mock.installFullProject('import-paths');
