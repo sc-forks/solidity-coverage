@@ -23,12 +23,12 @@ describe('Truffle Plugin: error cases', function() {
     mock.loggerOutput.val = '';
     solcoverConfig = {};
     truffleConfig = mock.getDefaultTruffleConfig();
+    verify.cleanInitialState();
   })
 
   afterEach(() => mock.clean());
 
   it('project contains no contract sources folder', async function() {
-    verify.cleanInitialState();
     mock.installFullProject('no-sources');
 
     try {
@@ -50,9 +50,8 @@ describe('Truffle Plugin: error cases', function() {
   });
 
   it('.solcover.js has syntax error', async function(){
-    verify.cleanInitialState();
-
     mock.installFullProject('bad-solcoverjs');
+
     try {
       await plugin(truffleConfig);
       assert.fail()
@@ -67,7 +66,6 @@ describe('Truffle Plugin: error cases', function() {
   })
 
   it('.solcover.js has incorrectly formatted option', async function(){
-    verify.cleanInitialState();
     solcoverConfig.port = "Antwerpen";
 
     mock.install('Simple', 'simple.js', solcoverConfig);
@@ -84,7 +82,6 @@ describe('Truffle Plugin: error cases', function() {
   });
 
   it('lib module load failure', async function(){
-    verify.cleanInitialState();
     truffleConfig.usePluginTruffle = true;
     truffleConfig.forceLibFailure = true;
 
@@ -102,8 +99,6 @@ describe('Truffle Plugin: error cases', function() {
   });
 
   it('--network <target> is not declared in truffle-config.js', async function(){
-    verify.cleanInitialState();
-
     truffleConfig.network = 'does-not-exist';
 
     mock.install('Simple', 'simple.js', solcoverConfig);
@@ -127,7 +122,6 @@ describe('Truffle Plugin: error cases', function() {
 
   // This case *does* throw an error, but it's uncatch-able;
   it('tries to launch with a port already in use', async function(){
-    verify.cleanInitialState();
     const server = ganache.server();
 
     truffleConfig.network = 'development';
@@ -149,11 +143,31 @@ describe('Truffle Plugin: error cases', function() {
     await pify(server.close)();
   });
 
+  it('uses an invalid istanbul reporter', async function() {
+    solcoverConfig = {
+      silent: process.env.SILENT ? true : false,
+      istanbulReporter: ['does-not-exist']
+    };
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+
+    try {
+      await plugin(truffleConfig);
+      assert.fail();
+    } catch(err){
+      assert(
+        err.message.includes('does-not-exist') &&
+        err.message.includes('coverage reports could not be generated'),
+        `Should error on invalid reporter: ${err.message}`
+      )
+    }
+
+  });
+
   // Truffle test contains syntax error
   it('truffle crashes', async function() {
-    verify.cleanInitialState();
-
     mock.install('Simple', 'truffle-crash.js', solcoverConfig);
+
     try {
       await plugin(truffleConfig);
       assert.fail()
@@ -164,8 +178,6 @@ describe('Truffle Plugin: error cases', function() {
 
   // Solidity syntax errors
   it('compilation failure', async function(){
-    verify.cleanInitialState();
-
     mock.install('SimpleError', 'simple.js', solcoverConfig);
 
     try {
@@ -179,8 +191,6 @@ describe('Truffle Plugin: error cases', function() {
   });
 
   it('instrumentation failure', async function(){
-    verify.cleanInitialState();
-
     mock.install('Unparseable', 'simple.js', solcoverConfig);
 
     try {

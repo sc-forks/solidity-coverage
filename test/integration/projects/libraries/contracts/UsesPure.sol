@@ -1,10 +1,10 @@
 pragma solidity ^0.5.0;
 
-import "./../../externalSources/Face.sol";
-import "./../../externalSources/PureView.sol";
-import "./../../externalSources/CLibrary.sol";
+import "./_Interface.sol";
+import "./PureView.sol";
+import "./CLibrary.sol";
 
-contract TotallyPure is PureView, Face {
+contract UsesPure is PureView, _Interface {
   uint onehundred = 99;
 
   function usesThem() public view {
