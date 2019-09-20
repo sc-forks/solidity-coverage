@@ -58,6 +58,9 @@ async function plugin(config){
       config.networks[config.network].port
     ]);
 
+    // Run post-launch server hook;
+    await api.onServerReady(config);
+
     // Instrument
     let {
       targets,
@@ -97,8 +100,10 @@ async function plugin(config){
     } catch (e) {
       error = e.stack;
     }
-    // Run Istanbul
+
+    await api.onTestsComplete(config);
     await api.report();
+    await api.onIstanbulComplete(config);
 
   } catch(e){
     error = e;

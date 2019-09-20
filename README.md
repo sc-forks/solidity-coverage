@@ -73,6 +73,12 @@ module.exports = {
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used. |
 | istanbulReporter | *Array* | ['html', 'lcov', 'text'] | Coverage reporters for Istanbul. Optional reporter replaces the default reporters. |
 | silent | *Boolean* | false | suppress logging output |
+| onServerReady | *Function* | `async (config) => {}`  | Function run when server is ready to receive calls, but before the tests execute. Useful if you need to launch the Oraclize/Provable bridge or have preparatory scripts which rely on the server's availability |
+| onTestsComplete | *Function* | `async (config) => {}` | Function run immediately after the tests
+complete, but before Istanbul reports are generated. |
+| onIstanbulComplete | *Function* | `async (config) => {}` | Function run immediately after the Istanbul reports are generated, but before the ganache server is shut down. Useful if you need to clean resources up. |
+
+
 
 ### FAQ
 
