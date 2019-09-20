@@ -6,6 +6,12 @@ contract('UsesPure', accounts => {
     await instance.usesThem();
   });
 
+  it('calls a library method', async() => {
+    const instance = await UsesPure.deployed();
+    const value = await instance.usesLibrary();
+    assert.equal(value.toNumber(), 1);
+  });
+
   it('calls an imported, inherited pure function', async () => {
     const instance = await UsesPure.deployed();
     const value = await instance.isPure(4, 5);
@@ -52,5 +58,7 @@ contract('UsesPure', accounts => {
     const instance = await UsesPure.deployed();
     await instance.cry();
   });
+
+
 
 });

@@ -147,6 +147,15 @@ describe('generic statements', () => {
     });
   });
 
+  it.skip('should cover a unary statement', async function(){
+    const contract = await util.bootstrapCoverage('statements/unary', provider, collector);
+    coverage.addContract(contract.instrumented, util.filePath);
+    await contract.instance.a();
+    const mapping = coverage.generate(contract.data, util.pathPrefix);
+
+    // TODO: obtain both statements in unary.sol
+  })
+
   it('should cover an empty bodied contract statement', async function() {
     const contract = await util.bootstrapCoverage('statements/empty-contract-body', provider, collector);
     coverage.addContract(contract.instrumented, util.filePath);
