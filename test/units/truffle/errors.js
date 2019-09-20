@@ -135,7 +135,6 @@ describe('Truffle Plugin: error cases', function() {
 
     await pify(server.listen)(8545);
 
-    await plugin(truffleConfig);
     try {
       await plugin(truffleConfig);
       assert.fail();
