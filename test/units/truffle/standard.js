@@ -82,7 +82,7 @@ describe('Truffle Plugin: standard use cases', function() {
     await plugin(truffleConfig);
   });
 
-  it.only('uses libraries', async function() {
+  it('uses libraries', async function() {
     mock.installFullProject('libraries');
     await plugin(truffleConfig);
   });
