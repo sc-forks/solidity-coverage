@@ -6,5 +6,6 @@ module.exports = {
   istanbulReporter: ['json-summary', 'text'],
   onServerReady: fn.bind(null, 'running onServerReady'),
   onTestsComplete: fn.bind(null, 'running onTestsComplete'),
+  onCompileComplete: fn.bind(null, 'running onCompileComplete'),
   onIstanbulComplete: fn.bind(null, 'running onIstanbulComplete')
 }

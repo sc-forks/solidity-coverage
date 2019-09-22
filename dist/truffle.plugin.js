@@ -93,6 +93,7 @@ async function plugin(config){
 
     // Compile Instrumented Contracts
     await truffle.contracts.compile(config);
+    await api.onCompileComplete(config);
 
     // Run tests
     try {
@@ -100,8 +101,9 @@ async function plugin(config){
     } catch (e) {
       error = e.stack;
     }
-
     await api.onTestsComplete(config);
+
+    // Run Istanbul
     await api.report();
     await api.onIstanbulComplete(config);
 
