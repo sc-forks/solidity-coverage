@@ -54,8 +54,8 @@ class PluginUI extends UI {
 
 
       'versions':  `${ct} ${c.bold('truffle')}:           v${args[0]}\n` +
-                   `${ct} ${c.bold('ganache-core')}:      ${args[0]}\n` +
-                   `${ct} ${c.bold('solidity-coverage')}: v${args[0]}`,
+                   `${ct} ${c.bold('ganache-core')}:      ${args[1]}\n` +
+                   `${ct} ${c.bold('solidity-coverage')}: v${args[2]}`,
 
       'network': `\n${c.bold('Network Info')}` +
                  `\n${c.bold('============')}\n` +
@@ -78,6 +78,7 @@ class PluginUI extends UI {
    */
   generate(kind, args=[]){
     const c = this.chalk;
+    const x = ":x:";
 
     const kinds = {
 
@@ -90,6 +91,8 @@ class PluginUI extends UI {
       'solcoverjs-fail': `${c.red('Could not load .solcover.js config file. ')}` +
                          `${c.red('This can happen if it has a syntax error or ')}` +
                          `${c.red('the path you specified for it is wrong.')}`,
+
+      'tests-fail': `${x} ${c.bold(args[0])} ${c.red('test(s) failed under coverage.')}`,
 
       'no-network': `${c.red('Network: ')} ${args[0]} ` +
                     `${c.red(' is not defined in your truffle-config networks. ')}`,

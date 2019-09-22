@@ -22,8 +22,8 @@ $ npm install --save-dev solidity-coverage@beta
 ### Usage notes:
 + Coverage runs tests a little more slowly.
 + Coverage distorts gas consumption. Tests that check exact gas consumption should be skipped.
-+ Coverage launches its own in-process ganache server. 
-+ You can set [ganache options](https://github.com/trufflesuite/ganache-core#options) using the `providerOptions` key in your `.solcover.js` config. 
++ Coverage launches its own in-process ganache server.
++ You can set [ganache options](https://github.com/trufflesuite/ganache-core#options) using the `providerOptions` key in your `.solcover.js` config.
 
 ### Truffle V5
 
@@ -45,6 +45,7 @@ truffle run coverage [options]
 |--------------|------------------------------------|--------------------------------|
 | file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
+| network    | `--network development` | Use network settings defined in the Truffle config |
 | version    |                                | Version info |
 | help       |                                | Usage notes  |
 
@@ -71,6 +72,7 @@ module.exports = {
 | mocha | *Object* | `{ }` | [Mocha options](https://mochajs.org/api/mocha) to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
 | onServerReady | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability |
 | onTestsComplete | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. |
+| onCompileComplete | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. |
 | onIstanbulComplete | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
 
 

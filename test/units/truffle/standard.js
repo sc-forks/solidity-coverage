@@ -285,6 +285,7 @@ describe('Truffle Plugin: standard use cases', function() {
     assert(
       mock.loggerOutput.val.includes('running onServerReady')     &&
       mock.loggerOutput.val.includes('running onTestsComplete')   &&
+      mock.loggerOutput.val.includes('running onCompileComplete') &&
       mock.loggerOutput.val.includes('running onIstanbulComplete'),
 
       `Should run "on" hooks : ${mock.loggerOutput.val}`
