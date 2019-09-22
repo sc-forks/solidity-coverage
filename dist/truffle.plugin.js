@@ -113,7 +113,7 @@ async function plugin(config){
   await utils.finish(config, api);
 
   if (error !== undefined) throw error;
-  if (failures > 0) throw new Error(`${failures} test(s) failed under coverage.`)
+  if (failures > 0) throw new Error(ui.generate('tests-fail', [failures]));
 }
 
 module.exports = plugin;
