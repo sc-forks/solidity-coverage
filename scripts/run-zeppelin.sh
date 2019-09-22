@@ -42,4 +42,4 @@ echo ">>>>> yarn add -dev $PR_PATH"
 yarn add "$PR_PATH" --dev
 
 # Track perf
-time npx truffle run coverage
+time npx truffle run coverage --network development

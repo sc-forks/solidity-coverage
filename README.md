@@ -17,12 +17,13 @@ find discrepancies between the coverage report and your suite's behavior, please
 
 ### Install
 ```
-$ npm install --save-dev solidity-coverage
+$ npm install --save-dev solidity-coverage@beta
 ```
 ### Usage notes:
 + Coverage runs tests a little more slowly.
 + Coverage distorts gas consumption. Tests that check exact gas consumption should be skipped.
-+ Coverage launches its own in-process ganache server. [ganache options](https://github.com/trufflesuite/ganache-core#options)   via the `providerOptions` key in your `.solcover.js` config file.
++ Coverage launches its own in-process ganache server. 
++ You can set [ganache options](https://github.com/trufflesuite/ganache-core#options) using the `providerOptions` key in your `.solcover.js` config. 
 
 ### Truffle V5
 
