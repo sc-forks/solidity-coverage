@@ -62,15 +62,15 @@ module.exports = {
 
 | Option <img width=200/>| Type <img width=200/> | Default <img width=700/> | Description <img width=1000/> |
 | ------ | ---- | ------- | ----------- |
-| silent | *Boolean* | false | suppress logging output |
+| silent | *Boolean* | false | Suppress logging output |
 | client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
 | providerOptions | *Object* | `{ }` | [ganache-core options](https://github.com/trufflesuite/ganache-core#options)  |
-| skipFiles | *Array* | ['Migrations.sol'] | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
+| skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text']` | [Istanbul coverage reporters](https://istanbul.js.org/docs/advanced/alternative-reporters/)  |
 | mocha | *Object* | `{ }` | [Mocha options](https://mochajs.org/api/mocha) to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
 | onServerReady | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability |
 | onTestsComplete | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. |
-| onIstanbulComplete | *Function* |  | Function run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
+| onIstanbulComplete | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
 
 
 
