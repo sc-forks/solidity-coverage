@@ -40,10 +40,10 @@ truffle run coverage [options]
 
 
 ### Command Options
-| Option       | Example                            | Description                    |
+| Option <img width=100/> | Example <img width=500/>| Description <img width=200/> |
 |--------------|------------------------------------|--------------------------------|
-| file     | --file="test/registry/*.js"    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
-| solcoverjs | --solcoverjs ./../.solcover.js | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
+| file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | useGlobalTruffle    |                       | Force use of truffle library module from globally installed truffle.|
 | version    |                                | Version info |
 | help       |                                | Usage notes  |
