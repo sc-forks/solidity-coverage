@@ -20,12 +20,9 @@ find discrepancies between the coverage report and your suite's behavior, please
 $ npm install --save-dev solidity-coverage
 ```
 ### Usage notes:
-+ For Truffle V5
 + Coverage runs tests a little more slowly.
 + Coverage distorts gas consumption. Tests that check exact gas consumption should be skipped.
-+ Coverage launches its own in-process ganache instance. You can
-  set [ganache options](https://github.com/trufflesuite/ganache-core#options) via
-  the `providerOptions` key in your `.solcover.js` config file.
++ Coverage launches its own in-process ganache server. [ganache options](https://github.com/trufflesuite/ganache-core#options)   via the `providerOptions` key in your `.solcover.js` config file.
 
 ### Truffle V5
 
@@ -45,12 +42,11 @@ truffle run coverage [options]
 ### Command Options
 | Option       | Example                            | Description                    |
 |--------------|------------------------------------|--------------------------------|
-| file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
-| solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
+| file     | --file="test/registry/*.js"    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| solcoverjs | --solcoverjs ./../.solcover.js | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | useGlobalTruffle    |                       | Force use of truffle library module from globally installed truffle.|
 | version    |                                | Version info |
 | help       |                                | Usage notes  |
-|<img width=250/>|<img width=700/>              |<img width=100/>|
 
 ### Config Options
 
@@ -67,14 +63,15 @@ module.exports = {
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
-| providerOptions | *Object* | `{}` | [ganache-core options](https://github.com/trufflesuite/ganache-core#options).  |
-| skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
-| istanbulReporter | *Array* | `['html', 'lcov', 'text']` | Coverage reporters for Istanbul. Optional reporter replaces the default reporters. |
 | silent | *Boolean* | false | suppress logging output |
-| onServerReady | *Function* | `async (config) => {}`  | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize/Provable bridge or have preparatory scripts which rely on the server's availability |
-| onTestsComplete | *Function* | `async (config) => {}` | Hook run *after* the tests complete, *before* Istanbul reports are generated. |
-| onIstanbulComplete | *Function* | `async (config) => {}` | Function run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
+| client | *Object* | require("ganache-core") | Useful if you need a specific ganache version. |
+| providerOptions | *Object* | `{}` | [ganache-core options](https://github.com/trufflesuite/ganache-core#options).  |
+| skipFiles | *Array* | ['Migrations.sol'] | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
+| istanbulReporter | *Array* | ['html', 'lcov', 'text'] | [Istanbul coverage reporters](https://istanbul.js.org/docs/advanced/alternative-reporters/).  |
+| mocha | *Object* | `{ }` | [Mocha options](https://mochajs.org/api/mocha) to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
+| onServerReady | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize/Provable bridge or have preparatory scripts which rely on the server's availability |
+| onTestsComplete | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. |
+| onIstanbulComplete | *Function* |  | Function run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
 
 
 
