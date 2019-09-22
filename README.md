@@ -20,38 +20,37 @@ find discrepancies between the coverage report and your suite's behavior, please
 $ npm install --save-dev solidity-coverage
 ```
 ### Usage notes:
-+ For pragma solidity >=0.4.22 <0.6.0 / Petersburg
++ For Truffle V5
 + Coverage runs tests a little more slowly.
-+ Coverage distorts gas consumption.
++ Coverage distorts gas consumption. Tests that check exact gas consumption should be skipped.
 + Coverage launches its own in-process ganache instance. You can
   set [ganache options](https://github.com/trufflesuite/ganache-core#options) via
   the `providerOptions` key in your `.solcover.js` config file.
 
 ### Truffle V5
 
-Add "solidity-coverage" to your plugins array in `truffle-config.js`
+**Add** "solidity-coverage" to your plugins array in `truffle-config.js`
 ```javascript
 module.exports = {
   networks: {...},
   plugins: ["solidity-coverage"]
 }
 ```
-Run
+**Run**
 ```
 truffle run coverage [options]
 ```
 
 
 ### Command Options
-| Option       | Example                        | Description |
-|--------------|--------------------------------|-------------|
-| `--file`       | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
-| `--solcoverjs` | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| `--useGlobalTruffle`    |                       | Force use of truffle library module from globally installed truffle. (Default: false)|
-| `--usePluginTruffle`    |                       | Force use of truffle library module from plugin provided copy (Truffle v5.0.31.) Requires you have locally installed Truffle V5 <= 5.0.30 (Default: false)|
-| `--version`    |                                | Version info |
-| `--help`       |                                | Usage notes  |
-|<img width=250/>|<img width=500/>              |<img width=100/>|
+| Option       | Example                            | Description                    |
+|--------------|------------------------------------|--------------------------------|
+| file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
+| useGlobalTruffle    |                       | Force use of truffle library module from globally installed truffle.|
+| version    |                                | Version info |
+| help       |                                | Usage notes  |
+|<img width=250/>|<img width=700/>              |<img width=100/>|
 
 ### Config Options
 
@@ -68,15 +67,14 @@ module.exports = {
 
 | Option | Type | Default | Description |
 | ------ | ---- | ------- | ----------- |
-| client | *Object* | require("truffle").ganache | Useful if you need a specific ganache version. (usage: `client: require("ganache-core")`)|
-| providerOptions | *Object* | {} | ganache-core options (ex: `network_id: 55`). Complete list of options [here](https://github.com/trufflesuite/ganache-core#options).  |
-| skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. `Migrations.sol` is skipped by default, and does not need to be added to this configuration option if it is used. |
-| istanbulReporter | *Array* | ['html', 'lcov', 'text'] | Coverage reporters for Istanbul. Optional reporter replaces the default reporters. |
+| client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
+| providerOptions | *Object* | `{}` | [ganache-core options](https://github.com/trufflesuite/ganache-core#options).  |
+| skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
+| istanbulReporter | *Array* | `['html', 'lcov', 'text']` | Coverage reporters for Istanbul. Optional reporter replaces the default reporters. |
 | silent | *Boolean* | false | suppress logging output |
-| onServerReady | *Function* | `async (config) => {}`  | Function run when server is ready to receive calls, but before the tests execute. Useful if you need to launch the Oraclize/Provable bridge or have preparatory scripts which rely on the server's availability |
-| onTestsComplete | *Function* | `async (config) => {}` | Function run immediately after the tests
-complete, but before Istanbul reports are generated. |
-| onIstanbulComplete | *Function* | `async (config) => {}` | Function run immediately after the Istanbul reports are generated, but before the ganache server is shut down. Useful if you need to clean resources up. |
+| onServerReady | *Function* | `async (config) => {}`  | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize/Provable bridge or have preparatory scripts which rely on the server's availability |
+| onTestsComplete | *Function* | `async (config) => {}` | Hook run *after* the tests complete, *before* Istanbul reports are generated. |
+| onIstanbulComplete | *Function* | `async (config) => {}` | Function run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
 
 
 
