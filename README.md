@@ -18,9 +18,9 @@ $ npm install --save-dev solidity-coverage@beta
 ```
 ### Usage notes:
 + Coverage runs tests a little more slowly.
-+ Coverage distorts gas consumption. Tests that check exact gas consumption should be skipped.
++ Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be skipped.
 + Coverage launches its own in-process ganache server.
-+ You can set [ganache options][1]using the `providerOptions` key in your `.solcover.js` config.
++ You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` config.
 
 ### Truffle V5
 
@@ -43,9 +43,11 @@ truffle run coverage [options]
 | file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle config |
-| temp       | `--temp build`   | :warning: **Use with caution** :warning:.  Disposable folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. |
+| temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Use with caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. |
 | version    |                                | Version info |
 | help       |                                | Usage notes  |
+
+[<sup>*</sup> Advanced use][14]
 
 ### Config Options
 
@@ -68,12 +70,12 @@ module.exports = {
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text']` | [Istanbul coverage reporters][2]  |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
-| onServerReady | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability |
-| onTestsComplete | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. |
-| onCompileComplete | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. |
-| onIstanbulComplete | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
+| onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][14] |
+| onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][14]|
+| onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][14]|
+| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. [More...][14]|
 
-
+[<sup>*</sup> Advanced use][14]
 
 ### FAQ
 
@@ -113,6 +115,8 @@ $ yarn
 [10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
 [11]: https://github.com/sc-forks/solidity-coverage/tree/master/test
 [12]: https://github.com/sc-forks/solidity-coverage/issues
+[13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#on-gas-distortion
+[14]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
 
 ### Contributors
 + [@area](https://github.com/area)
