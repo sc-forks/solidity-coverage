@@ -46,6 +46,7 @@ truffle run coverage [options]
 | file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle config |
+| temp       | `--temp build`   | :warning: *Use with caution* :warning:.  Disposable folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. |
 | version    |                                | Version info |
 | help       |                                | Usage notes  |
 
