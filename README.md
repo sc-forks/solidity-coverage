@@ -16,11 +16,6 @@
 ```
 $ npm install --save-dev solidity-coverage@beta
 ```
-### Usage notes:
-+ Coverage runs tests a little more slowly.
-+ Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be skipped.
-+ Coverage launches its own in-process ganache server.
-+ You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` config.
 
 ### Truffle V5
 
@@ -36,6 +31,11 @@ module.exports = {
 truffle run coverage [options]
 ```
 
+### Usage notes:
++ Coverage runs tests a little more slowly.
++ Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be skipped.
++ Coverage launches its own in-process ganache server.
++ You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` config.
 
 ### Command Options
 | Option <img width=200/> | Example <img width=700/>| Description <img width=1000/> |
@@ -43,7 +43,7 @@ truffle run coverage [options]
 | file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle config |
-| temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Use with caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. |
+| temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
 | version    |                                | Version info |
 | help       |                                | Usage notes  |
 
@@ -94,8 +94,9 @@ Common problems & questions:
 
 ### Contribution Guidelines
 
-Contributions are welcome! If you're opening a PR that adds features or options *please consider writing some
-[unit tests][11] for them*. (We've built convenient fixtures for almost everything and are happy to add some for your case if necessary). 
+Contributions are welcome! If you're opening a PR that adds features or options *please consider writing full
+[unit tests][11] for them*. (We've built simple fixtures for almost every contingency and are happy to add some 
+for your case if necessary). 
 
 Set up the development environment with:
 ```
@@ -107,15 +108,15 @@ $ yarn
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
 [3]: https://mochajs.org/api/mocha
 [4]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas
-[5]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory-locally-and-in-ci
+[5]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory
 [6]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha
 [7]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration
-[8]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#on-branch-coverage
+[8]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-branch-coverage
 [9]: https://sc-forks.github.io/metacoin/
 [10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
-[11]: https://github.com/sc-forks/solidity-coverage/tree/master/test
+[11]: https://github.com/sc-forks/solidity-coverage/tree/master/test/units
 [12]: https://github.com/sc-forks/solidity-coverage/issues
-[13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#on-gas-distortion
+[13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-gas-distortion
 [14]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
 
 ### Contributors
