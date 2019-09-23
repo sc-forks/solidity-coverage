@@ -19,7 +19,7 @@ $ npm install --save-dev solidity-coverage@beta
 
 ### Truffle V5
 
-**Add** "solidity-coverage" to your plugins array in `truffle-config.js`
+**Add** this package to your plugins array in `truffle-config.js`
 ```javascript
 module.exports = {
   networks: {...},
@@ -28,17 +28,17 @@ module.exports = {
 ```
 **Run**
 ```
-truffle run coverage [options]
+truffle run coverage [command-options]
 ```
 
 ### Usage notes:
 + Coverage runs tests a little more slowly.
-+ Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be skipped.
 + Coverage launches its own in-process ganache server.
 + You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` config.
++ Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be skipped.
 
 ### Command Options
-| Option <img width=200/> | Example <img width=700/>| Description <img width=1000/> |
+| Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
@@ -72,8 +72,8 @@ module.exports = {
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
 | onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][14] |
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][14]|
-| onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][14]|
-| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. [More...][14]|
+| onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated.|
+| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up.|
 
 [<sup>*</sup> Advanced use][14]
 
@@ -82,10 +82,10 @@ module.exports = {
 Common problems & questions:
 
 + [Running out of gas][4]
-+ [Running out of memory (locally and in CI)][5]
-+ [Running out of time (in mocha)][6]
++ [Running out of memory][5]
++ [Running out of time][6]
 + [Running in CI][7]
-+ [Why are asserts and requires highlighted as branch points?][8]
++ [Why are `require` statements highlighted as branch points?][8]
 
 
 ### Example reports
@@ -103,21 +103,6 @@ Set up the development environment with:
 $ git clone https://github.com/sc-forks/solidity-coverage.git
 $ yarn
 ```
-
-[1]: https://github.com/trufflesuite/ganache-core#options
-[2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
-[3]: https://mochajs.org/api/mocha
-[4]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas
-[5]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory
-[6]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha
-[7]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration
-[8]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-branch-coverage
-[9]: https://sc-forks.github.io/metacoin/
-[10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
-[11]: https://github.com/sc-forks/solidity-coverage/tree/master/test/units
-[12]: https://github.com/sc-forks/solidity-coverage/issues
-[13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-gas-distortion
-[14]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
 
 ### Contributors
 + [@area](https://github.com/area)
@@ -140,3 +125,18 @@ $ yarn
 + [@angus-hamill](https://github.com/angus-hamill)
 + [@kandrianov](https://github.com/kandrianov)
 + [@yxliang01](https://github.com/yxliang01)
+
+[1]: https://github.com/trufflesuite/ganache-core#options
+[2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
+[3]: https://mochajs.org/api/mocha
+[4]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas
+[5]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory
+[6]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha
+[7]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration
+[8]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-branch-coverage
+[9]: https://sc-forks.github.io/metacoin/
+[10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
+[11]: https://github.com/sc-forks/solidity-coverage/tree/master/test/units
+[12]: https://github.com/sc-forks/solidity-coverage/issues
+[13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-gas-distortion
+[14]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
