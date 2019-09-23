@@ -211,6 +211,20 @@ describe('Truffle Plugin: command line options', function() {
     );
   });
 
+  it('--coverageArtifacts', async function(){
+    truffleConfig.logger = mock.testLogger;
+
+    truffleConfig.temp = 'special_location';
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes("/special_location/contracts"),
+      `Should write artifacts to "special_location": ${mock.loggerOutput.val}`
+    );
+  });
+
   it('--network (network_id mismatch in configs)', async function(){
     truffleConfig.logger = mock.testLogger;
 
