@@ -1,6 +1,6 @@
 # FAQ
 
-### Continuous Integration
+## Continuous Integration
 
 
 **Step 1: Create a metacoin project & install coverage tools**
@@ -52,21 +52,27 @@ after_script:
 
 **Appendix: Coveralls vs. Codecov**
 
+**TLDR: We strongly recommend coveralls for accuracy.**
+
 [Codecov.io](https://codecov.io/) is another CI coverage provider (we use it for this project). They're very reliable, easy to integrate with and have a nice UI. Unfortunately we haven't found a way to get their reports to show branch coverage. Coveralls has excellent branch coverage reporting out of the box (see below).
 
 ![missed_branch](https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png)
 
 
 
-### On gas distortion
+## On gas distortion
 
-If you have *hardcoded gas costs* into your tests, some of them may fail when using solidity-coverage.
-This is because the instrumentation process increases execution costs by  Using
-`estimateGas` to estimate your gas costs or allowing your transactions to use the default gas 
+Solidity-
+If you have *hardcoded gas costs* into your tests, some of them may error when using solidity-coverage.
+This is because the instrumentation process injects statements into your code, increasing its execution costs. 
+Gas simulation tests will not be accurate with coverage. Solidity code that constrains gas usage within narrow
+parameters may also fail unexpectedly, although `.send` and `.transfer` typically run as expected.
+
+Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas 
 settings should be more resilient in most cases.
 
 
-### Running out of memory (Locally and in CI)
+## Running out of memory (Locally and in CI)
 
 If your target contains dozens of large contracts, you may run up against node's memory cap during the
 contract compilation step. This can be addressed by setting the size of the memory space allocated to the command 
@@ -81,7 +87,7 @@ Large projects may also hit their CI container memcap running coverage after uni
 addressed on TravisCI by adding `sudo: required` to the `travis.yml`, which raises the container's
 limit to 7.5MB (ProTip courtesy of [@federicobond](https://github.com/federicobond).
 
-### Running out of time (in mocha)
+## Running out of time (in mocha)
 Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under coverage, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `.solcover.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
 
 ```javascript
