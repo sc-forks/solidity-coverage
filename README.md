@@ -1,23 +1,22 @@
 # solidity-coverage
 
-[![Join the chat at https://gitter.im/sc-forks/solidity-coverage](https://badges.gitter.im/sc-forks/solidity-coverage.svg)](https://gitter.im/sc-forks/solidity-coverage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![npm version](https://badge.fury.io/js/solidity-coverage.svg)](https://badge.fury.io/js/solidity-coverage)
-[![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)](https://circleci.com/gh/sc-forks/solidity-coverage)
-[![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/master/graph/badge.svg)](https://codecov.io/gh/sc-forks/solidity-coverage)
+[![Gitter chat](https://badges.gitter.im/sc-forks/solidity-coverage.svg)][18]
+[![npm version](https://badge.fury.io/js/solidity-coverage.svg)][19]
+[![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
+[![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/master/graph/badge.svg)][21]
 
-### Code coverage for Solidity testing
+## Code coverage for Solidity testing
 ![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
 
-+ For more details about what this is, how it works and potential limitations, see
-[the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
-+ `solidity-coverage` is [Solcover](https://github.com/JoinColony/solcover)
++ For more details about what this is, how it works and potential limitations, see [the accompanying article][16].
++ `solidity-coverage` is [Solcover][17]
 
-### Install
+## Install
 ```
 $ npm install --save-dev solidity-coverage@beta
 ```
 
-### Truffle V5
+## Truffle V5
 
 **Add** this package to your plugins array in `truffle-config.js`
 ```javascript
@@ -31,13 +30,13 @@ module.exports = {
 truffle run coverage [command-options]
 ```
 
-### Usage notes:
+## Usage notes:
 + Coverage runs tests a little more slowly.
 + Coverage launches its own in-process ganache server.
-+ You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` config.
++ You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` [config][15].
 + Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be skipped.
 
-### Command Options
+## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
@@ -49,7 +48,7 @@ truffle run coverage [command-options]
 
 [<sup>*</sup> Advanced use][14]
 
-### Config Options
+## Config Options
 
 Additional options can be specified in a `.solcover.js` config file located in
 the root directory of your project.
@@ -77,22 +76,22 @@ module.exports = {
 
 [<sup>*</sup> Advanced use][14]
 
-### FAQ
+## FAQ
 
 Common problems & questions:
 
-+ [Running out of gas][4]
-+ [Running out of memory][5]
-+ [Running out of time][6]
 + [Running in CI][7]
++ [Running out of gas][4]
++ [Running out of time][6]
++ [Running out of memory][5]
 + [Why are `require` statements highlighted as branch points?][8]
 
 
-### Example reports
+## Example reports
 + [metacoin][9] (Istanbul HTML)
 + [openzeppelin-solidity][10](Coveralls)
 
-### Contribution Guidelines
+## Contribution Guidelines
 
 Contributions are welcome! If you're opening a PR that adds features or options *please consider writing full
 [unit tests][11] for them*. (We've built simple fixtures for almost every contingency and are happy to add some 
@@ -104,7 +103,7 @@ $ git clone https://github.com/sc-forks/solidity-coverage.git
 $ yarn
 ```
 
-### Contributors
+## Contributors
 + [@area](https://github.com/area)
 + [@cgewecke](https://github.com/cgewecke)
 + [@adriamb](https://github.com/adriamb)
@@ -140,3 +139,10 @@ $ yarn
 [12]: https://github.com/sc-forks/solidity-coverage/issues
 [13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-gas-distortion
 [14]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
+[15]: #config-options
+[16]: https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2
+[17]: https://github.com/JoinColony/solcover
+[18]: https://gitter.im/sc-forks/solidity-coverage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[19]: https://badge.fury.io/js/solidity-coverage
+[20]: https://circleci.com/gh/sc-forks/solidity-coverage
+[21]: https://codecov.io/gh/sc-forks/solidity-coverage
