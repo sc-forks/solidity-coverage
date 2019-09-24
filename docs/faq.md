@@ -1,9 +1,9 @@
 # FAQ
 
-- [FAQ Contents](#faq-contents)
+- [Contents](#contents)
   * [Continuous Integration](#continuous-integration)
-  * [Running out of memory (Locally and in CI)](#running-out-of-memory-locally-and-in-ci)
-  * [Running out of time (in mocha)](#running-out-of-time-in-mocha)
+  * [Running out of memory](#running-out-of-memory)
+  * [Running out of time](#running-out-of-time)
   * [Notes on gas distortion](#notes-on-gas-distortion)
   * [Notes on branch coverage](#notes-on-branch-coverage)
 
@@ -60,15 +60,15 @@ their behavior.
 
 **Step 5: Toggle the project on at Travis and Coveralls and push.**
 
-[It should look like this](https://coveralls.io/github/sc-forks/metacoin)
+[It should look like this][1]
 
 **Appendix: Coveralls vs. Codecov**
 
 **TLDR: We strongly recommend Coveralls for its accuracy in reporting branch execution.**
 
-[Codecov.io](https://codecov.io/) is another CI coverage provider (we use it for this project). They're very reliable, easy to integrate with and have a nice UI. Unfortunately we haven't found a way to get their reports to show branch coverage. Coveralls has excellent branch coverage reporting out of the box (see below).
+We use [Codecov.io][2] here as a coverage provider for our JS tests - they're great. Unfortunately we haven't found a way to get their reports to show branch coverage for Solidity. Coveralls has excellent Solidity branch coverage reporting out of the box (see below).
 
-![missed_branch](https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png)
+![missed_branch][3]
 
 
 ## Running out of memory
@@ -96,14 +96,15 @@ module.exports = {
 
 Solidity-coverage instruments by injecting statements into your code, increasing its execution costs.
 
-+ If you have *hardcoded gas costs* into your tests, some of them may error.
-+ If you are running *gas simulation tests*, they will not be accurate.
-+ If your *solidity logic constrains gas usage* within narrow bounds, it may fail. (`.send` and `.transfer` typically run as expected, however).
++ If you are running **gas usage simulations**, they will **not be accurate**.
++ If you have **hardcoded gas costs** into your tests, some of them may **error**.
++ If your **solidity logic constrains gas usage** within narrow bounds, it may **fail**. 
+  + `.send` and `.transfer` usually work fine though.
 
 Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas
 settings should be more resilient in most cases.
 
-Gas metering within Solidity is widely viewed as a problematic design pattern because EVM gas costs are recalibrated from fork to fork. Relying on them can result in deployed contracts ceasing to behave as intended.
+Gas metering within Solidity is widely viewed as a problematic design pattern because EVM gas costs are recalibrated from fork to fork. Depending on their exact values can result in deployed contracts ceasing to behave as intended.
 
 ## Notes on branch coverage
 
@@ -121,3 +122,7 @@ require(x)
 Clearly, the coverage should be the same in these situations, as the code is (functionally) identical. Older versions of solidity-coverage did not treat these as branch points, and they were not considered in the branch coverage filter. Newer versions *do* count these as branch points, so if your tests did not include failure scenarios for `assert` or `require`, you may see a decrease in your coverage figures when upgrading `solidity-coverage`.
 
 If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
+
+[1]: https://coveralls.io/github/sc-forks/metacoin
+[2]: https://codecov.io/ 
+[3]: https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png
