@@ -2,9 +2,8 @@
 
 ## Skipping tests
 
-Sometimes there are tests which don't work that well with coverage and it's convenient to skip them.
-You can do this by tagging your test descriptions and filtering them out with the mocha options
-in .solcover.js:
+Sometimes it's convenient to skip specific tests when running coverage. You can do this by 
+tagging your test descriptions and setting appropriate filters in the `.solcover.js` mocha options.
 
 **Example**
 ```javascript
@@ -70,7 +69,7 @@ module.exports = {
 
 ## Setting the temporary artifacts directory
 
-The `temp` command line option allows you to specify the name of a disposable folder to
+The `temp` command line option lets you to specify the name of a disposable folder to
 stage the compilation artifacts of instrumented contracts in before the tests are run.
 
 **Example**
@@ -78,11 +77,12 @@ stage the compilation artifacts of instrumented contracts in before the tests ar
 $ truffle run coverage --temp build
 ```
 
-By default this folder is called `.coverage_artifacts`. If you've already written
+By default this folder is called `.coverage_artifacts`. If you already have
 preparatory scripts which run between compilation and the tests, you'll probably
-find it inconvenient to modify these to handle an alternate path. So this option is for you but
-it's important to realise that the temp folder is **automatically deleted** when coverage completes.
-You shouldn't use it if your preferred build target contains information you want to preserve
-between test runs.
+find it inconvenient to modify them to handle an alternate path. 
+
+This option allows you to avoid that but it's important to realise that the temp 
+folder is **automatically deleted** when coverage completes. You shouldn't use it if your preferred 
+build target contains information you want to preserve between test runs.
 
 
