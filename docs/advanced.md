@@ -68,5 +68,21 @@ module.exports = {
 }
 ```
 
+## Setting the temporary artifacts directory
+
+The `temp` command line option allows you to specify the name of a disposable folder to
+stage the compilation artifacts of instrumented contracts in before the tests are run.
+
+**Example**
+```
+$ truffle run coverage --temp build
+```
+
+By default this folder is called `.coverage_artifacts`. If you've already written
+preparatory scripts which run between compilation and the tests, you'll probably
+find it inconvenient to modify these to handle an alternate path. So this option is for you but
+it's important to realise that the temp folder is **automatically deleted** when coverage completes.
+You shouldn't use it if your preferred build target contains information you want to preserve
+between test runs.
 
 
