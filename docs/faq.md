@@ -1,6 +1,13 @@
-# FAQ
+- [FAQ](#faq)
+  * [Continuous Integration](#continuous-integration)
+  * [Running out of memory (Locally and in CI)](#running-out-of-memory-locally-and-in-ci)
+  * [Running out of time (in mocha)](#running-out-of-time-in-mocha)
+  * [Notes on gas distortion](#notes-on-gas-distortion)
+  * [Notes on branch coverage](#notes-on-branch-coverage)
 
 ## Continuous Integration
+
+An example using Truffle MetaCoin, CircleCI, and Coveralls:
 
 
 **Step 1: Create a metacoin project & install coverage tools**
@@ -33,11 +40,14 @@ language: node_js
 node_js:
   - '10'
 install:
-  - npm install -g truffle 
+  - npm install -g truffle
 script:
   - npm run coverage && coverage/lcov.info | coveralls
 ```
-**NB:** It's best practice to run coverage in a parallel CI build rather than assume its equivalence to `truffle test`. Coverage uses block gas limits far above the current blocklimit and rewrites your contracts in ways that might affect their behavior. 
+**NB:** It's best practice to run coverage in a parallel CI build rather than assume its
+equivalence to `test`. Coverage uses block gas settings far above the network limits,
+ignores all contract size constraints and rewrites your contracts in ways that might affect
+their behavior.
 
 **Step 5: Toggle the project on at Travis and Coveralls and push.**
 
@@ -45,7 +55,7 @@ script:
 
 **Appendix: Coveralls vs. Codecov**
 
-**TLDR: We strongly recommend coveralls for its accuracy in reporting branch execution.**
+**TLDR: We strongly recommend Coveralls for its accuracy in reporting branch execution.**
 
 [Codecov.io](https://codecov.io/) is another CI coverage provider (we use it for this project). They're very reliable, easy to integrate with and have a nice UI. Unfortunately we haven't found a way to get their reports to show branch coverage. Coveralls has excellent branch coverage reporting out of the box (see below).
 
@@ -55,7 +65,7 @@ script:
 ## Running out of memory (Locally and in CI)
 
 If your target contains dozens of large contracts, you may run up against node's memory cap during the
-contract compilation step. This can be addressed by setting the size of the memory space allocated to the command 
+contract compilation step. This can be addressed by setting the size of the memory space allocated to the command
 when you run it. (NB: you must use the relative path to the truffle `bin` in node_modules)
 ```
 $ node --max-old-space-size=4096 ../node_modules/.bin/truffle run coverage [options]
@@ -78,16 +88,16 @@ module.exports = {
 Solidity-coverage instruments by injecting statements into your code, increasing its execution costs.
 
 + If you have *hardcoded gas costs* into your tests, some of them may error.
-+ If you are running *gas simulation tests*, they will not be accurate. 
++ If you are running *gas simulation tests*, they will not be accurate.
 + If your *solidity logic constrains gas usage* within narrow bounds, it may fail. (`.send` and `.transfer` typically run as expected, however).
 
-Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas 
+Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas
 settings should be more resilient in most cases.
 
 Gas metering within Solidity is widely viewed as a problematic design pattern because EVM gas costs are recalibrated
 from fork to fork. Relying on them can result in deployed contracts ceasing to behave as intended.
 
-### Notes on branch coverage
+## Notes on branch coverage
 
 Solidity-coverage treats `assert` and `require` as code branches because they check whether a condition is true or not. If it is, they allow execution to proceed. If not, they throw, and all changes are reverted. Indeed, prior to [Solidity 0.4.10](https://github.com/ethereum/solidity/releases/tag/v0.4.10), when `assert` and `require` were introduced, this functionality was achieved by code that looked like
 
