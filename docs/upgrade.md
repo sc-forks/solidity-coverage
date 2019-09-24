@@ -1,10 +1,10 @@
-# Upgrading from `0.6.x` to `0.7.0-beta.x`
+# Upgrading from 0.6.x to 0.7.0-beta.x
 
 First, follow [the basic installation instructions]() and see if it works.
 
--[] It does!? :/
+:rabbit2: It does!? :/
 
--[] It doesn't. Good.
+:elephant: It doesn't. Good.
 
 ### Are you using Truffle V5?
 
@@ -12,9 +12,10 @@ First, follow [the basic installation instructions]() and see if it works.
 
 ### Are you launching testrpc-sc as a stand-alone client?
 
-+ Stop. The coverage plugin launches the client itself.
++ Stop. The coverage plugin needs to launch the client itself so it can hook into the EVM. By default it 
+  uses the ganache bundled in your Truffle, but you can use any version (see below). 
 
-### Were you passing testrpc-sc lots of options as flags?
+### Were you passing testrpc-sc lots of options as flags? :jp:
 
 + If the flags were --allowUnlimitedContractSize --gasLimit --gasPrice or --emitFreeLogs,
   you can safely ignore them. Ditto if your port was `8555`.
@@ -31,16 +32,16 @@ First, follow [the basic installation instructions]() and see if it works.
 client: require('ganache-cli'),
 ```
 
-### Do you usually launch testrpc-sc, do *something special* and then run coverage?
+### Do you usually launch testrpc-sc, do *something special* and then run coverage? :coffee:
 
 + Check out [the workflow hooks section]() of the advanced use docs.
   The *something special* will need to be run within an async function declared in `.solcover.js`
 
-### What about copyPackages and deepSkip and testCommand and compileCommand and....
+### What about copyPackages and deepSkip and testCommand and...?
 
 + Delete these.
 
-### Do you still need a `coverage` network in `truffle-config.js`?
+### Do you still need a coverage network in truffle-config.js?
 
 + If you're not doing anything special there (like assigning a unique `from` or `network_id`)
   you can safely delete it.
