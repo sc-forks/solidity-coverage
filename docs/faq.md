@@ -97,7 +97,7 @@ Solidity-coverage instruments by injecting statements into your code, increasing
 Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas
 settings should be more resilient in most cases.
 
-Gas metering within Solidity is widely viewed as a problematic design pattern because EVM gas costs are recalibrated from fork to fork. Depending on their exact values can result in deployed contracts ceasing to behave as intended.
+Gas metering within Solidity is increasingly seen as anti-pattern because EVM gas costs are recalibrated from fork to fork. Depending on their exact values can result in deployed contracts ceasing to behave as intended.
 
 ## Notes on branch coverage
 
