@@ -1,4 +1,6 @@
-- [FAQ](#faq)
+# FAQ
+
+- [FAQ Contents](#faq-contents)
   * [Continuous Integration](#continuous-integration)
   * [Running out of memory (Locally and in CI)](#running-out-of-memory-locally-and-in-ci)
   * [Running out of time (in mocha)](#running-out-of-time-in-mocha)
