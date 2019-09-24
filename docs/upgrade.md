@@ -1,10 +1,31 @@
+# How to install 0.7.0
+
+**Install**
+```
+$ npm install --save-dev solidity-coverage@beta
+```
+
+**Add** this package to your plugins array in `truffle-config.js`
+```javascript
+module.exports = {
+  networks: {...},
+  plugins: ["solidity-coverage"]
+}
+```
+**Run**
+```
+truffle run coverage [command-options]
+```
+
+A full list of options and other information are [available here][]
+
 # Upgrading from 0.6.x to 0.7.0-beta.x
 
-First, follow [the basic installation instructions]() and see if it works.
+First, follow [the installation instructions](#how-to-install-0.7.0) and see if it works.
 
 :rabbit2: It does!? :/
 
-:elephant: It doesn't. Good.
+:elephant: It does not. Good.
 
 #### Are you using Truffle V5?
 
@@ -12,15 +33,15 @@ First, follow [the basic installation instructions]() and see if it works.
 
 #### Are you launching testrpc-sc as a stand-alone client?
 
-+ Stop. The coverage plugin needs to launch the client itself so it can hook into the EVM. By default it 
-  uses the ganache bundled in your Truffle, but you can use any version (see below). 
++ Stop launching it. The coverage plugin needs to initialize the client itself so it can hook into the EVM. By default it 
+  uses the ganache bundled with your Truffle, but you can use any version (see below). 
 
 #### Were you passing testrpc-sc lots of options as flags? :jp:
 
 + If the flags were `allowUnlimitedContractSize`,  `gasLimit`, `gasPrice` or `emitFreeLogs`,
   you can safely ignore them. Ditto if your port was `8555`.
 
-+ If the flags were things like accounts or network_id, you'll need to transfer them as
++ If the flags were things like `accounts` or `network_id`, you'll need to transfer them as
   [ganache-core options][] to a `providerOptions` key in .solcover.js. (There are slight
   variations between these two formats, especially for private key / balance accounts.
   It's best to look carefully at the ganache docs.)
@@ -32,22 +53,25 @@ First, follow [the basic installation instructions]() and see if it works.
 client: require('ganache-cli'),
 ```
 
-#### Do you usually launch testrpc-sc, do *something special* and then run coverage? :coffee:
+#### Do you usually: (1) launch testrpc-sc, (2) do *something special*, (3) run solidity-coverage? 
 
 + Check out [the workflow hooks section]() of the advanced use docs.
   The *something special* will need to be run within an async function declared in .solcover.js
 
-#### What about copyPackages and deepSkip and testCommand and...?
+#### Do you have options like copyPackages, deepSkip, testCommand, compileCommand, noRpc...?
 
-+ Delete these.
++ You can delete these. 
 
-#### Do you still need a coverage network in truffle-config.js?
+#### Do you still need a 'coverage' network in truffle-config.js?
 
-+ If you're not doing anything special there (like assigning a unique `from` or `network_id`)
-  you can safely delete it.
++ If you're not doing anything unusual there (like assigning a `from` or `network_id` which is only 
+  used for coverage) you can safely delete it.
 
-+ You can probably run something like `truffle run coverage --network development` instead and
-  use the same configuration defined for your default tests.
++ You should be able to `truffle run coverage --network <network-name>` and use the same config you
+  would for your tests.
+  
++ You can also run without specifying a network and you'll run with default settings which look like
+  this:
 
 [1]:
 [2]:
