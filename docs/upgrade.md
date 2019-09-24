@@ -46,29 +46,13 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
   variations between these two formats, especially for private key / balance accounts.
   It's best to look carefully at the ganache docs.)
 
-#### Do your tests depend on the specific ganache version you have a local dependency?
-
-+ List it in .solcover.js using the client option
-```javascript
-client: require('ganache-cli'),
-```
-
-#### Do you usually: (1) launch testrpc-sc, (2) do something special, (3) run solidity-coverage? 
-
-+ See [the workflow hooks section][] of the advanced use docs.
-  The *something special* will need to be run within an async function declared in .solcover.js
-
-#### Do you have options like copyPackages, deepSkip, testCommand, compileCommand, noRpc...?
-
-+ You can delete these. 
-
 #### Do you still need a 'coverage' network in truffle-config.js?
 
 + If you're not doing anything unusual there (like assigning a `from` or `network_id` which is only 
   used for coverage) you can safely delete it.
 
 + You should be able to `truffle run coverage --network <network-name>` and use the same config you
-  would for your tests. 
+  would for your regular tests. 
   
 + You can also run without specifying a network and you'll be given default settings which look like
   this:
@@ -79,12 +63,39 @@ client: require('ganache-cli'),
     network_id: "*",
   }
   ```
+#### Do your tests depend on the specific ganache version you have a local dependency?
+
++ List it in .solcover.js using the client option
+```javascript
+client: require('ganache-cli'),
+```
+
+#### Does your config contain options like copyPackages, deepSkip, testCommand, compileCommand, noRpc...?
+
++ You can delete them. 
+
+#### Do you usually: (1) launch testrpc-sc, (2) do something special, (3) run solidity-coverage? 
+
++ See [the workflow hooks documentation][]. The *something special* will likely need to run within 
+  an async function declared in .solcover.js
+
+### Are you what some might call an 'advanced user'?
+
++ There are docs for you at [Advanced Use][1]
+
+### Do you want to see some real-world installation examples?
+
++ [metacoin][]
++ [openzeppelin-contracts][]
++ [joinColony/colonyNetwork][]
++ [aragon/aragon-court][]
+
 #### It's still not working 
 
-+ Great! We're trying to find and fix as many problems as possible in the beta.
++ Excellent! We're trying to find and fix as many problems as possible in the beta.
 
-+ If your project is public, please open an issue linking to it and we'll happily 
-  open PR into your repo installing it after patching any relevant bugs here.
++ If your project is public, please open an issue linking to it and we will advise and/or
+  open a PR into your repo installing solidity-coverage after patching any relevant bugs here.
 
 + If your project is private, see if you can generate a reproduction case for the 
   problem and we'll try to fix that.
