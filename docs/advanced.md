@@ -46,7 +46,7 @@ The tool's general workflow is:
 + Rewrite the sources so the code execution path can be tracked by the opcode monitors.
 + Compile the modified sources, without optimization
 + Save the compilation artifacts to a temporary folder
-+ Tell the testing framework to use the 'modified' artifacts & run tests to completion.
++ Tell the testing framework to use the instrumented artifacts & run tests to completion.
 + Transfer collected data to a coverage reporter & report.
 
 Each hook is passed a `config` object provided by your plugin's dev platform which will contain
