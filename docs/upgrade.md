@@ -36,7 +36,7 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 + Stop launching it. The coverage plugin needs to initialize the client itself so it can hook into the EVM. By default it 
   uses the ganache bundled with your Truffle, but you can use any version (see below). 
 
-#### Were you passing testrpc-sc lots of options as flags?   :jp: :jp: :jp: :jp:
+#### Were you passing testrpc-sc lots of options as flags?   :jp: :jp: :jp: :jp: :jp:
 
 + If the flags were `allowUnlimitedContractSize`,  `gasLimit`, `gasPrice` or `emitFreeLogs`,
   you can safely ignore them. Ditto if your port was `8555`.
@@ -66,9 +66,9 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 #### Do your tests depend on the specific ganache version you have a local dependency?
 
 + List it in .solcover.js using the client option
-```javascript
-client: require('ganache-cli'),
-```
+  ```javascript
+  client: require('ganache-cli'),
+  ```
 
 #### Does your config contain options like copyPackages, deepSkip, testCommand, compileCommand, noRpc...?
 
@@ -90,7 +90,7 @@ client: require('ganache-cli'),
 + [joinColony/colonyNetwork][]
 + [aragon/aragon-court][]
 
-#### It's still not working :tada:
+#### :tada:  It's still not working!! :tada:
 
 + Ok good, we'd like to find and fix as many problems as possible in the beta. 
 
