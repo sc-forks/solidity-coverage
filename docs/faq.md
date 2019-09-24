@@ -1,6 +1,6 @@
 # FAQ
 
-- [Contents](#contents)
+- [Table of Contents](#contents)
   * [Continuous Integration](#continuous-integration)
   * [Running out of memory](#running-out-of-memory)
   * [Running out of time](#running-out-of-time)
@@ -9,7 +9,7 @@
 
 ## Continuous Integration
 
-An example using Truffle MetaCoin, CircleCI, and Coveralls:
+An example using Truffle MetaCoin, TravisCI, and Coveralls:
 
 **Step 1: Create a metacoin project & install coverage tools**
 
@@ -17,22 +17,14 @@ An example using Truffle MetaCoin, CircleCI, and Coveralls:
 $ mkdir metacoin && cd metacoin
 $ truffle unbox metacoin
 
-# Install coverage dependencies
+# Install coverage and development dependencies
 $ npm init
+$ npm install --save-dev truffle
 $ npm install --save-dev coveralls
 $ npm install --save-dev solidity-coverage
 ```
 
-**Step 2: Add test and coverage scripts to the `package.json`:**
-
-```javascript
-"scripts": {
-  "test": "truffle test",
-  "coverage": "truffle run coverage"
-},
-```
-
-**Step 3: Add solidity-coverage to the plugins array in truffle-config.js:**
+**Step 2: Add solidity-coverage to the plugins array in truffle-config.js:**
 
 ```javascript
 module.exports = {
@@ -41,7 +33,7 @@ module.exports = {
 }
 ```
 
-**Step 4: Create a .travis.yml:**
+**Step 3: Create a .travis.yml:**
 
 ```yml
 dist: trusty
@@ -49,22 +41,23 @@ language: node_js
 node_js:
   - '10'
 install:
-  - npm install -g truffle
+  - npm install
 script:
-  - npm run coverage && coverage/lcov.info | coveralls
+  - npx truffle run coverage
+  - cat coverage/lcov.info | coveralls
 ```
-**NB:** It's best practice to run coverage in a parallel CI build rather than assume its
+**NB:** It's best practice to run coverage as a separate CI job rather than assume its
 equivalence to `test`. Coverage uses block gas settings far above the network limits,
-ignores all contract size constraints and rewrites your contracts in ways that might affect
+ignores [EIP 170][4] and rewrites your contracts in ways that might affect
 their behavior.
 
-**Step 5: Toggle the project on at Travis and Coveralls and push.**
+**Step 4: Toggle the project on at Travis and Coveralls and push.**
 
 [It should look like this][1]
 
 **Appendix: Coveralls vs. Codecov**
 
-**TLDR: We strongly recommend Coveralls for its accuracy in reporting branch execution.**
+**TLDR: We recommend Coveralls for the accuracy of its branch reporting.**
 
 We use [Codecov.io][2] here as a coverage provider for our JS tests - they're great. Unfortunately we haven't found a way to get their reports to show branch coverage for Solidity. Coveralls has excellent Solidity branch coverage reporting out of the box (see below).
 
@@ -96,10 +89,10 @@ module.exports = {
 
 Solidity-coverage instruments by injecting statements into your code, increasing its execution costs.
 
-+ If you are running **gas usage simulations**, they will **not be accurate**.
-+ If you have **hardcoded gas costs** into your tests, some of them may **error**.
-+ If your **solidity logic constrains gas usage** within narrow bounds, it may **fail**. 
-  + `.send` and `.transfer` usually work fine though.
++ If you are running gas usage simulations, they will **not be accurate**.
++ If you have hardcoded gas costs into your tests, some of them may **error**.
++ If your solidity logic constrains gas usage within narrow bounds, it may **fail**. 
+  + Solidity's `.send` and `.transfer` methods usually work fine though.
 
 Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas
 settings should be more resilient in most cases.
@@ -123,6 +116,7 @@ Clearly, the coverage should be the same in these situations, as the code is (fu
 
 If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
 
-[1]: https://coveralls.io/github/sc-forks/metacoin
+[1]: https://coveralls.io/builds/25886294
 [2]: https://codecov.io/ 
 [3]: https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png
+[4]: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-170.md
