@@ -9,10 +9,10 @@
 
 An example using Truffle MetaCoin, CircleCI, and Coveralls:
 
-
 **Step 1: Create a metacoin project & install coverage tools**
 
 ```bash
+$ mkdir metacoin && cd metacoin
 $ truffle unbox metacoin
 
 # Install coverage dependencies
@@ -31,6 +31,13 @@ $ npm install --save-dev solidity-coverage
 ```
 
 **Step 3: Add solidity-coverage to the plugins array in truffle-config.js:**
+
+```javascript
+module.exports = {
+  networks: {...},
+  plugins: ["solidity-coverage"]
+}
+```
 
 **Step 4: Create a .travis.yml:**
 
@@ -62,7 +69,7 @@ their behavior.
 ![missed_branch](https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png)
 
 
-## Running out of memory (Locally and in CI)
+## Running out of memory
 
 If your target contains dozens of large contracts, you may run up against node's memory cap during the
 contract compilation step. This can be addressed by setting the size of the memory space allocated to the command
@@ -71,7 +78,7 @@ when you run it. (NB: you must use the relative path to the truffle `bin` in nod
 $ node --max-old-space-size=4096 ../node_modules/.bin/truffle run coverage [options]
 ```
 
-## Running out of time (in mocha)
+## Running out of time
 
 Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under coverage, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `.solcover.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
 
@@ -94,8 +101,7 @@ Solidity-coverage instruments by injecting statements into your code, increasing
 Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas
 settings should be more resilient in most cases.
 
-Gas metering within Solidity is widely viewed as a problematic design pattern because EVM gas costs are recalibrated
-from fork to fork. Relying on them can result in deployed contracts ceasing to behave as intended.
+Gas metering within Solidity is widely viewed as a problematic design pattern because EVM gas costs are recalibrated from fork to fork. Relying on them can result in deployed contracts ceasing to behave as intended.
 
 ## Notes on branch coverage
 
