@@ -79,20 +79,20 @@ client: require('ganache-cli'),
 + See [the workflow hooks documentation][]. The *something special* will likely need to run within 
   an async function declared in .solcover.js
 
-### Are you what some might call an 'advanced user'?
+#### Are you what some might call an 'advanced user'?
 
-+ There are docs for you at [Advanced Use][1]
++ There are docs for you at [Advanced Use][]
 
-### Do you want to see some real-world installation examples?
+#### Do you want to see some real-world installation examples?
 
 + [metacoin][]
 + [openzeppelin-contracts][]
 + [joinColony/colonyNetwork][]
 + [aragon/aragon-court][]
 
-#### It's still not working 
+#### It's still not working :tada:
 
-+ Excellent! We're trying to find and fix as many problems as possible in the beta.
++ Ok good, we'd like to find and fix as many problems as possible in the beta. 
 
 + If your project is public, please open an issue linking to it and we will advise and/or
   open a PR into your repo installing solidity-coverage after patching any relevant bugs here.
