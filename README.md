@@ -1,14 +1,15 @@
 # solidity-coverage
 
 [![Gitter chat](https://badges.gitter.im/sc-forks/solidity-coverage.svg)][18]
-[![npm version](https://badge.fury.io/js/solidity-coverage.svg)][19]
+![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/beta)
 [![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
-[![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/master/graph/badge.svg)][21]
+[![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/beta/graph/badge.svg)][21]
 
 ## Code coverage for Solidity testing
-![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
+![coverage example][22]
 
-+ For more details about what this is, how it works and potential limitations, see [the accompanying article][16].
++ For more details about what this is, how it works and potential limitations,
+  see [the accompanying article][16].
 + `solidity-coverage` is [Solcover][17]
 
 ## Install
@@ -50,8 +51,8 @@ truffle run coverage [command-options]
 
 ## Config Options
 
-Additional options can be specified in a `.solcover.js` config file located in
-the root directory of your project.
+Additional options can be specified in a `.solcover.js` config file located in the root directory
+of your project.
 
 **Example:**
 ```javascript
@@ -93,9 +94,9 @@ Common problems & questions:
 
 ## Contribution Guidelines
 
-Contributions are welcome! If you're opening a PR that adds features or options *please consider writing full
-[unit tests][11] for them*. (We've built simple fixtures for almost every contingency and are happy to add some 
-for your case if necessary). 
+Contributions are welcome! If you're opening a PR that adds features or options *please consider
+writing full [unit tests][11] for them*. (We've built simple fixtures for almost everything
+and are happy to add some for your case if necessary).
 
 Set up the development environment with:
 ```
@@ -128,17 +129,17 @@ $ yarn
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
 [3]: https://mochajs.org/api/mocha
-[4]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas
-[5]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory
-[6]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha
-[7]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration
-[8]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-branch-coverage
+[4]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-gas
+[5]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-memory
+[6]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-time
+[7]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#continuous-integration
+[8]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#notes-on-branch-coverage
 [9]: https://sc-forks.github.io/metacoin/
 [10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
-[11]: https://github.com/sc-forks/solidity-coverage/tree/master/test/units
+[11]: https://github.com/sc-forks/solidity-coverage/tree/beta/test/units
 [12]: https://github.com/sc-forks/solidity-coverage/issues
-[13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-gas-distortion
-[14]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
+[13]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#notes-on-gas-distortion
+[14]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md
 [15]: #config-options
 [16]: https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2
 [17]: https://github.com/JoinColony/solcover
@@ -146,3 +147,4 @@ $ yarn
 [19]: https://badge.fury.io/js/solidity-coverage
 [20]: https://circleci.com/gh/sc-forks/solidity-coverage
 [21]: https://codecov.io/gh/sc-forks/solidity-coverage
+[22]: https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png

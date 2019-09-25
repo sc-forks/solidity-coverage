@@ -33,9 +33,9 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 #### Are you launching testrpc-sc yourself as a stand-alone client?
 
-+ Stop launching it. The coverage plugin needs to initialize the client itself so it can hook into the EVM. 
++ Stop launching it. The coverage plugin needs to initialize the client itself so it can hook into the EVM.
 
-+ By default it uses the ganache bundled with Truffle, but you can use any version (see below). 
++ By default it uses the ganache bundled with Truffle, but you can use any version (see below).
 
 #### Were you passing testrpc-sc lots of options as flags?   :jp: :jp: :jp: :jp: :jp:
 
@@ -43,17 +43,17 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
   you can safely ignore them. Ditto if your port was `8555`.
 
 + If the flags were things like `accounts` or `network_id`, you'll need to transfer them as
-  [ganache-core options][1] to the `providerOptions` key in .solcover.js. 
+  [ganache-core options][1] to the `providerOptions` key in .solcover.js.
 
 + Ganache's "cli flag" and "js option" formats are slightly different. Check out [their docs][1]
-  
+
   **Example**
-  
+
   *Before (at the command line)*
   ```
-  $ testrpc-sc --account="0x2b...7cd,1000000000000000000000000" -i 1999 --noVmErrorsOnRPCResponse 
+  $ testrpc-sc --account="0x2b...7cd,1000000000000000000000000" -i 1999 --noVmErrorsOnRPCResponse
   ```
-  
+
   *Now (in .solcover.js)*
   ```javascript
   providerOptions: {
@@ -70,8 +70,8 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 + If you copy-pasted it from the <= 0.6.x docs, **you can safely delete it**.
 
 + You should be able to `truffle run coverage --network <network-name>` and use the same config you
-  run your regular tests with. 
-  
+  run your regular tests with.
+
 + You can also omit the network flag and you'll be given default settings which look like this:
   ```javascript
   'soliditycoverage': {
@@ -87,24 +87,24 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
   client: require('ganache-cli'),
   ```
 
-#### Does your config contain any deprecated options? 
+#### Does your config contain any deprecated options?
 + They are:
   ```
   accounts,       # Now: `providerOptions: { total_accounts: <number> }`
   buildDirPath,   # Now: `--temp <path>` (At the command line, see Advanced Use)
   copyPackages,
   copyNodeModules,
-  deepSkip, 
-  testCommand, 
-  compileCommand, 
+  deepSkip,
+  testCommand,
+  compileCommand,
   noRpc
   ```
 
-+ You can delete them. 
++ You can delete them.
 
-#### Do you usually: (1) launch testrpc-sc, (2) do something special, (3) run solidity-coverage? 
+#### Do you usually: (1) launch testrpc-sc, (2) do something special, (3) run solidity-coverage?
 
-+ See [the workflow hooks documentation][3]. The "something special" will likely need to run within 
++ See [the workflow hooks documentation][3]. The "something special" will likely need to run within
   an async function declared in .solcover.js
 
 #### Are you what some might call an 'advanced user'?
@@ -123,16 +123,16 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 + If your project is public, please open an issue linking to it and we will advise and/or
   open a PR into your repo installing solidity-coverage after patching any relevant bugs here.
 
-+ If your project is private, see if you can generate a reproduction case for the 
++ If your project is private, see if you can generate a reproduction case for the
   problem and we'll try to fix that.
-    
+
 
 [1]: https://github.com/trufflesuite/ganache-core#options
-[2]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
-[3]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#workflow-hooks
+[2]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md
+[3]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#workflow-hooks
 [4]: https://github.com/sc-forks/metacoin
 [5]: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/1923
 [6]: https://github.com/JoinColony/colonyNetwork/pull/716
 [7]: https://github.com/aragon/aragon-court/pull/123
-[8]: https://github.com/sc-forks/solidity-coverage/tree/truffle-plugin#command-options
+[8]: https://github.com/sc-forks/solidity-coverage/tree/beta#command-options
 
