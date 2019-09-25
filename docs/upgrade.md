@@ -23,9 +23,9 @@ A full list of options and other information are [available here][8]
 
 First, follow [the installation instructions](#how-to-install-070) and see if it works.
 
-:rabbit2: It does!? :/
+:rabbit2: It does!? Bye.
 
-:elephant: It does not. Good.
+:elephant: It does not. Good...
 
 #### Are you using Truffle V5?
 
@@ -76,12 +76,12 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 #### Do you usually: (1) launch testrpc-sc, (2) do something special, (3) run solidity-coverage? 
 
-+ See [the workflow hooks documentation][3]. The *something special* will likely need to run within 
++ See [the workflow hooks documentation][3]. The "something special" will likely need to run within 
   an async function declared in .solcover.js
 
 #### Are you what some might call an 'advanced user'?
 
-+ There are docs for you at [Advanced Use][2]
++ See [Advanced Use][2]
 
 #### Do you want to see some real-world installation examples / pull-requests?
 
