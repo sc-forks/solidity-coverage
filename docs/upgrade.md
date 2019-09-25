@@ -17,7 +17,7 @@ module.exports = {
 truffle run coverage [command-options]
 ```
 
-A full list of options and other information are [available here][]
+A full list of options and other information are [available here][8]
 
 # Upgrading from 0.6.x to 0.7.0-beta.x
 
@@ -43,8 +43,8 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 + If the flags were things like `accounts` or `network_id`, you'll need to transfer them as
   [ganache-core options][1] to a `providerOptions` key in .solcover.js. (There are slight
-  variations between these two formats, especially for private key / balance accounts.
-  It's best to look carefully at the ganache docs.)
+  differences at ganache between the "cli flag" and "js option" formats - it's best to look 
+  carefully at [their docs][1])
 
 #### Do you still need a 'coverage' network in truffle-config.js?
 
@@ -76,19 +76,19 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 #### Do you usually: (1) launch testrpc-sc, (2) do something special, (3) run solidity-coverage? 
 
-+ See [the workflow hooks documentation][]. The *something special* will likely need to run within 
++ See [the workflow hooks documentation][3]. The *something special* will likely need to run within 
   an async function declared in .solcover.js
 
 #### Are you what some might call an 'advanced user'?
 
-+ There are docs for you at [Advanced Use][]
++ There are docs for you at [Advanced Use][2]
 
-#### Do you want to see some real-world installation examples?
+#### Do you want to see some real-world installation examples / pull-requests?
 
-+ [metacoin][]
-+ [openzeppelin-contracts][]
-+ [joinColony/colonyNetwork][]
-+ [aragon/aragon-court][]
++ [metacoin][4]
++ [openzeppelin-contracts][5]
++ [joinColony/colonyNetwork][6]
++ [aragon/aragon-court][7]
 
 #### :tada:  It's still not working!! :tada:
 
@@ -102,5 +102,11 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
     
 
 [1]: https://github.com/trufflesuite/ganache-core#options
-[2]:
+[2]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
+[3]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#workflow-hooks
+[4]: https://github.com/sc-forks/metacoin
+[5]: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/1923
+[6]: https://github.com/JoinColony/colonyNetwork/pull/716
+[7]: https://github.com/aragon/aragon-court/pull/123
+[8]: https://github.com/sc-forks/solidity-coverage/tree/truffle-plugin#command-options
 
