@@ -14,14 +14,22 @@ step_install_nvm: &step_install_nvm
       echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 jobs:
   unit-test:
-    docker:
-      - image: circleci/node:8.15.0
+    machine: true
     steps:
       - checkout
+      - <<: *step_install_nvm
       - run:
           name: Delete any old node_modules
           command: |
             rm -rf node_modules/
+      - run:
+          name: Install yarn
+          command: |
+            npm install -g yarn
+      - run:
+          name: Install truffle (globally)
+          command: |
+            npm install -g truffle
       - run:
           name: Install dependencies
           command: |
@@ -29,7 +37,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            npm run test-cov
+            npm run test:ci
       - run:
           name: Upload coverage
           command: |
@@ -56,7 +64,6 @@ jobs:
           name: Zeppelin E2E
           command: |
             ./scripts/run-zeppelin.sh
-
   e2e-metacoin:
     machine: true
     steps:
@@ -73,14 +80,16 @@ workflows:
       - unit-test
       - e2e-zeppelin
       - e2e-metacoin
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 1 * * *" # 1am UTC
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - e2e-zeppelin
+  # TODO: re-enable.
+  # At the moment we're using forks so this is pointless
+  #nightly:
+  #  triggers:
+  #    - schedule:
+  #        cron: "0 1 * * *" # 1am UTC
+  #        filters:
+  #          branches:
+  #            only:
+  #              - master
+  #  jobs:
+      #- e2e-zeppelin
       #- e2e-colony
