@@ -45,7 +45,7 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 + If the flags were things like `accounts` or `network_id`, you'll need to transfer them as
   [ganache-core options][1] to the `providerOptions` key in .solcover.js. 
 
-+ Ganache's "cli flag" and "js option" formats are slightly different. Check out [their docs][1])
++ Ganache's "cli flag" and "js option" formats are slightly different. Check out [their docs][1]
   
   **Example**
   
@@ -67,14 +67,12 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 #### Do you have a 'coverage' network in truffle-config.js?
 
-+ If you're not doing anything unusual there (like assigning a `from` or `network_id` which is only 
-  used for coverage) **you can safely delete it**.
++ If you copy-pasted it from the <= 0.6.x docs, **you can safely delete it**.
 
 + You should be able to `truffle run coverage --network <network-name>` and use the same config you
-  use for your regular tests. 
+  run your regular tests with. 
   
-+ You can also run without specifying a network and you'll be given default settings which look like
-  this:
++ You can also omit the network flag and you'll be given default settings which look like this:
   ```javascript
   'soliditycoverage': {
     port: 8555,
