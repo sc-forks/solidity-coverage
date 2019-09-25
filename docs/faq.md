@@ -1,106 +1,107 @@
 # FAQ
 
-### Continuous Integration: installing Metacoin on TravisCI with Coveralls
+- [Table of Contents](#contents)
+  * [Continuous Integration](#continuous-integration)
+  * [Running out of memory](#running-out-of-memory)
+  * [Running out of time](#running-out-of-time)
+  * [Notes on gas distortion](#notes-on-gas-distortion)
+  * [Notes on branch coverage](#notes-on-branch-coverage)
 
+## Continuous Integration
+
+An example using Truffle MetaCoin, TravisCI, and Coveralls:
 
 **Step 1: Create a metacoin project & install coverage tools**
 
 ```bash
+$ mkdir metacoin && cd metacoin
 $ truffle unbox metacoin
-$ rm test/TestMetacoin.sol  # No solidity tests, sorry.
 
-# Install coverage dependencies
+# Install coverage and development dependencies
 $ npm init
+$ npm install --save-dev truffle
 $ npm install --save-dev coveralls
 $ npm install --save-dev solidity-coverage
 ```
 
-**Step 2: Add test and coverage scripts to the `package.json`:**
+**Step 2: Add solidity-coverage to the plugins array in truffle-config.js:**
 
 ```javascript
-"scripts": {
-    "test": "truffle test",
-    "coverage": "npx solidity-coverage"
-},
+module.exports = {
+  networks: {...},
+  plugins: ["solidity-coverage"]
+}
 ```
 
 **Step 3: Create a .travis.yml:**
 
 ```yml
-sudo: required
 dist: trusty
 language: node_js
 node_js:
   - '10'
 install:
-  - npm install -g truffle
-  - npm install -g ganache-cli
   - npm install
 script:
-  - npm test
-before_script:
-  - testrpc > /dev/null &
-  - sleep 5
-after_script:
-  - npm run coverage && cat coverage/lcov.info | coveralls
+  - npx truffle run coverage
+  - cat coverage/lcov.info | coveralls
 ```
-**NB:** It's best practice to run coverage in a [parallel CI build](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/.travis.yml) rather than assume its equivalence to `truffle test`. Coverage's `testrpc-sc` uses gasLimits far above the current blocklimit and rewrites your contracts in ways that might affect their behavior. It's also less robust than Truffle and may fail more frequently.
+**NB:** It's best practice to run coverage as a separate CI job rather than assume its
+equivalence to `test`. Coverage uses block gas settings far above the network limits,
+ignores [EIP 170][4] and rewrites your contracts in ways that might affect
+their behavior.
 
 **Step 4: Toggle the project on at Travis and Coveralls and push.**
 
-[It should look like this](https://coveralls.io/github/sc-forks/metacoin)
+[It should look like this][1]
 
 **Appendix: Coveralls vs. Codecov**
 
-[Codecov.io](https://codecov.io/) is another CI coverage provider (we use it for this project). They're very reliable, easy to integrate with and have a nice UI. Unfortunately we haven't found a way to get their reports to show branch coverage. Coveralls has excellent branch coverage reporting out of the box (see below).
+**TLDR: We recommend Coveralls for the accuracy of its branch reporting.**
 
-![missed_branch](https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png)
+We use [Codecov.io][2] here as a coverage provider for our JS tests - they're great. Unfortunately we haven't found a way to get their reports to show branch coverage for Solidity. Coveralls has excellent Solidity branch coverage reporting out of the box (see below).
 
-
-
-### Running out of gas
-If you have hardcoded gas costs into your tests some of them may fail when using solidity-coverage.
-This is because the instrumentation process increases the gas costs for using the contracts, due to
-the extra events. If this is the case, then the coverage may be incomplete. To avoid this, using
-`estimateGas` to estimate your gas costs should be more resilient in most cases.
+![missed_branch][3]
 
 
-### Running out of memory (Locally and in CI)
-(See [issue #59](https://github.com/sc-forks/solidity-coverage/issues/59)).
-If your target contains dozens of contracts, you may run up against node's 1.7MB memory cap during the
-contract compilation step. This can be addressed by setting the `testCommand` option in `.solcover.js` as
-below:
-```javascript
-testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/truffle test --network coverage'
+## Running out of memory
+
+If your target contains dozens of large contracts, you may run up against node's memory cap during the
+contract compilation step. This can be addressed by setting the size of the memory space allocated to the command
+when you run it. (NB: you must use the relative path to the truffle `bin` in node_modules)
 ```
-Note the path: it reaches outside a temporarily generated `coverageEnv` folder to access a locally
-installed version of truffle in your root directory's `node_modules`.
+$ node --max-old-space-size=4096 ../node_modules/.bin/truffle run coverage [options]
+```
 
-Large projects may also hit their CI container memcap running coverage after unit tests. This can be
-addressed on TravisCI by adding `sudo: required` to the `travis.yml`, which raises the container's
-limit to 7.5MB (ProTip courtesy of [@federicobond](https://github.com/federicobond).
+## Running out of time
 
-### Running out of time (in mocha)
-Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under coverage, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `truffle.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
+Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under coverage, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `.solcover.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
+
 ```javascript
 module.exports = {
-  networks: {
-      development: {
-          host: "localhost",
-          port: 8545,
-          network_id: "*"
-      },
-      ...etc...
-  },
   mocha: {
-      enableTimeouts: false
+    enableTimeouts: false
   }
 }
 ```
 
-### Why has my branch coverage decreased? Why is assert being shown as a branch point?
+## Notes on gas distortion
 
-`assert` and `require` check whether a condition is true or not. If it is, they allow execution to proceed. If not, they throw, and all changes are reverted. Indeed, prior to [Solidity 0.4.10](https://github.com/ethereum/solidity/releases/tag/v0.4.10), when `assert` and `require` were introduced, this functionality was achieved by code that looked like
+Solidity-coverage instruments by injecting statements into your code, increasing its execution costs.
+
++ If you are running gas usage simulations, they will **not be accurate**.
++ If you have hardcoded gas costs into your tests, some of them may **error**.
++ If your solidity logic constrains gas usage within narrow bounds, it may **fail**. 
+  + Solidity's `.send` and `.transfer` methods usually work fine though.
+
+Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas
+settings should be more resilient in most cases.
+
+Gas metering within Solidity is increasingly seen as anti-pattern because EVM gas costs are recalibrated from fork to fork. Depending on their exact values can result in deployed contracts ceasing to behave as intended.
+
+## Notes on branch coverage
+
+Solidity-coverage treats `assert` and `require` as code branches because they check whether a condition is true or not. If it is, they allow execution to proceed. If not, they throw, and all changes are reverted. Indeed, prior to [Solidity 0.4.10](https://github.com/ethereum/solidity/releases/tag/v0.4.10), when `assert` and `require` were introduced, this functionality was achieved by code that looked like
 
 ```
 if (!x) throw;
@@ -115,37 +116,7 @@ Clearly, the coverage should be the same in these situations, as the code is (fu
 
 If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
 
-### Running on windows
-
-Since `v0.2.6` it's possible to produce a report on Windows (thanks to [@phiferd](https://github.com/phiferd),
-who also maintains their own windows-compatible fork of solidity-coverage with other useful improvements). However,
-problems remain with the tool's internal launch of `testrpc-sc` so you should create a `.solcover.js` config
-file in your root directory and set the `norpc` option to `true`. Then follow the directions below for
-launching `testrpc-sc` on its own from the command line before running `solidity-coverage` itself.
-
-### Running testrpc-sc on its own
-
-Sometimes its useful to launch `testrpc-sc` separately at the command line or with a script, after
-setting the `norpc` config option in `.solcover.js` to true:
-
-```
-$ npx testrpc-sc <options>
-```
-
-### Running truffle as a local dependency
-
-If your project ships with Truffle as a dev dependency and expects that instance to be
-invoked when running tests, you should either set the `copyNodeModules` option to `true`
-in your`.solcover.js` config file OR (if doing so results in poor run time performance), set
-the config's `testCommand` and `compileCommand` options as below:
-
-```javascript
-compileCommand: '../node_modules/.bin/truffle compile',
-testCommand: '../node_modules/.bin/truffle test --network coverage',
-```
-
-
-
-
-
-
+[1]: https://coveralls.io/builds/25886294
+[2]: https://codecov.io/ 
+[3]: https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png
+[4]: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-170.md

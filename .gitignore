@@ -5,6 +5,5 @@ node_modules/
 .DS_Store
 test/artifacts
 test/cache
-yarn.lock
 temp
 .nyc_output/

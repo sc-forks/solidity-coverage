@@ -1,33 +1,25 @@
 # solidity-coverage
 
-[![Join the chat at https://gitter.im/sc-forks/solidity-coverage](https://badges.gitter.im/sc-forks/solidity-coverage.svg)](https://gitter.im/sc-forks/solidity-coverage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![npm version](https://badge.fury.io/js/solidity-coverage.svg)](https://badge.fury.io/js/solidity-coverage)
-[![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)](https://circleci.com/gh/sc-forks/solidity-coverage)
-[![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/master/graph/badge.svg)](https://codecov.io/gh/sc-forks/solidity-coverage)
+[![Gitter chat](https://badges.gitter.im/sc-forks/solidity-coverage.svg)][18]
+![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/beta)
+[![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
+[![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/beta/graph/badge.svg)][21]
 
-### Code coverage for Solidity testing
-![coverage example](https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png)
+## Code coverage for Solidity testing
+![coverage example][22]
 
-+ For more details about what this is, how it works and potential limitations, see
-[the accompanying article](https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2).
-+ `solidity-coverage` is in development and **its accuracy is unknown.** If you
-find discrepancies between the coverage report and your suite's behavior, please open an
-[issue](https://github.com/sc-forks/solidity-coverage/issues).
-+ `solidity-coverage` is [Solcover](https://github.com/JoinColony/solcover)
++ For more details about what this is, how it works and potential limitations,
+  see [the accompanying article][16].
++ `solidity-coverage` is [Solcover][17]
 
-### Install
+## Install
 ```
 $ npm install --save-dev solidity-coverage@beta
 ```
-### Usage notes:
-+ Coverage runs tests a little more slowly.
-+ Coverage distorts gas consumption. Tests that check exact gas consumption should be skipped.
-+ Coverage launches its own in-process ganache server.
-+ You can set [ganache options](https://github.com/trufflesuite/ganache-core#options) using the `providerOptions` key in your `.solcover.js` config.
 
-### Truffle V5
+## Truffle V5
 
-**Add** "solidity-coverage" to your plugins array in `truffle-config.js`
+**Add** this package to your plugins array in `truffle-config.js`
 ```javascript
 module.exports = {
   networks: {...},
@@ -36,24 +28,31 @@ module.exports = {
 ```
 **Run**
 ```
-truffle run coverage [options]
+truffle run coverage [command-options]
 ```
 
+## Usage notes:
++ Coverage runs tests a little more slowly.
++ Coverage launches its own in-process ganache server.
++ You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` [config][15].
++ Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be skipped.
 
-### Command Options
-| Option <img width=200/> | Example <img width=700/>| Description <img width=1000/> |
+## Command Options
+| Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle config |
-| temp       | `--temp build`   | :warning: *Use with caution* :warning:.  Disposable folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. |
+| temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
 | version    |                                | Version info |
 | help       |                                | Usage notes  |
 
-### Config Options
+[<sup>*</sup> Advanced use][14]
 
-Additional options can be specified in a `.solcover.js` config file located in
-the root directory of your project.
+## Config Options
+
+Additional options can be specified in a `.solcover.js` config file located in the root directory
+of your project.
 
 **Example:**
 ```javascript
@@ -67,37 +66,37 @@ module.exports = {
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
 | client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
-| providerOptions | *Object* | `{ }` | [ganache-core options](https://github.com/trufflesuite/ganache-core#options)  |
+| providerOptions | *Object* | `{ }` | [ganache-core options][1]  |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
-| istanbulReporter | *Array* | `['html', 'lcov', 'text']` | [Istanbul coverage reporters](https://istanbul.js.org/docs/advanced/alternative-reporters/)  |
-| mocha | *Object* | `{ }` | [Mocha options](https://mochajs.org/api/mocha) to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
-| onServerReady | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability |
-| onTestsComplete | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. |
-| onCompileComplete | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. |
-| onIstanbulComplete | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. |
+| istanbulReporter | *Array* | `['html', 'lcov', 'text']` | [Istanbul coverage reporters][2]  |
+| mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
+| onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][14] |
+| onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][14]|
+| onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated.|
+| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up.|
 
+[<sup>*</sup> Advanced use][14]
 
-
-### FAQ
+## FAQ
 
 Common problems & questions:
 
-+ [Running out of gas](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas)
-+ [Running out of memory (locally and in CI)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory-locally-and-in-ci)
-+ [Running out of time (in mocha)](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time-in-mocha)
-+ [Running in CI](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration-installing-metacoin-on-travisci-with-coveralls)
-+ [Why are asserts and requires highlighted as branch points?](https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#why-has-my-branch-coverage-decreased-why-is-assert-being-shown-as-a-branch-point)
++ [Running in CI][7]
++ [Running out of gas][4]
++ [Running out of time][6]
++ [Running out of memory][5]
++ [Why are `require` statements highlighted as branch points?][8]
 
 
-### Example reports
-+ [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
-+ [openzeppelin-solidity](https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master)  (Coveralls)
+## Example reports
++ [metacoin][9] (Istanbul HTML)
++ [openzeppelin-solidity][10](Coveralls)
 
-### Contribution Guidelines
+## Contribution Guidelines
 
-Contributions are welcome! If you're opening a PR that adds features please consider writing some
-[unit tests](https://github.com/sc-forks/solidity-coverage/tree/master/test) for them.  Bugs can be
-reported in the [issues](https://github.com/sc-forks/solidity-coverage/issues).
+Contributions are welcome! If you're opening a PR that adds features or options *please consider
+writing full [unit tests][11] for them*. (We've built simple fixtures for almost everything
+and are happy to add some for your case if necessary).
 
 Set up the development environment with:
 ```
@@ -105,7 +104,7 @@ $ git clone https://github.com/sc-forks/solidity-coverage.git
 $ yarn
 ```
 
-### Contributors
+## Contributors
 + [@area](https://github.com/area)
 + [@cgewecke](https://github.com/cgewecke)
 + [@adriamb](https://github.com/adriamb)
@@ -126,3 +125,26 @@ $ yarn
 + [@angus-hamill](https://github.com/angus-hamill)
 + [@kandrianov](https://github.com/kandrianov)
 + [@yxliang01](https://github.com/yxliang01)
+
+[1]: https://github.com/trufflesuite/ganache-core#options
+[2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
+[3]: https://mochajs.org/api/mocha
+[4]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-gas
+[5]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-memory
+[6]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-time
+[7]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#continuous-integration
+[8]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#notes-on-branch-coverage
+[9]: https://sc-forks.github.io/metacoin/
+[10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
+[11]: https://github.com/sc-forks/solidity-coverage/tree/beta/test/units
+[12]: https://github.com/sc-forks/solidity-coverage/issues
+[13]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#notes-on-gas-distortion
+[14]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md
+[15]: #config-options
+[16]: https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2
+[17]: https://github.com/JoinColony/solcover
+[18]: https://gitter.im/sc-forks/solidity-coverage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[19]: https://badge.fury.io/js/solidity-coverage
+[20]: https://circleci.com/gh/sc-forks/solidity-coverage
+[21]: https://codecov.io/gh/sc-forks/solidity-coverage
+[22]: https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png
