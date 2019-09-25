@@ -92,8 +92,6 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 #### :tada:  It's still not working!! :tada:
 
-+ Ok good, we'd like to find and fix as many problems as possible in the beta. 
-
 + If your project is public, please open an issue linking to it and we will advise and/or
   open a PR into your repo installing solidity-coverage after patching any relevant bugs here.
 
