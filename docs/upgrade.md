@@ -33,8 +33,9 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 #### Are you launching testrpc-sc yourself as a stand-alone client?
 
-+ Stop launching it. The coverage plugin needs to initialize the client itself so it can hook into the EVM. By default it 
-  uses the ganache bundled with Truffle, but you can use any version (see below). 
++ Stop launching it. The coverage plugin needs to initialize the client itself so it can hook into the EVM. 
+
++ By default it uses the ganache bundled with Truffle, but you can use any version (see below). 
 
 #### Were you passing testrpc-sc lots of options as flags?   :jp: :jp: :jp: :jp: :jp:
 
@@ -42,17 +43,35 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
   you can safely ignore them. Ditto if your port was `8555`.
 
 + If the flags were things like `accounts` or `network_id`, you'll need to transfer them as
-  [ganache-core options][1] to a `providerOptions` key in .solcover.js. (There are slight
-  differences at ganache between the "cli flag" and "js option" formats - it's best to look 
-  carefully at [their docs][1])
+  [ganache-core options][1] to the `providerOptions` key in .solcover.js. 
 
-#### Do you still need a 'coverage' network in truffle-config.js?
++ Ganache's "cli flag" and "js option" formats are slightly different. Check out [their docs][1])
+  
+  **Example**
+  
+  *Before (at the command line)*
+  ```
+  $ testrpc-sc --account="0x2b...7cd,1000000000000000000000000" -i 1999 --noVmErrorsOnRPCResponse 
+  ```
+  
+  *Now (in .solcover.js)*
+  ```javascript
+  providerOptions: {
+    accounts: [{
+      secretKey: "0x2b.............7cd",
+      balance: "0xD3C21BCECCEDA1000000"   // <-- Must be hex
+    }],
+    network_id: 1999,
+    vmErrorsOnRPCResponse: false
+  }
+
+#### Do you have a 'coverage' network in truffle-config.js?
 
 + If you're not doing anything unusual there (like assigning a `from` or `network_id` which is only 
-  used for coverage) you can safely delete it.
+  used for coverage) **you can safely delete it**.
 
 + You should be able to `truffle run coverage --network <network-name>` and use the same config you
-  would for your regular tests. 
+  use for your regular tests. 
   
 + You can also run without specifying a network and you'll be given default settings which look like
   this:
@@ -94,7 +113,7 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 + See [Advanced Use][2]
 
-#### Do you want to see some real-world installation examples / pull-requests?
+#### Would you like to see some real-world installation examples?
 
 + [metacoin][4]
 + [openzeppelin-contracts][5]
