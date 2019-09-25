@@ -70,8 +70,8 @@ module.exports = {
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text']` | [Istanbul coverage reporters][2]  |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
-| onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][14] |
-| onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][14]|
+| onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][23] |
+| onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated.|
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up.|
 
@@ -82,7 +82,7 @@ module.exports = {
 Common problems & questions:
 
 + [Running in CI][7]
-+ [Running out of gas][4]
++ [Running out of gas][13]
 + [Running out of time][6]
 + [Running out of memory][5]
 + [Why are `require` statements highlighted as branch points?][8]
@@ -148,3 +148,4 @@ $ yarn
 [20]: https://circleci.com/gh/sc-forks/solidity-coverage
 [21]: https://codecov.io/gh/sc-forks/solidity-coverage
 [22]: https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png
+[23]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#workflow-hooks
