@@ -15,12 +15,19 @@ find discrepancies between the coverage report and your suite's behavior, please
 [issue](https://github.com/sc-forks/solidity-coverage/issues).
 + `solidity-coverage` is [Solcover](https://github.com/JoinColony/solcover)
 
-### Install
+### A new (beta) version of solidity-coverage is out (0.7.x)
+ + Installs as a plugin
+ + Uses any ganache
+ + Just works. (Read the [instructions](https://github.com/sc-forks/solidity-coverage/tree/beta#solidity-coverage))
+ + [0.7.0-beta release notes](https://github.com/sc-forks/solidity-coverage/releases/tag/v0.7.0-beta.2)
+ + [0.6.x to 0.7.x upgrade guide](https://github.com/sc-forks/solidity-coverage/blob/beta/docs/upgrade.md#upgrading-from-06x-to-070-betax).
+
+### Install 0.6.x
 ```
 $ npm install --save-dev solidity-coverage
 ```
 
-### Run
+### Run 0.6.x
 Set a `coverage` network in truffle-config.js (see [Network Configuration](#network-configuration)) and then run:
 ```
 $ npx solidity-coverage
