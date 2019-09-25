@@ -29,12 +29,12 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 #### Are you using Truffle V5?
 
-+ V5 is (currently) required and everything works best with versions >= 5.0.31.
++ Everything works best with Truffle versions >= 5.0.31.
 
 #### Are you launching testrpc-sc yourself as a stand-alone client?
 
 + Stop launching it. The coverage plugin needs to initialize the client itself so it can hook into the EVM. By default it 
-  uses the ganache bundled with your Truffle, but you can use any version (see below). 
+  uses the ganache bundled with Truffle, but you can use any version (see below). 
 
 #### Were you passing testrpc-sc lots of options as flags?   :jp: :jp: :jp: :jp: :jp:
 
@@ -63,14 +63,25 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
     network_id: "*",
   }
   ```
-#### Do your tests depend on the specific ganache version you have a local dependency?
+#### Do your tests depend on the specific ganache version you have as a local dependency?
 
-+ List it in .solcover.js using the client option
++ Declare it in .solcover.js using the client option
   ```javascript
   client: require('ganache-cli'),
   ```
 
-#### Does your config contain options like copyPackages, deepSkip, testCommand, compileCommand, noRpc...?
+#### Does your config contain any deprecated options? 
++ They are:
+  ```
+  accounts,       # Now: `providerOptions: { total_accounts: <number> }`
+  buildDirPath,   # Now: `--temp <path>` (At the command line, see Advanced Use)
+  copyPackages,
+  copyNodeModules,
+  deepSkip, 
+  testCommand, 
+  compileCommand, 
+  noRpc
+  ```
 
 + You can delete them. 
 
