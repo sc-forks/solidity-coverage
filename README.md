@@ -36,6 +36,8 @@ truffle run coverage [command-options]
 + Coverage launches its own in-process ganache server.
 + You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` [config][15].
 + Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be [skipped][24].
++ Coverage runs your compiler with **optimization off**. 
+  + :warning: Please report all unexpected compilation faults to issue #417 :warning:
 
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
