@@ -120,7 +120,7 @@ Solutions to common problems people run into:
 
 ### Example reports
 + [metacoin](https://sc-forks.github.io/metacoin/) (Istanbul HTML)
-+ [openzeppelin-solidity](https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master)  (Coveralls)
++ [OpenZeppelin Contracts](https://codecov.io/gh/OpenZeppelin/openzeppelin-contracts)  (Codecov)
 
 ### Contribution Guidelines
 
