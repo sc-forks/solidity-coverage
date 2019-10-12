@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const solc = require('solc');
-const TruffleContract = require('truffle-contract');
+const TruffleContract = require('@truffle/contract');
 
 const Instrumenter = require('./../../lib/instrumenter');
 const DataCollector = require('./../../lib/collector')
