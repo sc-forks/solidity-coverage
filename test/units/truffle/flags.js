@@ -4,7 +4,7 @@ const path = require('path')
 const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
-const mock = require('../../util/integration.truffle');
+const mock = require('../../util/integration');
 const plugin = require('../../../dist/truffle.plugin');
 
 // =======================

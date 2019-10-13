@@ -1,5 +1,6 @@
 const API = require('./../lib/api');
 const utils = require('./plugin-assets/plugin.utils');
+const truffleUtils = require('./plugin-assets/truffle.utils');
 const PluginUI = require('./plugin-assets/truffle.ui');
 
 const pkg = require('./../package.json');
@@ -23,14 +24,16 @@ async function plugin(config){
   try {
     death(utils.finish.bind(null, config, api)); // Catch interrupt signals
 
+    config = normalizeConfig(config);
+
     ui = new PluginUI(config.logger.log);
 
     if(config.help) return ui.report('help');    // Exit if --help
 
-    truffle = utils.loadTruffleLibrary(config);
+    truffle = truffleUtils.loadLibrary(config);
     api = new API(utils.loadSolcoverJS(config));
 
-    utils.setNetwork(config, api);
+    truffleUtils.setNetwork(config, api);
 
     // Server launch
     const address = await api.ganache(truffle.ganache);
@@ -40,7 +43,7 @@ async function plugin(config){
     const nodeInfo = await web3.eth.getNodeInfo();
     const ganacheVersion = nodeInfo.split('/')[1];
 
-    utils.setNetworkFrom(config, accounts);
+    truffleUtils.setNetworkFrom(config, accounts);
 
     // Version Info
     ui.report('versions', [
@@ -62,10 +65,13 @@ async function plugin(config){
     await api.onServerReady(config);
 
     // Instrument
+    const skipFiles = api.skipFiles || [];
+    skipFiles.push('Migrations.sol');
+
     let {
       targets,
       skipped
-    } = utils.assembleFiles(config, api.skipFiles);
+    } = utils.assembleFiles(config, skipFiles);
 
     targets = api.instrument(targets);
     utils.reportSkipped(config, skipped);
@@ -88,7 +94,7 @@ async function plugin(config){
     );
 
     config.all = true;
-    config.test_files = utils.getTestFilePaths(config);
+    config.test_files = truffleUtils.getTestFilePaths(config);
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts
@@ -116,6 +122,20 @@ async function plugin(config){
 
   if (error !== undefined) throw error;
   if (failures > 0) throw new Error(ui.generate('tests-fail', [failures]));
+}
+
+/**
+ * Maps truffle specific keys for the paths to things like sources to the generic
+ * keys required by the plugin utils
+ * @return {Object} truffle-config.js
+ */
+function normalizeConfig(config){
+  config.workingDir = config.working_directory;
+  config.contractsDir = config.contracts_directory;
+  config.testDir = config.test_directory;
+  config.artifactsDir = config.build_directory;
+
+  return config;
 }
 
 module.exports = plugin;

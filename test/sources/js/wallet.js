@@ -1,4 +1,4 @@
-const Wallet = artifacts.require('./Wallet.sol');
+const Wallet = artifacts.require('Wallet');
 
 contract('Wallet', accounts => {
   it('should should allow transfers and sends', async () => {
