@@ -183,7 +183,6 @@ function loadLibrary(config){
 
 }
 
-
 /**
  * Maps truffle specific keys for the paths to things like sources to the generic
  * keys required by the plugin utils
@@ -197,7 +196,6 @@ function normalizeConfig(config){
 
   return config;
 }
-
 
 module.exports = {
   getTestFilePaths: getTestFilePaths,
