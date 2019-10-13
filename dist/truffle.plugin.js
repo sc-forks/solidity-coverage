@@ -24,7 +24,7 @@ async function plugin(config){
   try {
     death(utils.finish.bind(null, config, api)); // Catch interrupt signals
 
-    config = normalizeConfig(config);
+    config = truffleUtils.normalizeConfig(config);
 
     ui = new PluginUI(config.logger.log);
 
@@ -122,20 +122,6 @@ async function plugin(config){
 
   if (error !== undefined) throw error;
   if (failures > 0) throw new Error(ui.generate('tests-fail', [failures]));
-}
-
-/**
- * Maps truffle specific keys for the paths to things like sources to the generic
- * keys required by the plugin utils
- * @return {Object} truffle-config.js
- */
-function normalizeConfig(config){
-  config.workingDir = config.working_directory;
-  config.contractsDir = config.contracts_directory;
-  config.testDir = config.test_directory;
-  config.artifactsDir = config.build_directory;
-
-  return config;
 }
 
 module.exports = plugin;

@@ -183,9 +183,24 @@ function loadLibrary(config){
 
 }
 
+/**
+ * Maps truffle specific keys for the paths to things like sources to the generic
+ * keys required by the plugin utils
+ * @return {Object} truffle-config.js
+ */
+function normalizeConfig(config){
+  config.workingDir = config.working_directory;
+  config.contractsDir = config.contracts_directory;
+  config.testDir = config.test_directory;
+  config.artifactsDir = config.build_directory;
+
+  return config;
+}
+
 module.exports = {
   getTestFilePaths: getTestFilePaths,
   setNetwork: setNetwork,
   setNetworkFrom: setNetworkFrom,
   loadLibrary: loadLibrary,
+  normalizeConfig: normalizeConfig,
 }
