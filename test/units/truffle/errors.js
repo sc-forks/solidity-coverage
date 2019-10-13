@@ -6,7 +6,7 @@ const shell = require('shelljs');
 const ganache = require('ganache-core-sc');
 
 const verify = require('../../util/verifiers')
-const mock = require('../../util/integration.truffle');
+const mock = require('../../util/integration');
 const plugin = require('../../../dist/truffle.plugin');
 
 // =======

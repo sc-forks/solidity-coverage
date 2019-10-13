@@ -10,11 +10,7 @@ const PluginUI = require('./truffle.ui');
 
 const path = require('path');
 const fs = require('fs-extra');
-const dir = require('node-dir');
-const globby = require('globby');
 const shell = require('shelljs');
-const globalModules = require('global-modules');
-const TruffleProvider = require('@truffle/provider');
 
 // ===
 // UI
@@ -83,7 +79,7 @@ function toRelativePath(pathToFile, pathToParent){
  * @return {Object}               temp paths
  */
 function getTempLocations(config){
-  const cwd = config.working_directory;
+  const cwd = config.workingDir;
   const contractsDirName = '.coverage_contracts';
   const artifactsDirName = config.temp || '.coverage_artifacts';
 
@@ -100,9 +96,9 @@ function getTempLocations(config){
 function checkContext(config, tempContractsDir, tempArtifactsDir){
   const ui = new PluginUI(config.logger.log);
 
-  if (!shell.test('-e', config.contracts_directory)){
+  if (!shell.test('-e', config.contractsDir)){
 
-    const msg = ui.generate('sources-fail', [config.contracts_directory])
+    const msg = ui.generate('sources-fail', [config.contractsDir])
     throw new Error(msg);
   }
 
@@ -135,7 +131,7 @@ function assembleFiles(config, skipFiles=[]){
   shell.mkdir(tempContractsDir);
   shell.mkdir(tempArtifactsDir);
 
-  targets = shell.ls(`${config.contracts_directory}/**/*.sol`);
+  targets = shell.ls(`${config.contractsDir}/**/*.sol`);
 
   skipFiles = assembleSkipped(config, targets, skipFiles);
 
@@ -145,7 +141,7 @@ function assembleFiles(config, skipFiles=[]){
 function assembleTargets(config, targets=[], skipFiles=[]){
   const skipped = [];
   const filtered = [];
-  const cd = config.contracts_directory;
+  const cd = config.contractsDir;
 
   for (let target of targets){
     if (skipFiles.includes(target)){
@@ -176,11 +172,8 @@ function assembleTargets(config, targets=[], skipFiles=[]){
  * Parses the skipFiles option (which also accepts folders)
  */
 function assembleSkipped(config, targets, skipFiles=[]){
-  const cd = config.contracts_directory;
-
   // Make paths absolute
-  skipFiles = skipFiles.map(contract => `${cd}/${contract}`);
-  skipFiles.push(`${cd}/Migrations.sol`);
+  skipFiles = skipFiles.map(contract => `${config.contractsDir}/${contract}`);
 
   // Enumerate files in skipped folders
   const skipFolders = skipFiles.filter(item => path.extname(item) !== '.sol')
@@ -195,183 +188,6 @@ function assembleSkipped(config, targets, skipFiles=[]){
   return skipFiles;
 }
 
-// ========
-// Truffle
-// ========
-
-/**
- * Returns a list of test files to pass to mocha.
- * @param  {Object}   config  truffleConfig
- * @return {String[]}         list of files to pass to mocha
- */
-function getTestFilePaths(config){
-  let target;
-  let ui = new PluginUI(config.logger.log);
-
-
-  // Handle --file <path|glob> cli option (subset of tests)
-  (typeof config.file === 'string')
-    ? target = globby.sync([config.file])
-    : target = dir.files(config.test_directory, { sync: true }) || [];
-
-  // Filter native solidity tests and warn that they're skipped
-  const solregex = /.*\.(sol)$/;
-  const hasSols = target.filter(f => f.match(solregex) != null);
-
-  if (hasSols.length > 0) ui.report('sol-tests', [hasSols.length]);
-
-  // Return list of test files
-  const testregex = /.*\.(js|ts|es|es6|jsx)$/;
-  return target.filter(f => f.match(testregex) != null);
-}
-
-
-/**
- * Configures the network. Runs before the server is launched.
- * User can request a network from truffle-config with "--network <name>".
- * There are overlapiing options in solcoverjs (like port and providerOptions.network_id).
- * Where there are mismatches user is warned & the truffle network settings are preferred.
- *
- * Also generates a default config & sets the default gas high / gas price low.
- *
- * @param {TruffleConfig}      config
- * @param {SolidityCoverage} api
- */
-function setNetwork(config, api){
-  const ui = new PluginUI(config.logger.log);
-
-  // --network <network-name>
-  if (config.network){
-    const network = config.networks[config.network];
-
-    // Check network:
-    if (!network){
-      throw new Error(ui.generate('no-network', [config.network]));
-    }
-
-    // Check network id
-    if (!isNaN(parseInt(network.network_id))){
-
-      // Warn: non-matching provider options id and network id
-      if (api.providerOptions.network_id &&
-          api.providerOptions.network_id !== parseInt(network.network_id)){
-
-        ui.report('id-clash', [ parseInt(network.network_id) ]);
-      }
-
-      // Prefer network defined id.
-      api.providerOptions.network_id = parseInt(network.network_id);
-
-    } else {
-      network.network_id = "*";
-    }
-
-    // Check port: use solcoverjs || default if undefined
-    if (!network.port) {
-      ui.report('no-port', [api.port]);
-      network.port = api.port;
-    }
-
-    // Warn: port conflicts
-    if (api.port !== api.defaultPort && api.port !== network.port){
-      ui.report('port-clash', [ network.port ])
-    }
-
-    // Prefer network port if defined;
-    api.port = network.port;
-
-    network.gas = api.gasLimit;
-    network.gasPrice = api.gasPrice;
-
-    setOuterConfigKeys(config, api, network.network_id);
-    return;
-  }
-
-  // Default Network Configuration
-  config.network = 'soliditycoverage';
-  setOuterConfigKeys(config, api, "*");
-
-  config.networks[config.network] = {
-    network_id: "*",
-    port: api.port,
-    host: api.host,
-    gas: api.gasLimit,
-    gasPrice: api.gasPrice
-  }
-}
-
-/**
- * Sets the default `from` account field in the truffle network that will be used.
- * This needs to be done after accounts are fetched from the launched client.
- * @param {TruffleConfig} config
- * @param {Array}         accounts
- */
-function setNetworkFrom(config, accounts){
-  if (!config.networks[config.network].from){
-    config.networks[config.network].from = accounts[0];
-  }
-}
-
-// Truffle complains that these outer keys *are not* set when running plugin fn directly.
-// But throws saying they *cannot* be manually set when running as truffle command.
-function setOuterConfigKeys(config, api, id){
-  try {
-    config.network_id = id;
-    config.port = api.port;
-    config.host = api.host;
-    config.provider = TruffleProvider.create(config);
-  } catch (err){}
-}
-
-/**
- * Tries to load truffle module library and reports source. User can force use of
- * a non-local version using cli flags (see option). It's necessary to maintain
- * a fail-safe lib because feature was only introduced in 5.0.30. Load order is:
- *
- * 1. local node_modules
- * 2. global node_modules
- * 3. fail-safe (truffle lib v 5.0.31 at ./plugin-assets/truffle.library)
- *
- * @param  {Object} truffleConfig config
- * @return {Module}
- */
-function loadTruffleLibrary(config){
-  const ui = new PluginUI(config.logger.log);
-
-  // Local
-  try {
-    if (config.useGlobalTruffle || config.usePluginTruffle) throw null;
-
-    const lib = require("truffle");
-    ui.report('lib-local');
-    return lib;
-
-  } catch(err) {};
-
-  // Global
-  try {
-    if (config.usePluginTruffle) throw null;
-
-    const globalTruffle = path.join(globalModules, 'truffle');
-    const lib = require(globalTruffle);
-    ui.report('lib-global');
-    return lib;
-
-  } catch(err) {};
-
-  // Plugin Copy @ v 5.0.31
-  try {
-    if (config.forceLibFailure) throw null; // For err unit testing
-
-    ui.report('lib-warn');
-    return require("./truffle.library")
-
-  } catch(err) {
-    throw new Error(ui.generate('lib-fail', [err]));
-  };
-
-}
-
 function loadSolcoverJS(config){
   let solcoverjs;
   let coverageConfig;
@@ -380,8 +196,8 @@ function loadSolcoverJS(config){
 
   // Handle --solcoverjs flag
   (config.solcoverjs)
-    ? solcoverjs = path.join(config.working_directory, config.solcoverjs)
-    : solcoverjs = path.join(config.working_directory, '.solcover.js');
+    ? solcoverjs = path.join(config.workingDir, config.solcoverjs)
+    : solcoverjs = path.join(config.workingDir, '.solcover.js');
 
   // Catch solcoverjs syntax errors
   if (shell.test('-e', solcoverjs)){
@@ -400,8 +216,8 @@ function loadSolcoverJS(config){
 
   // Truffle writes to coverage config
   coverageConfig.log = config.logger.log;
-  coverageConfig.cwd = config.working_directory;
-  coverageConfig.originalContractsDir = config.contracts_directory;
+  coverageConfig.cwd = config.workingDir;
+  coverageConfig.originalContractsDir = config.contractsDir;
 
   // Solidity-Coverage writes to Truffle config
   config.mocha = config.mocha || {};
@@ -446,15 +262,10 @@ module.exports = {
   checkContext: checkContext,
   finish: finish,
   getTempLocations: getTempLocations,
-  getTestFilePaths: getTestFilePaths,
   loadSource: loadSource,
   loadSolcoverJS: loadSolcoverJS,
-  loadTruffleLibrary: loadTruffleLibrary,
   reportSkipped: reportSkipped,
   save: save,
-  setNetwork: setNetwork,
-  setNetworkFrom: setNetworkFrom,
-  setOuterConfigKeys: setOuterConfigKeys,
   checkContext: checkContext,
   toRelativePath: toRelativePath
 }

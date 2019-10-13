@@ -4,7 +4,7 @@ const path = require('path')
 const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
-const mock = require('../../util/integration.truffle');
+const mock = require('../../util/integration');
 const plugin = require('../../../dist/truffle.plugin');
 
 // =======================
@@ -46,7 +46,9 @@ describe('Truffle Plugin: standard use cases', function() {
     );
   });
 
-  it('with many unbracketed statements (time check)', async function() {
+  // Instrumentation speed is fine - but this takes solc almost a minute to compile
+  // so annoying. Unskip whenever modifying the instrumentation files though.....
+  it.skip('with many unbracketed statements (time check)', async function() {
     truffleConfig.compilers.solc.version = "0.4.24";
 
     mock.install('Oraclize', 'oraclize.js', solcoverConfig, truffleConfig, true);

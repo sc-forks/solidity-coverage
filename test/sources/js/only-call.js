@@ -1,17 +1,9 @@
-/* eslint-env node, mocha */
-/* global artifacts, contract, assert */
-
-const OnlyCall = artifacts.require('./OnlyCall.sol');
+const OnlyCall = artifacts.require('OnlyCall');
 
 contract('OnlyCall', accounts => {
-  it('should return val + 2', done => {
-    OnlyCall.deployed().then(instance => {
-      instance.addTwo.call(5, {
-        from: accounts[0],
-      }).then(val => {
-        assert.equal(val, 7);
-        done();
-      });
-    });
-  });
+  it('should return val + 2', async function(){
+    const onlycall = await OnlyCall.new();
+    const val = await onlycall.addTwo(5);
+    assert.equal(val.toNumber(), 7);
+  })
 });

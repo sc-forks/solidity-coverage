@@ -1,8 +1,7 @@
-/* eslint-env node, mocha */
-/* global artifacts, contract */
+const Empty = artifacts.require('Empty');
 
-const Empty = artifacts.require('./Empty.sol');
-
-contract('Empty', () => {
-  it('should deploy', () => Empty.deployed());
+contract('Empty', function() {
+  it('should deploy', async function (){
+    await Empty.new()
+  });
 });

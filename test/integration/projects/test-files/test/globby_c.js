@@ -3,7 +3,7 @@ const ContractC = artifacts.require("ContractC");
 contract("contractc", function(accounts) {
   let instance;
 
-  before(async () => instance = await ContractC.deployed())
+  before(async () => instance = await ContractC.new())
 
   it('sends', async function(){
     await instance.sendFn();
