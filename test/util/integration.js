@@ -1,13 +1,15 @@
 
 /*
-  Utilities for generating a mock truffle project to test plugin.
+  Utilities for generating & managing mock projects to test plugins.
 */
 
 const path = require('path');
 const fs = require('fs');
 const shell = require('shelljs');
-const TruffleConfig = require('truffle-config');
 const decache = require('decache');
+
+const PluginsTestHelpers = require("@nomiclabs/buidler/plugins-testing")
+const TruffleConfig = require('truffle-config');
 
 const temp =              './sc_temp';
 const truffleConfigName = 'truffle-config.js';
@@ -47,6 +49,23 @@ function pathToContract(config, file) {
 function getOutput(truffleConfig){
   const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
   return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+}
+
+// Buidler env set up / tear down.
+function useEnvironment(projectPath) {
+  let previousCWD;
+
+  beforeEach("Loading buidler environment", function() {
+    previousCWD = process.cwd();
+    process.chdir(projectPath);
+    process.env.BUIDLER_NETWORK = "develop";
+    this.env = require("@nomiclabs/buidler");
+  });
+
+  afterEach("Resetting buidler", function() {
+    PluginsTestHelpers.resetBuidlerContext();
+    process.chdir(previousCWD);
+  });
 }
 
 // ==========================
