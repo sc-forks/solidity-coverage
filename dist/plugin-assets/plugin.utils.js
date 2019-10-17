@@ -11,6 +11,7 @@ const PluginUI = require('./truffle.ui');
 const path = require('path');
 const fs = require('fs-extra');
 const shell = require('shelljs');
+const util = require('util')
 
 // ===
 // UI
@@ -193,7 +194,6 @@ function loadSolcoverJS(config){
   let coverageConfig;
   let ui = new PluginUI(config.logger.log);
 
-
   // Handle --solcoverjs flag
   (config.solcoverjs)
     ? solcoverjs = path.join(config.workingDir, config.solcoverjs)
@@ -251,6 +251,7 @@ async function finish(config, api){
   shell.config.silent = true;
   shell.rm('-Rf', tempContractsDir);
   shell.rm('-Rf', tempArtifactsDir);
+  shell.config.silent = false;
 
   if (api) await api.finish();
 }

@@ -1,13 +1,15 @@
 
 /*
-  Utilities for generating a mock truffle project to test plugin.
+  Utilities for generating & managing mock projects to test plugins.
 */
 
 const path = require('path');
 const fs = require('fs');
 const shell = require('shelljs');
-const TruffleConfig = require('truffle-config');
 const decache = require('decache');
+
+const TruffleConfig = require('truffle-config');
+const { resetBuidlerContext } = require("@nomiclabs/buidler/plugins-testing")
 
 const temp =              './sc_temp';
 const truffleConfigName = 'truffle-config.js';
@@ -19,6 +21,7 @@ const migrationPath =     `${temp}/migrations/2_deploy.js`;
 const templatePath =      './test/integration/generic/*';
 const projectPath =       './test/integration/projects/'
 
+let previousCWD;
 
 // ==========================
 // Misc Utils
@@ -44,10 +47,28 @@ function pathToContract(config, file) {
   return path.join('contracts', file);
 }
 
-function getOutput(truffleConfig){
-  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
+function getOutput(config){
+  const workingDir = config.working_directory || config.paths.root;
+  const jsonPath = path.join(workingDir, "coverage.json");
   return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 }
+
+// Buidler env set up
+function buidlerSetupEnv(mocha) {
+  const mockwd = path.join(process.cwd(), temp);
+  previousCWD = process.cwd();
+  process.chdir(mockwd);
+  mocha.env = require("@nomiclabs/buidler");
+  mocha.env.config.logger = testLogger
+  mocha.logger = testLogger
+};
+
+// Buidler env tear down
+function buidlerTearDownEnv() {
+    resetBuidlerContext();
+    process.chdir(previousCWD);
+};
+
 
 // ==========================
 // Truffle Configuration
@@ -101,34 +122,39 @@ function getDefaultBuidlerConfig() {
 
   const mockwd = path.join(process.cwd(), temp);
   const vals = {
-    root: mockwd,
-    artifacts:  path.join(mockwd, 'artifacts'),
-    cache:  path.join(mockwd, 'cache'),
-    sources: path.join(mockwd, 'contracts'),
-    tests: path.join(mockwd, 'test'),
+    paths : {
+      root: mockwd,
+      artifacts:  path.join(mockwd, 'artifacts'),
+      cache:  path.join(mockwd, 'cache'),
+      sources: path.join(mockwd, 'contracts'),
+      tests: path.join(mockwd, 'test'),
+    },
     logger: logger,
     mocha: {
       reporter: reporter
     },
+    defaultNetwork: "buidlerevm",
     networks: {
       development: {
         url: "http://127.0.0.1:8545",
       }
     },
-    solc: {
-      version: "0.5.3",
-      optimizer: {}
-    }
   }
 
   return vals;
 }
 
 function getBuidlerConfigJS(config){
+  const prefix =`
+    const { loadPluginFile } = require("@nomiclabs/buidler/plugins-testing");
+    loadPluginFile(__dirname + "/../dist/buidler.plugin");
+    usePlugin("@nomiclabs/buidler-truffle5");
+  `
+
   if (config) {
-    return `module.exports = ${JSON.stringify(config, null, ' ')}`
+    return `${prefix}module.exports = ${JSON.stringify(config, null, ' ')}`;
   } else {
-    return `module.exports = ${JSON.stringify(getDefaultBuidlerConfig(), null, ' ')}`
+    return `${prefix}module.exports = ${JSON.stringify(getDefaultBuidlerConfig(), null, ' ')}`;
   }
 }
 
@@ -278,6 +304,8 @@ module.exports = {
   installFullProject: installFullProject,
   clean: clean,
   pathToContract: pathToContract,
-  getOutput: getOutput
+  getOutput: getOutput,
+  buidlerSetupEnv: buidlerSetupEnv,
+  buidlerTearDownEnv: buidlerTearDownEnv
 }
 
