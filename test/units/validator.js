@@ -22,7 +22,6 @@ describe('config validation', () => {
     const options =  [
       "cwd",
       "host",
-      "originalContractsDir",
     ]
 
     options.forEach(name => {

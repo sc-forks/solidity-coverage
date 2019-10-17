@@ -8,8 +8,8 @@ const fs = require('fs');
 const shell = require('shelljs');
 const decache = require('decache');
 
-const PluginsTestHelpers = require("@nomiclabs/buidler/plugins-testing")
 const TruffleConfig = require('truffle-config');
+const { resetBuidlerContext } = require("@nomiclabs/buidler/plugins-testing")
 
 const temp =              './sc_temp';
 const truffleConfigName = 'truffle-config.js';
@@ -21,6 +21,7 @@ const migrationPath =     `${temp}/migrations/2_deploy.js`;
 const templatePath =      './test/integration/generic/*';
 const projectPath =       './test/integration/projects/'
 
+let previousCWD;
 
 // ==========================
 // Misc Utils
@@ -51,22 +52,20 @@ function getOutput(truffleConfig){
   return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 }
 
-// Buidler env set up / tear down.
-function useEnvironment(projectPath) {
-  let previousCWD;
+// Buidler env set up
+function buidlerSetupEnv(mocha) {
+  const mockwd = path.join(process.cwd(), temp);
+  previousCWD = process.cwd();
+  process.chdir(mockwd);
+  mocha.env = require("@nomiclabs/buidler");
+};
 
-  beforeEach("Loading buidler environment", function() {
-    previousCWD = process.cwd();
-    process.chdir(projectPath);
-    process.env.BUIDLER_NETWORK = "develop";
-    this.env = require("@nomiclabs/buidler");
-  });
-
-  afterEach("Resetting buidler", function() {
-    PluginsTestHelpers.resetBuidlerContext();
+// Buidler env tear down
+function buidlerTearDownEnv() {
+    resetBuidlerContext();
     process.chdir(previousCWD);
-  });
-}
+};
+
 
 // ==========================
 // Truffle Configuration
@@ -144,10 +143,16 @@ function getDefaultBuidlerConfig() {
 }
 
 function getBuidlerConfigJS(config){
+  const prefix =`
+    const { loadPluginFile } = require("@nomiclabs/buidler/plugins-testing");
+    loadPluginFile(__dirname + "/../dist/buidler.plugin");
+    usePlugin("@nomiclabs/buidler-truffle5");
+  `
+
   if (config) {
-    return `module.exports = ${JSON.stringify(config, null, ' ')}`
+    return `${prefix}module.exports = ${JSON.stringify(config, null, ' ')}`;
   } else {
-    return `module.exports = ${JSON.stringify(getDefaultBuidlerConfig(), null, ' ')}`
+    return `${prefix}module.exports = ${JSON.stringify(getDefaultBuidlerConfig(), null, ' ')}`;
   }
 }
 
@@ -297,6 +302,8 @@ module.exports = {
   installFullProject: installFullProject,
   clean: clean,
   pathToContract: pathToContract,
-  getOutput: getOutput
+  getOutput: getOutput,
+  buidlerSetupEnv: buidlerSetupEnv,
+  buidlerTearDownEnv: buidlerTearDownEnv
 }
 
