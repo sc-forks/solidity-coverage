@@ -47,8 +47,9 @@ function pathToContract(config, file) {
   return path.join('contracts', file);
 }
 
-function getOutput(truffleConfig){
-  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
+function getOutput(config){
+  const workingDir = config.working_directory || config.paths.root;
+  const jsonPath = path.join(workingDir, "coverage.json");
   return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 }
 
@@ -58,6 +59,8 @@ function buidlerSetupEnv(mocha) {
   previousCWD = process.cwd();
   process.chdir(mockwd);
   mocha.env = require("@nomiclabs/buidler");
+  mocha.env.config.logger = testLogger
+  mocha.logger = testLogger
 };
 
 // Buidler env tear down
@@ -119,24 +122,23 @@ function getDefaultBuidlerConfig() {
 
   const mockwd = path.join(process.cwd(), temp);
   const vals = {
-    root: mockwd,
-    artifacts:  path.join(mockwd, 'artifacts'),
-    cache:  path.join(mockwd, 'cache'),
-    sources: path.join(mockwd, 'contracts'),
-    tests: path.join(mockwd, 'test'),
+    paths : {
+      root: mockwd,
+      artifacts:  path.join(mockwd, 'artifacts'),
+      cache:  path.join(mockwd, 'cache'),
+      sources: path.join(mockwd, 'contracts'),
+      tests: path.join(mockwd, 'test'),
+    },
     logger: logger,
     mocha: {
       reporter: reporter
     },
+    defaultNetwork: "buidlerevm",
     networks: {
       development: {
         url: "http://127.0.0.1:8545",
       }
     },
-    solc: {
-      version: "0.5.3",
-      optimizer: {}
-    }
   }
 
   return vals;

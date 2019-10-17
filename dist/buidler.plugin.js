@@ -9,69 +9,18 @@ const path = require('path');
 const Web3 = require('web3');
 const ganache = require('ganache-cli');
 
-const { task, internalTask, types } = require("@nomiclabs/buidler/config");
+const { task, types } = require("@nomiclabs/buidler/config");
 const { ensurePluginLoadedWithUsePlugin } = require("@nomiclabs/buidler/plugins");
-const { BuidlerPluginError } = require("@nomiclabs/buidler/internal/core/errors");
-const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/construction");
 
 const {
-  TASK_TEST_RUN_MOCHA_TESTS,
   TASK_TEST,
   TASK_COMPILE,
 } = require("@nomiclabs/buidler/builtin-tasks/task-names");
 
-const util = require('util');
-
 function plugin() {
-  let api;
-  let address;
-  let network;
-  let error;
-  let testsErrored = false;
 
+  // UI for the task flags...
   const ui = new PluginUI();
-
-  extendEnvironment(env => {
-    env.config.logger = {log: null};
-    env.config = buidlerUtils.normalizeConfig(env.config);
-
-    api = new API(utils.loadSolcoverJS(env.config));
-
-    const networkConfig = {
-      url: `http://${api.host}:${api.port}`,
-      gas: api.gasLimit,
-      gasPrice: api.gasPrice
-    }
-
-    const provider = createProvider(api.defaultNetworkName, networkConfig);
-
-    env.config.networks[api.defaultNetworkName] = networkConfig;
-    env.config.defaultNetwork = api.defaultNetworkName;
-
-    env.network = {
-      name: api.defaultNetworkName,
-      config: networkConfig,
-      provider: provider,
-    }
-
-    env.ethereum = provider;
-
-    // Keep a reference so we can set the from account
-    network = env.network;
-  })
-
-  function myTimeout(){
-    return new Promise(resolve => {
-      setTimeout(()=>{
-        console.log('TIMEOUT')
-      }, 2000)
-    })
-  }
-
-
-  task("timeout", 'desc').setAction(async function(taskArguments, { config }, runSuper){
-    await myTimeout();
-  });
 
   task("coverage", "Generates a code coverage report for tests")
 
@@ -79,16 +28,25 @@ function plugin() {
     .addOptionalParam("solcoverjs", ui.flags.solcoverjs, null, types.string)
     .addOptionalParam('temp',       ui.flags.temp,       null, types.string)
 
-    .setAction(async function(taskArguments, { run, config }, runSuper){
-      console.log(util.inspect())
+    .setAction(async function(taskArguments, env){
+      let error;
+      let ui;
+      let api;
+      let config;
+
       try {
         death(buidlerUtils.finish.bind(null, config, api)); // Catch interrupt signals
-        config.logger = {log: null};
-        config = buidlerUtils.normalizeConfig(config);
 
+        config = buidlerUtils.normalizeConfig(env.config);
+        ui = new PluginUI(config.logger.log);
         api = new API(utils.loadSolcoverJS(config));
 
+        // ==============
         // Server launch
+        // ==============
+
+        const network = buidlerUtils.setupNetwork(env, api);
+
         const address = await api.ganache(ganache);
         const web3 = new Web3(address);
         const accounts = await web3.eth.getAccounts();
@@ -113,7 +71,10 @@ function plugin() {
         // Run post-launch server hook;
         await api.onServerReady(config);
 
-        // Instrument
+        // ================
+        // Instrumentation
+        // ================
+
         const skipFiles = api.skipFiles || [];
 
         let {
@@ -124,7 +85,10 @@ function plugin() {
         targets = api.instrument(targets);
         utils.reportSkipped(config, skipped);
 
-        // Filesystem & Compiler Re-configuration
+        // ==============
+        // Compilation
+        // ==============
+
         const {
           tempArtifactsDir,
           tempContractsDir
@@ -136,27 +100,38 @@ function plugin() {
         config.paths.sources = tempContractsDir;
         config.paths.artifacts = tempArtifactsDir;
         config.paths.cache = buidlerUtils.tempCacheDir(config);
-        console.log(config.paths.cache)
-
         config.solc.optimizer.enabled = false;
-        await run(TASK_COMPILE);
+
+        await env.run(TASK_COMPILE);
 
         await api.onCompileComplete(config);
 
+        // ======
+        // Tests
+        // ======
+        const testFiles = buidlerUtils.getTestFilePaths(config);
+
         try {
-          failures = await run(TASK_TEST, {testFiles: []})
+          await env.run(TASK_TEST, {testFiles: testFiles})
         } catch (e) {
-          error = e.stack;
-          console.log(e.message + error)
+          error = e;
         }
         await api.onTestsComplete(config);
 
-        // Run Istanbul
+        // ========
+        // Istanbul
+        // ========
         await api.report();
         await api.onIstanbulComplete(config);
+
     } catch(e) {
        error = e;
     }
+
+    await utils.finish(config, api);
+
+    if (error !== undefined ) throw error;
+    if (process.exitCode > 0) throw new Error(ui.generate('tests-fail', [process.exitCode]));
   })
 }
 
