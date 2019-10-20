@@ -7,32 +7,36 @@ const ganache = require('ganache-core-sc');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../dist/truffle.plugin');
+const plugin = require('../../../dist/buidler.plugin');
 
 // =======
 // Errors
 // =======
 
-describe('Truffle Plugin: error cases', function() {
-  let truffleConfig;
+describe('Buidler Plugin: error cases', function() {
+  let buidlerConfig;
   let solcoverConfig;
 
   beforeEach(() => {
     mock.clean();
 
     mock.loggerOutput.val = '';
-    solcoverConfig = {};
-    truffleConfig = mock.getDefaultTruffleConfig();
+    solcoverConfig = { skipFiles: ['Migrations.sol']};
+    buidlerConfig = mock.getDefaultBuidlerConfig();
     verify.cleanInitialState();
   })
 
-  afterEach(() => mock.clean());
+  afterEach(() => {
+    mock.buidlerTearDownEnv();
+    mock.clean();
+  });
 
   it('project contains no contract sources folder', async function() {
     mock.installFullProject('no-sources');
+    mock.buidlerSetupEnv(this);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail()
     } catch(err){
       assert(
@@ -46,14 +50,15 @@ describe('Truffle Plugin: error cases', function() {
       );
     }
 
-    verify.coverageNotGenerated(truffleConfig);
+    verify.coverageNotGenerated(buidlerConfig);
   });
 
   it('.solcover.js has syntax error', async function(){
     mock.installFullProject('bad-solcoverjs');
+    mock.buidlerSetupEnv(this);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail()
     } catch(err){
       assert(
@@ -62,16 +67,17 @@ describe('Truffle Plugin: error cases', function() {
       );
     }
 
-    verify.coverageNotGenerated(truffleConfig);
+    verify.coverageNotGenerated(buidlerConfig);
   })
 
   it('.solcover.js has incorrectly formatted option', async function(){
     solcoverConfig.port = "Antwerpen";
 
     mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail()
     } catch (err) {
       assert(
@@ -81,55 +87,16 @@ describe('Truffle Plugin: error cases', function() {
     }
   });
 
-  it('lib module load failure', async function(){
-    truffleConfig.usePluginTruffle = true;
-    truffleConfig.forceLibFailure = true;
-
-    mock.install('Simple', 'simple.js', solcoverConfig);
-
-    try {
-      await plugin(truffleConfig);
-      assert.fail()
-    } catch (err) {
-      assert(
-        err.message.includes('Unable to load plugin copy'),
-        `Should error on failed lib module load: ${err.message}`
-      );
-    }
-  });
-
-  it('--network <target> is not declared in truffle-config.js', async function(){
-    truffleConfig.network = 'does-not-exist';
-
-    mock.install('Simple', 'simple.js', solcoverConfig);
-
-    try {
-      await plugin(truffleConfig);
-      assert.fail()
-    } catch (err) {
-
-      assert(
-        err.message.includes('is not defined'),
-        `Should notify network 'is not defined': ${err.message}`
-      );
-
-      assert(
-        err.message.includes('does-not-exist'),
-        `Should name missing network: 'does-not-exist': ${err.message}`
-      );
-    }
-  });
-
   it('tries to launch with a port already in use', async function(){
     const server = ganache.server();
 
-    truffleConfig.network = 'development';
     mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
 
-    await pify(server.listen)(8545);
+    await pify(server.listen)(8555);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail();
     } catch(err){
       assert(
@@ -149,9 +116,10 @@ describe('Truffle Plugin: error cases', function() {
     };
 
     mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail();
     } catch(err){
       assert(
@@ -166,9 +134,10 @@ describe('Truffle Plugin: error cases', function() {
   // Truffle test contains syntax error
   it('truffle crashes', async function() {
     mock.install('Simple', 'truffle-crash.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail()
     } catch(err){
       assert(err.toString().includes('SyntaxError'));
@@ -178,22 +147,24 @@ describe('Truffle Plugin: error cases', function() {
   // Solidity syntax errors
   it('compilation failure', async function(){
     mock.install('SimpleError', 'simple.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail()
     } catch(err){
       assert(err.message.includes('Compilation failed'));
     }
 
-    verify.coverageNotGenerated(truffleConfig);
+    verify.coverageNotGenerated(buidlerConfig);
   });
 
   it('instrumentation failure', async function(){
     mock.install('Unparseable', 'simple.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
 
     try {
-      await plugin(truffleConfig);
+      await this.env.run("coverage");
       assert.fail()
     } catch(err){
       assert(
@@ -204,32 +175,6 @@ describe('Truffle Plugin: error cases', function() {
       assert(err.stack !== undefined, 'Should have error trace')
     }
 
-    verify.coverageNotGenerated(truffleConfig);
-  })
-
-  it('user runs "solidity-coverage" as shell command', function(){
-    const pathToCommand = './dist/bin.js';
-    const pkg = require('../../../package.json');
-
-    assert(
-      pkg.bin['solidity-coverage'] === pathToCommand,
-      'bin.js should be pkg.bin'
-    );
-
-    const output = shell.exec(`node ${pathToCommand}`, {silent:true}).stdout;
-
-    assert(
-      output.includes('no longer a shell command'),
-      `should have right info: ${output}`
-    );
-  });
-
-  it('user runs "testrpc-sc" as shell command', function(){
-    const output = shell.exec(`testrpc-sc`, {silent:true}).stdout;
-
-    assert(
-      output.includes('does not use "testrpc-sc"'),
-      `should have right info: ${output}`
-    );
+    verify.coverageNotGenerated(buidlerConfig);
   });
 })
