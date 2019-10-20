@@ -13,7 +13,7 @@ const plugin = require('../../../dist/buidler.plugin');
 // Errors
 // =======
 
-describe.only('Buidler Plugin: error cases', function() {
+describe('Buidler Plugin: error cases', function() {
   let buidlerConfig;
   let solcoverConfig;
 
