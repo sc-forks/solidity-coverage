@@ -116,37 +116,6 @@ describe('Buidler Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it('--testFiles test/<glob*>', async function() {
-    const taskArgs = {
-      testFiles: path.join(
-        buidlerConfig.paths.root,
-        'test/globby*'
-      )
-    };
-
-    mock.installFullProject('test-files');
-    mock.buidlerSetupEnv(this);
-
-    await this.env.run("coverage", taskArgs);
-
-    const expected = [
-      {
-        file: mock.pathToContract(buidlerConfig, 'ContractA.sol'),
-        pct: 0,
-      },
-      {
-        file: mock.pathToContract(buidlerConfig, 'ContractB.sol'),
-        pct: 100,
-      },
-      {
-        file: mock.pathToContract(buidlerConfig, 'ContractC.sol'),
-        pct: 100,
-      },
-    ];
-
-    verify.lineCoverage(expected);
-  });
-
   it('--config ../.solcover.js', async function() {
     // Write solcoverjs to parent dir of sc_temp (where the test project is installed)
     fs.writeFileSync(
