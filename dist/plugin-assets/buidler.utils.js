@@ -12,15 +12,15 @@ const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/c
 
 /**
  * Returns a list of test files to pass to TASK_TEST.
- * @param  {BuidlerConfig}    config
+ * @param  {String}    file   file or glob describing test subset
  * @return {String[]}         list of files to pass to mocha
  */
-function getTestFilePaths(config){
+function getTestFilePaths(file){
   let target;
 
-  // Handle --file <path|glob> cli option (subset of tests)
-  (typeof config.file === 'string')
-    ? target = globby.sync([config.file])
+  // Handle --testFiles <path|glob> cli option (subset of tests)
+  (typeof file === 'string')
+    ? target = globby.sync([file])
     : target = [];
 
   // Return list of test files
@@ -34,22 +34,37 @@ function getTestFilePaths(config){
  * @param  {BuidlerConfig} config
  * @return {BuidlerConfig}        updated config
  */
-function normalizeConfig(config){
+function normalizeConfig(config, args){
   config.workingDir = config.paths.root;
   config.contractsDir = config.paths.sources;
   config.testDir = config.paths.tests;
   config.artifactsDir = config.paths.artifacts;
   config.logger = config.logger ? config.logger : {log: null};
+  config.solcoverjs = args.solcoverjs
 
   return config;
 }
 
-function setupNetwork(env, api){
-  const networkConfig = {
-    url: `http://${api.host}:${api.port}`,
-    gas: api.gasLimit,
-    gasPrice: api.gasPrice
+function setupNetwork(env, api, taskArgs, ui){
+  let networkConfig = {};
+
+  if (taskArgs.network){
+    networkConfig = env.config.networks[taskArgs.network];
+
+    const configPort = networkConfig.url.split(':')[2];
+
+    // Warn: port conflicts
+    if (api.port !== api.defaultPort && api.port !== configPort){
+      ui.report('port-clash', [ configPort ])
+    }
+
+    // Prefer network port
+    api.port = parseInt(configPort);
   }
+
+  networkConfig.url = `http://${api.host}:${api.port}`;
+  networkConfig.gas =  api.gasLimit;
+  networkConfig.gasPrice = api.gasPrice;
 
   const provider = createProvider(api.defaultNetworkName, networkConfig);
 

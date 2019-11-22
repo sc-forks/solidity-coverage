@@ -27,9 +27,17 @@ let previousCWD;
 // Misc Utils
 // ==========================
 function decacheConfigs(){
-  decache(`${process.cwd()}/${temp}/.solcover.js`);
-  decache(`${process.cwd()}/${temp}/${truffleConfigName}`);
-  decache(`${process.cwd()}/${temp}/${buidlerConfigName}`);
+  const paths = [
+    `${process.cwd()}/${temp}/.solcover.js`,
+    `${process.cwd()}/${temp}/${truffleConfigName}`,
+    `${process.cwd()}/${temp}/${buidlerConfigName}`,
+    `${process.cwd()}/${temp}/contracts/Simple.sol`,
+    `${process.cwd()}/${temp}/test/simple.js`
+  ];
+
+  paths.forEach(pth => {
+    try { decache(pth) } catch (e){}
+  });
 }
 
 function clean() {
@@ -65,8 +73,8 @@ function buidlerSetupEnv(mocha) {
 
 // Buidler env tear down
 function buidlerTearDownEnv() {
-    resetBuidlerContext();
-    process.chdir(previousCWD);
+  resetBuidlerContext();
+  process.chdir(previousCWD);
 };
 
 

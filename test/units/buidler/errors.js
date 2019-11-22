@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path')
 const pify = require('pify')
 const shell = require('shelljs');
-const ganache = require('ganache-core-sc');
+const ganache = require('ganache-cli')
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');

@@ -82,6 +82,7 @@ async function plugin(config){
       tempContractsDir
     } = utils.getTempLocations(config);
 
+    utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
     utils.save(targets, config.contracts_directory, tempContractsDir);
     utils.save(skipped, config.contracts_directory, tempContractsDir);
 

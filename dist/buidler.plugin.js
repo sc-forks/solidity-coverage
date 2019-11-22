@@ -17,6 +17,8 @@ const {
   TASK_COMPILE,
 } = require("@nomiclabs/buidler/builtin-tasks/task-names");
 
+ensurePluginLoadedWithUsePlugin();
+
 function plugin() {
 
   // UI for the task flags...
@@ -24,11 +26,11 @@ function plugin() {
 
   task("coverage", "Generates a code coverage report for tests")
 
-    .addOptionalParam("file",       ui.flags.file,       null, types.string)
+    .addOptionalParam("testFiles",  ui.flags.file,       null, types.string)
     .addOptionalParam("solcoverjs", ui.flags.solcoverjs, null, types.string)
     .addOptionalParam('temp',       ui.flags.temp,       null, types.string)
 
-    .setAction(async function(taskArguments, env){
+    .setAction(async function(args, env){
       let error;
       let ui;
       let api;
@@ -37,15 +39,19 @@ function plugin() {
       try {
         death(buidlerUtils.finish.bind(null, config, api)); // Catch interrupt signals
 
-        config = buidlerUtils.normalizeConfig(env.config);
+        config = buidlerUtils.normalizeConfig(env.config, args);
         ui = new PluginUI(config.logger.log);
         api = new API(utils.loadSolcoverJS(config));
 
         // ==============
         // Server launch
         // ==============
-
-        const network = buidlerUtils.setupNetwork(env, api);
+        const network = buidlerUtils.setupNetwork(
+          env,
+          api,
+          args,
+          ui
+        );
 
         const address = await api.ganache(ganache);
         const web3 = new Web3(address);
@@ -88,12 +94,14 @@ function plugin() {
         // ==============
         // Compilation
         // ==============
+        config.temp = args.temp;
 
         const {
           tempArtifactsDir,
           tempContractsDir
         } = utils.getTempLocations(config);
 
+        utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
         utils.save(targets, config.paths.sources, tempContractsDir);
         utils.save(skipped, config.paths.sources, tempContractsDir);
 
@@ -109,7 +117,7 @@ function plugin() {
         // ======
         // Tests
         // ======
-        const testFiles = buidlerUtils.getTestFilePaths(config);
+        const testFiles = buidlerUtils.getTestFilePaths(args.testFiles);
 
         try {
           await env.run(TASK_TEST, {testFiles: testFiles})
@@ -128,7 +136,7 @@ function plugin() {
        error = e;
     }
 
-    await utils.finish(config, api);
+    await buidlerUtils.finish(config, api);
 
     if (error !== undefined ) throw error;
     if (process.exitCode > 0) throw new Error(ui.generate('tests-fail', [process.exitCode]));
