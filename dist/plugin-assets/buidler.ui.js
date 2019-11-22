@@ -1,7 +1,7 @@
 const UI = require('./../../lib/ui').UI;
 
 /**
- * Truffle Plugin logging
+ * Buidler Plugin logging
  */
 class PluginUI extends UI {
   constructor(log){

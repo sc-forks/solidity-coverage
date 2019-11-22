@@ -1,9 +1,6 @@
 /**
  * A collection of utilities for common tasks plugins will need in the course
  * of composing a workflow using the solidity-coverage API
- *
- * TODO: Sweep back through here and make all `config.truffle_variable` plugin
- * platform neutral...
  */
 
 const PluginUI = require('./truffle.ui');

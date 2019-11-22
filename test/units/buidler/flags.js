@@ -10,9 +10,6 @@ const plugin = require('../../../dist/buidler.plugin');
 // =======================
 // CLI Options / Flags
 // =======================
-async function delay(){
-  return new Promise(res  => setTimeout(() => res(), 1000))
-}
 
 describe('Buidler Plugin: command line options', function() {
   let buidlerConfig;

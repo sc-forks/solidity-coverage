@@ -7,7 +7,7 @@ const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/c
 
 
 // =============================
-// Buidler Specific Plugin Utils
+// Buidler Plugin Utils
 // =============================
 
 /**
