@@ -156,7 +156,7 @@ describe('Truffle Plugin: standard use cases', function() {
   });
 
   // Truffle test asserts deployment cost is greater than 20,000,000 gas
-  it('deployment cost > block gasLimit', async function() {
+  it.skip('deployment cost > block gasLimit', async function() {
     mock.install('Expensive', 'block-gas-limit.js', solcoverConfig);
     await plugin(truffleConfig);
   });

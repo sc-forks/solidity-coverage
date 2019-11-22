@@ -45,6 +45,10 @@ class PluginUI extends UI {
                  `\n${c.bold('============')}\n` +
                  `${ct} ${c.bold('port')}:    ${args[1]}\n` +
                  `${ct} ${c.bold('network')}: ${args[0]}\n`,
+
+      'port-clash': `${w}  ${c.red("The 'port' values in your Buidler url ")}` +
+                          `${c.red("and .solcover.js are different. Using Buidler's: ")} ${c.bold(args[0])}.\n`,
+
     }
 
     this._write(kinds[kind]);
@@ -70,8 +74,6 @@ class PluginUI extends UI {
 
       'tests-fail': `${x} ${c.bold(args[0])} ${c.red('test(s) failed under coverage.')}`,
 
-      'no-network': `${c.red('Network: ')} ${args[0]} ` +
-                    `${c.red(' is not defined in your truffle-config networks. ')}`,
 
     }
 

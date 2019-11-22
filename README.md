@@ -36,17 +36,16 @@ truffle run coverage [command-options]
 + Coverage launches its own in-process ganache server.
 + You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` [config][15].
 + Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be [skipped][24].
-+ :warning:  Contracts are compiled **without optimization**. Please report unexpected compilation faults to [issue 417][25] 
++ :warning:  Contracts are compiled **without optimization**. Please report unexpected compilation faults to [issue 417][25]
 
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| file  (Truffle)   | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| testFiles  (Buidler)   | `--testFiles test/file.js` | JS test file(s) to run.|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| network    | `--network development` | Use network settings defined in the Truffle config |
+| network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
-| version    |                                | Version info |
-| help       |                                | Usage notes  |
 
 [<sup>*</sup> Advanced use][14]
 

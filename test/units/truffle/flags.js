@@ -198,20 +198,7 @@ describe('Truffle Plugin: command line options', function() {
     );
   });
 
-  it('--usePluginTruffle', async function(){
-    truffleConfig.usePluginTruffle = true;
-    truffleConfig.logger = mock.testLogger;
-
-    mock.install('Simple', 'simple.js', solcoverConfig);
-    await plugin(truffleConfig);
-
-    assert(
-      mock.loggerOutput.val.includes('fallback Truffle library module'),
-      `Should notify it's using plugin truffle lib copy: ${mock.loggerOutput.val}`
-    );
-  });
-
-  it('--coverageArtifacts', async function(){
+  it('--temp', async function(){
     truffleConfig.logger = mock.testLogger;
 
     truffleConfig.temp = 'special_location';

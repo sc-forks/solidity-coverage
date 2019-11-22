@@ -13,7 +13,7 @@
   "scripts": {
     "nyc": "SILENT=true  nyc --exclude '**/sc_temp/**' --exclude '**/test/**'",
     "test": "npm run nyc -- mocha test/units/* --timeout 100000 --no-warnings --exit",
-    "test:ci": "SILENT=true nyc --reporter=lcov --exclude '**/sc_temp/**' --exclude '**/test/**/' -- mocha test/units/* --timeout 100000 --no-warnings --exit",
+    "test:ci": "SILENT=true node --max-old-space-size=3072 ./node_modules/.bin/nyc --reporter=lcov --exclude '**/sc_temp/**' --exclude '**/test/**/' -- mocha test/units/* --timeout 100000 --no-warnings --exit",
     "test:debug": "mocha test/units/* --timeout 100000 --no-warnings --exit"
   },
   "homepage": "https://github.com/sc-forks/solidity-coverage",
