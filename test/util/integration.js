@@ -55,6 +55,10 @@ function pathToContract(config, file) {
   return path.join('contracts', file);
 }
 
+function pathToTemp(_path) {
+  return path.join(temp, _path);
+}
+
 function getOutput(config){
   const workingDir = config.working_directory || config.paths.root;
   const jsonPath = path.join(workingDir, "coverage.json");
@@ -303,6 +307,7 @@ const testLogger = {
 
 
 module.exports = {
+  pathToTemp: pathToTemp,
   testLogger: testLogger,
   loggerOutput: loggerOutput,
   getDefaultTruffleConfig: getDefaultTruffleConfig,

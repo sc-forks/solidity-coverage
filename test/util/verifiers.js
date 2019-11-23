@@ -45,6 +45,7 @@ function coverageNotGenerated(config){
 }
 
 module.exports = {
+  pathExists: pathExists,
   lineCoverage: lineCoverage,
   coverageMissing: coverageMissing,
   cleanInitialState: cleanInitialState,

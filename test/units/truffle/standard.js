@@ -47,7 +47,7 @@ describe('Truffle Plugin: standard use cases', function() {
   });
 
   // Instrumentation speed is fine - but this takes solc almost a minute to compile
-  // so annoying. Unskip whenever modifying the instrumentation files though.....
+  // Unskip whenever modifying the instrumentation files though.....
   it.skip('with many unbracketed statements (time check)', async function() {
     truffleConfig.compilers.solc.version = "0.4.24";
 
@@ -156,7 +156,10 @@ describe('Truffle Plugin: standard use cases', function() {
   });
 
   // Truffle test asserts deployment cost is greater than 20,000,000 gas
-  it.skip('deployment cost > block gasLimit', async function() {
+  // Test times out on CircleCI @ 100000 ms. Fine locally though.
+  it('deployment cost > block gasLimit', async function() {
+    if (process.env.CI) return;
+
     mock.install('Expensive', 'block-gas-limit.js', solcoverConfig);
     await plugin(truffleConfig);
   });
@@ -181,6 +184,24 @@ describe('Truffle Plugin: standard use cases', function() {
     assert(output[path].fnMap['2'].name === 'getX', 'cov missing "getX"');
   });
 
+  // This test tightly coupled to the ganache version in truffle dev dep
+  it('uses the server from truffle by default', async function(){
+    truffleConfig.logger = mock.testLogger;
+    truffleConfig.version = true;
+
+    // Baseline inequality check
+    const truffleClientVersion = "v2.5.7";
+
+    // Truffle client
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes(truffleClientVersion),
+      `Should use truffles ganache: ${mock.loggerOutput.val}`
+    );
+  });
+
   it('uses the fallback server', async function(){
     truffleConfig.logger = mock.testLogger;
     solcoverConfig.forceBackupServer = true;
@@ -189,9 +210,37 @@ describe('Truffle Plugin: standard use cases', function() {
     await plugin(truffleConfig);
 
     assert(
-      mock.loggerOutput.val.includes("Using ganache-core-sc"),
+      mock.loggerOutput.val.includes("Using ganache-cli"),
       `Should notify about backup server module: ${mock.loggerOutput.val}`
     );
+  });
+
+  // This test tightly coupled to the ganache version in production deps
+  // "test-files" project solcoverjs includes `client: require('ganache-cli')`
+  it('config: client', async function(){
+    truffleConfig.logger = mock.testLogger;
+    truffleConfig.version = true;
+
+    const configClientVersion = "v2.8.0";
+
+    // Config client
+    mock.installFullProject('ganache-solcoverjs');
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes(configClientVersion),
+      `Should use solcover provided ganache: ${mock.loggerOutput.val}`
+    );
+  });
+
+  it('config: istanbulFolder', async function(){
+    solcoverConfig.istanbulFolder = mock.pathToTemp('specialFolder');
+
+    // Truffle client
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(verify.pathExists(solcoverConfig.istanbulFolder));
   });
 
   // This project has [ @skipForCoverage ] tags in the test descriptions

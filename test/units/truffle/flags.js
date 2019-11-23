@@ -22,6 +22,7 @@ describe('Truffle Plugin: command line options', function() {
     solcoverConfig = {};
     truffleConfig = mock.getDefaultTruffleConfig();
     verify.cleanInitialState();
+
   })
 
   afterEach(() => mock.clean());
