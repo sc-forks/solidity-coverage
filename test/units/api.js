@@ -1,9 +1,13 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 const API = require('./../../lib/api.js');
+const detect = require('detect-port');
+const Ganache = require('ganache-cli');
 
 describe('api', () => {
-  const opts = {silent: true};
+  let opts;
+
+  beforeEach(() => opts = {silent: true})
 
   it('getInstrumentationData', function(){
     const api = new API(opts);
@@ -51,4 +55,34 @@ describe('api', () => {
     const cloneC = api.getInstrumentationData();
     assert(cloneC[hash].hits === 5);
   });
+
+  it('ganache: autoLaunchServer === false', async function(){
+    const api = new API(opts);
+    const port = api.port;
+    const server = await api.ganache(Ganache, false);
+
+    assert(typeof port === 'number')
+    assert(typeof server === 'object');
+    assert(typeof server.listen === 'function');
+
+    const freePort = await detect(port);
+
+    assert(freePort === port);
+  });
+
+  it('config: autoLaunchServer: false', async function(){
+    opts.autoLaunchServer = false;
+
+    const api = new API(opts);
+    const port = api.port;
+    const server = await api.ganache(Ganache);
+
+    assert(typeof port === 'number')
+    assert(typeof server === 'object');
+    assert(typeof server.listen === 'function');
+
+    const freePort = await detect(port);
+
+    assert(freePort === port);
+  })
 })
