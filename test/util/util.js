@@ -118,11 +118,11 @@ function initializeProvider(ganache){
 }
 
 module.exports = {
+  getCode: getCode,
   pathPrefix: pathPrefix,
   filePath: filePath,
   report: report,
   instrumentAndCompile: instrumentAndCompile,
   bootstrapCoverage: bootstrapCoverage,
   initializeProvider: initializeProvider,
-
 }
