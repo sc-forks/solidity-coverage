@@ -68,6 +68,7 @@ module.exports = {
 | client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
 | providerOptions | *Object* | `{ }` | [ganache-core options][1]  |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
+| istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text']` | [Istanbul coverage reporters][2]  |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
 | onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][23] |

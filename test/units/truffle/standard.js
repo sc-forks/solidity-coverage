@@ -202,10 +202,22 @@ describe('Truffle Plugin: standard use cases', function() {
     );
   });
 
+  it('uses the fallback server', async function(){
+    truffleConfig.logger = mock.testLogger;
+    solcoverConfig.forceBackupServer = true;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes("Using ganache-cli"),
+      `Should notify about backup server module: ${mock.loggerOutput.val}`
+    );
+  });
 
   // This test tightly coupled to the ganache version in production deps
   // "test-files" project solcoverjs includes `client: require('ganache-cli')`
-  it('uses the server from solcoverjs when specified', async function(){
+  it('config: client', async function(){
     truffleConfig.logger = mock.testLogger;
     truffleConfig.version = true;
 
@@ -221,17 +233,14 @@ describe('Truffle Plugin: standard use cases', function() {
     );
   });
 
-  it('uses the fallback server', async function(){
-    truffleConfig.logger = mock.testLogger;
-    solcoverConfig.forceBackupServer = true;
+  it('config: istanbulFolder', async function(){
+    solcoverConfig.istanbulFolder = mock.pathToTemp('specialFolder');
 
+    // Truffle client
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
 
-    assert(
-      mock.loggerOutput.val.includes("Using ganache-cli"),
-      `Should notify about backup server module: ${mock.loggerOutput.val}`
-    );
+    assert(verify.pathExists(solcoverConfig.istanbulFolder));
   });
 
   // This project has [ @skipForCoverage ] tags in the test descriptions
