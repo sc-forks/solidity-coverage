@@ -22,7 +22,7 @@ fi
 echo "PR_PATH >>>>> $PR_PATH"
 
 # Install buidler e2e test
-git clone https://github.com/sc-forks/moloch.git#buidler-upgrade-coverage
+git clone https://github.com/sc-forks/moloch.git
 cd moloch
 npm install
 npm uninstall --save-dev solidity-coverage
