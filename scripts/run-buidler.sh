@@ -29,3 +29,9 @@ npm install
 # Install and run solidity-coverage @ PR
 npm install --save-dev $PR_PATH
 npx buidler coverage
+
+# Test that coverage/ was generated
+if [ ! -d "coverage" ]; then
+  echo "ERROR: no coverage folder was created."
+  exit 1
+fi

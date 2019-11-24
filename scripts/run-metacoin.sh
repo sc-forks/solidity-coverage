@@ -39,3 +39,10 @@ cat truffle-config.js
 npm init --yes
 yarn add $PR_PATH --dev
 npx truffle run coverage
+
+# Test that coverage/ was generated
+if [ ! -d "coverage" ]; then
+  echo "ERROR: no coverage folder was created."
+  exit 1
+fi
+
