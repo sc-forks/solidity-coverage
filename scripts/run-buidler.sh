@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 #
-# E2E CI: installs PR candidate on Truffle's MetaCoin and runs coverage
-#
-# Also verifies that everything works w/ truffle installed globally.
+# E2E CI: installs PR candidate on sc-forks/buidler-e2e (a simple example,
+# similar to Metacoin) and runs coverage
 #
 
 set -o errexit
@@ -22,27 +21,17 @@ fi
 
 echo "PR_PATH >>>>> $PR_PATH"
 
-# Install truffle and metacoin box
-npm install -g truffle
-npm install -g yarn
-
-mkdir metacoin
-cd metacoin
-truffle unbox metacoin --force
-
-# Install config with plugin
-rm truffle-config.js
-echo "module.exports={plugins:['solidity-coverage']}" > truffle-config.js
-cat truffle-config.js
+# Install buidler e2e test
+git clone https://github.com/sc-forks/buidler-e2e.git
+cd buidler-e2e
+npm install
 
 # Install and run solidity-coverage @ PR
-npm init --yes
-yarn add $PR_PATH --dev
-npx truffle run coverage
+npm install --save-dev $PR_PATH
+npx buidler coverage
 
 # Test that coverage/ was generated
 if [ ! -d "coverage" ]; then
   echo "ERROR: no coverage folder was created."
   exit 1
 fi
-

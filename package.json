@@ -2,8 +2,7 @@
   "name": "solidity-coverage",
   "version": "0.7.0-beta.2",
   "description": "",
-  "main": "index.js",
-  "buidler": "dist/buidler.coverage.js",
+  "main": "dist/buidler.plugin.js",
   "bin": {
     "solidity-coverage": "./dist/bin.js"
   },
