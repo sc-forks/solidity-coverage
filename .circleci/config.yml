@@ -1,6 +1,7 @@
 version: 2.0
-# Necessary for running in machine mode, which is necessary to execute the
-# Zeppelin and MetaCoin E2E scripts
+
+# Necessary for running in machine mode,
+# which is necessary to execute the E2E scripts
 step_install_nvm: &step_install_nvm
   run:
     name: "Install nvm for machine"
@@ -12,6 +13,7 @@ step_install_nvm: &step_install_nvm
       nvm alias default v8.15.0
       echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
       echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+
 jobs:
   unit-test:
     machine: true
@@ -82,6 +84,15 @@ jobs:
           name: Buidler E2E
           command: |
             ./scripts/run-buidler.sh
+  e2e-moloch:
+    machine: true
+    steps:
+      - checkout
+      - <<: *step_install_nvm
+      - run:
+          name: Moloch E2E
+          command: |
+            ./scripts/run-moloch.sh
 workflows:
   version: 2
   build:
@@ -90,16 +101,4 @@ workflows:
       - e2e-zeppelin
       - e2e-metacoin
       - e2e-buidler
-  # TODO: re-enable.
-  # At the moment we're using forks so this is pointless
-  #nightly:
-  #  triggers:
-  #    - schedule:
-  #        cron: "0 1 * * *" # 1am UTC
-  #        filters:
-  #          branches:
-  #            only:
-  #              - master
-  #  jobs:
-      #- e2e-zeppelin
-      #- e2e-colony
+      - e2e-moloch
