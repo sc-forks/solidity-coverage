@@ -73,6 +73,15 @@ jobs:
           name: MetaCoin E2E
           command: |
             ./scripts/run-metacoin.sh
+  e2e-buidler:
+    machine: true
+    steps:
+      - checkout
+      - <<: *step_install_nvm
+      - run:
+          name: Buidler E2E
+          command: |
+            ./scripts/run-buidler.sh
 workflows:
   version: 2
   build:
@@ -80,6 +89,7 @@ workflows:
       - unit-test
       - e2e-zeppelin
       - e2e-metacoin
+      - e2e-buidler
   # TODO: re-enable.
   # At the moment we're using forks so this is pointless
   #nightly:
