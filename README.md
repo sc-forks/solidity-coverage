@@ -4,6 +4,8 @@
 ![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/beta)
 [![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
 [![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/beta/graph/badge.svg)][21]
+[![buidler](https://buidler.dev/buidler-plugin-badge.svg?1)][26]
+
 
 ## Code coverage for Solidity testing
 ![coverage example][22]
@@ -29,6 +31,21 @@ module.exports = {
 **Run**
 ```
 truffle run coverage [command-options]
+```
+
+## [Buidler][26]
+
+**Use** the plugin in `buidler.config.js`
+```javascript
+usePlugin('solidity-coverage')
+
+module.exports = {
+  networks: {...},
+}
+```
+**Run**
+```
+npx buidler coverage [command-options]
 ```
 
 ## Usage notes:
@@ -152,3 +169,5 @@ $ yarn
 [23]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#workflow-hooks
 [24]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#skipping-tests
 [25]: https://github.com/sc-forks/solidity-coverage/issues/417
+[26]: https://buidler.dev/
+
