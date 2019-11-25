@@ -4,6 +4,8 @@
 ![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/beta)
 [![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
 [![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/beta/graph/badge.svg)][21]
+[![buidler](https://buidler.dev/buidler-plugin-badge.svg?1)][26]
+
 
 ## Code coverage for Solidity testing
 ![coverage example][22]
@@ -17,9 +19,9 @@
 $ npm install --save-dev solidity-coverage@beta
 ```
 
-## Truffle V5
+### Truffle V5
 
-**Add** this package to your plugins array in `truffle-config.js`
+**Add** this package to your plugins array in `truffle-config.js` ([Truffle docs][27])
 ```javascript
 module.exports = {
   networks: {...},
@@ -29,6 +31,21 @@ module.exports = {
 **Run**
 ```
 truffle run coverage [command-options]
+```
+
+### Buidler
+
+**Add** the plugin in `buidler.config.js` ([Buidler docs][26])
+```javascript
+usePlugin('solidity-coverage')
+
+module.exports = {
+  networks: {...},
+}
+```
+**Run**
+```
+npx buidler coverage [command-options]
 ```
 
 ## Usage notes:
@@ -62,7 +79,7 @@ module.exports = {
 ```
 
 
-| Option <img width=200/>| Type <img width=200/> | Default <img width=700/> | Description <img width=1000/> |
+| Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
 | client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
@@ -152,3 +169,5 @@ $ yarn
 [23]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#workflow-hooks
 [24]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#skipping-tests
 [25]: https://github.com/sc-forks/solidity-coverage/issues/417
+[26]: https://buidler.dev/
+[27]: https://www.trufflesuite.com/docs
