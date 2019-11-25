@@ -2,9 +2,9 @@
   "name": "solidity-coverage",
   "version": "0.7.0-beta.2",
   "description": "",
-  "main": "dist/buidler.plugin.js",
+  "main": "plugins/buidler.plugin.js",
   "bin": {
-    "solidity-coverage": "./dist/bin.js"
+    "solidity-coverage": "./plugins/bin.js"
   },
   "directories": {
     "test": "test"

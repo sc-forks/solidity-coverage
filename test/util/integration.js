@@ -159,7 +159,7 @@ function getDefaultBuidlerConfig() {
 function getBuidlerConfigJS(config){
   const prefix =`
     const { loadPluginFile } = require("@nomiclabs/buidler/plugins-testing");
-    loadPluginFile(__dirname + "/../dist/buidler.plugin");
+    loadPluginFile(__dirname + "/../plugins/buidler.plugin");
     usePlugin("@nomiclabs/buidler-truffle5");
   `
 
