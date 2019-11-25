@@ -35,7 +35,7 @@ truffle run coverage [command-options]
 
 ## [Buidler][26]
 
-**Use** the plugin in `buidler.config.js`
+**Add** the plugin in `buidler.config.js`
 ```javascript
 usePlugin('solidity-coverage')
 
@@ -170,4 +170,3 @@ $ yarn
 [24]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#skipping-tests
 [25]: https://github.com/sc-forks/solidity-coverage/issues/417
 [26]: https://buidler.dev/
-
