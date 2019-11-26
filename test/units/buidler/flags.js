@@ -52,7 +52,7 @@ describe('Buidler Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it.only('--network (declared port mismatches)', async function(){
+  it('--network (declared port mismatches)', async function(){
     const taskArgs = {
       network: 'development' // 8545
     }
