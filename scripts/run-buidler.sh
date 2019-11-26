@@ -34,6 +34,8 @@ npm install
 
 # Install and run solidity-coverage @ PR
 npm install --save-dev $PR_PATH
+cat package.json
+
 npx buidler coverage
 
 # Test that coverage/ was generated
@@ -54,6 +56,8 @@ npm install
 
 # Install and run solidity-coverage @ PR
 npm install --save-dev $PR_PATH
+cat package.json
+
 npx buidler coverage
 
 # Test that coverage/ was generated
