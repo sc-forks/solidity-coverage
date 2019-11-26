@@ -53,7 +53,8 @@ function plugin() {
           ui
         );
 
-        const address = await api.ganache(ganache);
+        const client = api.client || ganache;
+        const address = await api.ganache(client);
         const web3 = new Web3(address);
         const accounts = await web3.eth.getAccounts();
         const nodeInfo = await web3.eth.getNodeInfo();
