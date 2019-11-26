@@ -52,7 +52,7 @@ describe('Buidler Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it('--network (declared port mismatches)', async function(){
+  it.only('--network (declared port mismatches)', async function(){
     const taskArgs = {
       network: 'development' // 8545
     }
@@ -72,6 +72,11 @@ describe('Buidler Plugin: command line options', function() {
     assert(
       mock.loggerOutput.val.includes("8545"),
       `Should have used default coverage port 8545: ${mock.loggerOutput.val}`
+    );
+
+    assert(
+      mock.loggerOutput.val.includes("development"),
+      `Should have used specified network name: ${mock.loggerOutput.val}`
     );
 
     const expected = [{

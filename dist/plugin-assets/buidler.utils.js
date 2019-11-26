@@ -27,7 +27,7 @@ function normalizeConfig(config, args){
   return config;
 }
 
-function setupNetwork(env, api, taskArgs, ui){
+function setupNetwork(env, api, taskArgs={}, ui){
   let networkConfig = {};
 
   if (taskArgs.network){
@@ -48,13 +48,14 @@ function setupNetwork(env, api, taskArgs, ui){
   networkConfig.gas =  api.gasLimit;
   networkConfig.gasPrice = api.gasPrice;
 
-  const provider = createProvider(api.defaultNetworkName, networkConfig);
+  const networkName = taskArgs.network || api.defaultNetworkName;
+  const provider = createProvider(networkName, networkConfig);
 
-  env.config.networks[api.defaultNetworkName] = networkConfig;
-  env.config.defaultNetwork = api.defaultNetworkName;
+  env.config.networks[networkName] = networkConfig;
+  env.config.defaultNetwork = networkName;
 
   env.network = {
-    name: api.defaultNetworkName,
+    name: networkName,
     config: networkConfig,
     provider: provider,
   }

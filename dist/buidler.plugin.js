@@ -69,9 +69,12 @@ function plugin() {
           pkg.version
         ]);
 
+
         // Network Info
+        const networkName = args.network || api.defaultNetworkName;
+
         ui.report('network', [
-          api.defaultNetworkName,
+          networkName,
           api.port
         ]);
 
