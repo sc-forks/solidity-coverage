@@ -46,12 +46,7 @@ function plugin() {
         // ==============
         // Server launch
         // ==============
-        const network = buidlerUtils.setupNetwork(
-          env,
-          api,
-          args,
-          ui
-        );
+        const network = buidlerUtils.setupNetwork(env, api, ui);
 
         const client = api.client || ganache;
         const address = await api.ganache(client);
@@ -69,12 +64,8 @@ function plugin() {
           pkg.version
         ]);
 
-
-        // Network Info
-        const networkName = args.network || api.defaultNetworkName;
-
         ui.report('network', [
-          networkName,
+          env.network.name,
           api.port
         ]);
 
