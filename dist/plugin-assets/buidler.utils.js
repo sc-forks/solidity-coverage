@@ -16,7 +16,7 @@ const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/c
  * @param  {BuidlerConfig} config
  * @return {BuidlerConfig}        updated config
  */
-function normalizeConfig(config, args){
+function normalizeConfig(config, args={}){
   config.workingDir = config.paths.root;
   config.contractsDir = config.paths.sources;
   config.testDir = config.paths.tests;
@@ -27,11 +27,15 @@ function normalizeConfig(config, args){
   return config;
 }
 
-function setupNetwork(env, api, taskArgs, ui){
+function setupNetwork(env, api, ui){
   let networkConfig = {};
 
-  if (taskArgs.network){
-    networkConfig = env.config.networks[taskArgs.network];
+  let networkName = (env.buidlerArguments.network !== 'buidlerevm')
+    ? env.buidlerArguments.network
+    : api.defaultNetworkName;
+
+  if (networkName !== api.defaultNetworkName){
+    networkConfig = env.config.networks[networkName];
 
     const configPort = networkConfig.url.split(':')[2];
 
@@ -48,13 +52,13 @@ function setupNetwork(env, api, taskArgs, ui){
   networkConfig.gas =  api.gasLimit;
   networkConfig.gasPrice = api.gasPrice;
 
-  const provider = createProvider(api.defaultNetworkName, networkConfig);
+  const provider = createProvider(networkName, networkConfig);
 
-  env.config.networks[api.defaultNetworkName] = networkConfig;
-  env.config.defaultNetwork = api.defaultNetworkName;
+  env.config.networks[networkName] = networkConfig;
+  env.config.defaultNetwork = networkName;
 
   env.network = {
-    name: api.defaultNetworkName,
+    name: networkName,
     config: networkConfig,
     provider: provider,
   }

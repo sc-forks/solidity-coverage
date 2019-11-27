@@ -21,6 +21,12 @@ fi
 
 echo "PR_PATH >>>>> $PR_PATH"
 
+echo ""
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Simple buidler/buidler-trufflev5    "
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+
 # Install buidler e2e test
 git clone https://github.com/sc-forks/buidler-e2e.git
 cd buidler-e2e
@@ -28,10 +34,34 @@ npm install
 
 # Install and run solidity-coverage @ PR
 npm install --save-dev $PR_PATH
+cat package.json
+
 npx buidler coverage
 
 # Test that coverage/ was generated
 if [ ! -d "coverage" ]; then
-  echo "ERROR: no coverage folder was created."
+  echo "ERROR: no coverage folder was created for buidler-trufflev5."
+  exit 1
+fi
+
+echo ""
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Simple buidler/buidler-ethers       "
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+cd ..
+git clone https://github.com/sc-forks/example-buidler-ethers.git
+cd example-buidler-ethers
+npm install
+
+# Install and run solidity-coverage @ PR
+npm install --save-dev $PR_PATH
+cat package.json
+
+npx buidler coverage
+
+# Test that coverage/ was generated
+if [ ! -d "coverage" ]; then
+  echo "ERROR: no coverage folder was created for buidler-ethers."
   exit 1
 fi

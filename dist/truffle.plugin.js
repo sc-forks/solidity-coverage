@@ -36,7 +36,8 @@ async function plugin(config){
     truffleUtils.setNetwork(config, api);
 
     // Server launch
-    const address = await api.ganache(truffle.ganache);
+    const client = api.client || truffle.ganache;
+    const address = await api.ganache(client);
 
     const web3 = new Web3(address);
     const accounts = await web3.eth.getAccounts();

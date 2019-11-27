@@ -46,14 +46,10 @@ function plugin() {
         // ==============
         // Server launch
         // ==============
-        const network = buidlerUtils.setupNetwork(
-          env,
-          api,
-          args,
-          ui
-        );
+        const network = buidlerUtils.setupNetwork(env, api, ui);
 
-        const address = await api.ganache(ganache);
+        const client = api.client || ganache;
+        const address = await api.ganache(client);
         const web3 = new Web3(address);
         const accounts = await web3.eth.getAccounts();
         const nodeInfo = await web3.eth.getNodeInfo();
@@ -68,9 +64,8 @@ function plugin() {
           pkg.version
         ]);
 
-        // Network Info
         ui.report('network', [
-          api.defaultNetworkName,
+          env.network.name,
           api.port
         ]);
 

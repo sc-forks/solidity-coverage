@@ -53,16 +53,14 @@ describe('Buidler Plugin: command line options', function() {
   });
 
   it('--network (declared port mismatches)', async function(){
-    const taskArgs = {
-      network: 'development' // 8545
-    }
-
     solcoverConfig.port = 8222;
 
     mock.install('Simple', 'simple.js', solcoverConfig);
     mock.buidlerSetupEnv(this);
 
-    await this.env.run("coverage", taskArgs);
+    this.env.buidlerArguments.network = "development";
+
+    await this.env.run("coverage");
 
     assert(
       mock.loggerOutput.val.includes("The 'port' values"),
@@ -72,6 +70,11 @@ describe('Buidler Plugin: command line options', function() {
     assert(
       mock.loggerOutput.val.includes("8545"),
       `Should have used default coverage port 8545: ${mock.loggerOutput.val}`
+    );
+
+    assert(
+      mock.loggerOutput.val.includes("development"),
+      `Should have used specified network name: ${mock.loggerOutput.val}`
     );
 
     const expected = [{

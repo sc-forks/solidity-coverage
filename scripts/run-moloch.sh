@@ -28,6 +28,7 @@ npm install
 npm uninstall --save-dev solidity-coverage
 
 # Install and run solidity-coverage @ PR
+# Should run on network 'localhost'
 npm install --save-dev $PR_PATH
 npm run coverage
 

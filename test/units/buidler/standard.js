@@ -51,6 +51,25 @@ describe('Buidler Plugin: standard use cases', function() {
     );
   });
 
+  it('default network ("buidlerevm")', async function(){
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
+
+    this.env.buidlerArguments.network = "buidlerevm"
+
+    await this.env.run("coverage");
+
+    assert(
+      mock.loggerOutput.val.includes("8555"),
+      `Should have used default coverage port 8555: ${mock.loggerOutput.val}`
+    );
+
+    assert(
+      mock.loggerOutput.val.includes("soliditycoverage"),
+      `Should have used specified network name: ${mock.loggerOutput.val}`
+    );
+  });
+
   it('with relative path solidity imports', async function() {
     mock.installFullProject('import-paths');
     mock.buidlerSetupEnv(this);
