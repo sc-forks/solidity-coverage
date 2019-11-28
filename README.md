@@ -59,7 +59,7 @@ npx buidler coverage [command-options]
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
-| testFiles  | `--testFiles test/file.js` | (Buidler) JS test file(s) to run.|
+| testfiles  | `--testfiles test/file.js` | (Buidler) JS test file(s) to run.|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
