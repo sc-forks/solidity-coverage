@@ -7,7 +7,7 @@ const ganache = require('ganache-cli')
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../dist/buidler.plugin');
+const plugin = require('../../../plugins/buidler.plugin');
 
 // =======
 // Errors

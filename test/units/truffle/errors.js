@@ -7,7 +7,7 @@ const ganache = require('ganache-core-sc');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../dist/truffle.plugin');
+const plugin = require('../../../plugins/truffle.plugin');
 
 // =======
 // Errors
@@ -208,7 +208,7 @@ describe('Truffle Plugin: error cases', function() {
   })
 
   it('user runs "solidity-coverage" as shell command', function(){
-    const pathToCommand = './dist/bin.js';
+    const pathToCommand = './plugins/bin.js';
     const pkg = require('../../../package.json');
 
     assert(

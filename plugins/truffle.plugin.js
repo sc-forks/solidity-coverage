@@ -1,7 +1,7 @@
 const API = require('./../lib/api');
-const utils = require('./plugin-assets/plugin.utils');
-const truffleUtils = require('./plugin-assets/truffle.utils');
-const PluginUI = require('./plugin-assets/truffle.ui');
+const utils = require('./resources/plugin.utils');
+const truffleUtils = require('./resources/truffle.utils');
+const PluginUI = require('./resources/truffle.ui');
 
 const pkg = require('./../package.json');
 const death = require('death');

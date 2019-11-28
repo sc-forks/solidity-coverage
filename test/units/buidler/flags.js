@@ -5,7 +5,7 @@ const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../dist/buidler.plugin');
+const plugin = require('../../../plugins/buidler.plugin');
 
 // =======================
 // CLI Options / Flags
@@ -85,7 +85,7 @@ describe('Buidler Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it.only('--testfiles test/<fileName>', async function() {
+  it('--testfiles test/<fileName>', async function() {
     const taskArgs = {
       testfiles: path.join(
         buidlerConfig.paths.root,

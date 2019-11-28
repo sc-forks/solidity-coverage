@@ -5,7 +5,7 @@ const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../dist/buidler.plugin');
+const plugin = require('../../../plugins/buidler.plugin');
 
 // =======================
 // Standard Use-case Tests
