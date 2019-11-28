@@ -1,7 +1,7 @@
 const API = require('./../lib/api');
-const utils = require('./plugin-assets/plugin.utils');
-const buidlerUtils = require('./plugin-assets/buidler.utils');
-const PluginUI = require('./plugin-assets/buidler.ui');
+const utils = require('./resources/plugin.utils');
+const buidlerUtils = require('./resources/buidler.utils');
+const PluginUI = require('./resources/buidler.ui');
 
 const pkg = require('./../package.json');
 const death = require('death');
