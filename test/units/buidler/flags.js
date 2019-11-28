@@ -85,9 +85,9 @@ describe('Buidler Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it('--testFiles test/<fileName>', async function() {
+  it.only('--testfiles test/<fileName>', async function() {
     const taskArgs = {
-      testFiles: path.join(
+      testfiles: path.join(
         buidlerConfig.paths.root,
         'test/specific_a.js'
       )

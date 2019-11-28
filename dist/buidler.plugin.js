@@ -26,7 +26,7 @@ function plugin() {
 
   task("coverage", "Generates a code coverage report for tests")
 
-    .addOptionalParam("testFiles",  ui.flags.file,       null, types.string)
+    .addOptionalParam("testfiles",  ui.flags.file,       null, types.string)
     .addOptionalParam("solcoverjs", ui.flags.solcoverjs, null, types.string)
     .addOptionalParam('temp',       ui.flags.temp,       null, types.string)
 
@@ -112,10 +112,10 @@ function plugin() {
         // ======
         // Tests
         // ======
-        const testFiles = args.testFiles ? [args.testFiles] : [];
+        const testfiles = args.testfiles ? [args.testfiles] : [];
 
         try {
-          await env.run(TASK_TEST, {testFiles: testFiles})
+          await env.run(TASK_TEST, {testFiles: testfiles})
         } catch (e) {
           error = e;
         }
