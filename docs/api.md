@@ -79,7 +79,9 @@ Creates a coverage API instance. Configurable.
 
 ## instrument
 
-Instruments a set of sources to prepare them for running under coverage.
+Instruments a set of sources to prepare them for compilation.
+
+:warning: **Important:** Instrumented sources must be compiled with **solc optimization OFF** :warning:
 
 **Parameters**
 
@@ -103,9 +105,9 @@ const instrumented = api.instrument(contracts)
 ## ganache
 
 Enables coverage data collection on an in-process ganache server. By default, will return
-a url after server has begun listening on the port specified in the config. When `autoLaunchServer`
-is false, method returns`ganache.server` so the consumer can control the 'server.listen' invocation
-themselves.
+a url after server has begun listening on the port specified in the [config](#constructor)
+(or 8555 by default). When `autoLaunchServer` is false, method returns`ganache.server`
+so the consumer can control the 'server.listen' invocation themselves.
 
 **Parameters**
 
