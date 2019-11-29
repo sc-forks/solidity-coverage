@@ -1,8 +1,10 @@
 const assert = require('assert');
-const util = require('./../util/util.js');
-const API = require('./../../api.js');
 const detect = require('detect-port');
 const Ganache = require('ganache-cli');
+
+const util = require('./../util/util.js');
+const API = require('./../../api.js');
+const utils = require('./../../utils.js');
 
 describe('api', () => {
   let opts;
@@ -86,15 +88,14 @@ describe('api', () => {
     assert(freePort === port);
   })
 
-  it('api.utils', async function(){
-    const api = new API(opts);
-    assert(api.utils.assembleFiles !== undefined)
-    assert(api.utils.checkContext !== undefined)
-    assert(api.utils.finish !== undefined)
-    assert(api.utils.getTempLocations !== undefined)
-    assert(api.utils.setupTempFolders !== undefined)
-    assert(api.utils.loadSource !== undefined)
-    assert(api.utils.loadSolcoverJS !== undefined)
-    assert(api.utils.save !== undefined)
+  it('utils', async function(){
+    assert(utils.assembleFiles !== undefined)
+    assert(utils.checkContext !== undefined)
+    assert(utils.finish !== undefined)
+    assert(utils.getTempLocations !== undefined)
+    assert(utils.setupTempFolders !== undefined)
+    assert(utils.loadSource !== undefined)
+    assert(utils.loadSolcoverJS !== undefined)
+    assert(utils.save !== undefined)
   });
 })

@@ -95,6 +95,16 @@ module.exports = {
 
 [<sup>*</sup> Advanced use][14]
 
+## API
+
+Solidity-coverage's core methods and many utilities are available as an API.
+
+```javascript
+const CoverageAPI = require('solidity-coverage/api');
+```
+
+[Documentation available here][28].
+
 ## FAQ
 
 Common problems & questions:
@@ -171,3 +181,4 @@ $ yarn
 [25]: https://github.com/sc-forks/solidity-coverage/issues/417
 [26]: https://buidler.dev/
 [27]: https://www.trufflesuite.com/docs
+[28]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/api.md
