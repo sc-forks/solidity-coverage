@@ -26,8 +26,7 @@ cd openzeppelin-solidity
 sed -i 's/if/# /g' scripts/coverage.sh
 sed -i 's/curl/# /g' scripts/coverage.sh
 sed -i 's/fi/# /g' scripts/coverage.sh
-sed -i 's/ganache-cli-coverage/testrpc-sc/g' scripts/test.sh
-sed -i 's/--emitFreeLogs true/ /g' scripts/test.sh
+sed -i 's/npx oz compile/npx oz compile --no-interactive/g' scripts/compile.sh
 
 # Swap installed coverage for PR branch version
 echo ">>>>> npm install"
