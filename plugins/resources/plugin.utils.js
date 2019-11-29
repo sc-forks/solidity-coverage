@@ -267,7 +267,6 @@ module.exports = {
   loadSolcoverJS: loadSolcoverJS,
   reportSkipped: reportSkipped,
   save: save,
-  checkContext: checkContext,
   toRelativePath: toRelativePath,
   setupTempFolders: setupTempFolders
 }
