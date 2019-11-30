@@ -28,19 +28,24 @@ function cleanInitialState(){
   assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
 }
 
-function coverageGenerated(truffleConfig){
-  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
+function coverageGenerated(config){
+  const workingDir = config.working_directory || config.paths.root;
+  const jsonPath = path.join(workingDir, "coverage.json");
+
   assert(pathExists('./coverage') === true, 'should gen coverage folder');
   assert(pathExists(jsonPath) === true, 'should gen coverage.json');
 }
 
-function coverageNotGenerated(truffleConfig){
-  const jsonPath = path.join(truffleConfig.working_directory, "coverage.json");
+function coverageNotGenerated(config){
+  const workingDir = config.working_directory || config.paths.root;
+  const jsonPath = path.join(workingDir, "coverage.json");
+
   assert(pathExists('./coverage') !== true, 'should NOT gen coverage folder');
   assert(pathExists(jsonPath) !== true, 'should NOT gen coverage.json');
 }
 
 module.exports = {
+  pathExists: pathExists,
   lineCoverage: lineCoverage,
   coverageMissing: coverageMissing,
   cleanInitialState: cleanInitialState,

@@ -4,6 +4,8 @@
 ![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/beta)
 [![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
 [![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/beta/graph/badge.svg)][21]
+[![buidler](https://buidler.dev/buidler-plugin-badge.svg?1)][26]
+
 
 ## Code coverage for Solidity testing
 ![coverage example][22]
@@ -17,9 +19,9 @@
 $ npm install --save-dev solidity-coverage@beta
 ```
 
-## Truffle V5
+### Truffle V5
 
-**Add** this package to your plugins array in `truffle-config.js`
+**Add** this package to your plugins array in `truffle-config.js` ([Truffle docs][27])
 ```javascript
 module.exports = {
   networks: {...},
@@ -31,22 +33,36 @@ module.exports = {
 truffle run coverage [command-options]
 ```
 
+### Buidler
+
+**Add** the plugin in `buidler.config.js` ([Buidler docs][26])
+```javascript
+usePlugin('solidity-coverage')
+
+module.exports = {
+  networks: {...},
+}
+```
+**Run**
+```
+npx buidler coverage [command-options]
+```
+
 ## Usage notes:
 + Coverage runs tests a little more slowly.
 + Coverage launches its own in-process ganache server.
 + You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` [config][15].
 + Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be [skipped][24].
-+ :warning:  Contracts are compiled **without optimization**. Please report unexpected compilation faults to [issue 417][25] 
++ :warning:  Contracts are compiled **without optimization**. Please report unexpected compilation faults to [issue 417][25]
 
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| file     | `--file="test/registry/*.js"`    | Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
+| testfiles  | `--testfiles test/file.js` | (Buidler) JS test file(s) to run.|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| network    | `--network development` | Use network settings defined in the Truffle config |
+| network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
-| version    |                                | Version info |
-| help       |                                | Usage notes  |
 
 [<sup>*</sup> Advanced use][14]
 
@@ -63,20 +79,31 @@ module.exports = {
 ```
 
 
-| Option <img width=200/>| Type <img width=200/> | Default <img width=700/> | Description <img width=1000/> |
+| Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
 | client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
 | providerOptions | *Object* | `{ }` | [ganache-core options][1]  |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
-| istanbulReporter | *Array* | `['html', 'lcov', 'text']` | [Istanbul coverage reporters][2]  |
+| istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
+| istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
 | onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][23] |
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
-| onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated.|
-| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up.|
+| onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
+| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. [More...][23]|
 
 [<sup>*</sup> Advanced use][14]
+
+## API
+
+Solidity-coverage's core methods and many utilities are available as an API.
+
+```javascript
+const CoverageAPI = require('solidity-coverage/api');
+```
+
+[Documentation available here][28].
 
 ## FAQ
 
@@ -152,3 +179,6 @@ $ yarn
 [23]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#workflow-hooks
 [24]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#skipping-tests
 [25]: https://github.com/sc-forks/solidity-coverage/issues/417
+[26]: https://buidler.dev/
+[27]: https://www.trufflesuite.com/docs
+[28]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/api.md

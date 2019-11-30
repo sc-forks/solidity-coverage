@@ -4,8 +4,8 @@ const path = require('path')
 const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
-const mock = require('../../util/integration.truffle');
-const plugin = require('../../../dist/truffle.plugin');
+const mock = require('../../util/integration');
+const plugin = require('../../../plugins/truffle.plugin');
 
 // =======================
 // CLI Options / Flags
@@ -22,6 +22,7 @@ describe('Truffle Plugin: command line options', function() {
     solcoverConfig = {};
     truffleConfig = mock.getDefaultTruffleConfig();
     verify.cleanInitialState();
+
   })
 
   afterEach(() => mock.clean());
@@ -198,20 +199,7 @@ describe('Truffle Plugin: command line options', function() {
     );
   });
 
-  it('--usePluginTruffle', async function(){
-    truffleConfig.usePluginTruffle = true;
-    truffleConfig.logger = mock.testLogger;
-
-    mock.install('Simple', 'simple.js', solcoverConfig);
-    await plugin(truffleConfig);
-
-    assert(
-      mock.loggerOutput.val.includes('fallback Truffle library module'),
-      `Should notify it's using plugin truffle lib copy: ${mock.loggerOutput.val}`
-    );
-  });
-
-  it('--coverageArtifacts', async function(){
+  it('--temp', async function(){
     truffleConfig.logger = mock.testLogger;
 
     truffleConfig.temp = 'special_location';

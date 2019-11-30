@@ -1,6 +1,7 @@
 const API = require('./../lib/api');
-const utils = require('./plugin-assets/plugin.utils');
-const PluginUI = require('./plugin-assets/truffle.ui');
+const utils = require('./resources/plugin.utils');
+const truffleUtils = require('./resources/truffle.utils');
+const PluginUI = require('./resources/truffle.ui');
 
 const pkg = require('./../package.json');
 const death = require('death');
@@ -23,24 +24,27 @@ async function plugin(config){
   try {
     death(utils.finish.bind(null, config, api)); // Catch interrupt signals
 
+    config = truffleUtils.normalizeConfig(config);
+
     ui = new PluginUI(config.logger.log);
 
     if(config.help) return ui.report('help');    // Exit if --help
 
-    truffle = utils.loadTruffleLibrary(config);
+    truffle = truffleUtils.loadLibrary(config);
     api = new API(utils.loadSolcoverJS(config));
 
-    utils.setNetwork(config, api);
+    truffleUtils.setNetwork(config, api);
 
     // Server launch
-    const address = await api.ganache(truffle.ganache);
+    const client = api.client || truffle.ganache;
+    const address = await api.ganache(client);
 
     const web3 = new Web3(address);
     const accounts = await web3.eth.getAccounts();
     const nodeInfo = await web3.eth.getNodeInfo();
     const ganacheVersion = nodeInfo.split('/')[1];
 
-    utils.setNetworkFrom(config, accounts);
+    truffleUtils.setNetworkFrom(config, accounts);
 
     // Version Info
     ui.report('versions', [
@@ -62,10 +66,13 @@ async function plugin(config){
     await api.onServerReady(config);
 
     // Instrument
+    const skipFiles = api.skipFiles || [];
+    skipFiles.push('Migrations.sol');
+
     let {
       targets,
       skipped
-    } = utils.assembleFiles(config, api.skipFiles);
+    } = utils.assembleFiles(config, skipFiles);
 
     targets = api.instrument(targets);
     utils.reportSkipped(config, skipped);
@@ -76,6 +83,7 @@ async function plugin(config){
       tempContractsDir
     } = utils.getTempLocations(config);
 
+    utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
     utils.save(targets, config.contracts_directory, tempContractsDir);
     utils.save(skipped, config.contracts_directory, tempContractsDir);
 
@@ -88,7 +96,7 @@ async function plugin(config){
     );
 
     config.all = true;
-    config.test_files = utils.getTestFilePaths(config);
+    config.test_files = await truffleUtils.getTestFilePaths(config);
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts

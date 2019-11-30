@@ -22,7 +22,7 @@ describe('config validation', () => {
     const options =  [
       "cwd",
       "host",
-      "originalContractsDir",
+      "istanbulFolder"
     ]
 
     options.forEach(name => {
@@ -38,6 +38,29 @@ describe('config validation', () => {
         assert.fail()
       } catch (err){
         assert(err.message.includes(`"${name}" is not of a type(s) string`), err.message);
+      }
+    });
+  });
+
+  it('validates the "boolean" options', function(){
+    const options =  [
+      "silent",
+      "autoLaunchServer",
+    ]
+
+    options.forEach(name => {
+      // Pass
+      solcoverjs = {};
+      solcoverjs[name] = false;
+      assert(validator.validate(solcoverjs), `${name} boolean should be valid`)
+
+      // Fail
+      solcoverjs[name] = "false";
+      try {
+        validator.validate(solcoverjs);
+        assert.fail()
+      } catch (err){
+        assert(err.message.includes(`"${name}" is not of a type(s) boolean`), err.message);
       }
     });
   });
@@ -87,7 +110,7 @@ describe('config validation', () => {
     });
   });
 
-  it('validates string array options', function(){
+  it('validates the "string[]" options', function(){
     const options =  [
       "skipFiles",
       "istanbulReporter",
@@ -110,9 +133,10 @@ describe('config validation', () => {
     });
   });
 
-  it('validates function options', function(){
+  it('validates the "function" options', function(){
 
     const options =  [
+      "onCompileComplete",
       "onServerReady",
       "onTestComplete",
       "onIstanbulComplete",

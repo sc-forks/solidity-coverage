@@ -1,5 +1,5 @@
 {
   "commands": {
-    "coverage": "dist/truffle.plugin.js"
+    "coverage": "truffle.plugin.js"
   }
 }

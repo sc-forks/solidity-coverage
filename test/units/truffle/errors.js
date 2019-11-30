@@ -6,8 +6,8 @@ const shell = require('shelljs');
 const ganache = require('ganache-core-sc');
 
 const verify = require('../../util/verifiers')
-const mock = require('../../util/integration.truffle');
-const plugin = require('../../../dist/truffle.plugin');
+const mock = require('../../util/integration');
+const plugin = require('../../../plugins/truffle.plugin');
 
 // =======
 // Errors
@@ -120,7 +120,6 @@ describe('Truffle Plugin: error cases', function() {
     }
   });
 
-  // This case *does* throw an error, but it's uncatch-able;
   it('tries to launch with a port already in use', async function(){
     const server = ganache.server();
 
@@ -209,7 +208,7 @@ describe('Truffle Plugin: error cases', function() {
   })
 
   it('user runs "solidity-coverage" as shell command', function(){
-    const pathToCommand = './dist/bin.js';
+    const pathToCommand = './plugins/bin.js';
     const pkg = require('../../../package.json');
 
     assert(
