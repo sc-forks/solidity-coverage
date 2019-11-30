@@ -1,6 +1,6 @@
 # Solidity-Coverage API
 
-solidity-coverage tracks the code lines which are hit as your tests run by instrumenting solidity contracts with special solidity statements and detecting their execution in a coverage-enabled EVM.
+solidity-coverage tracks which lines are hit as your tests run by instrumenting the contracts with special solidity statements and detecting their execution in a coverage-enabled EVM.
 
 As such, the API spans the full set of tasks typically required to run a solidity test suite. The
 table below shows how its core methods relate to the stages of a test run:
@@ -362,7 +362,6 @@ Returns **Promise**
 ```javascript
 await utils.finish(config, api);
 ```
-
 
 
 
