@@ -363,7 +363,7 @@ Returns **Promise**
 
 **Example**
 ```javascript
-await utils.finish();
+await utils.finish(config, api);
 ```
 
 
