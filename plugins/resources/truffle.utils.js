@@ -200,6 +200,12 @@ function normalizeConfig(config){
     delete config.mocha.reporterOptions;
   }
 
+  // Truffle V4 style solc settings are honored over V5 settings. Apparently it's common
+  // for both to be present in the same config (as an error).
+  if (typeof config.solc === "object" ){
+    config.solc.optimizer = { enabled: false };
+  }
+
   return config;
 }
 
