@@ -8,18 +8,18 @@ statements and detecting their execution in a coverage-enabled EVM.
 As such, the API spans the full set of tasks typically required to run a solidity test suite. The
 table below shows how its core methods relate to the stages of a test run:
 
-| Test Stage <img width=200/>   | API Method   | Description                                                                                                                                                                          |
+| Test Stage <img width=200/>   | API Method <img width=200/>  | Description <img width=200/>                                                                                                                                                                         |
 |---------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| compilation   | `instrument` | A *pre-compilation* step: Rewrites contracts and generates an instrumentation data map.                                                                                              |
-| client launch |   `ganache`  | A *substitute* step: Launches a ganache client with coverage collection enabled in its VM. As the client,runs it will mark line/branch hits on the instrumentation data map.         |
-| test          | `report`     | A *post-test* step: Generates a coverage report from the data collected by the VM after tests complete. Converts,the instrumentation data map into an object Istanbul can process. |
-| exit          | `finish`     | A *substitute* step: Shuts client down                                                                                                                                               |
+| compilation   | `instrument` | A **pre-compilation** step: Rewrites contracts and generates an instrumentation data map.                                                                                              |
+| client launch |   `ganache`  | A **substitute** step: Launches a ganache client with coverage collection enabled in its VM. As the client,runs it will mark line/branch hits on the instrumentation data map.         |
+| test          | `report`     | A **post-test** step: Generates a coverage report from the data collected by the VM after tests complete. |
+| exit          | `finish`     | A **substitute** step: Shuts client down                                                                                                                                               |
 
 [3]: https://github.com/gotwarlost/istanbul
 
 **Additional Resources:**
 
-+ the library includes file system [utilities](#Utils) for managing the
++ the library includes [file system utilities](#Utils) for managing the
 disposable set of contracts/artifacts which coverage must use in lieu of the 'real' (uninstrumented)
 contracts.
 
