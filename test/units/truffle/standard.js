@@ -79,6 +79,29 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
+
+  it('tests in first layer and in a sub-folder', async function() {
+    mock.installFullProject('tests-folder');
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 100
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractB.sol'),
+        pct: 100,
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractC.sol'),
+        pct: 100,
+      },
+    ];
+
+    verify.lineCoverage(expected);
+  });
+
   it('with relative path solidity imports', async function() {
     mock.installFullProject('import-paths');
     await plugin(truffleConfig);

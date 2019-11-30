@@ -96,7 +96,7 @@ async function plugin(config){
     );
 
     config.all = true;
-    config.test_files = truffleUtils.getTestFilePaths(config);
+    config.test_files = await truffleUtils.getTestFilePaths(config);
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts

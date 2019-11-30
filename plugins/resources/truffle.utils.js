@@ -1,8 +1,7 @@
 const PluginUI = require('./truffle.ui');
-
 const globalModules = require('global-modules');
 const TruffleProvider = require('@truffle/provider');
-const dir = require('node-dir');
+const recursive = require('recursive-readdir');
 const globby = require('globby');
 const path = require('path');
 
@@ -15,7 +14,7 @@ const path = require('path');
  * @param  {Object}   config  truffleConfig
  * @return {String[]}         list of files to pass to mocha
  */
-function getTestFilePaths(config){
+async function getTestFilePaths(config){
   let target;
   let ui = new PluginUI(config.logger.log);
 
@@ -23,7 +22,7 @@ function getTestFilePaths(config){
   // Handle --file <path|glob> cli option (subset of tests)
   (typeof config.file === 'string')
     ? target = globby.sync([config.file])
-    : target = dir.files(config.testDir, { sync: true }) || [];
+    : target = await recursive(config.testDir);
 
   // Filter native solidity tests and warn that they're skipped
   const solregex = /.*\.(sol)$/;
