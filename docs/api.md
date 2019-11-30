@@ -1,9 +1,6 @@
 # Solidity-Coverage API
 
-`solidity-coverage`'s API provides test coverage measurement for the Solidity language. Its
-algorithm resembles the one used by [Istanbul][3] for javascript programs.
-It tracks line and branch locations by instrumenting solidity contracts with special solidity
-statements and detecting their execution in a coverage-enabled EVM.
+solidity-coverage tracks the code lines which are hit as your tests run by instrumenting solidity contracts with special solidity statements and detecting their execution in a coverage-enabled EVM.
 
 As such, the API spans the full set of tasks typically required to run a solidity test suite. The
 table below shows how its core methods relate to the stages of a test run:
