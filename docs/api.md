@@ -1,32 +1,33 @@
-# Solidity-Coverage API Documentation
+# Solidity-Coverage API
 
-`solidity-coverage`'s API provides test coverage measurement for the Solidity language.
-The repository contains two complete coverage tool/plugin implementations (for Buidler and Truffle)
-which can be used as sources if you're building something similar.
+`solidity-coverage`'s API provides test coverage measurement for the Solidity language. Its
+algorithm resembles the one used by [Istanbul][3] for javascript programs.
+It tracks line and branch locations by instrumenting solidity contracts with special solidity
+statements and detecting their execution in a coverage-enabled EVM.
 
-`solidity-coverage`'s core algorithm resembles the one used by [Istanbul][3] for javascript programs.
-It tracks line and branch locations by 'instrumenting' solidity contracts with special solidity
-statements and detecting their execution in a coverage-enabled EVM. As such, its API spans the
-full set of tasks typically required to run a solidity test suite.
+As such, the API spans the full set of tasks typically required to run a solidity test suite. The
+table below shows how its core methods relate to the stages of a test run:
 
-+ compile
-+ ethereum client launch
-+ test
-+ report outcome and exit
+| Test Stage <img width=200/>   | API Method   | Description                                                                                                                                                                          |
+|---------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| compilation   | `instrument` | A *pre-compilation* step: Rewrites contracts and generates an instrumentation data map.                                                                                              |
+| client launch |   `ganache`  | A *substitute* step: Launches a ganache client with coverage collection enabled in its VM. As the client,runs it will mark line/branch hits on the instrumentation data map.         |
+| test          | `report`     | A *post-test* step: Generates a coverage report from the data collected by the VM after tests complete. Converts,the instrumentation data map into an object Istanbul can process. |
+| exit          | `finish`     | A *substitute* step: Shuts client down                                                                                                                                               |
 
 [3]: https://github.com/gotwarlost/istanbul
 
-The API's corresponding methods are:
+**Additional Resources:**
 
-+ `instrument`: Rewrites contracts for instrumented compilation. Generates an instrumentation data map.
-+ `ganache`: Launches a ganache client with coverage collection enabled in its VM. As the client
-   runs it will mark line/branch hits on the instrumentation data map.
-+ `report`: Generates a coverage report from the data collected by the VM after tests complete. Converts
-   the instrumentation data map into an object IstanbulJS can process.
-+ `finish`: Shuts client down
++ the library includes file system [utilities](#Utils) for managing the
+disposable set of contracts/artifacts which coverage must use in lieu of the 'real' (uninstrumented)
+contracts.
 
-The library also includes some file system [utilities](#Utils) which are helpful for managing the
-disposable set of contracts/artifacts which coverage must use in lieu of the 'real' contracts/artifacts.
++ there are two complete [coverage tool/plugin implementations][5] (for Buidler and Truffle)
+which can be used as sources if you're building something similar.
+
+[5]: https://github.com/sc-forks/solidity-coverage/tree/beta/plugins
+
 
 # Table of Contents
 
@@ -226,8 +227,8 @@ const config = {
 
 ## loadSolcoverJS
 
-Loads `.solcoverjs`. Users may specify options described in the README in `.solcover.js` config
-file which your application needs to consume.
+Loads `.solcoverjs`. Users may specify [options][7] in `.solcover.js` config file which your
+application needs to consume.
 
 **Parameters**
 
@@ -241,6 +242,8 @@ Returns **Object** Normalized coverage config
 const solcoverJS = utils.loadSolcoverJS(config);
 const api = new CoverageAPI(solcoverJS);
 ```
+
+[7]: https://github.com/sc-forks/solidity-coverage/tree/beta#config-options
 
 -------------
 
