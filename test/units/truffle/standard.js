@@ -215,6 +215,14 @@ describe('Truffle Plugin: standard use cases', function() {
     );
   });
 
+  // This test errors if the reporter is not re-designated as 'spec' correctly
+  it('gracefully disables eth-gas-reporter', async function(){
+    truffleConfig.mocha = { reporter: 'eth-gas-reporter' };
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+  });
+
   // This test tightly coupled to the ganache version in production deps
   // "test-files" project solcoverjs includes `client: require('ganache-cli')`
   it('config: client', async function(){
