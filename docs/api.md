@@ -1,6 +1,6 @@
 # Solidity-Coverage API
 
-solidity-coverage tracks which lines are hit as your tests run by instrumenting the contracts with special solidity statements and detecting their execution in a coverage-enabled EVM.
+Solidity-coverage tracks which lines are hit as your tests run by instrumenting the contracts with special solidity statements and detecting their execution in a coverage-enabled EVM.
 
 As such, the API spans the full set of tasks typically required to run a solidity test suite. The
 table below shows how its core methods relate to the stages of a test run:
@@ -8,7 +8,7 @@ table below shows how its core methods relate to the stages of a test run:
 | Test Stage <img width=200/>   | API Method <img width=200/>  | Description <img width=800/>                                                                                                                                                                         |
 |---------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | compilation   | `instrument` | A **pre-compilation** step: Rewrites contracts and generates an instrumentation data map.                                                                                              |
-| client launch |   `ganache`  | A **substitute** step: Launches a ganache client with coverage collection enabled in its VM. As the client,runs it will mark line/branch hits on the instrumentation data map.         |
+| client launch |   `ganache`  | A **substitute** step: Launches a ganache client with coverage collection enabled in its VM. As the client runs it will mark line/branch hits on the instrumentation data map.         |
 | test          | `report`     | A **post-test** step: Generates a coverage report from the data collected by the VM after tests complete. |
 | exit          | `finish`     | A **substitute** step: Shuts client down                                                                                                                                               |
 
@@ -102,10 +102,10 @@ const instrumented = api.instrument(contracts)
 
 ## ganache
 
-Enables coverage data collection on an in-process ganache server. By default, will return
-a url after server has begun listening on the port specified in the [config](#constructor)
-(or 8555 by default). When `autoLaunchServer` is false, method returns`ganache.server`
-so the consumer can control the 'server.listen' invocation themselves.
+Enables coverage data collection on an in-process ganache server. By default, this method launches
+the server, begins listening on the port specified in the [config](#constructor) (or 8555 if unspecified), and 
+returns a url string. When `autoLaunchServer` is false, method returns `ganache.server` so you can control 
+the `server.listen` invocation yourself.
 
 **Parameters**
 
@@ -137,7 +137,7 @@ Generates coverage report using IstanbulJS
 
 **Parameters**
 
--   `istanbulFolder` **String**: (*Optional*)   path to folder IstanbulJS will deposit coverage reports in.
+-   `istanbulFolder` **String**: (*Optional*)   path to folder Istanbul will deposit coverage reports in.
 
 Returns **Promise**
 
@@ -176,7 +176,7 @@ Returns **Object** instrumentation data;
 ```javascript
 const contracts = api.instrument(contracts);
 const data = api.getInstrumentationData();
-save(data);
+save(data); // Pseudo-code
 ```
 
 -------------
@@ -189,14 +189,14 @@ in a different process.
 
 **Example**
 ```javascript
-const data = load(data);
+const data = load(data); // Pseudo-code
 api.setIntrumentationData(data);
 
 // Client will collect data for the loaded map
 const address = await api.ganache(client);
 
 // Or to `report` instrumentation data which was collected in a different process.
-const data = load(data);
+const data = load(data); // Pseudo-code
 api.setInstrumentationData(data);
 
 api.report();
@@ -224,7 +224,7 @@ const config = {
 
 ## loadSolcoverJS
 
-Loads `.solcoverjs`. Users may specify [options][7] in `.solcover.js` config file which your
+Loads `.solcoverjs`. Users may specify [options][7] in a `.solcover.js` config file which your
 application needs to consume.
 
 **Parameters**
