@@ -216,11 +216,34 @@ describe('Truffle Plugin: standard use cases', function() {
   });
 
   // This test errors if the reporter is not re-designated as 'spec' correctly
-  it('gracefully disables eth-gas-reporter', async function(){
+  it('disables eth-gas-reporter', async function(){
     truffleConfig.mocha = { reporter: 'eth-gas-reporter' };
 
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
+  });
+
+  it('disables optimization when truffle-config uses V4 format', async function(){
+    solcoverConfig = {
+      silent: process.env.SILENT ? true : false,
+      istanbulReporter: ['json-summary', 'text']
+    };
+
+    truffleConfig.solc = {
+      optimizer: { enabled: true, runs: 200 }
+    };
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'Simple.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.lineCoverage(expected);
   });
 
   // This test tightly coupled to the ganache version in production deps
