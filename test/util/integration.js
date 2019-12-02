@@ -33,9 +33,7 @@ function decacheConfigs(){
     `${process.cwd()}/${temp}/${truffleConfigName}`,
     `${process.cwd()}/${temp}/${buidlerConfigName}`,
     `${process.cwd()}/${temp}/contracts/Simple.sol`,
-    `${process.cwd()}/${temp}/test/simple.js`,
-    `${process.cwd()}/${temp}/plugins/resources/truffle.library`,
-    path.join(globalModules, 'truffle')
+    `${process.cwd()}/${temp}/test/simple.js`
   ];
 
   paths.forEach(pth => {
