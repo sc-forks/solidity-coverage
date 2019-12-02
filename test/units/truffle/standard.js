@@ -102,9 +102,22 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
-  it('with relative path solidity imports', async function() {
+  it('imports: relative path imports & file w/ only-import statements', async function() {
     mock.installFullProject('import-paths');
     await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'OnlyUsesImports.sol'),
+        pct: 100
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'UsesImports.sol'),
+        pct: 100,
+      },
+    ];
+
+    verify.lineCoverage(expected);
   });
 
   it('uses libraries', async function() {
@@ -208,12 +221,14 @@ describe('Truffle Plugin: standard use cases', function() {
   });
 
   // This test tightly coupled to the ganache version in truffle dev dep
+  // It's also only meaningful if the truffle ganache and ganache-cli dep
+  // versions are different....currently not the case. TODO - let these versions drift.
   it('uses the server from truffle by default', async function(){
     truffleConfig.logger = mock.testLogger;
     truffleConfig.version = true;
 
     // Baseline inequality check
-    const truffleClientVersion = "v2.5.7";
+    const truffleClientVersion = "v2.8.0"; // was v2.5.7, this works.
 
     // Truffle client
     mock.install('Simple', 'simple.js', solcoverConfig);
