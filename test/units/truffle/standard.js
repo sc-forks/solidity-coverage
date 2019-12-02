@@ -103,6 +103,10 @@ describe('Truffle Plugin: standard use cases', function() {
   });
 
   it('imports: relative path imports & file w/ only-import statements', async function() {
+    // Earlier versions of truffle crash on this case (5.0.31)
+    // Later versions of truffle OOM (5.1.2)
+    truffleConfig.useGlobalTruffle = true;
+
     mock.installFullProject('import-paths');
     await plugin(truffleConfig);
 

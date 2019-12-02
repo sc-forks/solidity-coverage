@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const shell = require('shelljs');
 const decache = require('decache');
+const globalModules = require('global-modules');
 
 const TruffleConfig = require('truffle-config');
 const { resetBuidlerContext } = require("@nomiclabs/buidler/plugins-testing")
@@ -32,7 +33,9 @@ function decacheConfigs(){
     `${process.cwd()}/${temp}/${truffleConfigName}`,
     `${process.cwd()}/${temp}/${buidlerConfigName}`,
     `${process.cwd()}/${temp}/contracts/Simple.sol`,
-    `${process.cwd()}/${temp}/test/simple.js`
+    `${process.cwd()}/${temp}/test/simple.js`,
+    `${process.cwd()}/${temp}/plugins/resources/truffle.library`,
+    path.join(globalModules, 'truffle')
   ];
 
   paths.forEach(pth => {
