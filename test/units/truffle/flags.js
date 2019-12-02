@@ -27,6 +27,20 @@ describe('Truffle Plugin: command line options', function() {
 
   afterEach(() => mock.clean());
 
+  // Running out of memory...
+  it('--usePluginTruffle', async function(){
+    truffleConfig.usePluginTruffle = true;
+    truffleConfig.logger = mock.testLogger;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('fallback Truffle library module'),
+      `Should notify it's using plugin truffle lib copy: ${mock.loggerOutput.val}`
+    );
+  });
+
   it('--file test/<fileName>', async function() {
     truffleConfig.file = path.join(
       truffleConfig.working_directory,
@@ -183,20 +197,6 @@ describe('Truffle Plugin: command line options', function() {
     assert(
       mock.loggerOutput.val.includes('global node_modules'),
       `Should notify it's using global truffle: ${mock.loggerOutput.val}`
-    );
-  });
-
-  // Running out of memory...
-  it.skip('--usePluginTruffle', async function(){
-    truffleConfig.usePluginTruffle = true;
-    truffleConfig.logger = mock.testLogger;
-
-    mock.install('Simple', 'simple.js', solcoverConfig);
-    await plugin(truffleConfig);
-
-    assert(
-      mock.loggerOutput.val.includes('fallback Truffle library module'),
-      `Should notify it's using plugin truffle lib copy: ${mock.loggerOutput.val}`
     );
   });
 
