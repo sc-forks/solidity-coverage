@@ -102,9 +102,26 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
-  it('with relative path solidity imports', async function() {
+  it('imports: relative path imports & file w/ only-import statements', async function() {
+    // Earlier versions of truffle crash on this case (5.0.31)
+    // Later versions of truffle OOM (5.1.2)
+    truffleConfig.useGlobalTruffle = true;
+
     mock.installFullProject('import-paths');
     await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'OnlyUsesImports.sol'),
+        pct: 100
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'UsesImports.sol'),
+        pct: 100,
+      },
+    ];
+
+    verify.lineCoverage(expected);
   });
 
   it('uses libraries', async function() {

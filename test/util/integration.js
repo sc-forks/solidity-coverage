@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const shell = require('shelljs');
 const decache = require('decache');
+const globalModules = require('global-modules');
 
 const TruffleConfig = require('truffle-config');
 const { resetBuidlerContext } = require("@nomiclabs/buidler/plugins-testing")

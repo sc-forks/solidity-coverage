@@ -7372,7 +7372,7 @@ truffle-provider@^0.1.14:
     truffle-interface-adapter "^0.2.3"
     web3 "1.2.1"
 
-truffle@^5.0.31:
+truffle@5.0.31:
   version "5.0.31"
   resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.0.31.tgz#372a826e330720e29514458ff25750aa2b5efa65"
   integrity sha512-dNBH5OFcqHXCaaQO0YGcEtNarIPcToU+tbq+lBph4tI2YjboiwakguvrNCL+cTP4sySKqeg+2QA1W5miyOQGpA==

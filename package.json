@@ -1,6 +1,6 @@
 {
   "name": "solidity-coverage",
-  "version": "0.7.0-beta.2",
+  "version": "0.7.0-beta.3",
   "description": "",
   "main": "plugins/buidler.plugin.js",
   "bin": {
@@ -53,7 +53,7 @@
     "mocha": "5.2.0",
     "nyc": "^14.1.1",
     "solc": "^0.5.10",
-    "truffle": "^5.0.31",
+    "truffle": "5.0.31",
     "truffle-config": "^1.1.18"
   }
 }
