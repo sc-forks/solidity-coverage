@@ -174,7 +174,7 @@ Returns **Object** instrumentation data;
 
 **Example**
 ```javascript
-const contracts = api.instrument(contracts);
+const instrumented = api.instrument(contracts);
 const data = api.getInstrumentationData();
 save(data); // Pseudo-code
 ```
@@ -265,7 +265,7 @@ const {
   skipped
 } = utils.assembleFiles(config, ['Migrations.sol'])
 
-const instrumented = api.instrument(targets);
+const instrumented = api.instrument(contracts);
 ```
 
 --------------
@@ -339,7 +339,7 @@ const {
 
 utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir);
 
-const instrumented = api.instrument(targets);
+const instrumented = api.instrument(contracts);
 
 utils.save(instrumented, config.contractsDir, tempContractsDir);
 ```
