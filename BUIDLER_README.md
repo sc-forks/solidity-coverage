@@ -116,6 +116,6 @@ More documentation, including FAQ and information about solidity-coverage's API 
 [26]: https://buidler.dev/
 [27]: https://www.trufflesuite.com/docs
 [28]: https://github.com/sc-forks/solidity-coverage/blob/beta/README.md
-[29]: https://github.com/sc-forks/buidler-e2e
+[29]: https://github.com/sc-forks/buidler-e2e/tree/coverage
 [30]: https://github.com/sc-forks/moloch
 
