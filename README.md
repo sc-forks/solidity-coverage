@@ -126,6 +126,7 @@ Contributions are welcome! If you're opening a PR that adds features or options 
 writing full [unit tests][11] for them*. (We've built simple fixtures for almost everything
 and are happy to add some for your case if necessary).
 
+
 Set up the development environment with:
 ```
 $ git clone https://github.com/sc-forks/solidity-coverage.git
