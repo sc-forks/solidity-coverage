@@ -70,6 +70,9 @@ function save(targets, originalDir, tempDir){
     console.log('IN SAVE')
     console.log('originalDir --> ' + originalDir);
     console.log('tempDir --> ' + tempDir);
+    console.log('target.canonicalPath --> ' + target.canonicalPath);
+    console.log('path.normalize --> ' + path.normalize(target.canonicalPath));
+
     _path = target.canonicalPath.replace(originalDir, tempDir);
     console.log('_path --> ' + _path)
     fs.outputFileSync(_path, target.source);
