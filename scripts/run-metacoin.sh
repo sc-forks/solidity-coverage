@@ -8,7 +8,7 @@
 set -o errexit
 
 # Get rid of any caches
-sudo rm -rf node_modules
+rm -rf node_modules
 echo "NVM CURRENT >>>>>" && nvm current
 
 # Use PR env variables (for forks) or fallback on local if PR not available
@@ -17,7 +17,7 @@ SED_REGEX="s/git@github.com:/https:\/\/github.com\//"
 if [[ -v CIRCLE_PR_REPONAME ]]; then
   PR_PATH="https://github.com/$CIRCLE_PR_USERNAME/$CIRCLE_PR_REPONAME#$CIRCLE_SHA1"
 else
-  PR_PATH=$(echo "$CIRCLE_REPOSITORY_URL#$CIRCLE_SHA1" | sudo sed "$SED_REGEX")
+  PR_PATH=$(echo "$CIRCLE_REPOSITORY_URL#$CIRCLE_SHA1" | sed "$SED_REGEX")
 fi
 
 echo "PR_PATH >>>>> $PR_PATH"
