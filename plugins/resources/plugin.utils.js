@@ -67,7 +67,11 @@ function setupTempFolders(config, tempContractsDir, tempArtifactsDir){
 function save(targets, originalDir, tempDir){
   let _path;
   for (target of targets) {
+    console.log('IN SAVE')
+    console.log('originalDir --> ' + originalDir);
+    console.log('tempDir --> ' + tempDir);
     _path = target.canonicalPath.replace(originalDir, tempDir);
+    console.log('_path --> ' + _path)
     fs.outputFileSync(_path, target.source);
   }
 }
