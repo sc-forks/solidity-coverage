@@ -41,7 +41,7 @@ npm init --yes
 yarn add $PR_PATH --dev
 yarn add truffle --dev
 
-# require("truffle") not working on global install in Circle's Windows enviroment
+# require("truffle") not working on global install in Circle's Windows env
 if [ "$CIRCLE_JOB" == "e2e-metacoin-windows" ]; then
   yarn add truffle --dev
 fi
