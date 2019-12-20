@@ -2,10 +2,6 @@ const API = require('./../lib/api');
 const utils = require('./resources/plugin.utils');
 const truffleUtils = require('./resources/truffle.utils');
 const PluginUI = require('./resources/truffle.ui');
-
-const shell = require('shelljs');
-const util = require('util');
-
 const pkg = require('./../package.json');
 const death = require('death');
 const path = require('path');
