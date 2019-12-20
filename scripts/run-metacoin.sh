@@ -23,7 +23,7 @@ fi
 echo "PR_PATH >>>>> $PR_PATH"
 
 # Install truffle and metacoin box
-npm install -g truffle
+#npm install -g truffle
 npm install -g yarn
 
 mkdir metacoin
@@ -38,6 +38,7 @@ cat truffle-config.js
 # Install and run solidity-coverage @ PR
 npm init --yes
 yarn add $PR_PATH --dev
+yarn add truffle --dev
 npx truffle run coverage
 
 # Test that coverage/ was generated
