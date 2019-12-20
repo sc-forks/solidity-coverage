@@ -23,7 +23,6 @@ fi
 echo "PR_PATH >>>>> $PR_PATH"
 
 # Install truffle and metacoin box
-#npm install -g truffle
 npm install -g yarn
 npm install -g truffle
 
