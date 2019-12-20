@@ -6,6 +6,13 @@
 
 set -o errexit
 
+function verifyCoverageExists {
+  if [ ! -d "coverage" ]; then
+    echo "ERROR: no coverage folder was created."
+    exit 1
+  fi
+}
+
 # Get rid of any caches
 sudo rm -rf node_modules
 echo "NVM CURRENT >>>>>" && nvm current
@@ -27,7 +34,7 @@ echo "Simple buidler/buidler-trufflev5    "
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo ""
 
-# Install buidler e2e test
+# Install buidler-e2e
 git clone https://github.com/sc-forks/buidler-e2e.git
 cd buidler-e2e
 npm install
@@ -38,12 +45,9 @@ cat package.json
 
 npx buidler coverage
 
-# Test that coverage/ was generated
-if [ ! -d "coverage" ]; then
-  echo "ERROR: no coverage folder was created for buidler-trufflev5."
-  exit 1
-fi
+verifyCoverageExists
 
+# Install buidler-ethers
 echo ""
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Simple buidler/buidler-ethers       "
@@ -60,8 +64,25 @@ cat package.json
 
 npx buidler coverage
 
-# Test that coverage/ was generated
-if [ ! -d "coverage" ]; then
-  echo "ERROR: no coverage folder was created for buidler-ethers."
-  exit 1
-fi
+verifyCoverageExists
+
+echo ""
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Complex: MolochDao/moloch           "
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+
+# Install sc-forks/moloch
+cd ..
+git clone https://github.com/sc-forks/moloch.git
+cd moloch
+npm install
+npm uninstall --save-dev solidity-coverage
+
+# Install and run solidity-coverage @ PR
+# Should run on network 'localhost'
+npm install --save-dev $PR_PATH
+npm run coverage
+
+verifyCoverageExists
+
