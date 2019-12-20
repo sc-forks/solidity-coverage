@@ -1,4 +1,7 @@
-version: 2.0
+version: 2.1
+
+orbs:
+  win: circleci/windows@2.2.0
 
 # Necessary for running in machine mode,
 # which is necessary to execute the E2E scripts
@@ -75,6 +78,15 @@ jobs:
           name: MetaCoin E2E
           command: |
             ./scripts/run-metacoin.sh
+  e2e-metacoin-windows:
+    executor: win/default
+    steps:
+      - checkout
+      - run: dotnet tool install --global PowerShell
+      - run:
+          name: MetaCoin E2E
+          command: |
+            pwsh ./scripts/run-metacoin.sh
   e2e-buidler:
     machine: true
     steps:
@@ -97,8 +109,9 @@ workflows:
   version: 2
   build:
     jobs:
-      - unit-test
-      - e2e-zeppelin
-      - e2e-metacoin
-      - e2e-buidler
-      - e2e-moloch
+      #- unit-test
+      #- e2e-zeppelin
+      #- e2e-metacoin
+      - e2e-metacoin-windows
+      #- e2e-buidler
+      #- e2e-moloch
