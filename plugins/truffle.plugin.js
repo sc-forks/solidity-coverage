@@ -106,7 +106,7 @@ async function plugin(config){
     await truffle.contracts.compile(config);
     await api.onCompileComplete(config);
 
-    console.log('contractsDir --> ' + util.inspect(shell.ls(config.contracts_directory));
+    console.log('contractsDir --> ' + util.inspect(shell.ls(config.contracts_directory)));
 
 
 
