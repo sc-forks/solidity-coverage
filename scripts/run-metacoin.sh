@@ -40,7 +40,7 @@ cat truffle-config.js
 npm init --yes
 yarn add $PR_PATH --dev
 
-if [ $IS_WINDOWS == true ]; then
+if [ "$IS_WINDOWS" == true ]; then
   yarn add truffle --dev
 fi
 
