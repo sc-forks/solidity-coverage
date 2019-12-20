@@ -2,6 +2,7 @@ const API = require('./../lib/api');
 const utils = require('./resources/plugin.utils');
 const truffleUtils = require('./resources/truffle.utils');
 const PluginUI = require('./resources/truffle.ui');
+const shell = require('shell');
 
 const pkg = require('./../package.json');
 const death = require('death');
@@ -100,8 +101,14 @@ async function plugin(config){
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts
+    console.log('CONFIG --> ' + util.inspect(config));
+
     await truffle.contracts.compile(config);
     await api.onCompileComplete(config);
+
+    console.log('contractsDir --> ' + util.inspect(shell.ls(config.contracts_directory));
+
+
 
     // Run tests
     try {

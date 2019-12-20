@@ -39,13 +39,7 @@ cat truffle-config.js
 # Install and run solidity-coverage @ PR
 npm init --yes
 yarn add $PR_PATH --dev
-
-echo "env:IS_WINDOWS --> $env:IS_WINDOWS"
-
-if [ "$env:IS_WINDOWS" == true ]; then
-   yarn add truffle --dev
-fi
-
+yarn add truffle --dev
 npx truffle run coverage
 
 # Test that coverage/ was generated
