@@ -40,11 +40,11 @@ cat truffle-config.js
 npm init --yes
 yarn add $PR_PATH --dev
 yarn add truffle --dev
-yarn add shell.js --dev
 
-# if [ "$CIRCLE_JOB" == "e2e-metacoin-windows" ]; then
-#   yarn add truffle --dev
-# fi
+if [ "$CIRCLE_JOB" == "e2e-metacoin-windows" ]; then
+  echo "ENTERED WINDOW SPECIFIC LOGIC IN CIRCLE...."
+  #yarn add truffle --dev
+fi
 
 npx truffle run coverage
 
