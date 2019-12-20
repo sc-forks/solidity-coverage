@@ -103,13 +103,8 @@ async function plugin(config){
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts
-    console.log('CONFIG --> ' + util.inspect(config));
-
     await truffle.contracts.compile(config);
     await api.onCompileComplete(config);
-
-    console.log('contracts_directory --> ' + config.contracts_directory);
-    console.log('ls contracts_directory --> ' + JSON.stringify(shell.ls(config.contracts_directory)));
 
     // Run tests
     try {

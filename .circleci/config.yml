@@ -47,19 +47,6 @@ jobs:
           name: Upload coverage
           command: |
             bash <(curl -s https://codecov.io/bash)
-
-  # This works but takes a while....
-  e2e-colony:
-    docker:
-      - image: circleci/node:10.12-stretch
-    working_directory: ~/colonyNetwork
-    steps:
-      - checkout
-      - run:
-          name: ColonyNetwork E2E
-          command: |
-            ./scripts/run-colony.sh
-
   e2e-zeppelin:
     machine: true
     steps:
@@ -83,9 +70,8 @@ jobs:
     steps:
       - checkout
       - run: dotnet tool install --global PowerShell
-      - run: $Env:IS_WINDOWS += true
       - run:
-          name: MetaCoin E2E
+          name: Windows Metacoin E2E
           command: |
             bash ./scripts/run-metacoin.sh
   e2e-buidler:
@@ -97,22 +83,12 @@ jobs:
           name: Buidler E2E
           command: |
             ./scripts/run-buidler.sh
-  e2e-moloch:
-    machine: true
-    steps:
-      - checkout
-      - <<: *step_install_nvm
-      - run:
-          name: Moloch E2E
-          command: |
-            ./scripts/run-moloch.sh
 workflows:
   version: 2
   build:
     jobs:
-      #- unit-test
-      #- e2e-zeppelin
-      #- e2e-metacoin
+      - unit-test
+      - e2e-zeppelin
+      - e2e-metacoin
       - e2e-metacoin-windows
-      #- e2e-buidler
-      #- e2e-moloch
+      - e2e-buidler
