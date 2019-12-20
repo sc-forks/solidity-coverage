@@ -40,11 +40,11 @@ cat truffle-config.js
 npm init --yes
 yarn add $PR_PATH --dev
 
-yarn add truffle --dev
-echo "IS_WINDOWS --> $IS_WINDOWS"
-# if [ "$IS_WINDOWS" == true ]; then
-#   yarn add truffle --dev
-# fi
+echo "env:IS_WINDOWS --> $env:IS_WINDOWS"
+
+if [ "$env:IS_WINDOWS" == true ]; then
+   yarn add truffle --dev
+fi
 
 npx truffle run coverage
 
