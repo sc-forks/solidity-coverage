@@ -86,7 +86,7 @@ jobs:
       - run:
           name: MetaCoin E2E
           command: |
-            pwsh ./scripts/run-metacoin.sh
+            bash ./scripts/run-metacoin.sh
   e2e-buidler:
     machine: true
     steps:
