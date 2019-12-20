@@ -1,6 +1,10 @@
-version: 2.0
-# Necessary for running in machine mode, which is necessary to execute the
-# Zeppelin and MetaCoin E2E scripts
+version: 2.1
+
+orbs:
+  win: circleci/windows@2.2.0
+
+# Necessary for running in machine mode,
+# which is necessary to execute the E2E scripts
 step_install_nvm: &step_install_nvm
   run:
     name: "Install nvm for machine"
@@ -12,16 +16,25 @@ step_install_nvm: &step_install_nvm
       nvm alias default v8.15.0
       echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
       echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+
 jobs:
   unit-test:
-    docker:
-      - image: circleci/node:8.15.0
+    machine: true
     steps:
       - checkout
+      - <<: *step_install_nvm
       - run:
           name: Delete any old node_modules
           command: |
             rm -rf node_modules/
+      - run:
+          name: Install yarn
+          command: |
+            npm install -g yarn
+      - run:
+          name: Install truffle (globally)
+          command: |
+            npm install -g truffle
       - run:
           name: Install dependencies
           command: |
@@ -29,24 +42,11 @@ jobs:
       - run:
           name: Run tests
           command: |
-            npm run test-cov
+            npm run test:ci
       - run:
           name: Upload coverage
           command: |
             bash <(curl -s https://codecov.io/bash)
-
-  # This works but takes a while....
-  e2e-colony:
-    docker:
-      - image: circleci/node:10.12-stretch
-    working_directory: ~/colonyNetwork
-    steps:
-      - checkout
-      - run:
-          name: ColonyNetwork E2E
-          command: |
-            ./scripts/run-colony.sh
-
   e2e-zeppelin:
     machine: true
     steps:
@@ -56,7 +56,6 @@ jobs:
           name: Zeppelin E2E
           command: |
             ./scripts/run-zeppelin.sh
-
   e2e-metacoin:
     machine: true
     steps:
@@ -66,6 +65,24 @@ jobs:
           name: MetaCoin E2E
           command: |
             ./scripts/run-metacoin.sh
+  e2e-metacoin-windows:
+    executor: win/default
+    steps:
+      - checkout
+      - run: dotnet tool install --global PowerShell
+      - run:
+          name: Windows Metacoin E2E
+          command: |
+            bash ./scripts/run-metacoin.sh
+  e2e-buidler:
+    machine: true
+    steps:
+      - checkout
+      - <<: *step_install_nvm
+      - run:
+          name: Buidler E2E
+          command: |
+            ./scripts/run-buidler.sh
 workflows:
   version: 2
   build:
@@ -73,14 +90,5 @@ workflows:
       - unit-test
       - e2e-zeppelin
       - e2e-metacoin
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 1 * * *" # 1am UTC
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - e2e-zeppelin
-      #- e2e-colony
+      - e2e-metacoin-windows
+      - e2e-buidler
