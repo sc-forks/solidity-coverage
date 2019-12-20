@@ -83,7 +83,7 @@ jobs:
     steps:
       - checkout
       - run: dotnet tool install --global PowerShell
-      - run: export IS_WINDOWS=true
+      - run: bash export IS_WINDOWS=true
       - run:
           name: MetaCoin E2E
           command: |
