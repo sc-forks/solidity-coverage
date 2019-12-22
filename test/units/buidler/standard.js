@@ -121,7 +121,7 @@ describe('Buidler Plugin: standard use cases', function() {
     );
   });
 
-  it.only('sends / transfers to instrumented fallback', async function(){
+  it('sends / transfers to instrumented fallback', async function(){
     mock.install('Wallet', 'wallet.js', solcoverConfig);
     mock.buidlerSetupEnv(this);
 
