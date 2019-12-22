@@ -44,9 +44,9 @@
     "web3-utils": "^1.0.0"
   },
   "devDependencies": {
-    "@nomiclabs/buidler": "^1.0.1",
-    "@nomiclabs/buidler-truffle5": "^1.0.1",
-    "@nomiclabs/buidler-web3": "^1.0.1",
+    "@nomiclabs/buidler": "^1.0.2",
+    "@nomiclabs/buidler-truffle5": "^1.0.2",
+    "@nomiclabs/buidler-web3": "^1.0.2",
     "@truffle/contract": "^4.0.36",
     "decache": "^4.5.1",
     "ganache-core-sc": "^2.7.0-sc.0",
