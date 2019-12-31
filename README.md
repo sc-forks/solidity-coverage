@@ -20,7 +20,7 @@ $ npm install --save-dev solidity-coverage
 ```
 
 **Resources**:
-+ [0.7.0 release notes][]
++ [0.7.0 release notes][31]
 + [A guide][29] to upgrading from 0.6.x to 0.7.x
 + [0.6.3 docs][30]
 
@@ -189,3 +189,4 @@ $ yarn
 [28]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/api.md
 [29]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/upgrade.md#upgrading-from-06x-to-070
 [30]: https://github.com/sc-forks/solidity-coverage/tree/0.6.x-final#solidity-coverage
+[31]: https://github.com/sc-forks/solidity-coverage/releases/tag/v0.7.0
