@@ -2,7 +2,7 @@
 
 **Install**
 ```
-$ npm install --save-dev solidity-coverage@beta
+$ npm install --save-dev solidity-coverage
 ```
 
 **Add** this package to your plugins array in `truffle-config.js`
@@ -19,13 +19,13 @@ truffle run coverage [command-options]
 
 A full list of options and other information are [available here][8]
 
-# Upgrading from 0.6.x to 0.7.0-beta.x
+# Upgrading from 0.6.x to 0.7.x
 
 First, follow [the installation instructions](#how-to-install-070) and see if it works.
 
 :rabbit2: It does!? Bye.
 
-:elephant: It does not. Good...
+:elephant: It does not.
 
 #### Are you using Truffle V5?
 
@@ -42,7 +42,7 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 + If the flags were `allowUnlimitedContractSize`,  `gasLimit`, `gasPrice` or `emitFreeLogs`,
   you can safely ignore them. Ditto if your port was `8555`.
 
-+ If the flags were things like `accounts` or `network_id`, you'll need to transfer them as
++ If the flags were things like `--account` or `-i`, you'll need to transfer them as
   [ganache-core options][1] to the `providerOptions` key in .solcover.js.
 
 + Ganache's "cli flag" and "js option" formats are slightly different. Check out [their docs][1]
@@ -128,11 +128,11 @@ First, follow [the installation instructions](#how-to-install-070) and see if it
 
 
 [1]: https://github.com/trufflesuite/ganache-core#options
-[2]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md
-[3]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#workflow-hooks
+[2]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
+[3]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#workflow-hooks
 [4]: https://github.com/sc-forks/metacoin
 [5]: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/1923
 [6]: https://github.com/JoinColony/colonyNetwork/pull/716
 [7]: https://github.com/aragon/aragon-court/pull/123
-[8]: https://github.com/sc-forks/solidity-coverage/tree/beta#command-options
+[8]: https://github.com/sc-forks/solidity-coverage/tree/master#command-options
 

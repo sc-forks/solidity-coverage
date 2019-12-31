@@ -23,7 +23,7 @@ contracts.
 + there are two complete [coverage tool/plugin implementations][5] (for Buidler and Truffle)
 which can be used as sources if you're building something similar.
 
-[5]: https://github.com/sc-forks/solidity-coverage/tree/beta/plugins
+[5]: https://github.com/sc-forks/solidity-coverage/tree/master/plugins
 
 
 # Table of Contents
@@ -103,8 +103,8 @@ const instrumented = api.instrument(contracts)
 ## ganache
 
 Enables coverage data collection on an in-process ganache server. By default, this method launches
-the server, begins listening on the port specified in the [config](#constructor) (or 8555 if unspecified), and 
-returns a url string. When `autoLaunchServer` is false, method returns `ganache.server` so you can control 
+the server, begins listening on the port specified in the [config](#constructor) (or 8555 if unspecified), and
+returns a url string. When `autoLaunchServer` is false, method returns `ganache.server` so you can control
 the `server.listen` invocation yourself.
 
 **Parameters**
@@ -240,7 +240,7 @@ const solcoverJS = utils.loadSolcoverJS(config);
 const api = new CoverageAPI(solcoverJS);
 ```
 
-[7]: https://github.com/sc-forks/solidity-coverage/tree/beta#config-options
+[7]: https://github.com/sc-forks/solidity-coverage/tree/master#config-options
 
 -------------
 
