@@ -1,5 +1,11 @@
 # Changelog
 
+0.7.0 / 2019-12-31
+==================
+  * New architecture / Truffle plugin (See PR #372 for details)
+  * Expose solidity-coverage/api (See PR #421 for details)
+  * Add Buidler plugin (See PR #421 for details)
+
 0.6.5 - 0.67 / 2019-09-12
 =========================
   * Ugrapde testrpc-sc to 6.5.1-sc.1 (using eth-sig-util 2.3.0)
