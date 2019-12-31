@@ -53,6 +53,12 @@ module.exports = {
 npx buidler coverage [command-options]
 ```
 
+**Buidler Project Examples:**
+
++ Simple: [buidler-metacoin][32]
++ More complex: [MolochDao/moloch][33]
+
+
 ## Usage notes:
 + Coverage runs tests a little more slowly.
 + Coverage launches its own in-process ganache server.
@@ -190,3 +196,5 @@ $ yarn
 [29]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/upgrade.md#upgrading-from-06x-to-070
 [30]: https://github.com/sc-forks/solidity-coverage/tree/0.6.x-final#solidity-coverage
 [31]: https://github.com/sc-forks/solidity-coverage/releases/tag/v0.7.0
+[32]: https://github.com/sc-forks/buidler-e2e/tree/coverage
+[33]: https://github.com/sc-forks/moloch
