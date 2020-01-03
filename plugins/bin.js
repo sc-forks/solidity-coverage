@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
   Logs a warning / informational message when user tries to
   invoke 'solidity-coverage' as a shell command. This file
