@@ -216,7 +216,7 @@ describe('Truffle Plugin: error cases', function() {
       'bin.js should be pkg.bin'
     );
 
-    const output = shell.exec(`${pathToCommand}`, {silent:true}).stdout;
+    const output = shell.exec(`node ${pathToCommand}`, {silent:true}).stdout;
 
     assert(
       output.includes('no longer a shell command'),
