@@ -265,7 +265,7 @@ const {
   skipped
 } = utils.assembleFiles(config, ['Migrations.sol'])
 
-const instrumented = api.instrument(contracts);
+const instrumented = api.instrument(targets);
 ```
 
 --------------
