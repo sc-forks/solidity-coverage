@@ -1,5 +1,10 @@
 # Changelog
 
+0.7.1 / 2020-01-07
+==================
+  * Add missing hash bang to .bin warning so 'npx solidity-coverage' produces correct message.
+  * Use istanbul fork (because deprecated)
+
 0.7.0 / 2019-12-31
 ==================
   * New architecture / Truffle plugin (See PR #372 for details)
