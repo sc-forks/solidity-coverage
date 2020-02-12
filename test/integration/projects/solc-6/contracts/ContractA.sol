@@ -45,12 +45,12 @@ contract ContractA is ContractB {
     }
   }
 
-  function arraySlice() public pure {
+  function arraySlice(uint _a, uint b_) public pure {
     abi.decode(msg.data[4:], (uint, uint));
   }
 
   function payableFn() public pure {
     address x;
-    address y = payable(x);
+    //address y = payable(x); // parser-diligence crashing here...
   }
 }

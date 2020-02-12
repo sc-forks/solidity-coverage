@@ -39,13 +39,13 @@
     "recursive-readdir": "^2.2.2",
     "sc-istanbul": "^0.4.5",
     "shelljs": "^0.8.3",
-    "solidity-parser-antlr": "0.4.7",
+    "solidity-parser-diligence": "^0.4.16",
     "web3": "1.2.6"
   },
   "devDependencies": {
-    "@nomiclabs/buidler": "^1.0.2",
-    "@nomiclabs/buidler-truffle5": "^1.0.2",
-    "@nomiclabs/buidler-web3": "^1.0.2",
+    "@nomiclabs/buidler": "^1.1.2",
+    "@nomiclabs/buidler-truffle5": "^1.1.2",
+    "@nomiclabs/buidler-web3": "^1.1.2",
     "@truffle/contract": "^4.0.36",
     "decache": "^4.5.1",
     "ganache-core-sc": "^2.7.0-sc.0",

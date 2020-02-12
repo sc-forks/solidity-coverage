@@ -18,7 +18,7 @@ contract("contracta", function(accounts) {
   });
 
   it('arraySlice', async function(){
-    await instance.arraySlice();
+    await instance.arraySlice(5,7);
   });
 
   it('payableFn', async function(){

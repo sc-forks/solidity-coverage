@@ -413,4 +413,24 @@ describe('Truffle Plugin: standard use cases', function() {
       `Should run "on" hooks : ${mock.loggerOutput.val}`
     );
   });
+
+  // Fails with Truffle 5.0.31, but newer Truffle causes OOM when running whole suite.
+  // Running the same test with Buidler though...
+  it.skip('solc 0.6.x', async function(){
+    mock.installFullProject('solc-6');
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 100
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractB.sol'),
+        pct: 0,
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
 })
