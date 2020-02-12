@@ -12,29 +12,25 @@ step_install_nvm: &step_install_nvm
       set +e
       export NVM_DIR="/opt/circleci/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      nvm install v8.15.0
-      nvm alias default v8.15.0
+      nvm install v12.16.0
+      nvm alias default v12.16.0
       echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
       echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
 jobs:
   unit-test:
-    machine: true
+    docker:
+      - image: circleci/node:10
     steps:
       - checkout
-      - <<: *step_install_nvm
       - run:
           name: Delete any old node_modules
           command: |
             rm -rf node_modules/
       - run:
-          name: Install yarn
-          command: |
-            npm install -g yarn
-      - run:
           name: Install truffle (globally)
           command: |
-            npm install -g truffle
+            sudo npm install -g truffle
       - run:
           name: Install dependencies
           command: |

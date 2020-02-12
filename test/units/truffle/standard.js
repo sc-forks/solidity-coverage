@@ -292,7 +292,7 @@ describe('Truffle Plugin: standard use cases', function() {
     truffleConfig.logger = mock.testLogger;
     truffleConfig.version = true;
 
-    const configClientVersion = "v2.8.0";
+    const configClientVersion = "v2.10.1";
 
     // Config client
     mock.installFullProject('ganache-solcoverjs');
