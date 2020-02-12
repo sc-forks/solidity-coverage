@@ -30,11 +30,11 @@ jobs:
       - run:
           name: Install yarn
           command: |
-            npm install -g yarn
+            sudo npm install -g yarn
       - run:
           name: Install truffle (globally)
           command: |
-            npm install -g truffle
+            sudo npm install -g truffle
       - run:
           name: Install dependencies
           command: |
