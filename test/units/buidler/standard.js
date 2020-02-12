@@ -274,4 +274,24 @@ describe('Buidler Plugin: standard use cases', function() {
       `Should run "on" hooks : ${mock.loggerOutput.val}`
     );
   });
+
+  it('solc 0.6.x', async function(){
+    mock.installFullProject('solc-6');
+    mock.buidlerSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(buidlerConfig, 'ContractA.sol'),
+        pct: 100
+      },
+      {
+        file: mock.pathToContract(buidlerConfig, 'ContractB.sol'),
+        pct: 0,
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
 })
