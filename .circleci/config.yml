@@ -28,14 +28,6 @@ jobs:
           command: |
             rm -rf node_modules/
       - run:
-          name: Install yarn
-          command: |
-            sudo npm install -g yarn
-      - run:
-          name: Install truffle (globally)
-          command: |
-            sudo npm install -g truffle
-      - run:
           name: Install dependencies
           command: |
             yarn
