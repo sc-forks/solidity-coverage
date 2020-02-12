@@ -40,7 +40,7 @@
     "sc-istanbul": "^0.4.5",
     "shelljs": "^0.8.3",
     "solidity-parser-antlr": "0.4.7",
-    "web3": "1.2.1"
+    "web3": "1.2.6"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "^1.0.2",

@@ -19,10 +19,10 @@ step_install_nvm: &step_install_nvm
 
 jobs:
   unit-test:
-    machine: true
+    docker:
+      - image: circleci/node:10
     steps:
       - checkout
-      - <<: *step_install_nvm
       - run:
           name: Delete any old node_modules
           command: |
