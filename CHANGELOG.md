@@ -1,5 +1,11 @@
 # Changelog
 
+0.7.2 / 2020-02-12
+==================
+  * Use solidity-parser-diligence (parse Solidity 0.6.x syntax)
+  * Upgrade backup ganache-cli to 6.9.0
+  * Upgrade Web3 to 1.2.6
+
 0.7.1 / 2020-01-07
 ==================
   * Add missing hash bang to .bin warning so 'npx solidity-coverage' produces correct message.
