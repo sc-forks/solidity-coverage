@@ -23,7 +23,7 @@ describe('generic statements', () => {
     util.report(info.solcOutput.errors);
   })
 
-  it('should compile a base contract contructor with a string arg containing "{"', ()=> {
+  it('should compile base contract contructors with string args containing "{"', ()=> {
     const info = util.instrumentAndCompile('statements/interpolation');
     util.report(info.solcOutput.errors);
   })

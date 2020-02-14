@@ -6,8 +6,14 @@ contract Interpolated {
     }
 }
 
-contract Test is Interpolated("abc{defg}"){
+contract TestA is Interpolated("abc{defg}"){
     function a(uint x) public {
+        uint y = x;
+    }
+}
+
+contract TestB is Interpolated {
+    constructor(uint x) public Interpolated("abc{defg}") {
         uint y = x;
     }
 }
