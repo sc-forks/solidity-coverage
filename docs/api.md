@@ -126,7 +126,7 @@ const address = await api.ganache();
 // Alternatively...
 
 const server = await api.ganache(client, false);
-await pify(server.listen()(8545));
+await pify(server.listen)(8545));
 ```
 
 --------------
