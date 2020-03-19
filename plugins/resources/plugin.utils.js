@@ -132,7 +132,7 @@ function checkContext(config, tempContractsDir, tempArtifactsDir){
 
 function assembleFiles(config, skipFiles=[]){
   const targetsPath = path.join(config.contractsDir, '**', '*.sol');
-  const targets = shell.ls(targetsPath);
+  const targets = shell.ls(targetsPath).map(path.normalize);
 
   skipFiles = assembleSkipped(config, targets, skipFiles);
 
