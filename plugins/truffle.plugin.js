@@ -95,13 +95,13 @@ async function plugin(config){
     );
 
     config.all = true;
-    config.test_files = await truffleUtils.getTestFilePaths(config);
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts
     await truffle.contracts.compile(config);
     await api.onCompileComplete(config);
 
+    config.test_files = await truffleUtils.getTestFilePaths(config);
     // Run tests
     try {
       failures = await truffle.test.run(config)
