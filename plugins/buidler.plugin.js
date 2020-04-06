@@ -26,9 +26,9 @@ function plugin() {
 
   task("coverage", "Generates a code coverage report for tests")
 
-    .addOptionalParam("testfiles",  ui.flags.file,       null, types.string)
-    .addOptionalParam("solcoverjs", ui.flags.solcoverjs, null, types.string)
-    .addOptionalParam('temp',       ui.flags.temp,       null, types.string)
+    .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
+    .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
+    .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
 
     .setAction(async function(args, env){
       let error;
@@ -139,4 +139,3 @@ function plugin() {
 }
 
 module.exports = plugin;
-
