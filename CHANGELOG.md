@@ -1,5 +1,17 @@
 # Changelog
 
+0.7.3 / 2020-04-06
+==================
+
+  * Use empty string for default cli flag values (Buidler) (https://github.com/sc-forks/solidity-coverage/issues/490)
+  * Get test files after compileComplete hook runs (Truffle) (https://github.com/sc-forks/solidity-coverage/issues/485)
+  * Fix skipFiles option for Windows OS (https://github.com/sc-forks/solidity-coverage/issues/486)
+  * Allow modifier string arguments containing "{" (https://github.com/sc-forks/solidity-coverage/issues/480)
+  * Allow base contract string constructor args with open curly braces
+    (https://github.com/sc-forks/solidity-coverage/issues/479)
+  * Bump handlebars from 4.1.2 to 4.5.3
+  * Bump kind-of from 6.0.2 to 6.0.3
+
 0.7.2 / 2020-02-12
 ==================
   * Use solidity-parser-diligence (parse Solidity 0.6.x syntax)
