@@ -165,6 +165,7 @@ $ yarn
 + [@kandrianov](https://github.com/kandrianov)
 + [@yxliang01](https://github.com/yxliang01)
 + [@maxsam4](https://github.com/maxsam4)
++ [@justinjmoses](https://github.com/justinjmoses)
 
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
