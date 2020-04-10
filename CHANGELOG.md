@@ -1,5 +1,11 @@
 # Changelog
 
+0.7.4 / 2020-04-09
+==================
+
+  * Use @solidity-parser/parser (^0.5.2) for better 0.6.x parsing (https://github.com/sc-forks/solidity-coverage/issues/495)
+  * Allowing providerOptions gasLimit and allowUnlimitedContractSize to override defaults (https://github.com/sc-forks/solidity-coverage/issues/494)
+
 0.7.3 / 2020-04-06
 ==================
 
