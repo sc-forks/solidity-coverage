@@ -23,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@solidity-parser/parser": "^0.5.2",
     "@truffle/provider": "^0.1.17",
     "chalk": "^2.4.2",
     "death": "^1.1.0",
@@ -39,7 +40,6 @@
     "recursive-readdir": "^2.2.2",
     "sc-istanbul": "^0.4.5",
     "shelljs": "^0.8.3",
-    "solidity-parser-diligence": "^0.4.16",
     "web3": "1.2.6"
   },
   "devDependencies": {
