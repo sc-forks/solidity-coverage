@@ -16,4 +16,9 @@ describe('generic expressions / misc', () => {
     const info = util.instrumentAndCompile('return/return');
     util.report(info.solcOutput.errors);
   });
+
+  it('should compile after instrumenting function the returns void', () => {
+    const info = util.instrumentAndCompile('return/empty-return');
+    util.report(info.solcOutput.errors);
+  });
 });
