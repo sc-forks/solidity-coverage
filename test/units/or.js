@@ -114,7 +114,7 @@ describe('logical OR branches', () => {
       5: 1, 6: 1, 7: 2
     });
     assert.deepEqual(mapping[util.filePath].b, {
-
+      1: [3, 0]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 1
@@ -137,7 +137,7 @@ describe('logical OR branches', () => {
       5: 2, 6: 2, 7: 4
     });
     assert.deepEqual(mapping[util.filePath].b, {
-
+      1: [3, 3]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 2, 2: 2
