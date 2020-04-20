@@ -24,7 +24,7 @@ describe('logical OR branches', () => {
       5: 1, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [1, 0],
+      1: [1, 0], 2: [1, 0]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 0,
@@ -47,7 +47,7 @@ describe('logical OR branches', () => {
       5: 2, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [2, 0],
+      1: [2, 0], 2: [1, 1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 2, 2: 0,
@@ -204,7 +204,7 @@ describe('logical OR branches', () => {
       5: 1, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [1, 0],
+      1: [1, 0], 2: [1, 0]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 0,
@@ -227,7 +227,7 @@ describe('logical OR branches', () => {
       5: 2, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [2, 0],
+      1: [2, 0], 2: [1, 1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 2, 2: 0,
@@ -238,7 +238,7 @@ describe('logical OR branches', () => {
   });
 
   // if ((x == 1) && (x == 2 || true)) {
-  it('should cover an if statement with bracked ANDED OR and AND conditions (both branches)', async function() {
+  it('should cover an if statement with bracked ANDED OR conditions (rightmost sub-branch)', async function() {
     const contract = await util.bootstrapCoverage('or/and-or-brackets', provider, collector);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(1);
@@ -249,7 +249,7 @@ describe('logical OR branches', () => {
       5: 1, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [1, 0],
+      1: [1, 0], 2: [0, 1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 0,
@@ -271,7 +271,7 @@ describe('logical OR branches', () => {
       5: 1, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [1, 0],
+      1: [1, 0], 2: [0, 0], 3: [1, 0]  // Item 3 is the "outer" (left) OR clause
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 0,
@@ -293,7 +293,7 @@ describe('logical OR branches', () => {
       5: 1, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [1, 0],
+      1: [1, 0], 2: [1, 0], 3: [0, 1] // Item 3 is the "outer" (left) OR clause
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 0,
@@ -315,7 +315,7 @@ describe('logical OR branches', () => {
       5: 1, 8: 0
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [1, 0],
+      1: [1, 0], 2: [0, 1], 3: [0, 1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 0,
