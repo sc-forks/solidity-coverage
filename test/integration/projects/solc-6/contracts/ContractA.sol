@@ -9,6 +9,9 @@ contract ContractA is ContractB {
   uint counter;
   uint errorCount;
 
+  uint private immutable _a = 100;
+  uint private immutable override _b = 100;
+
   modifier overridden() override {
     require(true);
     _;
