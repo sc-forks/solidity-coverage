@@ -17,8 +17,13 @@ describe('generic expressions / misc', () => {
     util.report(info.solcOutput.errors);
   });
 
-  it('should compile after instrumenting function the returns void', () => {
+  it('should compile after instrumenting function that returns void', () => {
     const info = util.instrumentAndCompile('return/empty-return');
+    util.report(info.solcOutput.errors);
+  });
+
+  it('should compile after instrumenting function that returns via ternary conditional', () => {
+    const info = util.instrumentAndCompile('return/ternary-return');
     util.report(info.solcOutput.errors);
   });
 });
