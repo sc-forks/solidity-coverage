@@ -3,6 +3,7 @@ pragma solidity ^0.6.0;
 
 contract ContractB {
   uint value;
+  uint b;
 
   constructor() public {
   }
