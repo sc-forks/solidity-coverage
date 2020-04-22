@@ -79,6 +79,33 @@ describe('logical OR branches', () => {
     });
   });
 
+  // require(
+  //   x == 1 ||
+  //   x == 2 ||
+  //   x == 3
+  // )
+  it('should cover a require statement with multiline OR condition (two branches)', async function() {
+    const contract = await util.bootstrapCoverage('or/require-multiline-or', provider, collector);
+    coverage.addContract(contract.instrumented, util.filePath);
+    await contract.instance.a(1);
+    await contract.instance.a(3);
+
+    const mapping = coverage.generate(contract.data, util.pathPrefix);
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      5: 2,
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      1: [2, 0], 2: [1, 0], 3: [0, 1]
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      1: 2,
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      1: 2,
+    });
+  });
+
   // require(x == 1 || x == 2)
   it('should cover a require statement with a simple OR condition (both branches)', async function() {
     const contract = await util.bootstrapCoverage('or/require-or', provider, collector);
