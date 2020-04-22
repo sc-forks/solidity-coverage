@@ -497,4 +497,18 @@ describe('Truffle Plugin: standard use cases', function() {
 
     verify.lineCoverage(expected);
   });
+
+  it('logicalOR', async function(){
+    mock.installFullProject('logical-or');
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'ContractA.sol'),
+        pct: 59.09
+      }
+    ];
+
+    verify.branchCoverage(expected);
+  })
 })
