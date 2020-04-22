@@ -18,6 +18,19 @@ function lineCoverage(expected=[]){
   });
 }
 
+function branchCoverage(expected=[]){
+  let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
+
+  expected.forEach((item, idx) => {
+    assert(
+      summary[item.file].branches.pct === item.pct,
+
+      `For condition ${idx} - expected ${item.pct} %,` +
+      `saw - ${summary[item.file].branches.pct} %`
+    )
+  });
+}
+
 function coverageMissing(expected=[]){
   let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
   expected.forEach(item => assert(summary[item.file] === undefined))
@@ -47,6 +60,7 @@ function coverageNotGenerated(config){
 module.exports = {
   pathExists: pathExists,
   lineCoverage: lineCoverage,
+  branchCoverage: branchCoverage,
   coverageMissing: coverageMissing,
   cleanInitialState: cleanInitialState,
   coverageGenerated: coverageGenerated,

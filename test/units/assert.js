@@ -99,4 +99,44 @@ describe('asserts and requires', () => {
       1: 2,
     });
   });
+
+  it('should cover require statements with method arguments', async function() {
+    const contract = await util.bootstrapCoverage('assert/Require-fn', provider, collector);
+    coverage.addContract(contract.instrumented, util.filePath);
+    await contract.instance.a(true);
+    const mapping = coverage.generate(contract.data, util.pathPrefix);
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      5: 1, 9: 1,
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      1: [1, 0],
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      1: 1, 2: 1
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      1: 1, 2: 1
+    });
+  });
+
+  it('should cover require statements with method arguments & reason string', async function() {
+    const contract = await util.bootstrapCoverage('assert/Require-fn-reason', provider, collector);
+    coverage.addContract(contract.instrumented, util.filePath);
+    await contract.instance.a(true);
+    const mapping = coverage.generate(contract.data, util.pathPrefix);
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      5: 1, 9: 1,
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      1: [1, 0],
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      1: 1, 2: 1
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      1: 1, 2: 1
+    });
+  });
 });
