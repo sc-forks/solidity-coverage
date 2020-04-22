@@ -434,4 +434,23 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     verify.lineCoverage(expected);
   })
+
+  // This works on it's own but there's some kind of weird interaction with
+  // the solc 6 test which causes subsequent cov measurements to be zero.
+  // Have tried re-ordering etc...???. Truffle tests this & should be the same anyway...
+  it.skip('logicalOR', async function(){
+    mock.installFullProject('logical-or');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
+        pct: 59.09
+      }
+    ];
+
+    verify.branchCoverage(expected);
+  })
 })
