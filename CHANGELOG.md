@@ -1,5 +1,12 @@
 # Changelog
 
+0.7.5 / 2020-04-30
+==================
+
+  * Auto disable buidler-gas-reporter (fixes hang when both plugins are present)
+  * Upgrade @solidity-parser/parser to ^0.6.0 (for solc 0.6.5 parsing)
+
+
 0.7.4 / 2020-04-09
 ==================
 
