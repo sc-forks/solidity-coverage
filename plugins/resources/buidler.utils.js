@@ -23,6 +23,7 @@ function normalizeConfig(config, args={}){
   config.artifactsDir = config.paths.artifacts;
   config.logger = config.logger ? config.logger : {log: null};
   config.solcoverjs = args.solcoverjs
+  config.gasReporter = { enabled: false }
 
   return config;
 }
