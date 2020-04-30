@@ -294,4 +294,12 @@ describe('Buidler Plugin: standard use cases', function() {
 
     verify.lineCoverage(expected);
   })
+
+  // This test freezes when gas-reporter is not disabled
+  it('disables buidler-gas-reporter', async function() {
+    mock.installFullProject('buidler-gas-reporter');
+    mock.buidlerSetupEnv(this);
+
+    await this.env.run("coverage");
+  });
 })
