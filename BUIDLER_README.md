@@ -19,7 +19,7 @@ Solidity code coverage plugin for [buidler](http://getbuidler.com).
 ## Installation
 
 ```bash
-$ npm install --save-dev solidity-coverage@beta
+$ npm install --save-dev solidity-coverage
 ```
 
 And add the following to your `buidler.config.js`:
