@@ -284,7 +284,7 @@ describe('Buidler Plugin: standard use cases', function() {
     const expected = [
       {
         file: mock.pathToContract(buidlerConfig, 'ContractA.sol'),
-        pct: 100
+        pct: 87.5
       },
       {
         file: mock.pathToContract(buidlerConfig, 'ContractB.sol'),
