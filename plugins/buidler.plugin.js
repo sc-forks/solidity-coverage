@@ -15,6 +15,7 @@ const { ensurePluginLoadedWithUsePlugin } = require("@nomiclabs/buidler/plugins"
 const {
   TASK_TEST,
   TASK_COMPILE,
+  TASK_COMPILE_GET_COMPILER_INPUT
 } = require("@nomiclabs/buidler/builtin-tasks/task-names");
 
 ensurePluginLoadedWithUsePlugin();
@@ -23,6 +24,13 @@ function plugin() {
 
   // UI for the task flags...
   const ui = new PluginUI();
+
+  // Unset useLiteralContent due to solc metadata size restriction
+  task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
+    const input = await runSuper();
+    input.settings.metadata.useLiteralContent = false;
+    return input;
+  })
 
   task("coverage", "Generates a code coverage report for tests")
 
