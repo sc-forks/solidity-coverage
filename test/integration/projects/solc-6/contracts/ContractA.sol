@@ -57,3 +57,10 @@ contract ContractA is ContractB {
     //address y = payable(x); // parser-diligence crashing here...
   }
 }
+
+// Making sure same-file inheritance works for solc-6...
+contract ContractC is ContractA {
+  function simpleC(uint x) public {
+    x++;
+  }
+}
