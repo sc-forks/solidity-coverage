@@ -7,7 +7,6 @@ const pkg = require('./../package.json');
 const death = require('death');
 const path = require('path');
 const Web3 = require('web3');
-const ganache = require('ganache-cli');
 
 const { task, types } = require("@nomiclabs/buidler/config");
 const { ensurePluginLoadedWithUsePlugin } = require("@nomiclabs/buidler/plugins");
@@ -56,7 +55,7 @@ function plugin() {
         // ==============
         const network = buidlerUtils.setupNetwork(env, api, ui);
 
-        const client = api.client || ganache;
+        const client = api.client || require('ganache-cli');
         const address = await api.ganache(client);
         const web3 = new Web3(address);
         const accounts = await web3.eth.getAccounts();
