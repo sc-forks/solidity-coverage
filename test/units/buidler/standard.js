@@ -289,7 +289,12 @@ describe('Buidler Plugin: standard use cases', function() {
       {
         file: mock.pathToContract(buidlerConfig, 'ContractB.sol'),
         pct: 0,
-      }
+      },
+      {
+        file: mock.pathToContract(buidlerConfig, 'B_Wallet.sol'),
+        pct: 100,
+      },
+
     ];
 
     verify.lineCoverage(expected);
