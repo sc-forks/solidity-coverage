@@ -26,6 +26,14 @@ And add the following to your `buidler.config.js`:
 
 ```js
 usePlugin("solidity-coverage");
+
+module.exports = {
+  networks: {
+    coverage: {
+      url: 'http://localhost:8555'
+    }
+  },
+}
 ```
 
 ## Tasks
@@ -33,7 +41,7 @@ usePlugin("solidity-coverage");
 This plugin implements a `coverage` task
 
 ```bash
-npx buidler coverage [options]
+npx buidler coverage --network coverage [options]
 ```
 
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
