@@ -53,7 +53,7 @@ describe('generic statements', () => {
     util.report(info.solcOutput.errors);
   });
 
-  it.only('should instrument without triggering stack-too-deep', () => {
+  it('should instrument without triggering stack-too-deep', () => {
     const info = util.instrumentAndCompile('statements/stack-too-deep');
     util.report(info.solcOutput.errors);
   });
