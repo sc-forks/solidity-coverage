@@ -4,6 +4,12 @@ contract B_Wallet {
 
     event Deposit(address indexed _sender, uint _value, bytes data);
 
+    receive() external payable
+    {
+        if (msg.value > 0)
+            emit Deposit(msg.sender, msg.value, msg.data);
+    }
+
     function transferPayment(uint payment, address payable recipient) public {
         recipient.transfer(payment);
     }
@@ -14,11 +20,5 @@ contract B_Wallet {
 
     function getBalance() public view returns(uint){
         return address(this).balance;
-    }
-
-    receive() external payable
-    {
-        if (msg.value > 0)
-            emit Deposit(msg.sender, msg.value, msg.data);
     }
 }
