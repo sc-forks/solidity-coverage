@@ -7,6 +7,7 @@
 set -o errexit
 
 # Clone target
+rm -rf contracts-v1
 git clone https://github.com/sc-forks/contracts-v1.git
 cd contracts-v1
 
