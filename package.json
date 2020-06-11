@@ -1,6 +1,6 @@
 {
   "name": "solidity-coverage",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "",
   "main": "plugins/buidler.plugin.js",
   "bin": {
