@@ -1,5 +1,15 @@
 # Changelog
 
+0.7.7 / 2020-06-10
+==================
+
+  * Recommend using --network in buidler docs
+  * Fix html report function highlighting
+  * Stop instrumenting receive() for statements / fns (to save gas)
+  * Lazy load ganache in buidler plugin (fix for buidler source-maps)
+  * Unset useLiteralContent in buidler compilation settings
+  * Support multi-contract files w/ inheritance for solc 0.6.x
+
 0.7.5 / 2020-04-30
 ==================
 
