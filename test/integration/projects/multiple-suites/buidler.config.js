@@ -3,6 +3,10 @@ loadPluginFile(__dirname + "/../plugins/buidler.plugin");
 usePlugin("@nomiclabs/buidler-truffle5");
 
 module.exports={
-  defaultNetwork: "buidlerevm",
+  networks: {
+    buidlerevm: {
+      gasPrice: 2
+    }
+  },
   logger: process.env.SILENT ? { log: () => {} } : console,
 };

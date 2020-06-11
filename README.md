@@ -45,12 +45,16 @@ truffle run coverage [command-options]
 usePlugin('solidity-coverage')
 
 module.exports = {
-  networks: {...},
+  networks: {
+    coverage: {
+      url: 'http://localhost:8555'
+    }
+  },
 }
 ```
 **Run**
 ```
-npx buidler coverage [command-options]
+npx buidler coverage --network coverage [command-options]
 ```
 
 **Buidler Project Examples:**
