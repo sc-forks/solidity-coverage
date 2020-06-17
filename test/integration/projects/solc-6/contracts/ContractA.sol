@@ -43,7 +43,7 @@ contract ContractA is ContractB {
         errorCount++;
         return (0, false);
     } catch (bytes memory) {
-        errorCount++;
+        errorCount = errorCount + 1;
         return (0, false);
     }
   }
