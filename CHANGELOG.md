@@ -1,5 +1,9 @@
 # Changelog
 
+0.7.8 / 2020-06-24
+==================
+  * Track statements in try/catch blocks correctly
+
 0.7.7 / 2020-06-10
 ==================
 
