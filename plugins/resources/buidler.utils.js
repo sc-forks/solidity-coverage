@@ -11,6 +11,19 @@ const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/c
 // =============================
 
 /**
+ * Returns a list of test files to pass to mocha.
+ * @param  {String}   files   file or glob
+ * @return {String[]}         list of files to pass to mocha
+ */
+function getTestFilePaths(files){
+  const target = globby.sync([files])
+
+  // Buidler supports js & ts
+  const testregex = /.*\.(js|ts)$/;
+  return target.filter(f => f.match(testregex) != null);
+}
+
+/**
  * Normalizes buidler paths / logging for use by the plugin utilities and
  * attaches them to the config
  * @param  {BuidlerConfig} config
@@ -104,6 +117,7 @@ module.exports = {
   normalizeConfig: normalizeConfig,
   finish: finish,
   tempCacheDir: tempCacheDir,
-  setupNetwork: setupNetwork
+  setupNetwork: setupNetwork,
+  getTestFilePaths: getTestFilePaths
 }
 

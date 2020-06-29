@@ -119,7 +119,9 @@ function plugin() {
         // ======
         // Tests
         // ======
-        const testfiles = args.testfiles ? [args.testfiles] : [];
+        const testfiles = args.testfiles
+          ? buidlerUtils.getTestFilePaths(args.testfiles)
+          : [];
 
         try {
           await env.run(TASK_TEST, {testFiles: testfiles})
