@@ -46,7 +46,7 @@ npx buidler coverage --network coverage [options]
 
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| testfiles  | `--testfiles test/file.js` | JS test file(s) to run.|
+| testfiles  | `--testfiles="test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Buidler config |
 
