@@ -1,5 +1,9 @@
 # Changelog
 
+0.7.10 / 2020-08-18
+==================
+  * Bump parser to 0.7.0 (Solidity 0.7.0)
+
 0.7.9 / 2020-06-28
 ==================
   * Fix --testfiles glob handling (Buidler)
