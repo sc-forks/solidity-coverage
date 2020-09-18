@@ -30,8 +30,8 @@ function plugin() {
     if (measureCoverage) {
       // The fully qualified name here is actually the global name in the solc input,
       // but buidler uses the fully qualified contract names
-      for (const [fullyQualifiedName, source] of Object.entries(solcInput.sources)) {
-        const absolutePath = path.join(path.dirname(config.paths.sources), fullyQualifiedName);
+      for (const [sourceName, source] of Object.entries(solcInput.sources)) {
+        const absolutePath = path.join(config.paths.root, sourceName);
         // Patch in the instrumented source code.
         if (absolutePath in instrumentedSources) {
           source.content = instrumentedSources[absolutePath];
