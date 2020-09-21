@@ -25,45 +25,6 @@ function plugin() {
   let measureCoverage = false;
   let instrumentedSources;
 
-  task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
-    const solcInput = await runSuper();
-    if (measureCoverage) {
-      // The fully qualified name here is actually the global name in the solc input,
-      // but buidler uses the fully qualified contract names
-      for (const [sourceName, source] of Object.entries(solcInput.sources)) {
-        const absolutePath = path.join(config.paths.root, sourceName);
-        // Patch in the instrumented source code.
-        if (absolutePath in instrumentedSources) {
-          source.content = instrumentedSources[absolutePath];
-        }
-      }
-    }
-    return solcInput;
-  });
-
-  // Solidity settings are best set here instead of the TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT task.
-  task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __, runSuper) => {
-    const compilationJob = await runSuper();
-    if (measureCoverage && typeof compilationJob === "object") {
-      if (compilationJob.solidityConfig.settings === undefined) {
-        compilationJob.solidityConfig.settings = {};
-      }
-
-      const { settings } = compilationJob.solidityConfig;
-      if (settings.metadata === undefined) {
-        settings.metadata = {};
-      }
-      if (settings.optimizer === undefined) {
-        settings.optimizer = {};
-      }
-      // Unset useLiteralContent due to solc metadata size restriction
-      settings.metadata.useLiteralContent = false;
-      // Override optimizer settings for all compilers
-      settings.optimizer.enabled = false;
-    }
-    return compilationJob;
-  });
-
   task("coverage", "Generates a code coverage report for tests")
 
     .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
@@ -180,6 +141,45 @@ function plugin() {
 
     if (error !== undefined ) throw error;
     if (process.exitCode > 0) throw new Error(ui.generate('tests-fail', [process.exitCode]));
+  });
+
+  task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
+    const solcInput = await runSuper();
+    if (measureCoverage) {
+      // The fully qualified name here is actually the global name in the solc input,
+      // but buidler uses the fully qualified contract names
+      for (const [sourceName, source] of Object.entries(solcInput.sources)) {
+        const absolutePath = path.join(config.paths.root, sourceName);
+        // Patch in the instrumented source code.
+        if (absolutePath in instrumentedSources) {
+          source.content = instrumentedSources[absolutePath];
+        }
+      }
+    }
+    return solcInput;
+  });
+
+  // Solidity settings are best set here instead of the TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT task.
+  task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __, runSuper) => {
+    const compilationJob = await runSuper();
+    if (measureCoverage && typeof compilationJob === "object") {
+      if (compilationJob.solidityConfig.settings === undefined) {
+        compilationJob.solidityConfig.settings = {};
+      }
+
+      const { settings } = compilationJob.solidityConfig;
+      if (settings.metadata === undefined) {
+        settings.metadata = {};
+      }
+      if (settings.optimizer === undefined) {
+        settings.optimizer = {};
+      }
+      // Unset useLiteralContent due to solc metadata size restriction
+      settings.metadata.useLiteralContent = false;
+      // Override optimizer settings for all compilers
+      settings.optimizer.enabled = false;
+    }
+    return compilationJob;
   });
 }
 
