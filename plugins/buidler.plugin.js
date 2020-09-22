@@ -146,8 +146,8 @@ function plugin() {
   task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
     const solcInput = await runSuper();
     if (measureCoverage) {
-      // The fully qualified name here is actually the global name in the solc input,
-      // but buidler uses the fully qualified contract names
+      // The source name here is actually the global name in the solc input,
+      // but buidler uses the fully qualified contract names.
       for (const [sourceName, source] of Object.entries(solcInput.sources)) {
         const absolutePath = path.join(config.paths.root, sourceName);
         // Patch in the instrumented source code.
