@@ -18,6 +18,32 @@ function lineCoverage(expected=[]){
   });
 }
 
+function statementCoverage(expected=[], summaryKey='pct'){
+  let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
+
+  expected.forEach((item, idx) => {
+    assert(
+      summary[item.file].statements[summaryKey] === item[summaryKey],
+
+      `For condition ${idx} - expected ${item[summaryKey]} %,` +
+      `saw - ${summary[item.file].statements[summaryKey]} %`
+    )
+  });
+}
+
+function functionCoverage(expected=[], summaryKey='pct'){
+  let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
+
+  expected.forEach((item, idx) => {
+    assert(
+      summary[item.file].functions[summaryKey] === item[summaryKey],
+
+      `For condition ${idx} - expected ${item[summaryKey]} %,` +
+      `saw - ${summary[item.file].functions[summaryKey]} %`
+    )
+  });
+}
+
 function coverageMissing(expected=[]){
   let summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json'));
   expected.forEach(item => assert(summary[item.file] === undefined))
@@ -47,6 +73,8 @@ function coverageNotGenerated(config){
 module.exports = {
   pathExists: pathExists,
   lineCoverage: lineCoverage,
+  statementCoverage: statementCoverage,
+  functionCoverage: functionCoverage,
   coverageMissing: coverageMissing,
   cleanInitialState: cleanInitialState,
   coverageGenerated: coverageGenerated,
