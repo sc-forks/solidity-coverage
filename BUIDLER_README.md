@@ -46,7 +46,7 @@ npx buidler coverage --network coverage [options]
 
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| testfiles  | `--testfiles="test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes.)|
+| testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Buidler config |
 
@@ -99,17 +99,17 @@ More documentation, including FAQ and information about solidity-coverage's API 
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
 [3]: https://mochajs.org/api/mocha
-[4]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-gas
-[5]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-memory
-[6]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#running-out-of-time
-[7]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#continuous-integration
-[8]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#notes-on-branch-coverage
+[4]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas
+[5]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-memory
+[6]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-time
+[7]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration
+[8]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-branch-coverage
 [9]: https://sc-forks.github.io/metacoin/
 [10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
-[11]: https://github.com/sc-forks/solidity-coverage/tree/beta/test/units
+[11]: https://github.com/sc-forks/solidity-coverage/tree/master/test/units
 [12]: https://github.com/sc-forks/solidity-coverage/issues
-[13]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/faq.md#notes-on-gas-distortion
-[14]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md
+[13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-gas-distortion
+[14]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
 [15]: #config-options
 [16]: https://blog.colony.io/code-coverage-for-solidity-eecfa88668c2
 [17]: https://github.com/JoinColony/solcover
@@ -118,12 +118,16 @@ More documentation, including FAQ and information about solidity-coverage's API 
 [20]: https://circleci.com/gh/sc-forks/solidity-coverage
 [21]: https://codecov.io/gh/sc-forks/solidity-coverage
 [22]: https://cdn-images-1.medium.com/max/800/1*uum8t-31bUaa6dTRVVhj6w.png
-[23]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#workflow-hooks
-[24]: https://github.com/sc-forks/solidity-coverage/blob/beta/docs/advanced.md#skipping-tests
+[23]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#workflow-hooks
+[24]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#skipping-tests
 [25]: https://github.com/sc-forks/solidity-coverage/issues/417
 [26]: https://buidler.dev/
 [27]: https://www.trufflesuite.com/docs
-[28]: https://github.com/sc-forks/solidity-coverage/blob/beta/README.md
-[29]: https://github.com/sc-forks/buidler-e2e/tree/coverage
-[30]: https://github.com/sc-forks/moloch
+[28]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/api.md
+[29]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/upgrade.md#upgrading-from-06x-to-070
+[30]: https://github.com/sc-forks/solidity-coverage/tree/0.6.x-final#solidity-coverage
+[31]: https://github.com/sc-forks/solidity-coverage/releases/tag/v0.7.0
+[32]: https://github.com/sc-forks/buidler-e2e/tree/coverage
+[33]: https://github.com/sc-forks/moloch
+[34]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#reducing-the-instrumentation-footprint
 

@@ -414,6 +414,25 @@ describe('Truffle Plugin: standard use cases', function() {
     );
   });
 
+  it('config: includeStatementCoverage, includeFunctionCoverage', async function(){
+    solcoverConfig.istanbulReporter = ['json-summary', 'text']
+    solcoverConfig.measureStatementCoverage = false;
+    solcoverConfig.measureFunctionCoverage = false;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'Simple.sol'),
+        total: 0
+      }
+    ];
+
+    verify.statementCoverage(expected, 'total');
+    verify.functionCoverage(expected, 'total');
+  });
+
   // Fails with Truffle 5.0.31, but newer Truffle causes OOM when running whole suite.
   // Running the same test with Buidler though...
   it.skip('solc 0.6.x', async function(){
