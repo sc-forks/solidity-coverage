@@ -62,6 +62,10 @@ npx buidler coverage --network coverage [command-options]
 + Simple: [buidler-metacoin][32]
 + More complex: [MolochDao/moloch][33]
 
+### @openzeppelin/test-environment
+
+OpenZeppelin have written their own coverage generation scripts for `test-environment` using the solidity-coverage API. 
+A working example can be found at [openzeppelin-contracts, here.][35]
 
 ## Usage notes:
 + Coverage runs tests a little more slowly.
@@ -207,4 +211,5 @@ $ yarn
 [32]: https://github.com/sc-forks/buidler-e2e/tree/coverage
 [33]: https://github.com/sc-forks/moloch
 [34]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#reducing-the-instrumentation-footprint
+[35]: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/scripts/coverage.js
 
