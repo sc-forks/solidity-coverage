@@ -66,12 +66,48 @@ We use [Codecov.io][2] here as a coverage provider for our JS tests - they're gr
 
 ## Running out of memory
 
-If your target contains dozens of large contracts, you may run up against node's memory cap during the
+If your target contains dozens (and dozens) of large contracts, you may run up against Node's memory cap during the
 contract compilation step. This can be addressed by setting the size of the memory space allocated to the command
-when you run it. (NB: you must use the relative path to the truffle `bin` in node_modules)
+when you run it. 
 ```
-$ node --max-old-space-size=4096 ../node_modules/.bin/truffle run coverage [options]
+// Truffle
+$ node --max-old-space-size=4096 ./node_modules/.bin/truffle run coverage [options]
+
+// Buidler 
+$ node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage [options]
 ```
+
+`solcjs` also has some limits on the size of the code bundle it can process. If you see errors like:
+
+```
+// solc >= 0.6.x
+RuntimeError: memory access out of bounds
+    at wasm-function[833]:1152
+    at wasm-function[147]:18
+    at wasm-function[21880]:5
+    
+// solc 0.5.x
+Downloading compiler version 0.5.16
+* Line 1, Column 1
+  Syntax error: value, object or array expected.
+* Line 1, Column 2
+  Extra non-whitespace after JSON value.
+```
+
+...try setting the `measureStatementCoverage` option to `false` in `.solcoverjs`. This will reduce the footprint of 
+the instrumentation solidity-coverage adds to your files. You'll still get line, branch and function coverage but the data Istanbul collects
+for statements will be omitted.
+
+A statement differs from a line as below:
+```solidity
+// Two statements, two lines
+uint x = 5;
+uint y = 7;
+
+// Two statements, one line
+uint x = 5; uint y = 7;
+```
+
 
 ## Running out of time
 
