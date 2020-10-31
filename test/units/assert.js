@@ -1,20 +1,23 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 
-const ganache = require('ganache-core-sc');
+const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
+const Api = require('./../../lib/api')
 
 describe('asserts and requires', () => {
   let coverage;
-  let provider;
-  let collector;
+  let api;
 
-  before(() => ({ provider, collector } = util.initializeProvider(ganache)));
+  before(async () => {
+    api = new Api({silent: true});
+    await api.ganache(client);
+  })
   beforeEach(() => coverage = new Coverage());
-  after((done) => provider.close(done));
+  after(async() => await api.finish());
 
   it('should cover assert statements as `if` statements when they pass', async function() {
-    const contract = await util.bootstrapCoverage('assert/Assert', provider, collector);
+    const contract = await util.bootstrapCoverage('assert/Assert', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(true);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -36,7 +39,7 @@ describe('asserts and requires', () => {
   // NB: Truffle replays failing txs as .calls to obtain the revert reason from the return
   // data. Hence the 2X measurements.
   it('should cover assert statements as `if` statements when they fail', async function() {
-    const contract = await util.bootstrapCoverage('assert/Assert', provider, collector);
+    const contract = await util.bootstrapCoverage('assert/Assert', api);
     coverage.addContract(contract.instrumented, util.filePath);
 
     try { await contract.instance.a(false) } catch(err) { /* Invalid opcode */ }
@@ -57,7 +60,7 @@ describe('asserts and requires', () => {
   });
 
   it('should cover multi-line require stmts as `if` statements when they pass', async function() {
-    const contract = await util.bootstrapCoverage('assert/RequireMultiline', provider, collector);
+    const contract = await util.bootstrapCoverage('assert/RequireMultiline', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(true, true, true);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -79,7 +82,7 @@ describe('asserts and requires', () => {
   // NB: Truffle replays failing txs as .calls to obtain the revert reason from the return
   // data. Hence the 2X measurements.
   it('should cover multi-line require stmts as `if` statements when they fail', async function() {
-    const contract = await util.bootstrapCoverage('assert/RequireMultiline', provider, collector);
+    const contract = await util.bootstrapCoverage('assert/RequireMultiline', api);
     coverage.addContract(contract.instrumented, util.filePath);
 
     try { await contract.instance.a(true, true, false) } catch(err) { /* Revert */ }

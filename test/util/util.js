@@ -96,10 +96,10 @@ function report(output=[]) {
 // =====================
 // Coverage Correctness
 // =====================
-async function bootstrapCoverage(file, provider, collector){
+async function bootstrapCoverage(file, api){
   const info = instrumentAndCompile(file);
-  info.instance = await getDeployedContractInstance(info, provider);
-  collector._setInstrumentationData(info.data);
+  info.instance = await getDeployedContractInstance(info, api.server.provider);
+  api.collector._setInstrumentationData(info.data);
   return info;
 }
 
