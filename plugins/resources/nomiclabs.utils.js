@@ -3,11 +3,13 @@ const globby = require('globby');
 const pluginUtils = require("./plugin.utils");
 const path = require('path');
 const util = require('util');
-const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/construction");
+const {
+  createProvider as createBuidlerProvider
+} = require("@nomiclabs/buidler/internal/core/providers/construction");
 
 
 // =============================
-// Buidler Plugin Utils
+// Nomiclabs Plugin Utils
 // =============================
 
 /**
@@ -18,16 +20,16 @@ const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/c
 function getTestFilePaths(files){
   const target = globby.sync([files])
 
-  // Buidler supports js & ts
+  // Buidler/Hardhat supports js & ts
   const testregex = /.*\.(js|ts)$/;
   return target.filter(f => f.match(testregex) != null);
 }
 
 /**
- * Normalizes buidler paths / logging for use by the plugin utilities and
+ * Normalizes Buidler/Hardhat paths / logging for use by the plugin utilities and
  * attaches them to the config
- * @param  {BuidlerConfig} config
- * @return {BuidlerConfig}        updated config
+ * @param  {Buidler/HardhatConfig} config
+ * @return {Buidler/HardhatConfig}        updated config
  */
 function normalizeConfig(config, args={}){
   config.workingDir = config.paths.root;
@@ -41,7 +43,7 @@ function normalizeConfig(config, args={}){
   return config;
 }
 
-function setupNetwork(env, api, ui){
+function setupBuidlerNetwork(env, api, ui){
   let networkConfig = {};
 
   let networkName = (env.buidlerArguments.network !== 'buidlerevm')
@@ -66,7 +68,7 @@ function setupNetwork(env, api, ui){
   networkConfig.gas =  api.gasLimit;
   networkConfig.gasPrice = api.gasPrice;
 
-  const provider = createProvider(networkName, networkConfig);
+  const provider = createBuidlerProvider(networkName, networkConfig);
 
   env.config.networks[networkName] = networkConfig;
   env.config.defaultNetwork = networkName;
@@ -83,6 +85,7 @@ function setupNetwork(env, api, ui){
   return env.network;
 }
 
+// TODO: Hardhat cacheing??
 /**
  * Generates a path to a temporary compilation cache directory
  * @param  {BuidlerConfig} config
@@ -94,7 +97,7 @@ function tempCacheDir(config){
 
 /**
  * Silently removes temporary folders and calls api.finish to shut server down
- * @param  {BuidlerConfig}     config
+ * @param  {Buidler/HardhatConfig}     config
  * @param  {SolidityCoverage}  api
  * @return {Promise}
  */

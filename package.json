@@ -2,7 +2,7 @@
   "name": "solidity-coverage",
   "version": "0.7.11",
   "description": "",
-  "main": "plugins/buidler.plugin.js",
+  "main": "plugins/nomiclabs.plugin.js",
   "bin": {
     "solidity-coverage": "./plugins/bin.js"
   },
