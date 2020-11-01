@@ -38,4 +38,4 @@ echo ">>>>> cat package.json"
 cat package.json
 
 # Track perf
-time npx buidler coverage
+CI=false npm run coverage
