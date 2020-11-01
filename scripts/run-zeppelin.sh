@@ -20,21 +20,22 @@ fi
 
 echo "PR_PATH >>>>> $PR_PATH"
 
-npm install -g yarn;
-
 # Install Zeppelin
 git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git
 cd openzeppelin-contracts
 
 # Swap installed coverage for PR branch version
 echo ">>>>> yarn install"
-yarn install
+npm install
 
-echo ">>>>> yarn remove solidity-coverage --dev"
-yarn remove solidity-coverage --dev
+echo ">>>>> npm uninstall solidity-coverage --save-dev"
+npm uninstall solidity-coverage --save-dev
 
 echo ">>>>> yarn add $PR_PATH --dev"
-yarn add "$PR_PATH" --dev
+npm install "$PR_PATH" --save-dev
+
+echo ">>>>> cat package.json"
+cat package.json
 
 # Track perf
 time npx buidler coverage
