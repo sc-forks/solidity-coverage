@@ -25,13 +25,13 @@ git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git
 cd openzeppelin-contracts
 
 # Swap installed coverage for PR branch version
-echo ">>>>> yarn install"
+echo ">>>>> npm install"
 npm install
 
 echo ">>>>> npm uninstall solidity-coverage --save-dev"
 npm uninstall solidity-coverage --save-dev
 
-echo ">>>>> yarn add $PR_PATH --dev"
+echo ">>>>> npm add $PR_PATH --dev"
 npm install "$PR_PATH" --save-dev
 
 echo ">>>>> cat package.json"
