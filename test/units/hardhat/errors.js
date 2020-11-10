@@ -98,13 +98,13 @@ describe('Hardhat Plugin: error cases', function() {
 
     await pify(server.listen)(8545);
 
-
     try {
       await this.env.run("coverage", taskArgs);
       assert.fail();
     } catch(err){
       assert(
-        err.message.includes('is already in use') &&
+        console.log('err --> ' + err.message)
+        err.message.includes('already in use') &&
         err.message.includes('lsof'),
         `Should error on port-in-use with advice: ${err.message}`
       )
