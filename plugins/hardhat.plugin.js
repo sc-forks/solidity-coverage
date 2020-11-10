@@ -162,8 +162,8 @@ async function plugin(args, env) {
       ]);
     }
 
-    // Set default account
-    network.from = accounts[0];
+    // Set default account (if not already configured)
+    nomiclabsUtils.setNetworkFrom(network.config, accounts);
 
     // Run post-launch server hook;
     await api.onServerReady(config);

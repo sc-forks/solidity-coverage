@@ -166,6 +166,18 @@ async function getNodeInfo(provider){
   return provider.send("web3_clientVersion", [])
 }
 
+/**
+ * Sets the default `from` account field in the network that will be used.
+ * This needs to be done after accounts are fetched from the launched client.
+ * @param {env} config
+ * @param {Array}         accounts
+ */
+function setNetworkFrom(networkConfig, accounts){
+  if (!networkConfig.from){
+    networkConfig.from = accounts[0];
+  }
+}
+
 // TODO: Hardhat cacheing??
 /**
  * Generates a path to a temporary compilation cache directory
@@ -205,6 +217,7 @@ module.exports = {
   setupHardhatNetwork: setupHardhatNetwork,
   getTestFilePaths: getTestFilePaths,
   getAccounts: getAccounts,
-  getNodeInfo: getNodeInfo
+  getNodeInfo: getNodeInfo,
+  setNetworkFrom: setNetworkFrom
 }
 
