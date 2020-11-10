@@ -71,7 +71,7 @@ function plugin() {
           pkg.version
         ]);
 
-        ui.report('network', [
+        ui.report('ganache-network', [
           env.network.name,
           api.port
         ]);

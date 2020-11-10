@@ -5,14 +5,13 @@ const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../plugins/buidler.plugin');
 
 // =======================
 // CLI Options / Flags
 // =======================
 
-describe('Buidler Plugin: command line options', function() {
-  let buidlerConfig;
+describe('Hardhat Plugin: command line options', function() {
+  let hardhatConfig;
   let solcoverConfig;
 
   beforeEach(function(){
@@ -24,12 +23,12 @@ describe('Buidler Plugin: command line options', function() {
       silent: process.env.SILENT ? true : false,
       istanbulReporter: ['json-summary', 'text']
     };
-    buidlerConfig = mock.getDefaultBuidlerConfig();
+    hardhatConfig = mock.getDefaultHardhatConfig();
     verify.cleanInitialState();
   })
 
   afterEach(async function (){
-    mock.buidlerTearDownEnv();
+    mock.hardhatTearDownEnv();
     mock.clean();
   });
 
@@ -40,12 +39,12 @@ describe('Buidler Plugin: command line options', function() {
     }
 
     mock.install('Simple', 'simple.js', solcoverConfig);
-    mock.buidlerSetupEnv(this);
+    mock.hardhatSetupEnv(this);
 
     await this.env.run("coverage", taskArgs);
 
     const expected = [{
-      file: mock.pathToContract(buidlerConfig, 'Simple.sol'),
+      file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
       pct: 100
     }];
 
@@ -56,9 +55,9 @@ describe('Buidler Plugin: command line options', function() {
     solcoverConfig.port = 8222;
 
     mock.install('Simple', 'simple.js', solcoverConfig);
-    mock.buidlerSetupEnv(this);
+    mock.hardhatSetupEnv(this);
 
-    this.env.buidlerArguments.network = "development";
+    this.env.hardhatArguments.network = "development";
 
     await this.env.run("coverage");
 
@@ -78,9 +77,71 @@ describe('Buidler Plugin: command line options', function() {
     );
 
     const expected = [{
-      file: mock.pathToContract(buidlerConfig, 'Simple.sol'),
+      file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
       pct: 100
     }];
+
+    verify.lineCoverage(expected);
+  });
+
+  it('--testfiles test/<fileName>', async function() {
+    const taskArgs = {
+      testfiles: path.join(
+        hardhatConfig.paths.root,
+        'test/specific_a.js'
+      )
+    };
+
+    mock.installFullProject('test-files');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
+        pct: 100
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractB.sol'),
+        pct: 0,
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractC.sol'),
+        pct: 0,
+      },
+    ];
+
+    verify.lineCoverage(expected);
+  });
+
+  it('--file test/<glob*>', async function() {
+    const taskArgs = {
+      testfiles: path.join(
+        hardhatConfig.paths.root,
+        'test/**/globby*'
+      )
+    };
+
+    mock.installFullProject('test-files');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
+        pct: 0,
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractB.sol'),
+        pct: 100,
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractC.sol'),
+        pct: 100,
+      },
+    ];
 
     verify.lineCoverage(expected);
   });
@@ -92,19 +153,19 @@ describe('Buidler Plugin: command line options', function() {
       `module.exports=${JSON.stringify(solcoverConfig)}`
     );
 
-    // This relative path has to be ./ prefixed (it's path.joined to buidler's paths.root)
+    // This relative path has to be ./ prefixed (it's path.joined to hardhat's paths.root)
     const taskArgs = {
       solcoverjs: './../.solcover.js'
     };
 
     mock.install('Simple', 'simple.js');
-    mock.buidlerSetupEnv(this);
+    mock.hardhatSetupEnv(this);
 
     await this.env.run("coverage", taskArgs);
 
     // The relative solcoverjs uses the json-summary reporter
     const expected = [{
-      file: mock.pathToContract(buidlerConfig, 'Simple.sol'),
+      file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
       pct: 100
     }];
 
