@@ -2,7 +2,7 @@
   "name": "solidity-coverage",
   "version": "0.7.11",
   "description": "",
-  "main": "plugins/nomiclabs.plugin.js",
+  "main": "plugins/buidler.plugin.js",
   "bin": {
     "solidity-coverage": "./plugins/bin.js"
   },
@@ -41,15 +41,18 @@
     "recursive-readdir": "^2.2.2",
     "sc-istanbul": "^0.4.5",
     "shelljs": "^0.8.3",
-    "web3": "^1.3.0"
+    "web3": "1.2.9"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "^1.3.6",
     "@nomiclabs/buidler-truffle5": "^1.3.4",
     "@nomiclabs/buidler-web3": "^1.3.4",
+    "@nomiclabs/hardhat-truffle5": "^2.0.0",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
     "@truffle/contract": "^4.0.36",
     "buidler-gas-reporter": "^0.1.3",
     "decache": "^4.5.1",
+    "hardhat": "^2.0.2",
     "mocha": "5.2.0",
     "nyc": "^14.1.1",
     "solc": "^0.5.10",

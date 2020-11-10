@@ -2,11 +2,8 @@ const shell = require('shelljs');
 const globby = require('globby');
 const pluginUtils = require("./plugin.utils");
 const path = require('path');
-const util = require('util');
-const {
-  createProvider as createBuidlerProvider
-} = require("@nomiclabs/buidler/internal/core/providers/construction");
-
+const DataCollector = require("./../../lib/collector")
+const util = require('util')
 
 // =============================
 // Nomiclabs Plugin Utils
@@ -44,6 +41,8 @@ function normalizeConfig(config, args={}){
 }
 
 function setupBuidlerNetwork(env, api, ui){
+  const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/construction");
+
   let networkConfig = {};
 
   let networkName = (env.buidlerArguments.network !== 'buidlerevm')
@@ -52,24 +51,79 @@ function setupBuidlerNetwork(env, api, ui){
 
   if (networkName !== api.defaultNetworkName){
     networkConfig = env.config.networks[networkName];
-
-    const configPort = networkConfig.url.split(':')[2];
-
-    // Warn: port conflicts
-    if (api.port !== api.defaultPort && api.port !== configPort){
-      ui.report('port-clash', [ configPort ])
-    }
-
-    // Prefer network port
-    api.port = parseInt(configPort);
+    configureHttpProvider(networkConfig, api, ui)
+  } else {
+    networkConfig.url = `http://${api.host}:${api.port}`
   }
 
-  networkConfig.url = `http://${api.host}:${api.port}`;
+  const provider = createProvider(networkName, networkConfig);
+
+  return configureNetworkEnv(
+    env,
+    networkName,
+    networkConfig,
+    provider
+  )
+}
+
+function setupHardhatNetwork(env, api, ui){
+  const { createProvider } = require("hardhat/internal/core/providers/construction");
+  const { HARDHAT_NETWORK_NAME } = require("hardhat/plugins")
+
+  let provider, networkName, networkConfig;
+  let isHardhatEVM = false;
+
+  networkName = env.hardhatArguments.network || HARDHAT_NETWORK_NAME;
+
+  // HardhatEVM
+  if (networkName === HARDHAT_NETWORK_NAME){
+    isHardhatEVM = true;
+    api.collector = new DataCollector(api.instrumenter.instrumentationData);
+
+    networkConfig = env.network.config;
+    configureHardhatEVMGas(networkConfig, api);
+
+    provider = createProvider(
+      networkName,
+      networkConfig,
+      env.config.paths,
+      env.artifacts,
+      [api.hardhatTraceHandler.bind(api)]
+    )
+
+  // HttpProvider
+  } else {
+    if (!(env.config.networks && env.config.networks[networkName])){
+      throw new Error(ui.generate('network-fail', [networkName]))
+    }
+    networkConfig = env.config.networks[networkName]
+    configureNetworkGas(networkConfig, api);
+    configureHttpProvider(networkConfig, api, ui)
+    provider = createProvider(networkName, networkConfig);
+  }
+
+  return configureNetworkEnv(
+    env,
+    networkName,
+    networkConfig,
+    provider,
+    isHardhatEVM
+  )
+}
+
+function configureNetworkGas(networkConfig, api){
   networkConfig.gas =  api.gasLimit;
   networkConfig.gasPrice = api.gasPrice;
+}
 
-  const provider = createBuidlerProvider(networkName, networkConfig);
+function configureHardhatEVMGas(networkConfig, api){
+  networkConfig.allowUnlimitedContractSize = true;
+  networkConfig.blockGasLimit = api.gasLimit
+  networkConfig.gas =  api.gasLimit;
+  networkConfig.gasPrice = api.gasPrice;
+}
 
+function configureNetworkEnv(env, networkName, networkConfig, provider, isHardhatEVM){
   env.config.networks[networkName] = networkConfig;
   env.config.defaultNetwork = networkName;
 
@@ -77,12 +131,39 @@ function setupBuidlerNetwork(env, api, ui){
     name: networkName,
     config: networkConfig,
     provider: provider,
+    isHardhatEVM: isHardhatEVM
   }
 
   env.ethereum = provider;
 
   // Return a reference so we can set the from account
   return env.network;
+}
+
+/**
+ * Extracts port from url / sets network.url
+ * @param  {Object} networkConfig
+ * @param  {SolidityCoverage} api
+ */
+function configureHttpProvider(networkConfig, api, ui){
+  const configPort = networkConfig.url.split(':')[2];
+
+  // Warn: port conflicts
+  if (api.port !== api.defaultPort && api.port !== configPort){
+    ui.report('port-clash', [ configPort ])
+  }
+
+  // Prefer network port
+  api.port = parseInt(configPort);
+  networkConfig.url = `http://${api.host}:${api.port}`;
+}
+
+async function getAccounts(provider){
+  return provider.send("eth_accounts", [])
+}
+
+async function getNodeInfo(provider){
+  return provider.send("web3_clientVersion", [])
 }
 
 // TODO: Hardhat cacheing??
@@ -120,7 +201,10 @@ module.exports = {
   normalizeConfig: normalizeConfig,
   finish: finish,
   tempCacheDir: tempCacheDir,
-  setupNetwork: setupNetwork,
-  getTestFilePaths: getTestFilePaths
+  setupBuidlerNetwork: setupBuidlerNetwork,
+  setupHardhatNetwork: setupHardhatNetwork,
+  getTestFilePaths: getTestFilePaths,
+  getAccounts: getAccounts,
+  getNodeInfo: getNodeInfo
 }
 
