@@ -102,7 +102,6 @@ describe('Hardhat Plugin: error cases', function() {
       await this.env.run("coverage", taskArgs);
       assert.fail();
     } catch(err){
-      console.log('err --> ' + err.message)
       assert(
         err.message.includes('already in use') &&
         err.message.includes('lsof'),

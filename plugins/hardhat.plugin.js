@@ -148,7 +148,7 @@ async function plugin(args, env) {
         env.network.name,
       ]);
     } else {
-      const Web3 = require('Web3');
+      const Web3 = require('web3');
       client = api.client || require('ganache-cli');
       address = await api.ganache(client);
       web3 = new Web3(address);
