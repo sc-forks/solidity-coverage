@@ -1,7 +1,7 @@
 const UI = require('./../../lib/ui').UI;
 
 /**
- * Buidler Plugin logging
+ * Nomiclabs Plugin logging
  */
 class PluginUI extends UI {
   constructor(log){
@@ -41,10 +41,20 @@ class PluginUI extends UI {
       'versions':  `${ct} ${c.bold('ganache-core')}:      ${args[0]}\n` +
                    `${ct} ${c.bold('solidity-coverage')}: v${args[1]}`,
 
+      'hardhat-versions': `\n${c.bold('Version')}` +
+                          `\n${c.bold('=======')}\n` +
+                          `${ct} ${c.bold('solidity-coverage')}: v${args[0]}`,
+
+      'hardhat-network': `\n${c.bold('Network Info')}` +
+                         `\n${c.bold('============')}\n` +
+                         `${ct} ${c.bold('HardhatEVM')}: v${args[0]}\n` +
+                         `${ct} ${c.bold('network')}:    ${args[1]}\n`,
+
       'network': `\n${c.bold('Network Info')}` +
                  `\n${c.bold('============')}\n` +
-                 `${ct} ${c.bold('port')}:    ${args[1]}\n` +
-                 `${ct} ${c.bold('network')}: ${args[0]}\n`,
+                 `${ct} ${c.bold('ganache-core')}:      ${args[0]}\n` +
+                 `${ct} ${c.bold('port')}:    ${args[2]}\n` +
+                 `${ct} ${c.bold('network')}: ${args[1]}\n`,
 
       'port-clash': `${w}  ${c.red("The 'port' values in your Buidler url ")}` +
                           `${c.red("and .solcover.js are different. Using Buidler's: ")} ${c.bold(args[0])}.\n`,
@@ -65,6 +75,8 @@ class PluginUI extends UI {
     const x = ":x:";
 
     const kinds = {
+      'network-fail': `${c.red('--network argument: ')}${args[0]}` +
+                      `${c.red(' is not a defined network in hardhat.js.')}`,
 
       'sources-fail': `${c.red('Cannot locate expected contract sources folder: ')} ${args[0]}`,
 

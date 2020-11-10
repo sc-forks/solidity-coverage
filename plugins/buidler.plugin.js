@@ -1,7 +1,7 @@
 const API = require('./../lib/api');
 const utils = require('./resources/plugin.utils');
-const buidlerUtils = require('./resources/buidler.utils');
-const PluginUI = require('./resources/buidler.ui');
+const buidlerUtils = require('./resources/nomiclabs.utils');
+const PluginUI = require('./resources/nomiclabs.ui');
 
 const pkg = require('./../package.json');
 const death = require('death');
@@ -9,21 +9,27 @@ const path = require('path');
 const Web3 = require('web3');
 
 const { task, types } = require("@nomiclabs/buidler/config");
+const { ensurePluginLoadedWithUsePlugin } = require("@nomiclabs/buidler/plugins");
 
 const {
   TASK_TEST,
   TASK_COMPILE,
-  TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT,
-  TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE,
+  TASK_COMPILE_GET_COMPILER_INPUT
 } = require("@nomiclabs/buidler/builtin-tasks/task-names");
+
+ensurePluginLoadedWithUsePlugin();
 
 function plugin() {
 
   // UI for the task flags...
   const ui = new PluginUI();
 
-  let measureCoverage = false;
-  let instrumentedSources;
+  // Unset useLiteralContent due to solc metadata size restriction
+  task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
+    const input = await runSuper();
+    input.settings.metadata.useLiteralContent = false;
+    return input;
+  })
 
   task("coverage", "Generates a code coverage report for tests")
 
@@ -36,7 +42,6 @@ function plugin() {
       let ui;
       let api;
       let config;
-      instrumentedSources = {};
 
       try {
         death(buidlerUtils.finish.bind(null, config, api)); // Catch interrupt signals
@@ -48,7 +53,7 @@ function plugin() {
         // ==============
         // Server launch
         // ==============
-        const network = buidlerUtils.setupNetwork(env, api, ui);
+        const network = buidlerUtils.setupBuidlerNetwork(env, api, ui);
 
         const client = api.client || require('ganache-cli');
         const address = await api.ganache(client);
@@ -86,9 +91,6 @@ function plugin() {
         } = utils.assembleFiles(config, skipFiles);
 
         targets = api.instrument(targets);
-        for (const target of targets) {
-          instrumentedSources[target.canonicalPath] = target.source;
-        }
         utils.reportSkipped(config, skipped);
 
         // ==============
@@ -102,11 +104,14 @@ function plugin() {
         } = utils.getTempLocations(config);
 
         utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
+        utils.save(targets, config.paths.sources, tempContractsDir);
+        utils.save(skipped, config.paths.sources, tempContractsDir);
 
+        config.paths.sources = tempContractsDir;
         config.paths.artifacts = tempArtifactsDir;
         config.paths.cache = buidlerUtils.tempCacheDir(config);
+        config.solc.optimizer.enabled = false;
 
-        measureCoverage = true;
         await env.run(TASK_COMPILE);
 
         await api.onCompileComplete(config);
@@ -132,55 +137,14 @@ function plugin() {
         await api.onIstanbulComplete(config);
 
     } catch(e) {
-      error = e;
-    } finally {
-      measureCoverage = false;
+       error = e;
     }
 
     await buidlerUtils.finish(config, api);
 
     if (error !== undefined ) throw error;
     if (process.exitCode > 0) throw new Error(ui.generate('tests-fail', [process.exitCode]));
-  });
-
-  task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
-    const solcInput = await runSuper();
-    if (measureCoverage) {
-      // The source name here is actually the global name in the solc input,
-      // but buidler uses the fully qualified contract names.
-      for (const [sourceName, source] of Object.entries(solcInput.sources)) {
-        const absolutePath = path.join(config.paths.root, sourceName);
-        // Patch in the instrumented source code.
-        if (absolutePath in instrumentedSources) {
-          source.content = instrumentedSources[absolutePath];
-        }
-      }
-    }
-    return solcInput;
-  });
-
-  // Solidity settings are best set here instead of the TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT task.
-  task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __, runSuper) => {
-    const compilationJob = await runSuper();
-    if (measureCoverage && typeof compilationJob === "object") {
-      if (compilationJob.solidityConfig.settings === undefined) {
-        compilationJob.solidityConfig.settings = {};
-      }
-
-      const { settings } = compilationJob.solidityConfig;
-      if (settings.metadata === undefined) {
-        settings.metadata = {};
-      }
-      if (settings.optimizer === undefined) {
-        settings.optimizer = {};
-      }
-      // Unset useLiteralContent due to solc metadata size restriction
-      settings.metadata.useLiteralContent = false;
-      // Override optimizer settings for all compilers
-      settings.optimizer.enabled = false;
-    }
-    return compilationJob;
-  });
+  })
 }
 
 module.exports = plugin;
