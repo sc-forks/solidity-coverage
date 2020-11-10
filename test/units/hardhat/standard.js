@@ -395,4 +395,30 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     verify.lineCoverage(expected);
   })
+
+  it('complex compiler configs', async function(){
+    mock.installFullProject('hardhat-compile-config');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractA1.sol'),
+        pct: 33.33
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractB1.sol'),
+        pct: 100,
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractC1.sol'),
+        pct: 100,
+      },
+
+    ];
+
+    verify.lineCoverage(expected);
+  })
+
 })

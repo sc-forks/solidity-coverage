@@ -36,6 +36,9 @@ class PluginUI extends UI {
       'instr-skip':  `\n${c.bold('Coverage skipped for:')}` +
                      `\n${c.bold('=====================')}\n`,
 
+      'compilation':  `\n${c.bold('Compilation:')}` +
+                      `\n${c.bold('============')}\n`,
+
       'instr-skipped': `${ds} ${c.grey(args[0])}`,
 
       'versions':  `${ct} ${c.bold('ganache-core')}:      ${args[0]}\n` +

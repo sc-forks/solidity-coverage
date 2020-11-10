@@ -117,6 +117,8 @@ async function plugin(args, env) {
     // ==============
     // Compilation
     // ==============
+    ui.report('compilation', []);
+
     config.temp = args.temp;
 
     const {
