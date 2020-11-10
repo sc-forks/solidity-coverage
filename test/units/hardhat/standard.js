@@ -18,7 +18,10 @@ describe('Hardhat Plugin: standard use cases', function() {
     mock.clean();
 
     mock.loggerOutput.val = '';
-    solcoverConfig = { skipFiles: ['Migrations.sol']};
+    solcoverConfig = {
+      skipFiles: ['Migrations.sol'],
+      istanbulReporter: [ "json-summary", "text"]
+    };
     hardhatConfig = mock.getDefaultHardhatConfig();
     verify.cleanInitialState();
   })
@@ -287,7 +290,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     const expected = [
       {
         file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
-        pct: 92.31
+        pct: 61.54
       },
       {
         file: mock.pathToContract(hardhatConfig, 'ContractB.sol'),
@@ -295,7 +298,7 @@ describe('Hardhat Plugin: standard use cases', function() {
       },
       {
         file: mock.pathToContract(hardhatConfig, 'B_Wallet.sol'),
-        pct: 100,
+        pct: 80,
       },
 
     ];
@@ -310,4 +313,86 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     await this.env.run("coverage");
   });
+
+  it('uses account[0] as default "from" (ganache)', async function(){
+    const mnemonic = "purity blame spice arm main narrow olive roof science verb parrot flash";
+    const account0 = "0x42ecc9ab31d7c0240532992682ee3533421dd7f5"
+    const taskArgs = {
+      network: "development"
+    }
+
+    solcoverConfig.providerOptions = {
+      mnemonic: mnemonic
+    };
+
+    mock.install('Simple', 'account-zero.js', solcoverConfig);
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
+        pct: 50
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
+
+  it('inherits network defined "from" (ganache)', async function(){
+    const mnemonic = "purity blame spice arm main narrow olive roof science verb parrot flash";
+    const account1 = "0xe7a46b209a65baadc11bf973c0f4d5f19465ae83"
+    const taskArgs = {
+      network: "development"
+    }
+
+    solcoverConfig.providerOptions = {
+      mnemonic: mnemonic
+    };
+
+    const hardhatConfig = mock.getDefaultHardhatConfig()
+    hardhatConfig.networks.development.from = account1;
+
+    mock.install('Simple', 'account-one.js', solcoverConfig, hardhatConfig);
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
+        pct: 50
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
+
+  it('inherits network defined "from" (hardhat)', async function(){
+    const mnemonic = "purity blame spice arm main narrow olive roof science verb parrot flash";
+    const account1 = "0xe7a46b209a65baadc11bf973c0f4d5f19465ae83"
+
+    const hardhatConfig = mock.getDefaultHardhatConfig()
+    hardhatConfig.networks.hardhat = {
+      from: account1,
+      accounts: {
+        mnemonic: mnemonic
+      }
+    }
+
+    mock.install('Simple', 'account-one.js', solcoverConfig, hardhatConfig);
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
+        pct: 50
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
 })
