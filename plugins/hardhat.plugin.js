@@ -8,6 +8,7 @@ const death = require('death');
 const path = require('path');
 
 const { task, types } = require("hardhat/config");
+const { HardhatPluginError } = require("hardhat/plugins")
 
 const {
   TASK_TEST,
@@ -195,8 +196,8 @@ async function plugin(args, env) {
 
   await nomiclabsUtils.finish(config, api);
 
-  if (error !== undefined ) throw error;
-  if (failedTests > 0) throw new Error(ui.generate('tests-fail', [failedTests]));
+  if (error !== undefined ) throw new HardhatPluginError(error);
+  if (failedTests > 0) throw new HardhatPluginError(ui.generate('tests-fail', [failedTests]));
 }
 
 module.exports = plugin;
