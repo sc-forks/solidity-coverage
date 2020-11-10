@@ -72,6 +72,7 @@ async function plugin(args, env) {
   let client;
   let address;
   let web3;
+  let failedTests = 0;
 
   instrumentedSources = {};
   measureCoverage = true;
@@ -85,6 +86,15 @@ async function plugin(args, env) {
 
     // Version Info
     ui.report('hardhat-versions', [pkg.version]);
+
+    // Merge non-null flags into hardhatArguments
+    const flags = {};
+    for (const key of Object.keys(args)){
+      if (args[key] && args[key].length){
+        flags[key] = args[key]
+      }
+    }
+    env.hardhatArguments = Object.assign(env.hardhatArguments, flags)
 
     // ================
     // Instrumentation
@@ -165,7 +175,7 @@ async function plugin(args, env) {
       : [];
 
     try {
-      await env.run(TASK_TEST, {testFiles: testfiles})
+      failedTests = await env.run(TASK_TEST, {testFiles: testfiles})
     } catch (e) {
       error = e;
     }
@@ -186,7 +196,7 @@ async function plugin(args, env) {
   await nomiclabsUtils.finish(config, api);
 
   if (error !== undefined ) throw error;
-  if (process.exitCode > 0) throw new Error(ui.generate('tests-fail', [process.exitCode]));
+  if (failedTests > 0) throw new Error(ui.generate('tests-fail', [failedTests]));
 }
 
 module.exports = plugin;

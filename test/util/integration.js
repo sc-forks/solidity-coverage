@@ -191,7 +191,7 @@ function getDefaultHardhatConfig() {
   const config = getDefaultNomicLabsConfig()
   config.defaultNetwork = HARDHAT_NETWORK_NAME;
   config.solidity = {
-    version: "0.5.15"
+    version: "0.5.13"
   }
   return config;
 }
@@ -356,7 +356,6 @@ const testLogger = {
        console.log(val)
   }
 }
-
 
 module.exports = {
   pathToTemp: pathToTemp,

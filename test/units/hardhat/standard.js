@@ -50,22 +50,22 @@ describe('Hardhat Plugin: standard use cases', function() {
     );
   });
 
-  /*it('default network ("hardhatevm")', async function(){
+  it('default network ("hardhat")', async function(){
     mock.install('Simple', 'simple.js', solcoverConfig);
     mock.hardhatSetupEnv(this);
 
-    this.env.hardhatArguments.network = "hardhatevm"
+    this.env.hardhatArguments.network = "hardhat"
 
     await this.env.run("coverage");
 
     assert(
-      mock.loggerOutput.val.includes("8555"),
-      `Should have used default coverage port 8555: ${mock.loggerOutput.val}`
+      mock.loggerOutput.val.includes("HardhatEVM"),
+      `Should have displayed HardhatEVM version: ${mock.loggerOutput.val}`
     );
 
     assert(
-      mock.loggerOutput.val.includes("soliditycoverage"),
-      `Should have used specified network name: ${mock.loggerOutput.val}`
+      mock.loggerOutput.val.includes("hardhat"),
+      `Should have used 'hardhat' network name: ${mock.loggerOutput.val}`
     );
   });
 
@@ -136,7 +136,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     );
   });
 
-  // Truffle test asserts deployment cost is greater than 20,000,000 gas
+  // hardhat-truffle5 test asserts deployment cost is greater than 20,000,000 gas
   it('deployment cost > block gasLimit', async function() {
     mock.install('Expensive', 'block-gas-limit.js', solcoverConfig);
     mock.hardhatSetupEnv(this);
@@ -144,7 +144,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     await this.env.run("coverage");
   });
 
-  // Simple.sol with a failing assertion in a truffle test
+  // Simple.sol with a failing assertion in a hardhat-truffle5 test
   it('unit tests failing', async function() {
     mock.install('Simple', 'truffle-test-fail.js', solcoverConfig);
     mock.hardhatSetupEnv(this);
@@ -199,14 +199,18 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
-  // Truffle test asserts balance is 777 ether
+  // hardhat-truffle5 test asserts balance is 777 ether
   it('config: providerOptions', async function() {
+    const taskArgs = {
+      network: 'development'
+    };
+
     solcoverConfig.providerOptions = { default_balance_ether: 777 }
 
     mock.install('Simple', 'testrpc-options.js', solcoverConfig);
     mock.hardhatSetupEnv(this);
 
-    await this.env.run("coverage");
+    await this.env.run("coverage", taskArgs);
   });
 
   it('config: skipped file', async function() {
@@ -283,7 +287,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     const expected = [
       {
         file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
-        pct: 61.54
+        pct: 92.31
       },
       {
         file: mock.pathToContract(hardhatConfig, 'ContractB.sol'),
@@ -305,5 +309,5 @@ describe('Hardhat Plugin: standard use cases', function() {
     mock.hardhatSetupEnv(this);
 
     await this.env.run("coverage");
-  });*/
+  });
 })
