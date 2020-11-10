@@ -113,6 +113,26 @@ describe('Hardhat Plugin: error cases', function() {
     await pify(server.close)();
   });
 
+  it('tries to launch with a non-existent network', async function(){
+    const taskArgs = {
+      network: "does-not-exist"
+    }
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.hardhatSetupEnv(this);
+
+    try {
+      await this.env.run("coverage", taskArgs);
+      assert.fail();
+    } catch(err){
+      assert(
+        err.message.includes('is not a defined network in hardhat.js') &&
+        err.message.includes('does-not-exist'),
+        `Should error missing network error: ${err.message}`
+      )
+    }
+  });
+
   it('uses an invalid istanbul reporter', async function() {
     solcoverConfig = {
       silent: process.env.SILENT ? true : false,
