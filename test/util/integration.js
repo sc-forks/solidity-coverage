@@ -40,7 +40,7 @@ function decacheConfigs(){
     `${process.cwd()}/${temp}/contracts/Simple.sol`,
     `${process.cwd()}/${temp}/test/simple.js`,
     `${process.cwd()}/${temp}/test/account-one.js`,
-    `${process.cwd()}/${temp}/test/truffle-test-fail.js`
+    `${process.cwd()}/${temp}/test/truffle-crash.js`
   ];
 
   paths.forEach(pth => {

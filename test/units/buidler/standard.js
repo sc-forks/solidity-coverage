@@ -69,16 +69,15 @@ describe('Buidler Plugin: standard use cases', function() {
     );
   });
 
-  // Simple.sol with a failing assertion in a buidler-truffle5 test
-  it('unit tests failing', async function() {
-    mock.install('Simple', 'truffle-test-fail.js', solcoverConfig);
+  it('tests crash w/ syntax error', async function() {
+    mock.install('Simple', 'truffle-crash.js', solcoverConfig);
     mock.buidlerSetupEnv(this);
 
     try {
       await this.env.run("coverage");
       assert.fail()
     } catch(err){
-      assert(err.message.includes('failed under coverage'));
+      assert(err.toString().includes('SyntaxError'));
     }
 
     verify.coverageGenerated(buidlerConfig);
