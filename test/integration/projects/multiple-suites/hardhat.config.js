@@ -1,5 +1,5 @@
 require("@nomiclabs/hardhat-truffle5");
-require(__dirname + "/../hardhat");
+require(__dirname + "/../plugins/nomiclabs.plugin");
 
 module.exports={
   networks: {

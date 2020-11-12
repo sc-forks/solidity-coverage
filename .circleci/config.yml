@@ -65,20 +65,19 @@ jobs:
     executor: win/default
     steps:
       - checkout
-      - run: dotnet tool install --global PowerShell
       - run:
           name: Windows Metacoin E2E
           command: |
             bash ./scripts/run-metacoin.sh
-  e2e-buidler:
+  e2e-nomiclabs:
     machine: true
     steps:
       - checkout
       - <<: *step_install_nvm
       - run:
-          name: Buidler E2E
+          name: Buidler & Hardhat E2E
           command: |
-            ./scripts/run-buidler.sh
+            ./scripts/run-nomiclabs.sh
 workflows:
   version: 2
   build:
@@ -88,4 +87,4 @@ workflows:
       # - e2e-zeppelin
       - e2e-metacoin
       - e2e-metacoin-windows
-      - e2e-buidler
+      - e2e-nomiclabs

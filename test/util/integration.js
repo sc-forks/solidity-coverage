@@ -39,7 +39,8 @@ function decacheConfigs(){
     `${process.cwd()}/${temp}/${hardhatConfigName}`,
     `${process.cwd()}/${temp}/contracts/Simple.sol`,
     `${process.cwd()}/${temp}/test/simple.js`,
-    `${process.cwd()}/${temp}/test/account-one.js`
+    `${process.cwd()}/${temp}/test/account-one.js`,
+    `${process.cwd()}/${temp}/test/truffle-test-fail.js`
   ];
 
   paths.forEach(pth => {
@@ -198,6 +199,8 @@ function getDefaultHardhatConfig() {
 }
 
 function getBuidlerConfigJS(config){
+  // Hardhat tests will crash if the buidler plugin is loaded from the shared entrypoint
+  // b/c of some kind of weird cacheing or context reset issue.
   const prefix =`
     const { loadPluginFile } = require("@nomiclabs/buidler/plugins-testing");
     loadPluginFile(__dirname + "/../plugins/buidler.plugin");
@@ -214,7 +217,7 @@ function getBuidlerConfigJS(config){
 function getHardhatConfigJS(config){
   const prefix =`
     require("@nomiclabs/hardhat-truffle5");
-    require(__dirname + "/../hardhat");
+    require(__dirname + "/../plugins/nomiclabs.plugin");
 
   `
 

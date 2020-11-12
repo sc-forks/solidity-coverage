@@ -55,9 +55,8 @@ class PluginUI extends UI {
 
       'ganache-network': `\n${c.bold('Network Info')}` +
                          `\n${c.bold('============')}\n` +
-                         `${ct} ${c.bold('ganache-core')}: ${args[0]}\n` +
-                         `${ct} ${c.bold('port')}:         ${args[2]}\n` +
-                         `${ct} ${c.bold('network')}:      ${args[1]}\n`,
+                         `${ct} ${c.bold('port')}:         ${args[1]}\n` +
+                         `${ct} ${c.bold('network')}:      ${args[0]}\n`,
 
       'port-clash': `${w}  ${c.red("The 'port' values in your config's network url ")}` +
                           `${c.red("and .solcover.js are different. Using network's: ")} ${c.bold(args[0])}.\n`,
