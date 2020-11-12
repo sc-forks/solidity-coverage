@@ -37,10 +37,10 @@ echo ""
 # Install buidler-e2e
 git clone https://github.com/sc-forks/buidler-e2e.git
 cd buidler-e2e
-npm install
+npm install --silent
 
 # Install and run solidity-coverage @ PR
-npm install --save-dev $PR_PATH
+npm install --save-dev --silent $PR_PATH
 cat package.json
 
 npx buidler coverage
@@ -56,10 +56,10 @@ echo ""
 # Install hardhat-e2e (HardhatEVM)
 git clone https://github.com/sc-forks/hardhat-e2e.git
 cd hardhat-e2e
-npm install
+npm install --silent
 
 # Install and run solidity-coverage @ PR
-npm install --save-dev $PR_PATH
+npm install --save-dev --silent $PR_PATH
 cat package.json
 
 npx hardhat coverage
@@ -75,10 +75,10 @@ echo ""
 cd ..
 git clone https://github.com/sc-forks/example-buidler-ethers.git
 cd example-buidler-ethers
-npm install
+npm install --silent
 
 # Install and run solidity-coverage @ PR
-npm install --save-dev $PR_PATH
+npm install --save-dev --silent $PR_PATH
 cat package.json
 
 npx buidler coverage
@@ -95,12 +95,12 @@ echo ""
 cd ..
 git clone https://github.com/sc-forks/moloch.git
 cd moloch
-npm install
-npm uninstall --save-dev solidity-coverage
+npm install --silent
+npm uninstall --save-dev --silent solidity-coverage
 
 # Install and run solidity-coverage @ PR
 # Should run on network 'localhost'
-npm install --save-dev $PR_PATH
+npm install --save-dev --silent $PR_PATH
 npm run coverage
 
 verifyCoverageExists
