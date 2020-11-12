@@ -65,7 +65,6 @@ jobs:
     executor: win/default
     steps:
       - checkout
-      - run: dotnet tool install --global PowerShell
       - run:
           name: Windows Metacoin E2E
           command: |
