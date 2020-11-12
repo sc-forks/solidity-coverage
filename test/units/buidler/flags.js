@@ -5,7 +5,6 @@ const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../plugins/buidler.plugin');
 
 // =======================
 // CLI Options / Flags

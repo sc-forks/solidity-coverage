@@ -5,7 +5,6 @@ const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../plugins/buidler.plugin');
 
 // =======================
 // Standard Use-case Tests
@@ -68,5 +67,20 @@ describe('Buidler Plugin: standard use cases', function() {
       mock.loggerOutput.val.includes("soliditycoverage"),
       `Should have used specified network name: ${mock.loggerOutput.val}`
     );
+  });
+
+  // Simple.sol with a failing assertion in a buidler-truffle5 test
+  it('unit tests failing', async function() {
+    mock.install('Simple', 'truffle-test-fail.js', solcoverConfig);
+    mock.buidlerSetupEnv(this);
+
+    try {
+      await this.env.run("coverage");
+      assert.fail()
+    } catch(err){
+      assert(err.message.includes('failed under coverage'));
+    }
+
+    verify.coverageGenerated(buidlerConfig);
   });
 })

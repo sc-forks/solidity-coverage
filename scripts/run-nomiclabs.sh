@@ -47,6 +47,25 @@ npx buidler coverage
 
 verifyCoverageExists
 
+echo ""
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Simple hardhat/hardhat-trufflev5    "
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+
+# Install hardhat-e2e (HardhatEVM)
+git clone https://github.com/sc-forks/hardhat-e2e.git
+cd hardhat-e2e
+npm install
+
+# Install and run solidity-coverage @ PR
+npm install --save-dev $PR_PATH
+cat package.json
+
+npx hardhat coverage
+
+verifyCoverageExists
+
 # Install buidler-ethers
 echo ""
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"

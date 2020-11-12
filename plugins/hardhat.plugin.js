@@ -21,6 +21,9 @@ const {
 let measureCoverage = false;
 let instrumentedSources
 
+// UI for the task flags...
+const ui = new PluginUI();
+
 task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
   const solcInput = await runSuper();
   if (measureCoverage) {
@@ -65,7 +68,12 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __,
  * @param  {HardhatUserArgs} args
  * @param  {HardhatEvn} env
  */
-async function plugin(args, env) {
+task("coverage", "Generates a code coverage report for tests")
+  .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
+  .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
+  .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
+  .setAction(async function(args, env){
+
   let error;
   let ui;
   let api;
@@ -200,6 +208,4 @@ async function plugin(args, env) {
 
   if (error !== undefined ) throw new HardhatPluginError(error);
   if (failedTests > 0) throw new HardhatPluginError(ui.generate('tests-fail', [failedTests]));
-}
-
-module.exports = plugin;
+})
