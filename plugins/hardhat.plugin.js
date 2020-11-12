@@ -4,7 +4,6 @@ const nomiclabsUtils = require('./resources/nomiclabs.utils');
 const PluginUI = require('./resources/nomiclabs.ui');
 
 const pkg = require('./../package.json');
-const death = require('death');
 const path = require('path');
 
 const { task, types } = require("hardhat/config");
@@ -87,11 +86,12 @@ task("coverage", "Generates a code coverage report for tests")
   measureCoverage = true;
 
   try {
-    death(nomiclabsUtils.finish.bind(null, config, api)); // Catch interrupt signals
-
     config = nomiclabsUtils.normalizeConfig(env.config, args);
     ui = new PluginUI(config.logger.log);
     api = new API(utils.loadSolcoverJS(config));
+
+    // Catch interrupt signals
+    process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api));
 
     // Version Info
     ui.report('hardhat-versions', [pkg.version]);
