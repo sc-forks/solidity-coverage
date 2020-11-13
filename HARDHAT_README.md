@@ -63,8 +63,8 @@ module.exports = {
 | Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
-| client | *Object* | undefined | (Ganache only) Useful if you need a specific ganache version. An example value is: `require('ganache-cli')` |
-| providerOptions | *Object* | `{ }` | (Ganache only) [ganache-core options][1]  |
+| client | *Object* | undefined | *Ganache only*: Useful if you need a specific ganache version. An example value is: `require('ganache-cli')` |
+| providerOptions | *Object* | `{ }` | *Ganache only*: [ganache-core options][1]  |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
@@ -87,10 +87,7 @@ module.exports = {
 
 Begining with `v0.7.12`, this plugin runs directly on the Hardhat network by default (for speed).
 
-If you want to use a ganache based http network, you can specify it by name using the `--network` cli option.
-
-The plugin will then launch its own coverage enabled ganache
-instance which can be configured in `.solcover.js` via the `providerOptions` key.
+If you want to use a ganache based http network, you can specify it by name using the `--network` cli option. The plugin will then launch its own coverage enabled ganache instance which can be configured in `.solcover.js` via the `providerOptions` key.
 
 ## Documentation
 
