@@ -78,7 +78,6 @@ function setupHardhatNetwork(env, api, ui){
   // HardhatEVM
   if (networkName === HARDHAT_NETWORK_NAME){
     isHardhatEVM = true;
-    api.collector = new DataCollector(api.instrumenter.instrumentationData);
 
     networkConfig = env.network.config;
     configureHardhatEVMGas(networkConfig, api);
@@ -88,7 +87,6 @@ function setupHardhatNetwork(env, api, ui){
       networkConfig,
       env.config.paths,
       env.artifacts,
-      [api.hardhatTraceHandler.bind(api)]
     )
 
   // HttpProvider
