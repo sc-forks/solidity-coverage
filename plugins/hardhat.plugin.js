@@ -153,6 +153,8 @@ task("coverage", "Generates a code coverage report for tests")
       accounts = await nomiclabsUtils.getAccounts(network.provider);
       nodeInfo = await nomiclabsUtils.getNodeInfo(network.provider);
 
+      api.attachToHardhatVM(network.provider);
+
       ui.report('hardhat-network', [
         nodeInfo.split('/')[1],
         env.network.name,
