@@ -25,7 +25,7 @@ $ npm install --save-dev solidity-coverage
 And add the following to your `.config.js`:
 
 ```js
-require"solidity-coverage");
+require("solidity-coverage");
 ```
 
 Or, if you are using TypeScript, add this to your hardhat.config.ts:
@@ -39,14 +39,14 @@ import "solidity-coverage"
 This plugin implements a `coverage` task
 
 ```bash
-npx  coverage [options]
+npx hardhat coverage [options]
 ```
 
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| network    | `--network development` | Run with a ganache client over http using network settings defined in the Hardhat config |
+| network    | `--network development` | Run with a ganache client over http using network settings defined in the Hardhat config. (Hardhat is the default network) |
 
 
 ## Configuration
@@ -85,7 +85,11 @@ module.exports = {
 
 ## Using with ganache
 
-Begining with `v0.7.12`, solidity-coverage runs directly on the Hardhat network by default (for speed). If you want to use a ganache based http network, you can specify it by name using the `--network` cli option. Solidity-coverage will launch a coverage enabled in-process ganache
+Begining with `v0.7.12`, this plugin runs directly on the Hardhat network by default (for speed).
+
+If you want to use a ganache based http network, you can specify it by name using the `--network` cli option.
+
+The plugin will then launch its own coverage enabled ganache
 instance which can be configured in `.solcover.js` via the `providerOptions` key.
 
 ## Documentation
