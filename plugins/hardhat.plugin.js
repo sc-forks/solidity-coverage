@@ -79,7 +79,6 @@ task("coverage", "Generates a code coverage report for tests")
   let config;
   let client;
   let address;
-  let web3;
   let failedTests = 0;
 
   instrumentedSources = {};
@@ -150,8 +149,8 @@ task("coverage", "Generates a code coverage report for tests")
     const network = nomiclabsUtils.setupHardhatNetwork(env, api, ui);
 
     if (network.isHardhatEVM){
-      accounts = await nomiclabsUtils.getAccounts(network.provider);
-      nodeInfo = await nomiclabsUtils.getNodeInfo(network.provider);
+      accounts = await utils.getAccountsHardhat(network.provider);
+      nodeInfo = await utils.getNodeInfoHardhat(network.provider);
 
       api.attachToHardhatVM(network.provider);
 
@@ -160,18 +159,18 @@ task("coverage", "Generates a code coverage report for tests")
         env.network.name,
       ]);
     } else {
-      const Web3 = require('web3');
       client = api.client || require('ganache-cli');
       address = await api.ganache(client);
-      web3 = new Web3(address);
-      accounts = await web3.eth.getAccounts();
-      nodeInfo = await web3.eth.getNodeInfo();
+      const accountsRequest = await utils.getAccountsGanache(api.server.provider);
+      const nodeInfoRequest = await utils.getNodeInfoGanache(api.server.provider);
 
       ui.report('ganache-network', [
-        nodeInfo.split('/')[1],
+        nodeInfoRequest.result.split('/')[1],
         env.network.name,
         api.port
       ]);
+
+      accounts = accountsRequest.result;
     }
 
     // Set default account (if not already configured)

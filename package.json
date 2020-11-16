@@ -41,7 +41,7 @@
     "recursive-readdir": "^2.2.2",
     "sc-istanbul": "^0.4.5",
     "shelljs": "^0.8.3",
-    "web3": "1.2.9"
+    "web3-utils": "^1.3.0"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "^1.3.6",

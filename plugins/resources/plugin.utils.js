@@ -234,6 +234,46 @@ function loadSolcoverJS(config={}){
 }
 
 // ==========================
+// Setup RPC Calls
+// ==========================
+async function getAccountsHardhat(provider){
+  return provider.send("eth_accounts", [])
+}
+
+async function getNodeInfoHardhat(provider){
+  return provider.send("web3_clientVersion", [])
+}
+
+async function getAccountsGanache(provider){
+  const payload = {
+    jsonrpc: "2.0",
+    method: "eth_accounts",
+    params: [],
+    id: 1
+  };
+  return ganacheRequest(provider, payload)
+}
+
+async function getNodeInfoGanache(provider){
+  const payload = {
+    jsonrpc: "2.0",
+    method: "web3_clientVersion",
+    params: [],
+    id: 1
+  };
+  return ganacheRequest(provider, payload)
+}
+
+async function ganacheRequest(provider, payload){
+  return new Promise((resolve, reject) => {
+    provider.sendAsync(payload, function(err, res){
+      if (err) return reject(err)
+      resolve(res);
+    })
+  });
+}
+
+// ==========================
 // Finishing / Cleanup
 // ==========================
 
@@ -258,16 +298,20 @@ async function finish(config, api){
 }
 
 module.exports = {
-  assembleFiles: assembleFiles,
-  assembleSkipped: assembleSkipped,
-  assembleTargets: assembleTargets,
-  checkContext: checkContext,
-  finish: finish,
-  getTempLocations: getTempLocations,
-  loadSource: loadSource,
-  loadSolcoverJS: loadSolcoverJS,
-  reportSkipped: reportSkipped,
-  save: save,
-  toRelativePath: toRelativePath,
-  setupTempFolders: setupTempFolders
+  assembleFiles,
+  assembleSkipped,
+  assembleTargets,
+  checkContext,
+  finish,
+  getTempLocations,
+  loadSource,
+  loadSolcoverJS,
+  reportSkipped,
+  save,
+  toRelativePath,
+  setupTempFolders,
+  getAccountsHardhat,
+  getNodeInfoHardhat,
+  getAccountsGanache,
+  getNodeInfoGanache
 }

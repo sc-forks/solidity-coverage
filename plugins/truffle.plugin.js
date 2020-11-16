@@ -5,8 +5,6 @@ const PluginUI = require('./resources/truffle.ui');
 const pkg = require('./../package.json');
 const death = require('death');
 const path = require('path');
-const Web3 = require('web3');
-
 
 /**
  * Truffle Plugin: `truffle run coverage [options]`
@@ -37,13 +35,11 @@ async function plugin(config){
     // Server launch
     const client = api.client || truffle.ganache;
     const address = await api.ganache(client);
+    const accountsRequest = await utils.getAccountsGanache(api.server.provider);
+    const nodeInfoRequest = await utils.getNodeInfoGanache(api.server.provider);
+    const ganacheVersion = nodeInfoRequest.result.split('/')[1];
 
-    const web3 = new Web3(address);
-    const accounts = await web3.eth.getAccounts();
-    const nodeInfo = await web3.eth.getNodeInfo();
-    const ganacheVersion = nodeInfo.split('/')[1];
-
-    truffleUtils.setNetworkFrom(config, accounts);
+    truffleUtils.setNetworkFrom(config, accountsRequest.result);
 
     // Version Info
     ui.report('versions', [

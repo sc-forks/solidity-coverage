@@ -156,14 +156,6 @@ function configureHttpProvider(networkConfig, api, ui){
   networkConfig.url = `http://${api.host}:${api.port}`;
 }
 
-async function getAccounts(provider){
-  return provider.send("eth_accounts", [])
-}
-
-async function getNodeInfo(provider){
-  return provider.send("web3_clientVersion", [])
-}
-
 /**
  * Sets the default `from` account field in the network that will be used.
  * This needs to be done after accounts are fetched from the launched client.
@@ -208,14 +200,12 @@ async function finish(config, api){
 }
 
 module.exports = {
-  normalizeConfig: normalizeConfig,
-  finish: finish,
-  tempCacheDir: tempCacheDir,
-  setupBuidlerNetwork: setupBuidlerNetwork,
-  setupHardhatNetwork: setupHardhatNetwork,
-  getTestFilePaths: getTestFilePaths,
-  getAccounts: getAccounts,
-  getNodeInfo: getNodeInfo,
-  setNetworkFrom: setNetworkFrom
+  normalizeConfig,
+  finish,
+  tempCacheDir,
+  setupBuidlerNetwork,
+  setupHardhatNetwork,
+  getTestFilePaths,
+  setNetworkFrom
 }
 
