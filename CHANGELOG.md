@@ -1,5 +1,17 @@
 # Changelog
 
+0.7.12 / 2020-11-16
+===================
+  * Add Hardhat plugin support and allow coverage to run on HardhatEVM (https://github.com/sc-forks/solidity-coverage/pull/548)
+  * Allow truffle projects to contain vyper contracts (https://github.com/sc-forks/solidity-coverage/issues/571)
+  * Locate .coverage_contracts correctly for subfolder paths
+    (https://github.com/sc-forks/solidity-coverage/issues/570)
+  * Replace Web3 with thin rpc wrapper (https://github.com/sc-forks/solidity-coverage/issues/568)
+  * Stop reporting assert statements as branches (https://github.com/sc-forks/solidity-coverage/issues/556)
+  * Upgrade @truffle/provider to 0.2.24 (https://github.com/sc-forks/solidity-coverage/issues/550)
+  * Upgrade solidity-parser/parser to 0.8.1 (https://github.com/sc-forks/solidity-coverage/issues/549)
+
+
 0.7.11 / 2020-10-08
 ========================
   * Upgrade Web3 to ^1.3.0, ganache-cli to 6.11.0
