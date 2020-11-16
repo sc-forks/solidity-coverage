@@ -40,8 +40,8 @@ truffle run coverage [command-options]
 
 ### Hardhat
 
-(Beginning with v0.7.12, this tool supports Hardhat and runs directly on
-HardhatEVM. Additional Hardhat-specific info can be found [here][37])
+Beginning with v0.7.12, this tool supports Hardhat and runs directly on
+HardhatEVM.
 
 **Require** the plugin in `hardhat.config.js` ([Hardhat docs][26])
 ```javascript
@@ -52,6 +52,8 @@ require('solidity-coverage')
 ```
 npx hardhat coverage [command-options]
 ```
+
+(Additional Hardhat-specific info can be found [here][37])
 
 ### Buidler [Deprecated]
 
