@@ -46,7 +46,7 @@ npx hardhat coverage [options]
 |--------------|------------------------------------|--------------------------------|
 | testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| network    | `--network development` | Run with a ganache client over http using network settings defined in the Hardhat config. (Hardhat is the default network) |
+| network    | `--network development` | Run with a ganache client over http using network settings defined in `hardhat.config.js`. (Hardhat is the default network) |
 
 
 ## Configuration

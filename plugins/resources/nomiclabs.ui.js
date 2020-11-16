@@ -81,7 +81,7 @@ class PluginUI extends UI {
 
     const kinds = {
       'network-fail': `${c.red('--network argument: ')}${args[0]}` +
-                      `${c.red(' is not a defined network in hardhat.js.')}`,
+                      `${c.red(' is not a defined network in hardhat.config.js.')}`,
 
       'sources-fail': `${c.red('Cannot locate expected contract sources folder: ')} ${args[0]}`,
 

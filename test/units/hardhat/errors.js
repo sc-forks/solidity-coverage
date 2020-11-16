@@ -125,7 +125,7 @@ describe('Hardhat Plugin: error cases', function() {
       assert.fail();
     } catch(err){
       assert(
-        err.message.includes('is not a defined network in hardhat.js') &&
+        err.message.includes('is not a defined network in hardhat.config.js') &&
         err.message.includes('does-not-exist'),
         `Should error missing network error: ${err.message}`
       )

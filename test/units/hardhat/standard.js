@@ -113,14 +113,12 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     await this.env.run("coverage");
 
-    verify.coverageGenerated(hardhatConfig);
+    const expected = [{
+     file: mock.pathToContract(hardhatConfig, 'OnlyCall.sol'),
+     pct: 100
+    }];
 
-    const output = mock.getOutput(hardhatConfig);
-    const path = Object.keys(output)[0];
-    assert(
-      output[path].fnMap['1'].name === 'addTwo',
-      'cov should map "addTwo"'
-    );
+    verify.lineCoverage(expected);
   });
 
   it('sends / transfers to instrumented fallback', async function(){
