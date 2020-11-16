@@ -292,6 +292,11 @@ describe('Truffle Plugin: standard use cases', function() {
       istanbulReporter: ['json-summary', 'text']
     };
 
+    truffleConfig.contracts_directory = path.join(
+      process.cwd(),
+      mock.pathToTemp("contracts/A")
+    );
+
     mock.installFullProject('contract-subfolders');
     await plugin(truffleConfig);
   })

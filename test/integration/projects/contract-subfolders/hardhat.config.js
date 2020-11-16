@@ -11,7 +11,7 @@ module.exports={
     version: "0.5.15"
   },
   paths: {
-    contracts: 'contracts/A'
+    sources: './contracts/A'
   },
   logger: process.env.SILENT ? { log: () => {} } : console,
 };
