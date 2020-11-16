@@ -38,7 +38,22 @@ module.exports = {
 truffle run coverage [command-options]
 ```
 
-### Buidler
+### Hardhat
+
+(Beginning with v0.7.12, this tool supports Hardhat and runs directly on
+HardhatEVM. Additional Hardhat-specific info can be found [here][37])
+
+**Require** the plugin in `hardhat.config.js` ([Hardhat docs][26])
+```javascript
+require('solidity-coverage')
+```
+
+**Run**
+```
+npx hardhat coverage [command-options]
+```
+
+### Buidler [Deprecated]
 
 **Add** the plugin in `buidler.config.js` ([Buidler docs][26])
 ```javascript
@@ -64,7 +79,7 @@ npx buidler coverage --network coverage [command-options]
 
 ### @openzeppelin/test-environment
 
-OpenZeppelin have written their own coverage generation scripts for `test-environment` using the solidity-coverage API. 
+OpenZeppelin have written their own coverage generation scripts for `test-environment` using the solidity-coverage API.
 A working example can be found at [openzeppelin-contracts, here.][35]
 
 ## Usage notes:
@@ -212,4 +227,6 @@ $ yarn
 [33]: https://github.com/sc-forks/moloch
 [34]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#reducing-the-instrumentation-footprint
 [35]: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/e5fbbda9bac49039847a7ed20c1d966766ecc64a/scripts/coverage.js
+[36]: https://hardhat.org/
+[37]: https://github.com/sc-forks/solidity-coverage/blob/master/HARDHAT_README.md
 
