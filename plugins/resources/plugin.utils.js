@@ -131,7 +131,7 @@ function checkContext(config, tempContractsDir, tempArtifactsDir){
 // =============================
 
 function assembleFiles(config, skipFiles=[]){
-  const targetsPath = path.join(config.contractsDir, '**', '*.sol');
+  const targetsPath = path.join(config.contractsDir, '**', '*.{sol,vy}');
   const targets = shell.ls(targetsPath).map(path.normalize);
 
   skipFiles = assembleSkipped(config, targets, skipFiles);
@@ -145,7 +145,7 @@ function assembleTargets(config, targets=[], skipFiles=[]){
   const cd = config.contractsDir;
 
   for (let target of targets){
-    if (skipFiles.includes(target)){
+    if (skipFiles.includes(target) || path.extname(target) === '.vy'){
 
       skipped.push({
         canonicalPath: target,
@@ -177,7 +177,9 @@ function assembleSkipped(config, targets, skipFiles=[]){
   skipFiles = skipFiles.map(contract => path.join(config.contractsDir, contract));
 
   // Enumerate files in skipped folders
-  const skipFolders = skipFiles.filter(item => path.extname(item) !== '.sol')
+  const skipFolders = skipFiles.filter(item => {
+    return path.extname(item) !== '.sol' || path.extname(item) !== '.vy'
+  });
 
   for (let folder of skipFolders){
     for (let target of targets ) {

@@ -303,7 +303,7 @@ function install(
 /**
  * Installs mock truffle/buidler project with two contracts (for inheritance, libraries, etc)
  */
-function installDouble(contracts, test, config) {
+function installDouble(contracts, test, config, skipMigration) {
   const configjs = getSolcoverJS(config);
   const migration = deployDouble(contracts);
 
@@ -313,11 +313,15 @@ function installDouble(contracts, test, config) {
 
   // Contracts
   contracts.forEach(item => {
-    shell.cp(`${sourcesPath}${item}.sol`, `${temp}/contracts/${item}.sol`)
+    (item.includes('.'))
+      ? shell.cp(`${sourcesPath}${item}`, `${temp}/contracts/${item}`)
+      : shell.cp(`${sourcesPath}${item}.sol`, `${temp}/contracts/${item}.sol`);
   });
 
   // Migration
-  fs.writeFileSync(migrationPath, migration)
+  if (!skipMigration){
+    fs.writeFileSync(migrationPath, migration)
+  }
 
   // Test
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);
