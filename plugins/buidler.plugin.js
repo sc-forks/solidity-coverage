@@ -6,7 +6,6 @@ const PluginUI = require('./resources/nomiclabs.ui');
 const pkg = require('./../package.json');
 const death = require('death');
 const path = require('path');
-const Web3 = require('web3');
 
 const { task, types } = require("@nomiclabs/buidler/config");
 const { ensurePluginLoadedWithUsePlugin } = require("@nomiclabs/buidler/plugins");
@@ -57,13 +56,12 @@ function plugin() {
 
         const client = api.client || require('ganache-cli');
         const address = await api.ganache(client);
-        const web3 = new Web3(address);
-        const accounts = await web3.eth.getAccounts();
-        const nodeInfo = await web3.eth.getNodeInfo();
-        const ganacheVersion = nodeInfo.split('/')[1];
+        const accountsRequest = await utils.getAccountsGanache(api.server.provider);
+        const nodeInfoRequest = await utils.getNodeInfoGanache(api.server.provider);
+        const ganacheVersion = nodeInfoRequest.result.split('/')[1];
 
         // Set default account
-        network.from = accounts[0];
+        network.from = accountsRequest.result[0];
 
         // Version Info
         ui.report('versions', [
