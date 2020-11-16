@@ -8,7 +8,6 @@ const PluginUI = require('./truffle.ui');
 const path = require('path');
 const fs = require('fs-extra');
 const shell = require('shelljs');
-const util = require('util')
 
 // ===
 // UI
@@ -93,12 +92,13 @@ function toRelativePath(pathToFile, pathToParent){
  * @return {Object}               temp paths
  */
 function getTempLocations(config){
+  const contractsRoot = path.parse(config.contractsDir).dir
   const cwd = config.workingDir;
   const contractsDirName = '.coverage_contracts';
   const artifactsDirName = config.temp || '.coverage_artifacts';
 
   return {
-    tempContractsDir: path.join(cwd, contractsDirName),
+    tempContractsDir: path.join(contractsRoot, contractsDirName),
     tempArtifactsDir: path.join(cwd, artifactsDirName)
   }
 }

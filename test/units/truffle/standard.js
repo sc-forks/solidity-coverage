@@ -286,6 +286,21 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
+  it('locates .coverage_contracts correctly when dir is subfolder', async function(){
+    solcoverConfig = {
+      silent: process.env.SILENT ? true : false,
+      istanbulReporter: ['json-summary', 'text']
+    };
+
+    truffleConfig.contracts_directory = path.join(
+      process.cwd(),
+      mock.pathToTemp("contracts/A")
+    );
+
+    mock.installFullProject('contract-subfolders');
+    await plugin(truffleConfig);
+  })
+
   // This test tightly coupled to the ganache version in production deps
   // "test-files" project solcoverjs includes `client: require('ganache-cli')`
   it('config: client', async function(){
