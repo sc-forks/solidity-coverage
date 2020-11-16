@@ -7,7 +7,6 @@ const ganache = require('ganache-cli')
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../plugins/buidler.plugin');
 
 // =======
 // Errors
@@ -30,45 +29,6 @@ describe('Buidler Plugin: error cases', function() {
     mock.buidlerTearDownEnv();
     mock.clean();
   });
-
-  it('project contains no contract sources folder', async function() {
-    mock.installFullProject('no-sources');
-    mock.buidlerSetupEnv(this);
-
-    try {
-      await this.env.run("coverage");
-      assert.fail()
-    } catch(err){
-      assert(
-        err.message.includes('Cannot locate expected contract sources folder'),
-        `Should error when contract sources cannot be found:: ${err.message}`
-      );
-
-      assert(
-        err.message.includes('sc_temp/contracts'),
-        `Error message should contain path:: ${err.message}`
-      );
-    }
-
-    verify.coverageNotGenerated(buidlerConfig);
-  });
-
-  it('.solcover.js has syntax error', async function(){
-    mock.installFullProject('bad-solcoverjs');
-    mock.buidlerSetupEnv(this);
-
-    try {
-      await this.env.run("coverage");
-      assert.fail()
-    } catch(err){
-      assert(
-        err.message.includes('Could not load .solcover.js config file.'),
-        `Should notify when solcoverjs has syntax error:: ${err.message}`
-      );
-    }
-
-    verify.coverageNotGenerated(buidlerConfig);
-  })
 
   it('.solcover.js has incorrectly formatted option', async function(){
     solcoverConfig.port = "Antwerpen";
@@ -129,52 +89,5 @@ describe('Buidler Plugin: error cases', function() {
       )
     }
 
-  });
-
-  // Truffle test contains syntax error
-  it('truffle crashes', async function() {
-    mock.install('Simple', 'truffle-crash.js', solcoverConfig);
-    mock.buidlerSetupEnv(this);
-
-    try {
-      await this.env.run("coverage");
-      assert.fail()
-    } catch(err){
-      assert(err.toString().includes('SyntaxError'));
-    }
-  });
-
-  // Solidity syntax errors
-  it('compilation failure', async function(){
-    mock.install('SimpleError', 'simple.js', solcoverConfig);
-    mock.buidlerSetupEnv(this);
-
-    try {
-      await this.env.run("coverage");
-      assert.fail()
-    } catch(err){
-      assert(err.message.includes('Compilation failed'));
-    }
-
-    verify.coverageNotGenerated(buidlerConfig);
-  });
-
-  it('instrumentation failure', async function(){
-    mock.install('Unparseable', 'simple.js', solcoverConfig);
-    mock.buidlerSetupEnv(this);
-
-    try {
-      await this.env.run("coverage");
-      assert.fail()
-    } catch(err){
-      assert(
-        err.message.includes('Unparseable.sol.'),
-        `Should throw instrumentation errors with file name: ${err.toString()}`
-      );
-
-      assert(err.stack !== undefined, 'Should have error trace')
-    }
-
-    verify.coverageNotGenerated(buidlerConfig);
   });
 })

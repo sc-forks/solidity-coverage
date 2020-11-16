@@ -209,9 +209,9 @@ function normalizeConfig(config){
 }
 
 module.exports = {
-  getTestFilePaths: getTestFilePaths,
-  setNetwork: setNetwork,
-  setNetworkFrom: setNetworkFrom,
-  loadLibrary: loadLibrary,
-  normalizeConfig: normalizeConfig,
+  getTestFilePaths,
+  setNetwork,
+  setNetworkFrom,
+  loadLibrary,
+  normalizeConfig,
 }
