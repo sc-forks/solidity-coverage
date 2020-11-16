@@ -467,4 +467,34 @@ describe('Truffle Plugin: standard use cases', function() {
 
     verify.lineCoverage(expected);
   })
+
+  it('compiles when a project includes vyper contracts', async function() {
+    const skipMigration = true;
+
+    truffleConfig.logger = mock.testLogger;
+    solcoverConfig.istanbulReporter = ['json-summary', 'text']
+
+    mock.installDouble(
+      ['Simple', 'auction.vy'],
+      'simple.js',
+      solcoverConfig,
+      skipMigration
+    );
+
+
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('Compiling ./.coverage_contracts/auction.vy')
+    );
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'Simple.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  });
 })
