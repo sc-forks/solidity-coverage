@@ -492,7 +492,7 @@ describe('Hardhat Plugin: standard use cases', function() {
   // This works on it's own but there's some kind of weird interaction with
   // the solc 6 test which causes subsequent cov measurements to be zero.
   // Have tried re-ordering etc...???. Truffle tests this & should be the same anyway...
-  it.skip('logicalOR', async function(){
+  it('logicalOR', async function(){
     mock.installFullProject('logical-or');
     mock.hardhatSetupEnv(this);
 
@@ -500,7 +500,7 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     const expected = [
       {
-        file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
+        file: mock.pathToContract(hardhatConfig, 'Contract_OR.sol'),
         pct: 59.09
       }
     ];
