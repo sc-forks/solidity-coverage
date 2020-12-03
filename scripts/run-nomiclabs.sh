@@ -72,6 +72,7 @@ echo "wighawag/hardhat-deploy                "
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo ""
 cd ..
+npm install -g yarn
 git clone https://github.com/cgewecke/template-ethereum-contracts.git
 cd template-ethereum-contracts
 yarn
