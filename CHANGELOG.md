@@ -1,5 +1,9 @@
 # Changelog
 
+0.7.13 / 2020-12-03
+===================
+  * Use default artifact paths for hardhat >= 2.0.4 (Fixes hardhat-deploy bug)
+
 0.7.12 / 2020-11-16
 ===================
   * Add Hardhat plugin support and allow coverage to run on HardhatEVM (https://github.com/sc-forks/solidity-coverage/pull/548)
