@@ -3,6 +3,7 @@ const globby = require('globby');
 const pluginUtils = require("./plugin.utils");
 const path = require('path');
 const DataCollector = require("./../../lib/collector")
+const semver = require("semver")
 const util = require('util')
 
 // =============================
@@ -36,6 +37,13 @@ function normalizeConfig(config, args={}){
   config.logger = config.logger ? config.logger : {log: null};
   config.solcoverjs = args.solcoverjs
   config.gasReporter = { enabled: false }
+
+  try {
+    const hardhatPackage = require('hardhat/package.json');
+    if (semver.gt(hardhatPackage.version, '2.0.3')){
+      config.useHardhatDefaultPaths = true;
+    }
+  } catch(e){ /* ignore */ }
 
   return config;
 }
