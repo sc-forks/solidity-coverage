@@ -128,15 +128,19 @@ task("coverage", "Generates a code coverage report for tests")
 
     config.temp = args.temp;
 
-    const {
-      tempArtifactsDir,
-      tempContractsDir
-    } = utils.getTempLocations(config);
+    // With Hardhat >= 2.0.4, everything should automatically recompile
+    // after solidity-coverage corrupts the artifacts.
+    // Prior to that version, we (try to) save artifacts to a temp folder.
+    if (!config.useHardhatDefaultPaths){
+      const {
+        tempArtifactsDir,
+        tempContractsDir
+      } = utils.getTempLocations(config);
 
-    utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
-
-    config.paths.artifacts = tempArtifactsDir;
-    config.paths.cache = nomiclabsUtils.tempCacheDir(config);
+      utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
+      config.paths.artifacts = tempArtifactsDir;
+      config.paths.cache = nomiclabsUtils.tempCacheDir(config);
+    }
 
     await env.run(TASK_COMPILE);
 
