@@ -1,9 +1,9 @@
-const ContractA = artifacts.require("ContractA");
+const Contract_OR = artifacts.require("Contract_OR");
 
-contract("contracta", function(accounts) {
+contract("contract_or", function(accounts) {
   let instance;
 
-  before(async () => instance = await ContractA.new())
+  before(async () => instance = await Contract_OR.new())
 
   it('_if', async function(){
     await instance._if(0);
