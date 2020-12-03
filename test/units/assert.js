@@ -103,7 +103,7 @@ describe('asserts and requires', () => {
   });
 
   it('should cover require statements with method arguments', async function() {
-    const contract = await util.bootstrapCoverage('assert/Require-fn', provider, collector);
+    const contract = await util.bootstrapCoverage('assert/Require-fn', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(true);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -123,7 +123,7 @@ describe('asserts and requires', () => {
   });
 
   it('should cover require statements with method arguments & reason string', async function() {
-    const contract = await util.bootstrapCoverage('assert/Require-fn-reason', provider, collector);
+    const contract = await util.bootstrapCoverage('assert/Require-fn-reason', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(true);
     const mapping = coverage.generate(contract.data, util.pathPrefix);

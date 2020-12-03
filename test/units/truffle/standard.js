@@ -504,7 +504,7 @@ describe('Truffle Plugin: standard use cases', function() {
 
     const expected = [
       {
-        file: mock.pathToContract(truffleConfig, 'ContractA.sol'),
+        file: mock.pathToContract(truffleConfig, 'Contract_OR.sol'),
         pct: 59.09
       }
     ];

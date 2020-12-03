@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 
-contract ContractA {
+contract Contract_OR {
 
   function _if(uint i) public pure {
     if (i == 0 || i > 5){
