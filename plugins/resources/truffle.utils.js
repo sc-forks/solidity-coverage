@@ -208,10 +208,29 @@ function normalizeConfig(config){
   return config;
 }
 
+/**
+ * Replacement logger which filters out compilation warnings triggered by injected trace
+ * function definitions.
+ *
+ * @type {Object}
+ */
+const filteredLogger = {
+  log: (val) => {
+    const loggable = typeof val === 'string'   &&
+                     !val.includes('Warning:') && // solc msg grep
+                     !process.env.SILENT;         // unit tests
+
+    loggable && console.log(val);
+  },
+  warn: console.warn,
+  error: console.error
+}
+
 module.exports = {
   getTestFilePaths,
   setNetwork,
   setNetworkFrom,
   loadLibrary,
   normalizeConfig,
+  filteredLogger
 }
