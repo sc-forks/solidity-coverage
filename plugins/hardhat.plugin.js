@@ -9,6 +9,7 @@ const {
   TASK_COMPILE,
   TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT,
   TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE,
+  TASK_COMPILE_SOLIDITY_LOG_COMPILATION_ERRORS
 } = require("hardhat/builtin-tasks/task-names");
 
 // Toggled true for `coverage` task only.
@@ -73,6 +74,18 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
     }
   }
   return compilationJob;
+});
+
+// Suppress compilation warnings because injected trace function triggers
+// complaint about unused variable
+subtask(TASK_COMPILE_SOLIDITY_LOG_COMPILATION_ERRORS).setAction(async (_, __, runSuper) => {
+  const defaultWarn = console.warn;
+
+  if (measureCoverage) {
+    console.warn = () => {};
+  }
+  await runSuper();
+  console.warn = defaultWarn;
 });
 
 /**

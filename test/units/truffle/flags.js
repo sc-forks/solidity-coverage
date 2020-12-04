@@ -190,6 +190,7 @@ describe('Truffle Plugin: command line options', function() {
     truffleConfig.logger = mock.testLogger;
 
     truffleConfig.temp = 'special_location';
+    truffleConfig.verbose = true;
 
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
