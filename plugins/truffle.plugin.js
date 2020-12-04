@@ -90,11 +90,20 @@ async function plugin(config){
       path.basename(config.contracts_build_directory)
     );
 
+    // Filter compilation warnings
+    const defaultLogger = config.logger;
+    if (!config.verbose){
+      config.logger = truffleUtils.filteredLogger;
+    }
+
     config.all = true;
+    config.strict = false;
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Compile Instrumented Contracts
     await truffle.contracts.compile(config);
+    config.logger = defaultLogger;
+
     await api.onCompileComplete(config);
 
     config.test_files = await truffleUtils.getTestFilePaths(config);
