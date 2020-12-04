@@ -230,7 +230,7 @@ describe('Truffle Plugin: standard use cases', function() {
     truffleConfig.version = true;
 
     // Baseline inequality check
-    const truffleClientVersion = "v2.5.7";
+    const truffleClientVersion = "v2.11.2";
 
     // Truffle client
     mock.install('Simple', 'simple.js', solcoverConfig);

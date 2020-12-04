@@ -28,7 +28,7 @@ describe('Truffle Plugin: command line options', function() {
   afterEach(() => mock.clean());
 
   // Running out of memory...
-  it('--usePluginTruffle', async function(){
+  it.skip('--usePluginTruffle', async function(){
     truffleConfig.usePluginTruffle = true;
     truffleConfig.logger = mock.testLogger;
 

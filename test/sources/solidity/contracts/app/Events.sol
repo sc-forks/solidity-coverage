@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 contract Events {
     uint x = 0;
@@ -10,12 +10,12 @@ contract Events {
     function test(uint val) public {
         // Assert / Require events
         require(true);
-        
+
         // Contract Events
         emit LogEventOne(100, msg.sender);
-        x = x + val; 
+        x = x + val;
         emit LogEventTwo(200, msg.sender);
-        
+
         // Branch events
         if (true) {
             a = false;

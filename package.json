@@ -57,8 +57,8 @@
     "hardhat-gas-reporter": "^1.0.1",
     "mocha": "5.2.0",
     "nyc": "^14.1.1",
-    "solc": "^0.5.10",
-    "truffle": "5.0.31",
+    "solc": "^0.7.5",
+    "truffle": "5.1.43",
     "truffle-config": "^1.1.18"
   }
 }
