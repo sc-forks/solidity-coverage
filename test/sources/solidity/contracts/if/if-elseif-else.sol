@@ -1,6 +1,6 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
-contract Test {   
+contract Test {
     function a(uint x,uint y, uint z) public {
         if (x == y) {
         	z = 0;
