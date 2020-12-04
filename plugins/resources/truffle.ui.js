@@ -41,7 +41,6 @@ class PluginUI extends UI {
       'lib-local':  `\n${ct} ${c.grey('Using Truffle library from local node_modules.')}\n`,
       'lib-global': `\n${ct} ${c.grey('Using Truffle library from global node_modules.')}\n`,
 
-
       'help': `Usage: truffle run coverage [options]\n\n` +
               `Options:\n` +
               `  --file:       path (or glob) to subset of JS test files. (Quote your globs)\n` +
