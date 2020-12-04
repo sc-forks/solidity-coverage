@@ -1,16 +1,16 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
-contract Test {  
+contract Test {
 
     function multiline(
-        uint a, 
-        uint b, 
-        uint c, 
-        bytes32 d) public 
+        uint a,
+        uint b,
+        uint c,
+        bytes32 d) public
     {
         uint x = a;
     }
-    
+
     constructor() public {
         multiline(
             1,

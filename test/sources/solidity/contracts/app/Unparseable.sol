@@ -1,4 +1,4 @@
-pragma solidity ^0.5.3;
+pragma solidity ^0.7.0;
 
 contract Unparseable {
     uint x = 0;
