@@ -150,7 +150,7 @@ function loadLibrary(config){
 
   // Local
   try {
-    if (config.useGlobalTruffle || config.usePluginTruffle) throw null;
+    if (config.useGlobalTruffle) throw null;
 
     const lib = require("truffle");
     ui.report('lib-local');
@@ -160,26 +160,16 @@ function loadLibrary(config){
 
   // Global
   try {
-    if (config.usePluginTruffle) throw null;
+    if (config.forceLibFailure) throw null; // For err unit testing
 
     const globalTruffle = path.join(globalModules, 'truffle');
     const lib = require(globalTruffle);
     ui.report('lib-global');
     return lib;
 
-  } catch(err) {};
-
-  // Plugin Copy @ v 5.0.31
-  try {
-    if (config.forceLibFailure) throw null; // For err unit testing
-
-    ui.report('lib-warn');
-    return require("./truffle.library")
-
   } catch(err) {
     throw new Error(ui.generate('lib-fail', [err]));
   };
-
 }
 
 /**
