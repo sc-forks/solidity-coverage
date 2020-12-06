@@ -83,8 +83,7 @@ workflows:
   build:
     jobs:
       - unit-test
-      # Temporarily disabled due to unskipped GSN gas measurement tests
-      # - e2e-zeppelin
+      - e2e-zeppelin
       - e2e-metacoin
       - e2e-metacoin-windows
       - e2e-nomiclabs
