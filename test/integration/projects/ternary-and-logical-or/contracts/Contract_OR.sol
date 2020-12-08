@@ -37,4 +37,10 @@ contract Contract_OR {
          x == 3
       );
   }
+
+  function _if_neither(uint i) public {
+      if (i == 1 || i == 2){
+        /* ignore */
+      }
+  }
 }
