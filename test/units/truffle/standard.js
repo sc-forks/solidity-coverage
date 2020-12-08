@@ -498,15 +498,19 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
-  it('logicalOR', async function(){
-    mock.installFullProject('logical-or');
+  it('logicalOR & ternary conditionals', async function(){
+    mock.installFullProject('ternary-and-logical-or');
     await plugin(truffleConfig);
 
     const expected = [
       {
         file: mock.pathToContract(truffleConfig, 'Contract_OR.sol'),
-        pct: 59.09
-      }
+        pct: 53.85
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'Contract_ternary.sol'),
+        pct: 44.44
+      },
     ];
 
     verify.branchCoverage(expected);
