@@ -30,4 +30,8 @@ contract("contract_or", function(accounts) {
     await instance._require_multi_line(1);
     await instance._require_multi_line(3);
   })
+
+  it('_if_neither', async function(){
+    await instance._if_neither(3);
+  })
 });
