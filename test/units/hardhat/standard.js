@@ -454,4 +454,41 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     verify.branchCoverage(expected);
   })
+
+  it('modifiers (multi-file)', async function(){
+    mock.installFullProject('modifiers');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'ModifiersA.sol'),
+        pct: 75
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ModifiersC.sol'),
+        pct: 25
+      },
+    ];
+
+    verify.branchCoverage(expected);
+  })
+
+  it('modifiers (measureModifierCoverage = false)', async function(){
+    solcoverConfig.measureModifierCoverage = false;
+
+    mock.install('Modified', 'modified.js', solcoverConfig);
+    mock.hardhatSetupEnv(this);
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'Modified.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.branchCoverage(expected);
+  });
 })
