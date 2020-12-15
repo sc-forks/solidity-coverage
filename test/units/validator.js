@@ -47,7 +47,8 @@ describe('config validation', () => {
       "silent",
       "autoLaunchServer",
       "measureStatementCoverage",
-      "measureFunctionCoverage"
+      "measureFunctionCoverage",
+      "measureModifierCoverage"
     ]
 
     options.forEach(name => {
