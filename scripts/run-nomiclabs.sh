@@ -97,33 +97,12 @@ echo ""
 cd ..
 git clone https://github.com/sc-forks/example-buidler-ethers.git
 cd example-buidler-ethers
-npm install --silent
+yarn
 
 # Install and run solidity-coverage @ PR
-npm install --save-dev --silent $PR_PATH
+yarn add $PR_PATH --dev
 cat package.json
 
 npx buidler coverage
 
 verifyCoverageExists
-
-echo ""
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Complex: MolochDao/moloch           "
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo ""
-
-# Install sc-forks/moloch
-cd ..
-git clone https://github.com/sc-forks/moloch.git
-cd moloch
-npm install --silent
-npm uninstall --save-dev --silent solidity-coverage
-
-# Install and run solidity-coverage @ PR
-# Should run on network 'localhost'
-npm install --save-dev --silent $PR_PATH
-npm run coverage
-
-verifyCoverageExists
-
