@@ -71,9 +71,9 @@ function codeToCompilerInput(code) {
 // ============================
 // Instrumentation Correctness
 // ============================
-function instrumentAndCompile(sourceName) {
+function instrumentAndCompile(sourceName, api={}) {
   const contract = getCode(`${sourceName}.sol`)
-  const instrumenter = new Instrumenter();
+  const instrumenter = new Instrumenter(api.config);
   const instrumented = instrumenter.instrument(contract, filePath);
 
   return {
@@ -97,7 +97,7 @@ function report(output=[]) {
 // Coverage Correctness
 // =====================
 async function bootstrapCoverage(file, api){
-  const info = instrumentAndCompile(file);
+  const info = instrumentAndCompile(file, api);
   info.instance = await getDeployedContractInstance(info, api.server.provider);
   api.collector._setInstrumentationData(info.data);
   return info;
