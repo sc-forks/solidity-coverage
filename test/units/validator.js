@@ -48,7 +48,9 @@ describe('config validation', () => {
       "autoLaunchServer",
       "measureStatementCoverage",
       "measureFunctionCoverage",
-      "measureModifierCoverage"
+      "measureModifierCoverage",
+      "measureBranchCoverage",
+      "measureLineCoverage"
     ]
 
     options.forEach(name => {
