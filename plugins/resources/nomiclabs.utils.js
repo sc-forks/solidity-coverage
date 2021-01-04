@@ -37,13 +37,7 @@ function normalizeConfig(config, args={}){
   config.logger = config.logger ? config.logger : {log: null};
   config.solcoverjs = args.solcoverjs
   config.gasReporter = { enabled: false }
-
-  if (config.testMatrix){
-    config.measureBranchCoverage = false;
-    config.measureFunctionCoverage = false;
-    config.measureModifierCoverage = false;
-    config.measureStatementCoverage = false;
-  }
+  config.matrix = args.matrix;
 
   try {
     const hardhatPackage = require('hardhat/package.json');
@@ -175,10 +169,10 @@ function configureHttpProvider(networkConfig, api, ui){
  * Configures mocha to generate a json object which maps which tests
  * hit which lines of code.
  */
-function collectTestMatrixData(config, env, api){
-  if (config.testMatrix){
+function collectTestMatrixData(args, env, api){
+  if (args.matrix){
     mochaConfig = env.config.mocha || {};
-    mochaConfig.reporter = "./resources/matrix.js";
+    mochaConfig.reporter = api.matrixReporterPath;
     mochaConfig.reporterOptions = {
       collectTestMatrixData: api.collectTestMatrixData.bind(api)
     }

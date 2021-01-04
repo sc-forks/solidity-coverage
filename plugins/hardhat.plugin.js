@@ -5,6 +5,7 @@ const PluginUI = require('./resources/nomiclabs.ui');
 
 const pkg = require('./../package.json');
 const path = require('path');
+const {inspect} = require('util')
 
 const { task, types } = require("hardhat/config");
 const { HardhatPluginError } = require("hardhat/plugins")
@@ -84,7 +85,7 @@ task("coverage", "Generates a code coverage report for tests")
   .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
   .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
   .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
-  .addFlag('testMatrix', ui.flags.testMatrix)
+  .addFlag('matrix', ui.flags.testMatrix)
   .setAction(async function(args, env){
 
   let error;
@@ -204,7 +205,7 @@ task("coverage", "Generates a code coverage report for tests")
       : [];
 
     // Optionally collect tests-per-line-of-code data
-    nomiclabsUtils.collectTestMatrixData(config, env, api);
+    nomiclabsUtils.collectTestMatrixData(args, env, api);
 
     try {
       failedTests = await env.run(TASK_TEST, {testFiles: testfiles})
@@ -216,7 +217,7 @@ task("coverage", "Generates a code coverage report for tests")
     // =================================
     // Output (Istanbul or Test Matrix)
     // =================================
-    (config.testMatrix)
+    (args.matrix)
       ? await api.saveTestMatrix()
       : await api.report();
 

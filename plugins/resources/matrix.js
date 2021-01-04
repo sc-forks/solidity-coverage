@@ -58,8 +58,8 @@ function Matrix(runner, options) {
     this.stats = runner.stats;
   }
 
-  runner.on("test", (info) => {
-    console.log('inside test!!')
+  runner.on("test end", (info) => {
+    options.reporterOptions.collectTestMatrixData(info);
   });
 }
 
