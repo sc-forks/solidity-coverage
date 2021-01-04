@@ -97,3 +97,18 @@ Setting the `measureStatementCoverage` and/or `measureFunctionCoverage` options 
 improve performance, lower the cost of execution and minimize complications that arise from `solc`'s
 limits on how large the compilation payload can be.
 
+## Generating a test matrix
+
+Some advanced testing strategies benefit from knowing which tests in a suite hit a
+specific line of code. Examples include:
++ [mutation testing][22], where this data lets you select the correct subset of tests to check
+a mutation with.
++ [fault localization techniques][23], where the complete data set is a key input to algorithms that try
+to guess where bugs might exist in a given codebase.
+
+Running the coverage command with `--matrix` will write [a JSON test matrix][25] which maps greppable
+test names to each line of code to a file named `testMatrix.json` in your project's root.
+
+[22]: https://github.com/JoranHonig/vertigo#vertigo
+[23]: http://spideruci.org/papers/jones05.pdf
+[25]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/matrix.md
