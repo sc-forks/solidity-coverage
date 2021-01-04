@@ -31,7 +31,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     mock.clean();
   });
 
-  it('simple contract', async function(){
+  it.only('simple contract', async function(){
     mock.install('Simple', 'simple.js', solcoverConfig);
     mock.hardhatSetupEnv(this);
 
