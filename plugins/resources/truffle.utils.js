@@ -197,6 +197,20 @@ function normalizeConfig(config){
 }
 
 /**
+ * Configures mocha to generate a json object which maps which tests
+ * hit which lines of code.
+ */
+function collectTestMatrixData(config, api){
+  if (config.matrix){
+    config.mocha = config.mocha || {};
+    config.mocha.reporter = api.matrixReporterPath;
+    config.mocha.reporterOptions = {
+      collectTestMatrixData: api.collectTestMatrixData.bind(api)
+    }
+  }
+}
+
+/**
  * Replacement logger which filters out compilation warnings triggered by injected trace
  * function definitions.
  *
@@ -220,5 +234,6 @@ module.exports = {
   setNetworkFrom,
   loadLibrary,
   normalizeConfig,
-  filteredLogger
+  filteredLogger,
+  collectTestMatrixData
 }
