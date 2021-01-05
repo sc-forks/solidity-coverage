@@ -257,5 +257,23 @@ describe('Truffle Plugin: command line options', function() {
       `Should have used default coverage port 8545: ${mock.loggerOutput.val}`
     );
   });
+
+  it('--matrix', async function(){
+    process.env.TRUFFLE_TEST = true; // Path to reporter differs btw HH and Truffle
+    truffleConfig.matrix = true;
+
+    mock.installFullProject('matrix');
+    await plugin(truffleConfig);
+
+    // Integration test checks output path configurabililty
+    const altPath = path.join(process.cwd(), mock.pathToTemp('./alternateTestMatrix.json'));
+    const expPath = path.join(process.cwd(), mock.pathToTemp('./expectedTestMatrixHardhat.json'));
+
+    const producedMatrix = require(altPath)
+    const expectedMatrix = require(expPath);
+
+    assert.deepEqual(producedMatrix, expectedMatrix);
+    process.env.TRUFFLE_TEST = false;
+  });
 });
 

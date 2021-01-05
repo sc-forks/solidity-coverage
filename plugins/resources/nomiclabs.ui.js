@@ -8,7 +8,9 @@ class PluginUI extends UI {
     super(log);
 
     this.flags = {
-      file:       `Path (or glob) defining a subset of tests to run`,
+      testfiles:  `Path (or glob) defining a subset of tests to run`,
+
+      testMatrix: `Generate a json object which maps which unit tests hit which lines of code.`,
 
       solcoverjs: `Relative path from working directory to config. ` +
                   `Useful for monorepo packages that share settings.`,
@@ -16,7 +18,6 @@ class PluginUI extends UI {
       temp:       `Path to a disposable folder to store compilation artifacts in. ` +
                   `Useful when your test setup scripts include hard-coded paths to ` +
                   `a build directory.`,
-
     }
   }
 

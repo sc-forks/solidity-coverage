@@ -13,6 +13,13 @@ function verifyCoverageExists {
   fi
 }
 
+function verifyMatrixExists {
+  if [ ! -f "testMatrix.json" ]; then
+    echo "ERROR: no matrix file was created."
+    exit 1
+  fi
+}
+
 # Get rid of any caches
 sudo rm -rf node_modules
 echo "NVM CURRENT >>>>>" && nvm current
@@ -46,6 +53,12 @@ cat package.json
 npx hardhat coverage
 
 verifyCoverageExists
+
+npx hardhat coverage --matrix
+
+verifyMatrixExists
+
+cat testMatrix.json
 
 echo ""
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"

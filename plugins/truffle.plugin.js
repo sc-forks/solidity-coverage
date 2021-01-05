@@ -110,6 +110,7 @@ async function plugin(config){
     await api.onCompileComplete(config);
 
     config.test_files = await truffleUtils.getTestFilePaths(config);
+    truffleUtils.collectTestMatrixData(config, api);
     // Run tests
     try {
       failures = await truffle.test.run(config)
@@ -118,8 +119,13 @@ async function plugin(config){
     }
     await api.onTestsComplete(config);
 
-    // Run Istanbul
-    await api.report();
+    // =================================
+    // Output (Istanbul or Test Matrix)
+    // =================================
+    (config.matrix)
+      ? await api.saveTestMatrix()
+      : await api.report();
+
     await api.onIstanbulComplete(config);
 
   } catch(e){
