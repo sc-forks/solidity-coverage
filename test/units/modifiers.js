@@ -160,4 +160,10 @@ describe('modifiers', () => {
       1: 1, 2: 1, 3: 1
     });
   });
+
+  it('should *not* treat constructor inheritance invocations as branches', async function() {
+    const mapping = await setupAndRun('modifiers/constructor');
+    assert.deepEqual(mapping[util.filePath].b, {});
+  });
+
 });
