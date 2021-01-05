@@ -53,3 +53,13 @@ if [ ! -d "coverage" ]; then
   exit 1
 fi
 
+npx truffle run coverage --matrix
+
+# Test that coverage/ was generated
+if [ ! -f "testMatrix.json" ]; then
+  echo "ERROR: no matrix file was created."
+  exit 1
+fi
+
+cat testMatrix.json
+

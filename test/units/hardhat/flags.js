@@ -172,5 +172,24 @@ describe('Hardhat Plugin: command line options', function() {
     verify.lineCoverage(expected);
     shell.rm('.solcover.js');
   });
+
+  it('--matrix', async function(){
+    const taskArgs = {
+      matrix: true
+    }
+
+    mock.installFullProject('matrix');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    // Integration test checks output path configurabililty
+    const altPath = path.join(process.cwd(), './alternateTestMatrix.json');
+    const expPath = path.join(process.cwd(), './expectedTestMatrixHardhat.json');
+    const producedMatrix = require(altPath)
+    const expectedMatrix = require(expPath);
+
+    assert.deepEqual(producedMatrix, expectedMatrix);
+  });
 });
 
