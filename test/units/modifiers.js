@@ -144,6 +144,61 @@ describe('modifiers', () => {
     });
   });
 
+  // Case: when first modifier always suceeds but a subsequent modifier succeeds and fails,
+  // there should be a missing `else` branch on first modifier
+  it('should not be influenced by revert from a subsequent modifier', async function() {
+    const contract = await util.bootstrapCoverage('modifiers/reverting-neighbor', api);
+    coverage.addContract(contract.instrumented, util.filePath);
+    await contract.instance.a();
+    await contract.instance.flip();
+
+    try {
+      await contract.instance.a();
+    } catch(e) { /*ignore*/ }
+
+    const mapping = coverage.generate(contract.data, util.pathPrefix);
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      "7":3,"8":3,"12":3,"13":1,"17":1,"21":1
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      "1":[3,0],"2":[1,2],"3":[3,0],"4":[1,2]
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      "1":3,"2":3,"3":1,"4":1
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      "1":3,"2":3,"3":1,"4":1
+    });
+  });
+
+  // Case: when the modifier always suceeds but fn logic succeeds and fails, there should be
+  // a missing `else` branch on modifier
+  it('should not be influenced by revert within the function', async function() {
+    const contract = await util.bootstrapCoverage('modifiers/reverting-fn', api);
+    coverage.addContract(contract.instrumented, util.filePath);
+    await contract.instance.a(true);
+
+    try {
+      await contract.instance.a(false);
+    } catch(e) { /*ignore*/ }
+
+    const mapping = coverage.generate(contract.data, util.pathPrefix);
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      7: 3, 8: 3, 12: 3
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      1: [3, 0], 2: [3, 0], 3: [1,2]
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      1: 3, 2: 3
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      1: 3, 2: 3
+    });
+  });
+
   it('should cover when modifiers are listed with newlines', async function() {
     const mapping = await setupAndRun('modifiers/listed-modifiers');
 

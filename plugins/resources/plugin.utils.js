@@ -222,13 +222,6 @@ function loadSolcoverJS(config={}){
   coverageConfig.cwd = config.workingDir;
   coverageConfig.originalContractsDir = config.contractsDir;
 
-  if (config.matrix){
-    coverageConfig.measureBranchCoverage = false;
-    coverageConfig.measureFunctionCoverage = false;
-    coverageConfig.measureModifierCoverage = false;
-    coverageConfig.measureStatementCoverage = false;
-  }
-
   // Solidity-Coverage writes to Truffle config
   config.mocha = config.mocha || {};
 
