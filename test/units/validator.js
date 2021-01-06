@@ -119,6 +119,7 @@ describe('config validation', () => {
     const options =  [
       "skipFiles",
       "istanbulReporter",
+      "modifierWhitelist"
     ]
 
     options.forEach(name => {
