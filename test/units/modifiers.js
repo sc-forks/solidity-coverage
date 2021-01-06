@@ -216,6 +216,23 @@ describe('modifiers', () => {
     });
   });
 
+  it('should cover when same modifier is invoked twice on same fn', async function() {
+    const mapping = await setupAndRun('modifiers/duplicate-mods-same-fn');
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      "5":2,"13":1
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      "1":[1,0],"2":[1,0]
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      1: 1
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      1: 2, 2: 1
+    });
+  });
+
   it('should *not* treat constructor inheritance invocations as branches', async function() {
     const mapping = await setupAndRun('modifiers/constructor');
     assert.deepEqual(mapping[util.filePath].b, {});
