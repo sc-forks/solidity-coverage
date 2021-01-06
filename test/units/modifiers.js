@@ -13,7 +13,10 @@ describe('modifiers', () => {
     api = new Api({silent: true});
     await api.ganache(client);
   })
-  beforeEach(() => coverage = new Coverage());
+  beforeEach(() => {
+    api.config = {};
+    coverage = new Coverage()
+  });
   after(async() => await api.finish());
 
   async function setupAndRun(solidityFile){
@@ -88,6 +91,25 @@ describe('modifiers', () => {
     });
     assert.deepEqual(mapping[util.filePath].b, {
       1: [1, 0], 2: [1, 0], 3: [1, 0], 4: [1, 0]
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      1: 1, 2: 1, 3: 1
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      1: 1, 2: 1, 3: 1
+    });
+  });
+
+  // Same test as above - should have 2 fewer branches
+  it('should exclude whitelisted modifiers', async function() {
+    api.config.modifierWhitelist = ['mmm', 'nnn'];
+    const mapping = await setupAndRun('modifiers/multiple-mods-same-fn');
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      5: 1, 6: 1, 10: 1, 11: 1, 15: 1
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      1: [1, 0], 2: [1, 0]
     });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1, 2: 1, 3: 1
