@@ -65,7 +65,7 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __,
 /**
  * Coverage task implementation
  * @param  {HardhatUserArgs} args
- * @param  {HardhatEvn} env
+ * @param  {HardhatEnv} env
  */
 task("coverage", "Generates a code coverage report for tests")
   .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
