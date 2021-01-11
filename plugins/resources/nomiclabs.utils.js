@@ -181,6 +181,36 @@ function collectTestMatrixData(args, env, api){
 }
 
 /**
+ * Returns all Hardhat artifacts.
+ * @param  {HRE} env
+ * @return {Artifact[]}
+ */
+async function getAllArtifacts(env){
+  const all = [];
+  const qualifiedNames = await env.artifacts.getArtifactPaths();
+  for (const name of qualifiedNames){
+    all.push(await env.artifacts.readArtifact(name));
+  }
+  return all;
+}
+
+/**
+ * Compiles project
+ * Collects all artifacts from Hardhat project,
+ * Converts them to a format that can be consumed by api.abiUtils.diff
+ * Saves them to `api.abiOutputPath`
+ * @param  {HRE}    env
+ * @param  {SolidityCoverageAPI} api
+ */
+async function generateHumanReadableAbiList(env, api){
+  const list = [];
+  await env.run(TASK_COMPILE);
+  const _artifacts = getAllArtifacts(env);
+  const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)
+  api.saveHumanReadableAbis(list);
+}
+
+/**
  * Sets the default `from` account field in the network that will be used.
  * This needs to be done after accounts are fetched from the launched client.
  * @param {env} config
@@ -231,6 +261,7 @@ module.exports = {
   setupHardhatNetwork,
   getTestFilePaths,
   setNetworkFrom,
-  collectTestMatrixData
+  collectTestMatrixData,
+  getAllArtifacts
 }
 

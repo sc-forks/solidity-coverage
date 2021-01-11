@@ -22,7 +22,9 @@ describe('config validation', () => {
     const options =  [
       "cwd",
       "host",
-      "istanbulFolder"
+      "istanbulFolder",
+      "abiOutputPath",
+      "matrixOutputPath",
     ]
 
     options.forEach(name => {

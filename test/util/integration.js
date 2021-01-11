@@ -50,7 +50,6 @@ function decacheConfigs(){
 
 function clean() {
   shell.config.silent = true;
-
   shell.rm('-Rf', temp);
   shell.rm('-Rf', 'coverage');
   shell.rm('coverage.json');

@@ -1,20 +1,21 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 const Api = require('./../../lib/api')
-const { inspect } = require('util');
 
 describe('abi diffs', function(){
   const api = new Api();
 
   function setUp(source){
     const abis = util.getDiffABIs(source);
-    return api.diffAbis(abis.original, abis.current);
+    const orig = api.abiUtils.generateHumanReadableAbiList([abis.original], abis.original.sha);
+    const cur = api.abiUtils.generateHumanReadableAbiList([abis.current], abis.current.sha);
+    return api.abiUtils.diff(orig[0], cur[0]);
   }
 
   function validate(result, expectPlus, expectMinus, expectDiff){
     assert.equal(result.plus, expectPlus);
     assert.equal(result.minus, expectMinus);
-    assert.deepEqual(result.diff, expectDiff);
+    assert.deepEqual(result.unifiedDiff, expectDiff);
   }
 
   it('when methods are added', function() {
@@ -40,10 +41,11 @@ describe('abi diffs', function(){
     const expectDiff = [
       "--- Test\tsha: d8b26d8",
       "+++ Test\tsha: e77e29d",
-      "@@ -1 +1,2 @@",
-      "-event Evt(uint256,bytes8) ",
-      "+event _Evt(bytes8,bytes8) ",
-      "+event aEvt(bytes8) "
+      "@@ -1,2 +1,3 @@",
+      " function a() nonpayable",
+      "-event Evt(uint256,bytes8)",
+      "+event _Evt(bytes8,bytes8)",
+      "+event aEvt(bytes8)"
     ];
 
     validate(setUp('diff/events'), expectPlus, expectMinus, expectDiff);
