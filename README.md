@@ -84,8 +84,9 @@ module.exports = {
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
 | measureModifierCoverage | *boolean* | `true` | Computes each modifier invocation as a code branch. [More...][34] |
-| matrixOutputPath | *String* | `./testMatrix.json` | Relative path to write test matrix JSON object to. [More...][39] |
 | modifierWhitelist | *String[]* | `[]` | List of modifier names (ex: "onlyOwner") to exclude from branch measurement. (Useful for modifiers which prepare something instead of acting as a gate.)) |
+| matrixOutputPath | *String* | `./testMatrix.json` | Relative path to write test matrix JSON object to. [More...][39] |
+| abiOutputPath | *String* | `./humanReadableAbis.json` | Relative path to write diff-able ABI data to |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|

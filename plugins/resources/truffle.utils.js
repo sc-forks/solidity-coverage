@@ -35,6 +35,39 @@ async function getTestFilePaths(config){
   return target.filter(f => f.match(testregex) != null);
 }
 
+/**
+ * Returns all Truffle artifacts.
+ * @param  {TruffleConfig} config
+ * @return {Artifact[]}
+ */
+function getAllArtifacts(config){
+  const all = [];
+  const artifactsGlob = path.join(config.artifactsDir, '/**/*.json');
+  const files = globby.sync([artifactsGlob])
+  for (const file of files){
+    const candidate = require(file);
+    if (candidate.contractName && candidate.abi){
+      all.push(candidate);
+    }
+  }
+  return all;
+}
+
+/**
+ * Compiles project
+ * Collects all artifacts from Truffle project,
+ * Converts them to a format that can be consumed by api.abiUtils.diff
+ * Saves them to `api.abiOutputPath`
+ * @param  {TruffleConfig} config
+ * @param  {TruffleAPI}    truffle
+ * @param  {SolidityCoverageAPI} api
+ */
+async function generateHumanReadableAbiList(config, truffle, api){
+  await truffle.compile(config);
+  const _artifacts = getAllArtifacts(config);
+  const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)
+  api.saveHumanReadableAbis(list);
+}
 
 /**
  * Configures the network. Runs before the server is launched.
