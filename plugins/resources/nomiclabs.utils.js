@@ -203,7 +203,6 @@ async function getAllArtifacts(env){
  * @param  {SolidityCoverageAPI} api
  */
 async function generateHumanReadableAbiList(env, api){
-  const list = [];
   await env.run(TASK_COMPILE);
   const _artifacts = getAllArtifacts(env);
   const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)
