@@ -175,7 +175,8 @@ function collectTestMatrixData(args, env, api){
     mochaConfig.reporter = api.matrixReporterPath;
     mochaConfig.reporterOptions = {
       collectTestMatrixData: api.collectTestMatrixData.bind(api),
-      saveMochaJsonOutput: api.saveMochaJsonOutput.bind(api)
+      saveMochaJsonOutput: api.saveMochaJsonOutput.bind(api),
+      cwd: api.cwd
     }
     env.config.mocha = mochaConfig;
   }

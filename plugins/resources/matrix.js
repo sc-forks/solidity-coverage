@@ -1,6 +1,7 @@
 const mocha = require("mocha");
 const inherits = require("util").inherits;
 const Spec = mocha.reporters.Spec;
+const path = require('path');
 
 /**
  * This file adapted from mocha's stats-collector
@@ -105,7 +106,7 @@ function Matrix(runner, options) {
     return {
       title: info.title,
       fullTitle: info.fullTitle(),
-      file: info.file,
+      file: path.relative(options.reporterOptions.cwd, info.file),
       currentRetry: info.currentRetry(),
       err: cleanCycles(err)
     };
