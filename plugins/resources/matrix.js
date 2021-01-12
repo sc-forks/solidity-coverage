@@ -1,7 +1,6 @@
 const mocha = require("mocha");
 const inherits = require("util").inherits;
 const Spec = mocha.reporters.Spec;
-const util = require('util')
 
 /**
  * This file adapted from mocha's stats-collector
@@ -57,7 +56,6 @@ function Matrix(runner, options) {
 
   const self = this;
   const tests = [];
-  const pending = [];
   const failures = [];
   const passes = [];
 
