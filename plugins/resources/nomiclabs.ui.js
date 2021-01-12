@@ -12,6 +12,9 @@ class PluginUI extends UI {
 
       testMatrix: `Generate a json object which maps which unit tests hit which lines of code.`,
 
+      abi:        `Generate a json object which can be used to produce a unified diff of your ` +
+                  `contracts public interface between two commits.`,
+
       solcoverjs: `Relative path from working directory to config. ` +
                   `Useful for monorepo packages that share settings.`,
 

@@ -30,9 +30,18 @@ async function plugin(config){
     truffle = truffleUtils.loadLibrary(config);
     api = new API(utils.loadSolcoverJS(config));
 
-    truffleUtils.setNetwork(config, api);
+    // ===========================
+    // Generate abi diff component
+    // (This flag only useful within codecheck context)
+    // ===========================
+    if (config.abi){
+      await truffleUtils.generateHumanReadableAbiList(config, truffle, api);
+      return;
+    }
 
     // Server launch
+    truffleUtils.setNetwork(config, api);
+
     const client = api.client || truffle.ganache;
     const address = await api.ganache(client);
     const accountsRequest = await utils.getAccountsGanache(api.server.provider);
