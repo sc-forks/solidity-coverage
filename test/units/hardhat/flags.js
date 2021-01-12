@@ -184,12 +184,18 @@ describe('Hardhat Plugin: command line options', function() {
     await this.env.run("coverage", taskArgs);
 
     // Integration test checks output path configurabililty
-    const altPath = path.join(process.cwd(), './alternateTestMatrix.json');
-    const expPath = path.join(process.cwd(), './expectedTestMatrixHardhat.json');
-    const producedMatrix = require(altPath)
-    const expectedMatrix = require(expPath);
+    const altMatrixPath = path.join(process.cwd(), './alternateTestMatrix.json');
+    const expMatrixPath = path.join(process.cwd(), './expectedTestMatrixHardhat.json');
+    const altMochaPath = path.join(process.cwd(), './alternateMochaOutput.json');
+    const expMochaPath = path.join(process.cwd(), './expectedMochaOutput.json');
+
+    const producedMatrix = require(altMatrixPath)
+    const expectedMatrix = require(expMatrixPath);
+    const producedMochaOutput = require(altMochaPath);
+    const expectedMochaOutput = require(expMochaPath);
 
     assert.deepEqual(producedMatrix, expectedMatrix);
+    assert.deepEqual(producedMochaOutput, expectedMochaOutput);
   });
 
   it('--abi', async function(){

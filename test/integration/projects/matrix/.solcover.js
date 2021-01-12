@@ -9,6 +9,7 @@ module.exports = {
   // "solidity-coverage/plugins/resources/matrix.js"
   matrixReporterPath: reporterPath,
   matrixOutputPath: "alternateTestMatrix.json",
+  mochaJsonOutputPath: "alternateMochaOutput.json",
 
   skipFiles: ['Migrations.sol'],
   silent: process.env.SILENT ? true : false,

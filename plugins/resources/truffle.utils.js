@@ -240,7 +240,8 @@ function collectTestMatrixData(config, api){
     config.mocha = config.mocha || {};
     config.mocha.reporter = api.matrixReporterPath;
     config.mocha.reporterOptions = {
-      collectTestMatrixData: api.collectTestMatrixData.bind(api)
+      collectTestMatrixData: api.collectTestMatrixData.bind(api),
+      saveMochaJsonOutput: api.saveMochaJsonOutput.bind(api)
     }
   }
 }

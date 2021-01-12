@@ -1,7 +1,7 @@
 const mocha = require("mocha");
 const inherits = require("util").inherits;
 const Spec = mocha.reporters.Spec;
-
+const util = require('util')
 
 /**
  * This file adapted from mocha's stats-collector
@@ -40,10 +40,13 @@ function mochaStats(runner) {
 }
 
 /**
- * Based on the Mocha 'Spec' reporter. Watches an Ethereum test suite run
- * and collects data about which tests hit which lines of code.
- * This "test matrix" can be used as an input to
+ * Based on the Mocha 'Spec' reporter.
  *
+ * Watches an Ethereum test suite run and collects data about which tests hit
+ * which lines of code. This "test matrix" can be used as an input to fault localization tools
+ * like: https://github.com/JoranHonig/tarantula
+ *
+ * Mocha's JSON reporter output is also generated and saved to a separate file
  *
  * @param {Object} runner  mocha's runner
  * @param {Object} options reporter.options (see README example usage)
@@ -51,6 +54,12 @@ function mochaStats(runner) {
 function Matrix(runner, options) {
   // Spec reporter
   Spec.call(this, runner, options);
+
+  const self = this;
+  const tests = [];
+  const pending = [];
+  const failures = [];
+  const passes = [];
 
   // Initialize stats for Mocha 6+ epilogue
   if (!runner.stats) {
@@ -60,7 +69,73 @@ function Matrix(runner, options) {
 
   runner.on("test end", (info) => {
     options.reporterOptions.collectTestMatrixData(info);
+    tests.push(info);
   });
+
+  runner.on('pass', function(info) {
+    passes.push(info)
+  })
+  runner.on('fail', function(info) {
+    failures.push(info)
+  });
+
+  runner.once('end', function() {
+    delete self.stats.start;
+    delete self.stats.end;
+    delete self.stats.duration;
+
+    var obj = {
+      stats: self.stats,
+      tests: tests.map(clean),
+      failures: failures.map(clean),
+      passes: passes.map(clean)
+    };
+    runner.testResults = obj;
+    options.reporterOptions.saveMochaJsonOutput(obj)
+  });
+
+  // >>>>>>>>>>>>>>>>>>>>>>>>>
+  // Mocha JSON Reporter Utils
+  // Code taken from:
+  // https://mochajs.org/api/reporters_json.js.html
+  // >>>>>>>>>>>>>>>>>>>>>>>>>
+  function clean(info) {
+    var err = info.err || {};
+    if (err instanceof Error) {
+      err = errorJSON(err);
+    }
+    return {
+      title: info.title,
+      fullTitle: info.fullTitle(),
+      file: info.file,
+      currentRetry: info.currentRetry(),
+      err: cleanCycles(err)
+    };
+  }
+
+  function cleanCycles(obj) {
+    var cache = [];
+    return JSON.parse(
+      JSON.stringify(obj, function(key, value) {
+        if (typeof value === 'object' && value !== null) {
+          if (cache.indexOf(value) !== -1) {
+            // Instead of going in a circle, we'll print [object Object]
+            return '' + value;
+          }
+          cache.push(value);
+        }
+        return value;
+      })
+    );
+  }
+
+  function errorJSON(err) {
+    var res = {};
+    Object.getOwnPropertyNames(err).forEach(function(key) {
+      res[key] = err[key];
+    }, err);
+    return res;
+  }
 }
 
 /**
