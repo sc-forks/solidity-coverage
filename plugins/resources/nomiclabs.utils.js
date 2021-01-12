@@ -190,7 +190,7 @@ async function getAllArtifacts(env){
   const all = [];
   const qualifiedNames = await env.artifacts.getArtifactPaths();
   for (const name of qualifiedNames){
-    all.push(await env.artifacts.readArtifact(name));
+    all.push(require(name));
   }
   return all;
 }
@@ -203,9 +203,9 @@ async function getAllArtifacts(env){
  * @param  {HRE}    env
  * @param  {SolidityCoverageAPI} api
  */
-async function generateHumanReadableAbiList(env, api){
+async function generateHumanReadableAbiList(env, api, TASK_COMPILE){
   await env.run(TASK_COMPILE);
-  const _artifacts = getAllArtifacts(env);
+  const _artifacts = await getAllArtifacts(env);
   const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)
   api.saveHumanReadableAbis(list);
 }
@@ -263,6 +263,7 @@ module.exports = {
   getTestFilePaths,
   setNetworkFrom,
   collectTestMatrixData,
-  getAllArtifacts
+  getAllArtifacts,
+  generateHumanReadableAbiList
 }
 
