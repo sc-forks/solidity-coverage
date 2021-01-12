@@ -63,7 +63,7 @@ function getAllArtifacts(config){
  * @param  {SolidityCoverageAPI} api
  */
 async function generateHumanReadableAbiList(config, truffle, api){
-  await truffle.compile(config);
+  await truffle.contracts.compile(config);
   const _artifacts = getAllArtifacts(config);
   const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)
   api.saveHumanReadableAbis(list);
@@ -270,5 +270,6 @@ module.exports = {
   loadLibrary,
   normalizeConfig,
   filteredLogger,
-  collectTestMatrixData
+  collectTestMatrixData,
+  generateHumanReadableAbiList
 }

@@ -289,5 +289,34 @@ describe('Truffle Plugin: command line options', function() {
     assert.deepEqual(producedMatrix, expectedMatrix);
     process.env.TRUFFLE_TEST = false;
   });
+
+  it('--abi', async function(){
+    const expected = [
+      {
+        "contractName": "Migrations",
+        "humanReadableAbiList": [
+         "function last_completed_migration() view returns (uint256)",
+         "function owner() view returns (address)",
+         "function setCompleted(uint256) nonpayable",
+         "function upgrade(address) nonpayable"
+        ]
+      },
+      {
+        "contractName": "Simple",
+        "humanReadableAbiList": [
+         "function getX() view returns (uint256)",
+         "function test(uint256) nonpayable"
+        ]
+      }
+    ];
+
+    truffleConfig.abi = true;
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    const outputPath = path.join(process.cwd(), mock.pathToTemp('./humanReadableAbis.json'));
+    const output = require(outputPath);
+    assert.deepEqual(output, expected);
+  })
 });
 
