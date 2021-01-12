@@ -98,6 +98,7 @@ task("coverage", "Generates a code coverage report for tests")
   .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
   .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
   .addFlag('matrix', ui.flags.testMatrix)
+  .addFlag('abi', ui.flags.abi)
   .setAction(async function(args, env){
 
   const API = require('./../lib/api');
@@ -140,6 +141,16 @@ task("coverage", "Generates a code coverage report for tests")
       }
     }
     env.hardhatArguments = Object.assign(env.hardhatArguments, flags)
+
+    // ===========================
+    // Generate abi diff component
+    // (This flag only useful within codecheck context)
+    // ===========================
+    if (args.abi){
+      measureCoverage = false;
+      await nomiclabsUtils.generateHumanReadableAbiList(env, api, TASK_COMPILE);
+      return;
+    }
 
     // ================
     // Instrumentation

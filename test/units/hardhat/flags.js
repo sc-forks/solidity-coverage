@@ -191,5 +191,38 @@ describe('Hardhat Plugin: command line options', function() {
 
     assert.deepEqual(producedMatrix, expectedMatrix);
   });
+
+  it('--abi', async function(){
+    const expected = [
+      {
+        "contractName": "Migrations",
+        "humanReadableAbiList": [
+         "function last_completed_migration() view returns (uint256)",
+         "function owner() view returns (address)",
+         "function setCompleted(uint256) nonpayable",
+         "function upgrade(address) nonpayable"
+        ]
+      },
+      {
+        "contractName": "Simple",
+        "humanReadableAbiList": [
+         "function getX() view returns (uint256)",
+         "function test(uint256) nonpayable"
+        ]
+      }
+    ];
+
+    const taskArgs = {
+      abi: true
+    }
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const outputPath = path.join(process.cwd(), 'humanReadableAbis.json');
+    const output = require(outputPath);
+    assert.deepEqual(output, expected);
+  })
 });
 
