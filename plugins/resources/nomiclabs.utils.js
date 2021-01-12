@@ -6,8 +6,6 @@ const DataCollector = require("./../../lib/collector")
 const semver = require("semver")
 const util = require('util')
 
-const { TASK_COMPILE } = require("hardhat/builtin-tasks/task-names");
-
 // =============================
 // Nomiclabs Plugin Utils
 // =============================
@@ -204,7 +202,7 @@ async function getAllArtifacts(env){
  * @param  {HRE}    env
  * @param  {SolidityCoverageAPI} api
  */
-async function generateHumanReadableAbiList(env, api){
+async function generateHumanReadableAbiList(env, api, TASK_COMPILE){
   await env.run(TASK_COMPILE);
   const _artifacts = await getAllArtifacts(env);
   const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)

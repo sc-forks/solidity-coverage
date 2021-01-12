@@ -126,7 +126,7 @@ task("coverage", "Generates a code coverage report for tests")
     // ===========================
     if (args.abi){
       measureCoverage = false;
-      await nomiclabsUtils.generateHumanReadableAbiList(env, api);
+      await nomiclabsUtils.generateHumanReadableAbiList(env, api, TASK_COMPILE);
       return;
     }
 
