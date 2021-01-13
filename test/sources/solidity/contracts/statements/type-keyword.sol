@@ -1,4 +1,4 @@
-pragma solidity >0.4.99 <0.6.0;
+pragma solidity >0.4.99 <0.8.0;
 
 contract Account {
   address public owner;
@@ -16,8 +16,6 @@ contract Account {
     require(msg.sender == owner);
     selfdestruct(recipient);
   }
-
-  function() payable external {}
 }
 
 contract Factory {

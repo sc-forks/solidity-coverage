@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 contract Wallet {
 
@@ -16,7 +16,7 @@ contract Wallet {
         return address(this).balance;
     }
 
-    function() external payable
+    receive() external payable
     {
         if (msg.value > 0)
             emit Deposit(msg.sender, msg.value);

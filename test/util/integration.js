@@ -50,7 +50,6 @@ function decacheConfigs(){
 
 function clean() {
   shell.config.silent = true;
-
   shell.rm('-Rf', temp);
   shell.rm('-Rf', 'coverage');
   shell.rm('coverage.json');
@@ -132,7 +131,7 @@ function getDefaultTruffleConfig(){
     },
     compilers: {
       solc: {
-        version: "0.5.3",
+        version: "0.7.1",
         settings: { optimizer: {} }
       }
     }
@@ -183,6 +182,7 @@ function getDefaultBuidlerConfig() {
   const config = getDefaultNomicLabsConfig()
   config.defaultNetwork = "buidlerevm";
   config.solc = {
+    version: "0.7.3",
     evmVersion: 'petersburg'
   }
 
@@ -193,7 +193,7 @@ function getDefaultHardhatConfig() {
   const config = getDefaultNomicLabsConfig()
   config.defaultNetwork = HARDHAT_NETWORK_NAME;
   config.solidity = {
-    version: "0.5.13"
+    version: "0.7.3"
   }
   return config;
 }

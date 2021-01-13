@@ -5,6 +5,7 @@ const PluginUI = require('./resources/nomiclabs.ui');
 
 const pkg = require('./../package.json');
 const path = require('path');
+const {inspect} = require('util')
 
 const { task, types } = require("hardhat/config");
 const { HardhatPluginError } = require("hardhat/plugins")
@@ -14,6 +15,7 @@ const {
   TASK_COMPILE,
   TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT,
   TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE,
+  TASK_COMPILE_SOLIDITY_LOG_COMPILATION_ERRORS
 } = require("hardhat/builtin-tasks/task-names");
 
 // Toggled true for `coverage` task only.
@@ -62,6 +64,18 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __,
   return compilationJob;
 });
 
+// Suppress compilation warnings because injected trace function triggers
+// complaint about unused variable
+subtask(TASK_COMPILE_SOLIDITY_LOG_COMPILATION_ERRORS).setAction(async (_, __, runSuper) => {
+  const defaultWarn = console.warn;
+
+  if (measureCoverage) {
+    console.warn = () => {};
+  }
+  await runSuper();
+  console.warn = defaultWarn;
+});
+
 /**
  * Coverage task implementation
  * @param  {HardhatUserArgs} args
@@ -71,6 +85,8 @@ task("coverage", "Generates a code coverage report for tests")
   .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
   .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
   .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
+  .addFlag('matrix', ui.flags.testMatrix)
+  .addFlag('abi', ui.flags.abi)
   .setAction(async function(args, env){
 
   let error;
@@ -103,6 +119,16 @@ task("coverage", "Generates a code coverage report for tests")
       }
     }
     env.hardhatArguments = Object.assign(env.hardhatArguments, flags)
+
+    // ===========================
+    // Generate abi diff component
+    // (This flag only useful within codecheck context)
+    // ===========================
+    if (args.abi){
+      measureCoverage = false;
+      await nomiclabsUtils.generateHumanReadableAbiList(env, api, TASK_COMPILE);
+      return;
+    }
 
     // ================
     // Instrumentation
@@ -189,6 +215,9 @@ task("coverage", "Generates a code coverage report for tests")
       ? nomiclabsUtils.getTestFilePaths(args.testfiles)
       : [];
 
+    // Optionally collect tests-per-line-of-code data
+    nomiclabsUtils.collectTestMatrixData(args, env, api);
+
     try {
       failedTests = await env.run(TASK_TEST, {testFiles: testfiles})
     } catch (e) {
@@ -196,10 +225,13 @@ task("coverage", "Generates a code coverage report for tests")
     }
     await api.onTestsComplete(config);
 
-    // ========
-    // Istanbul
-    // ========
-    await api.report();
+    // =================================
+    // Output (Istanbul or Test Matrix)
+    // =================================
+    (args.matrix)
+      ? await api.saveTestMatrix()
+      : await api.report();
+
     await api.onIstanbulComplete(config);
 
   } catch(e) {

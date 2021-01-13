@@ -84,7 +84,9 @@ describe('function declarations', () => {
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 9: 1,
     });
-    assert.deepEqual(mapping[util.filePath].b, {});
+    assert.deepEqual(mapping[util.filePath].b, {
+      1: [1, 0]
+    });
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1
     });

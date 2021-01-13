@@ -1,9 +1,7 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 contract Test {
 
-  /// @notice Checks if a given address is whitelisted
-  /// @return true if address is whitelisted, false if not
   function isWhitelisted
   (
     address _address
@@ -22,7 +20,7 @@ contract Test {
 
       // staticcall(g, a, in, insize, out, outsize) => returns 0 on error, 1 on success
       let result := staticcall(
-        gas,                // g = gas: whatever was passed already
+        gas(),              // g = gas: whatever was passed already
         _whitelistContract, // a = address: _whitelist address assigned from getContractAddress()
         _pointer,           // in = mem in  mem[in..(in+insize): set to _pointer pointer
         0x24,               // insize = mem insize  mem[in..(in+insize): size of signature (bytes4) + bytes32 = 0x24

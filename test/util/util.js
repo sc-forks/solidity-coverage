@@ -68,12 +68,32 @@ function codeToCompilerInput(code) {
   });
 }
 
+// ===========
+// Diff tests
+// ===========
+function getDiffABIs(sourceName, testFile="test.sol", original="Old", current="New"){
+  const contract = getCode(`${sourceName}.sol`)
+  const solcOutput = compile(contract)
+  return {
+    original: {
+      contractName: "Test",
+      sha: "d8b26d8",
+      abi: solcOutput.contracts[testFile][original].abi,
+    },
+    current: {
+      contractName: "Test",
+      sha: "e77e29d",
+      abi: solcOutput.contracts[testFile][current].abi,
+    }
+  }
+}
+
 // ============================
 // Instrumentation Correctness
 // ============================
-function instrumentAndCompile(sourceName) {
+function instrumentAndCompile(sourceName, api={}) {
   const contract = getCode(`${sourceName}.sol`)
-  const instrumenter = new Instrumenter();
+  const instrumenter = new Instrumenter(api.config);
   const instrumented = instrumenter.instrument(contract, filePath);
 
   return {
@@ -97,7 +117,7 @@ function report(output=[]) {
 // Coverage Correctness
 // =====================
 async function bootstrapCoverage(file, api){
-  const info = instrumentAndCompile(file);
+  const info = instrumentAndCompile(file, api);
   info.instance = await getDeployedContractInstance(info, api.server.provider);
   api.collector._setInstrumentationData(info.data);
   return info;
@@ -118,11 +138,12 @@ function initializeProvider(ganache){
 }
 
 module.exports = {
-  getCode: getCode,
-  pathPrefix: pathPrefix,
-  filePath: filePath,
-  report: report,
-  instrumentAndCompile: instrumentAndCompile,
-  bootstrapCoverage: bootstrapCoverage,
-  initializeProvider: initializeProvider,
+  getCode,
+  pathPrefix,
+  filePath,
+  report,
+  instrumentAndCompile,
+  bootstrapCoverage,
+  initializeProvider,
+  getDiffABIs
 }

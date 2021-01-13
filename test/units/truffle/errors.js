@@ -82,7 +82,7 @@ describe('Truffle Plugin: error cases', function() {
   });
 
   it('lib module load failure', async function(){
-    truffleConfig.usePluginTruffle = true;
+    truffleConfig.useGlobalTruffle = true;
     truffleConfig.forceLibFailure = true;
 
     mock.install('Simple', 'simple.js', solcoverConfig);
@@ -92,7 +92,7 @@ describe('Truffle Plugin: error cases', function() {
       assert.fail()
     } catch (err) {
       assert(
-        err.message.includes('Unable to load plugin copy'),
+        err.message.includes('Unable to load Truffle library module'),
         `Should error on failed lib module load: ${err.message}`
       );
     }

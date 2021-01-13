@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 interface _Interface {
   function stare(uint a, uint b) external;

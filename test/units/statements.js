@@ -126,7 +126,7 @@ describe('generic statements', () => {
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      9: 1, 10: 1, 19: 1,
+      11: 1, 12: 1, 21: 1,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {

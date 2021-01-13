@@ -8,7 +8,7 @@ module.exports={
     }
   },
   solidity: {
-    version: "0.5.15"
+    version: "0.7.3"
   },
   logger: process.env.SILENT ? { log: () => {} } : console,
 };

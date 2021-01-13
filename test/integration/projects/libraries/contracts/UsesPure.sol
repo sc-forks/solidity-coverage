@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 import "./_Interface.sol";
 import "./PureView.sol";
@@ -45,11 +45,11 @@ contract UsesPure is PureView, _Interface {
     return onehundred;
   }
 
-  function stare(uint a, uint b) external {
+  function stare(uint a, uint b) external override {
     uint z = a + b;
   }
 
-  function cry() external {
+  function cry() external override {
 
   }
 }

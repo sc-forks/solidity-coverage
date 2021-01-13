@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 contract Test {
   function a(bool _a, bool _b, bool _c) public {
