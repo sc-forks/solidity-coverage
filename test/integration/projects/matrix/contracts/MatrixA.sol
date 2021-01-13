@@ -14,4 +14,8 @@ contract MatrixA {
     uint y = 5;
     return y;
   }
+
+  function unhit() public {
+    uint z = 7;
+  }
 }
