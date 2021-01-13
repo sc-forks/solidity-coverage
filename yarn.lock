@@ -609,9 +609,10 @@
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
-"@solidity-parser/parser@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.10.1.tgz#d3680d1ebebed21eee67f58a41eb92175204f0c7"
+"@solidity-parser/parser@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.11.0.tgz#28bc1972e1620f7b388b485bca76a78ac2cb5c59"
+  integrity sha512-IaC4IaW8uoOB8lmEkw6c19y1vJBK/+7SzAbGQ+LmBYRPXSLNB+UgpORvmcAJEXhB04kWKyz/Os1U8onqm6U/+w==
 
 "@solidity-parser/parser@^0.5.2":
   version "0.5.2"
