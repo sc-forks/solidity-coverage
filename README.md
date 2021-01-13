@@ -85,7 +85,8 @@ module.exports = {
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
 | measureModifierCoverage | *boolean* | `true` | Computes each modifier invocation as a code branch. [More...][34] |
 | modifierWhitelist | *String[]* | `[]` | List of modifier names (ex: "onlyOwner") to exclude from branch measurement. (Useful for modifiers which prepare something instead of acting as a gate.)) |
-| matrixOutputPath | *String* | `./testMatrix.json` | Relative path to write test matrix JSON object to. [More...][39] |
+| matrixOutputPath | *String* | `./testMatrix.json` | Relative path to write test matrix JSON object to. [More...][39]|
+| mochaJsonOutputPath | *String* | `./mochaOutput.json` | Relative path to write mocha JSON reporter object to. [More...][39]|
 | abiOutputPath | *String* | `./humanReadableAbis.json` | Relative path to write diff-able ABI data to |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
