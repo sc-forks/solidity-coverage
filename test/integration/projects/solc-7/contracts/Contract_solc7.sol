@@ -5,7 +5,7 @@ import {
   CHAINLINK,
   _addFive,
   _addSeven
-} from "./Functions.sol";
+} from "./Functions_solc7.sol";
 
 function _addTen(uint x)
   pure

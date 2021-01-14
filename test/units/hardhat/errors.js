@@ -30,7 +30,9 @@ describe('Hardhat Plugin: error cases', function() {
     mock.clean();
   });
 
-  it('project contains no contract sources folder', async function() {
+  // We're no longer checking context in HH since 2.0.4 because it just uses
+  // all the default paths. (HH dev dep currently above that: (>= 2.0.7))
+  it.skip('project contains no contract sources folder', async function() {
     mock.installFullProject('no-sources');
     mock.hardhatSetupEnv(this);
 

@@ -312,11 +312,11 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     const expected = [
       {
-        file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
+        file: mock.pathToContract(hardhatConfig, 'Contract_solc7.sol'),
         pct: 75
       },
       {
-        file: mock.pathToContract(hardhatConfig, 'Functions.sol'),
+        file: mock.pathToContract(hardhatConfig, 'Functions_solc7.sol'),
         pct: 50,
       }
     ];
