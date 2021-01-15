@@ -1,5 +1,10 @@
 # Changelog
 
+0.7.14 / 2021-01-14
+===================
+  * Support file scoped function definitions for solc >= 0.7.4
+  * Upgrade @solidity-parser/parser to v0.11.0
+
 0.7.13 / 2020-12-03
 ===================
   * Use default artifact paths for hardhat >= 2.0.4 (Fixes hardhat-deploy bug)
