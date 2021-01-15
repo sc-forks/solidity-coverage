@@ -304,6 +304,26 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   })
 
+  it('solc 0.7.x', async function(){
+    mock.installFullProject('solc-7');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'Contract_solc7.sol'),
+        pct: 75
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'Functions_solc7.sol'),
+        pct: 50,
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
+
   // This test freezes when gas-reporter is not disabled
   it('disables hardhat-gas-reporter', async function() {
     mock.installFullProject('hardhat-gas-reporter');
