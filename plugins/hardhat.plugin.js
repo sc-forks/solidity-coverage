@@ -90,7 +90,7 @@ task("coverage", "Generates a code coverage report for tests")
     api = new API(utils.loadSolcoverJS(config));
 
     // Catch interrupt signals
-    process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api));
+    process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api, true));
 
     // Version Info
     ui.report('hardhat-versions', [pkg.version]);
