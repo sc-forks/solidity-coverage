@@ -1,5 +1,11 @@
 # Changelog
 
+0.7.15 / 2021-02-16
+===================
+  * Fix ctrl-c not exiting on Hardhat (https://github.com/sc-forks/solidity-coverage/issues/616)
+  * Fix bug instrumentation bug w/ "pragma abicoder v2" (https://github.com/sc-forks/solidity-coverage/issues/615)
+  * Update changelog: v0.7.14
+
 0.7.14 / 2021-01-14
 ===================
   * Support file scoped function definitions for solc >= 0.7.4
