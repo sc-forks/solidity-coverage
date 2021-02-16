@@ -1,4 +1,5 @@
 pragma solidity ^0.7.4;
+pragma abicoder v2;
 
 import {
   LENDING_POOL,
