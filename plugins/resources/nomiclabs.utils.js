@@ -239,7 +239,7 @@ function tempCacheDir(config){
  * @param  {SolidityCoverage}  api
  * @return {Promise}
  */
-async function finish(config, api){
+async function finish(config, api, shouldKill){
   const {
     tempContractsDir,
     tempArtifactsDir
@@ -252,6 +252,7 @@ async function finish(config, api){
   shell.config.silent = false;
 
   if (api) await api.finish();
+  if (shouldKill) process.exit(1)
 }
 
 module.exports = {
