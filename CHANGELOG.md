@@ -1,5 +1,9 @@
 # Changelog
 
+0.7.16 / 2021-03-04
+===================
+  * Update @solidity-parser/parser to ^0.12.0 (and support Panic keyword in catch clauses) (https://github.com/sc-forks/solidity-coverage/issues/621)
+
 0.7.15 / 2021-02-16
 ===================
   * Fix ctrl-c not exiting on Hardhat (https://github.com/sc-forks/solidity-coverage/issues/616)
