@@ -8,7 +8,6 @@ const PluginUI = require('./truffle.ui');
 const path = require('path');
 const fs = require('fs-extra');
 const shell = require('shelljs');
-const util = require('util')
 
 // ===
 // UI
@@ -93,12 +92,13 @@ function toRelativePath(pathToFile, pathToParent){
  * @return {Object}               temp paths
  */
 function getTempLocations(config){
+  const contractsRoot = path.parse(config.contractsDir).dir
   const cwd = config.workingDir;
   const contractsDirName = '.coverage_contracts';
   const artifactsDirName = config.temp || '.coverage_artifacts';
 
   return {
-    tempContractsDir: path.join(cwd, contractsDirName),
+    tempContractsDir: path.join(contractsRoot, contractsDirName),
     tempArtifactsDir: path.join(cwd, artifactsDirName)
   }
 }
@@ -131,7 +131,7 @@ function checkContext(config, tempContractsDir, tempArtifactsDir){
 // =============================
 
 function assembleFiles(config, skipFiles=[]){
-  const targetsPath = path.join(config.contractsDir, '**', '*.sol');
+  const targetsPath = path.join(config.contractsDir, '**', '*.{sol,vy}');
   const targets = shell.ls(targetsPath).map(path.normalize);
 
   skipFiles = assembleSkipped(config, targets, skipFiles);
@@ -145,7 +145,7 @@ function assembleTargets(config, targets=[], skipFiles=[]){
   const cd = config.contractsDir;
 
   for (let target of targets){
-    if (skipFiles.includes(target)){
+    if (skipFiles.includes(target) || path.extname(target) === '.vy'){
 
       skipped.push({
         canonicalPath: target,
@@ -177,7 +177,9 @@ function assembleSkipped(config, targets, skipFiles=[]){
   skipFiles = skipFiles.map(contract => path.join(config.contractsDir, contract));
 
   // Enumerate files in skipped folders
-  const skipFolders = skipFiles.filter(item => path.extname(item) !== '.sol')
+  const skipFolders = skipFiles.filter(item => {
+    return path.extname(item) !== '.sol' || path.extname(item) !== '.vy'
+  });
 
   for (let folder of skipFolders){
     for (let target of targets ) {
@@ -234,6 +236,46 @@ function loadSolcoverJS(config={}){
 }
 
 // ==========================
+// Setup RPC Calls
+// ==========================
+async function getAccountsHardhat(provider){
+  return provider.send("eth_accounts", [])
+}
+
+async function getNodeInfoHardhat(provider){
+  return provider.send("web3_clientVersion", [])
+}
+
+async function getAccountsGanache(provider){
+  const payload = {
+    jsonrpc: "2.0",
+    method: "eth_accounts",
+    params: [],
+    id: 1
+  };
+  return ganacheRequest(provider, payload)
+}
+
+async function getNodeInfoGanache(provider){
+  const payload = {
+    jsonrpc: "2.0",
+    method: "web3_clientVersion",
+    params: [],
+    id: 1
+  };
+  return ganacheRequest(provider, payload)
+}
+
+async function ganacheRequest(provider, payload){
+  return new Promise((resolve, reject) => {
+    provider.sendAsync(payload, function(err, res){
+      if (err) return reject(err)
+      resolve(res);
+    })
+  });
+}
+
+// ==========================
 // Finishing / Cleanup
 // ==========================
 
@@ -258,16 +300,20 @@ async function finish(config, api){
 }
 
 module.exports = {
-  assembleFiles: assembleFiles,
-  assembleSkipped: assembleSkipped,
-  assembleTargets: assembleTargets,
-  checkContext: checkContext,
-  finish: finish,
-  getTempLocations: getTempLocations,
-  loadSource: loadSource,
-  loadSolcoverJS: loadSolcoverJS,
-  reportSkipped: reportSkipped,
-  save: save,
-  toRelativePath: toRelativePath,
-  setupTempFolders: setupTempFolders
+  assembleFiles,
+  assembleSkipped,
+  assembleTargets,
+  checkContext,
+  finish,
+  getTempLocations,
+  loadSource,
+  loadSolcoverJS,
+  reportSkipped,
+  save,
+  toRelativePath,
+  setupTempFolders,
+  getAccountsHardhat,
+  getNodeInfoHardhat,
+  getAccountsGanache,
+  getNodeInfoGanache
 }

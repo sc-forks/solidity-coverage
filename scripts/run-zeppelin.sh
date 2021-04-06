@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# E2E CI: installs PR candidate on openzeppelin-solidity and runs coverage
+# E2E CI: installs PR candidate on openzeppelin-contracts and runs coverage
 #
 
 set -o errexit
@@ -20,26 +20,22 @@ fi
 
 echo "PR_PATH >>>>> $PR_PATH"
 
-npm install -g yarn;
-
-# Install sc-forks Zeppelin fork (temporarily). It's setup to
-# consume the plugin and skips a small set of GSN tests that rely on
-# the client being stand-alone. (See OZ issue #1918 for discussion)
-git clone https://github.com/sc-forks/openzeppelin-contracts.git
+# Install Zeppelin
+git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git
 cd openzeppelin-contracts
 
-echo ">>>>> checkout provider-benchmarks branch"
-git checkout provider-benchmarks
-
 # Swap installed coverage for PR branch version
-echo ">>>>> yarn install"
-yarn install
+echo ">>>>> npm install"
+npm install
 
-echo ">>>>> yarn remove --dev solidity-coverage"
-yarn remove solidity-coverage --dev
+echo ">>>>> npm uninstall solidity-coverage --save-dev"
+npm uninstall solidity-coverage --save-dev
 
-echo ">>>>> yarn add -dev $PR_PATH"
-yarn add "$PR_PATH" --dev
+echo ">>>>> npm add $PR_PATH --dev"
+npm install "$PR_PATH" --save-dev
+
+echo ">>>>> cat package.json"
+cat package.json
 
 # Track perf
-time npx truffle run coverage --network development
+CI=false npm run coverage

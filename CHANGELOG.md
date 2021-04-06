@@ -1,5 +1,53 @@
 # Changelog
 
+0.7.16 / 2021-03-04
+===================
+  * Update @solidity-parser/parser to ^0.12.0 (and support Panic keyword in catch clauses) (https://github.com/sc-forks/solidity-coverage/issues/621)
+
+0.7.15 / 2021-02-16
+===================
+  * Fix ctrl-c not exiting on Hardhat (https://github.com/sc-forks/solidity-coverage/issues/616)
+  * Fix bug instrumentation bug w/ "pragma abicoder v2" (https://github.com/sc-forks/solidity-coverage/issues/615)
+  * Update changelog: v0.7.14
+
+0.7.14 / 2021-01-14
+===================
+  * Support file scoped function definitions for solc >= 0.7.4
+  * Upgrade @solidity-parser/parser to v0.11.0
+
+0.7.13 / 2020-12-03
+===================
+  * Use default artifact paths for hardhat >= 2.0.4 (Fixes hardhat-deploy bug)
+
+0.7.12 / 2020-11-16
+===================
+  * Add Hardhat plugin support and allow coverage to run on HardhatEVM (https://github.com/sc-forks/solidity-coverage/pull/548)
+  * Allow truffle projects to contain vyper contracts (https://github.com/sc-forks/solidity-coverage/issues/571)
+  * Locate .coverage_contracts correctly for subfolder paths
+    (https://github.com/sc-forks/solidity-coverage/issues/570)
+  * Replace Web3 with thin rpc wrapper (https://github.com/sc-forks/solidity-coverage/issues/568)
+  * Stop reporting assert statements as branches (https://github.com/sc-forks/solidity-coverage/issues/556)
+  * Upgrade @truffle/provider to 0.2.24 (https://github.com/sc-forks/solidity-coverage/issues/550)
+  * Upgrade solidity-parser/parser to 0.8.1 (https://github.com/sc-forks/solidity-coverage/issues/549)
+
+
+0.7.11 / 2020-10-08
+========================
+  * Upgrade Web3 to ^1.3.0, ganache-cli to 6.11.0
+  * Make statement and function coverage measurement optional
+
+0.7.10 / 2020-08-18
+==================
+  * Bump parser to 0.7.0 (Solidity 0.7.0)
+
+0.7.9 / 2020-06-28
+==================
+  * Fix --testfiles glob handling (Buidler)
+
+0.7.8 / 2020-06-24
+==================
+  * Track statements in try/catch blocks correctly
+
 0.7.7 / 2020-06-10
 ==================
 

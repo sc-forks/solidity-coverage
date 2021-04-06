@@ -5,7 +5,6 @@ const shell = require('shelljs');
 
 const verify = require('../../util/verifiers')
 const mock = require('../../util/integration');
-const plugin = require('../../../plugins/buidler.plugin');
 
 // =======================
 // CLI Options / Flags
@@ -81,37 +80,6 @@ describe('Buidler Plugin: command line options', function() {
       file: mock.pathToContract(buidlerConfig, 'Simple.sol'),
       pct: 100
     }];
-
-    verify.lineCoverage(expected);
-  });
-
-  it('--testfiles test/<fileName>', async function() {
-    const taskArgs = {
-      testfiles: path.join(
-        buidlerConfig.paths.root,
-        'test/specific_a.js'
-      )
-    };
-
-    mock.installFullProject('test-files');
-    mock.buidlerSetupEnv(this);
-
-    await this.env.run("coverage", taskArgs);
-
-    const expected = [
-      {
-        file: mock.pathToContract(buidlerConfig, 'ContractA.sol'),
-        pct: 100
-      },
-      {
-        file: mock.pathToContract(buidlerConfig, 'ContractB.sol'),
-        pct: 0,
-      },
-      {
-        file: mock.pathToContract(buidlerConfig, 'ContractC.sol'),
-        pct: 0,
-      },
-    ];
 
     verify.lineCoverage(expected);
   });

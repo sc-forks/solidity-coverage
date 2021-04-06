@@ -21,10 +21,6 @@ contract('B_Wallet', accounts => {
     await walletA.transferPayment(0, walletB.address, {
       from: accounts[0],
     });
-
-    // Throws invalid opcode if compiled w/ solc >= 0.5.14 & default EVM version
-    const balance = await walletB.getBalance();
-    assert.equal(balance.toNumber(), 100);
   });
 });
 

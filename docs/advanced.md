@@ -2,7 +2,7 @@
 
 ## Skipping tests
 
-Sometimes it's convenient to skip specific tests when running coverage. You can do this by 
+Sometimes it's convenient to skip specific tests when running coverage. You can do this by
 tagging your test descriptions and setting appropriate filters in the `.solcover.js` mocha options.
 
 **Example**
@@ -79,10 +79,21 @@ $ truffle run coverage --temp build
 
 By default this folder is called `.coverage_artifacts`. If you already have
 preparatory scripts which run between compilation and the tests, you'll probably
-find it inconvenient to modify them to handle an alternate path. 
+find it inconvenient to modify them to handle an alternate path.
 
-This option allows you to avoid that but it's important to realise that the temp 
-folder is **automatically deleted** when coverage completes. You shouldn't use it if your preferred 
+This option allows you to avoid that but it's important to realise that the temp
+folder is **automatically deleted** when coverage completes. You shouldn't use it if your preferred
 build target contains information you want to preserve between test runs.
 
+## Reducing the instrumentation footprint
+
+If your project is very large or if you have logic that's gas sensitive, it can be useful to
+minimize the amount of instrumentation the coverage tool adds to your Solidity code.
+
+Usually you're only interested in line and branch coverage but Istanbul also collects data for individual
+statements and "functions" (e.g - whether every declared function has been called).
+
+Setting the `measureStatementCoverage` and/or `measureFunctionCoverage` options to `false` can
+improve performance, lower the cost of execution and minimize complications that arise from `solc`'s
+limits on how large the compilation payload can be.
 

@@ -37,13 +37,54 @@ echo ""
 # Install buidler-e2e
 git clone https://github.com/sc-forks/buidler-e2e.git
 cd buidler-e2e
-npm install
+npm install --silent
 
 # Install and run solidity-coverage @ PR
-npm install --save-dev $PR_PATH
+npm install --save-dev --silent $PR_PATH
 cat package.json
 
 npx buidler coverage
+
+verifyCoverageExists
+
+echo ""
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Simple hardhat/hardhat-trufflev5    "
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+
+# Install hardhat-e2e (HardhatEVM)
+git clone https://github.com/sc-forks/hardhat-e2e.git
+cd hardhat-e2e
+npm install --silent
+
+# Install and run solidity-coverage @ PR
+npm install --save-dev --silent $PR_PATH
+cat package.json
+
+npx hardhat coverage
+
+verifyCoverageExists
+
+echo ""
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "wighawag/hardhat-deploy                "
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo ""
+cd ..
+npm install -g yarn
+git clone https://github.com/cgewecke/template-ethereum-contracts.git
+cd template-ethereum-contracts
+yarn
+yarn add $PR_PATH --dev
+cat package.json
+
+# Here we want to make sure that HH cache triggers a
+# complete recompile after coverage runs by verifying
+# that gas consumption is same in both runs.
+yarn run gas
+yarn run coverage
+yarn run gas
 
 verifyCoverageExists
 
@@ -56,33 +97,12 @@ echo ""
 cd ..
 git clone https://github.com/sc-forks/example-buidler-ethers.git
 cd example-buidler-ethers
-npm install
+yarn
 
 # Install and run solidity-coverage @ PR
-npm install --save-dev $PR_PATH
+yarn add $PR_PATH --dev
 cat package.json
 
 npx buidler coverage
 
 verifyCoverageExists
-
-echo ""
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Complex: MolochDao/moloch           "
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo ""
-
-# Install sc-forks/moloch
-cd ..
-git clone https://github.com/sc-forks/moloch.git
-cd moloch
-npm install
-npm uninstall --save-dev solidity-coverage
-
-# Install and run solidity-coverage @ PR
-# Should run on network 'localhost'
-npm install --save-dev $PR_PATH
-npm run coverage
-
-verifyCoverageExists
-

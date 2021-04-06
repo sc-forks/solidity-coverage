@@ -1,17 +1,20 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 
-const ganache = require('ganache-core-sc');
+const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
+const Api = require('./../../lib/api')
 
 describe('generic statements', () => {
   let coverage;
-  let provider;
-  let collector;
+  let api;
 
-  before(async () => ({ provider, collector } = await util.initializeProvider(ganache)));
+  before(async () => {
+    api = new Api({silent: true});
+    await api.ganache(client);
+  })
   beforeEach(() => coverage = new Coverage());
-  after((done) => provider.close(done));
+  after(async() => await api.finish());
 
   it('should compile function defined in a struct', () => {
     const info = util.instrumentAndCompile('statements/fn-struct');
@@ -79,7 +82,7 @@ describe('generic statements', () => {
   });
 
   it('should cover an emitted event statement', async function() {
-    const contract = await util.bootstrapCoverage('statements/emit-coverage', provider, collector);
+    const contract = await util.bootstrapCoverage('statements/emit-coverage', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(0);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -97,7 +100,7 @@ describe('generic statements', () => {
   });
 
   it('should cover a statement following a close brace', async function() {
-    const contract = await util.bootstrapCoverage('statements/post-close-brace', provider, collector);
+    const contract = await util.bootstrapCoverage('statements/post-close-brace', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(1);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -117,7 +120,7 @@ describe('generic statements', () => {
   });
 
   it('should cover a library statement and an invoked library method', async function() {
-    const contract = await util.bootstrapCoverage('statements/library', provider, collector);
+    const contract = await util.bootstrapCoverage('statements/library', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.not();
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -135,7 +138,7 @@ describe('generic statements', () => {
   });
 
   it('should cover a tuple statement', async function() {
-    const contract = await util.bootstrapCoverage('statements/tuple', provider, collector);
+    const contract = await util.bootstrapCoverage('statements/tuple', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a();
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -153,7 +156,7 @@ describe('generic statements', () => {
   });
 
   it.skip('should cover a unary statement', async function(){
-    const contract = await util.bootstrapCoverage('statements/unary', provider, collector);
+    const contract = await util.bootstrapCoverage('statements/unary', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a();
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -162,7 +165,7 @@ describe('generic statements', () => {
   })
 
   it('should cover an empty bodied contract statement', async function() {
-    const contract = await util.bootstrapCoverage('statements/empty-contract-body', provider, collector);
+    const contract = await util.bootstrapCoverage('statements/empty-contract-body', api);
     coverage.addContract(contract.instrumented, util.filePath);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 

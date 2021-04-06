@@ -286,13 +286,28 @@ describe('Truffle Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
+  it('locates .coverage_contracts correctly when dir is subfolder', async function(){
+    solcoverConfig = {
+      silent: process.env.SILENT ? true : false,
+      istanbulReporter: ['json-summary', 'text']
+    };
+
+    truffleConfig.contracts_directory = path.join(
+      process.cwd(),
+      mock.pathToTemp("contracts/A")
+    );
+
+    mock.installFullProject('contract-subfolders');
+    await plugin(truffleConfig);
+  })
+
   // This test tightly coupled to the ganache version in production deps
   // "test-files" project solcoverjs includes `client: require('ganache-cli')`
   it('config: client', async function(){
     truffleConfig.logger = mock.testLogger;
     truffleConfig.version = true;
 
-    const configClientVersion = "v2.10.1";
+    const configClientVersion = "v2.12.1";
 
     // Config client
     mock.installFullProject('ganache-solcoverjs');
@@ -414,6 +429,25 @@ describe('Truffle Plugin: standard use cases', function() {
     );
   });
 
+  it('config: includeStatementCoverage, includeFunctionCoverage', async function(){
+    solcoverConfig.istanbulReporter = ['json-summary', 'text']
+    solcoverConfig.measureStatementCoverage = false;
+    solcoverConfig.measureFunctionCoverage = false;
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'Simple.sol'),
+        total: 0
+      }
+    ];
+
+    verify.statementCoverage(expected, 'total');
+    verify.functionCoverage(expected, 'total');
+  });
+
   // Fails with Truffle 5.0.31, but newer Truffle causes OOM when running whole suite.
   // Running the same test with Buidler though...
   it.skip('solc 0.6.x', async function(){
@@ -433,4 +467,34 @@ describe('Truffle Plugin: standard use cases', function() {
 
     verify.lineCoverage(expected);
   })
+
+  it('compiles when a project includes vyper contracts', async function() {
+    const skipMigration = true;
+
+    truffleConfig.logger = mock.testLogger;
+    solcoverConfig.istanbulReporter = ['json-summary', 'text']
+
+    mock.installDouble(
+      ['Simple', 'auction.vy'],
+      'simple.js',
+      solcoverConfig,
+      skipMigration
+    );
+
+
+    await plugin(truffleConfig);
+
+    assert(
+      mock.loggerOutput.val.includes('Compiling ./.coverage_contracts/auction.vy')
+    );
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'Simple.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  });
 })

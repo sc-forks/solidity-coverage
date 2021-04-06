@@ -38,7 +38,24 @@ module.exports = {
 truffle run coverage [command-options]
 ```
 
-### Buidler
+### Hardhat
+
+Beginning with v0.7.12, this tool supports Hardhat and runs directly on
+HardhatEVM.
+
+**Require** the plugin in `hardhat.config.js` ([Hardhat docs][26])
+```javascript
+require('solidity-coverage')
+```
+
+**Run**
+```
+npx hardhat coverage [command-options]
+```
+
+(Additional Hardhat-specific info can be found [here][37])
+
+### Buidler [Deprecated]
 
 **Add** the plugin in `buidler.config.js` ([Buidler docs][26])
 ```javascript
@@ -62,6 +79,10 @@ npx buidler coverage --network coverage [command-options]
 + Simple: [buidler-metacoin][32]
 + More complex: [MolochDao/moloch][33]
 
+### @openzeppelin/test-environment
+
+OpenZeppelin have written their own coverage generation scripts for `test-environment` using the solidity-coverage API.
+A working example can be found at [openzeppelin-contracts, here.][35]
 
 ## Usage notes:
 + Coverage runs tests a little more slowly.
@@ -73,8 +94,8 @@ npx buidler coverage --network coverage [command-options]
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of JS tests to run. (Globs must be enclosed by quotes.)|
-| testfiles  | `--testfiles test/file.js` | (Buidler) JS test file(s) to run.|
+| file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of tests to run. (Globs must be enclosed by quotes.)|
+| testfiles  | `--testfiles "test/registry/*.ts"` | (Buidler) Test file(s) to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
@@ -99,6 +120,8 @@ module.exports = {
 | client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
 | providerOptions | *Object* | `{ }` | [ganache-core options][1]  |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
+| measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
+| measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
@@ -204,3 +227,8 @@ $ yarn
 [31]: https://github.com/sc-forks/solidity-coverage/releases/tag/v0.7.0
 [32]: https://github.com/sc-forks/buidler-e2e/tree/coverage
 [33]: https://github.com/sc-forks/moloch
+[34]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#reducing-the-instrumentation-footprint
+[35]: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/e5fbbda9bac49039847a7ed20c1d966766ecc64a/scripts/coverage.js
+[36]: https://hardhat.org/
+[37]: https://github.com/sc-forks/solidity-coverage/blob/master/HARDHAT_README.md
+

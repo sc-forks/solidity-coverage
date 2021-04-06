@@ -1,17 +1,20 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
 
-const ganache = require('ganache-core-sc');
+const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
+const Api = require('./../../lib/api')
 
 describe('function declarations', () => {
   let coverage;
-  let provider;
-  let collector;
+  let api;
 
-  before(async () => ({ provider, collector } = await util.initializeProvider(ganache)));
+  before(async () => {
+    api = new Api({silent: true});
+    await api.ganache(client);
+  })
   beforeEach(() => coverage = new Coverage());
-  after((done) => provider.close(done));
+  after(async() => await api.finish());
 
   it('should compile after instrumenting an ordinary function declaration', () => {
     const info = util.instrumentAndCompile('function/function');
@@ -54,7 +57,7 @@ describe('function declarations', () => {
   });
 
   it('should cover a simple invoked function call', async function() {
-    const contract = await util.bootstrapCoverage('function/function-call', provider, collector);
+    const contract = await util.bootstrapCoverage('function/function-call', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a();
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -73,7 +76,7 @@ describe('function declarations', () => {
   });
 
   it('should cover a modifier used on a function', async function() {
-    const contract = await util.bootstrapCoverage('function/modifier', provider, collector);
+    const contract = await util.bootstrapCoverage('function/modifier', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a(0);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -92,7 +95,7 @@ describe('function declarations', () => {
   });
 
   it('should cover a constructor that uses the `constructor` keyword', async function() {
-    const contract = await util.bootstrapCoverage('function/constructor-keyword', provider, collector);
+    const contract = await util.bootstrapCoverage('function/constructor-keyword', api);
     coverage.addContract(contract.instrumented, util.filePath);
     await contract.instance.a();
     const mapping = coverage.generate(contract.data, util.pathPrefix);
@@ -115,7 +118,7 @@ describe('function declarations', () => {
   //
   // NB: 2x values are result of Truffle replaying failing txs to get reason string...
   it('should cover a constructor --> method call chain', async function() {
-    const contract = await util.bootstrapCoverage('function/chainable', provider, collector);
+    const contract = await util.bootstrapCoverage('function/chainable', api);
     coverage.addContract(contract.instrumented, util.filePath);
 
     try { await contract.instance.a() } catch(err){}
@@ -140,7 +143,7 @@ describe('function declarations', () => {
   //
   // NB: 2x values are result of Truffle replaying failing txs to get reason string...
   it('should cover a constructor --> method --> value call chain', async function() {
-    const contract = await util.bootstrapCoverage('function/chainable-value', provider, collector);
+    const contract = await util.bootstrapCoverage('function/chainable-value', api);
     coverage.addContract(contract.instrumented, util.filePath);
 
     try { await contract.instance.a() } catch(err){}
