@@ -34,6 +34,10 @@ Or, if you are using TypeScript, add this to your hardhat.config.ts:
 import "solidity-coverage"
 ```
 
+:warning: **Also using `hardhat-typechain`?** :warning:
+
+Please see the [using with typechain](#using-with-typechain) section.
+
 ## Tasks
 
 This plugin implements a `coverage` task
@@ -47,6 +51,7 @@ npx hardhat coverage [options]
 | testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes.)|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Run with a ganache client over http using network settings defined in `hardhat.config.js`. (Hardhat is the default network) |
+| temp[<sup>*</sup>][14]       | `--temp artifacts`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
 
 
 ## Configuration
@@ -82,6 +87,33 @@ module.exports = {
 + Coverage uses the Hardhat network by default.
 + Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be [skipped][24].
 + :warning:  Contracts are compiled **without optimization**. Please report unexpected compilation faults to [issue 417][25]
+
+## Using with typechain
+
+This plugin requires additional configuration when run alongside `hardhat-typechain`.
+
+**1.** Write coverage artifacts to your project's default `config.paths.artifacts` path using the `--temp` option.
+```sh
+# Example
+npx hardhat coverage --temp artifacts
+```
+
+**2.** Add these workflow hooks to your `.solcover.js`
+```js
+// This is already a dependency of solidity-coverage
+const shell = require('shelljs');
+
+module.exports = {
+  onCompileComplete: async function (_config) {
+    await run("typechain");
+  },
+  // We need to do this because solcover generates bespoke artifacts.
+  onIstanbulComplete: async function (_config) {
+    shell.rm("-rf", "./artifacts"); // Or your config.paths.artifacts path
+    shell.rm("-rf", "./typechain"); // Or the typechain `outDir` (if removable)
+  },
+};
+```
 
 ## Using with ganache
 
@@ -128,4 +160,5 @@ More documentation, including FAQ and information about solidity-coverage's API 
 [32]: https://github.com/sc-forks/buidler-e2e/tree/coverage
 [33]: https://github.com/sc-forks/moloch
 [34]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#reducing-the-instrumentation-footprint
+
 

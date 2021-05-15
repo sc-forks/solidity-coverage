@@ -53,7 +53,7 @@ require('solidity-coverage')
 npx hardhat coverage [command-options]
 ```
 
-(Additional Hardhat-specific info can be found [here][37])
+(Please see additional hardhat-specific installation info [here][37])
 
 ### Buidler [Deprecated]
 
