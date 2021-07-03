@@ -11,7 +11,7 @@ const path = require('path');
  * @param  {Object}   config   @truffle/config config
  * @return {Promise}
  */
-async function plugin(config){
+async function plugin(config) {
   let ui;
   let api;
   let error;
@@ -25,7 +25,7 @@ async function plugin(config){
 
     ui = new PluginUI(config.logger.log);
 
-    if(config.help) return ui.report('help');    // Exit if --help
+    if (config.help) return ui.report('help');    // Exit if --help
 
     truffle = truffleUtils.loadLibrary(config);
     api = new API(utils.loadSolcoverJS(config));
@@ -92,6 +92,12 @@ async function plugin(config){
 
     config.all = true;
     config.compilers.solc.settings.optimizer.enabled = false;
+    config.compilers.solc.settings.optimizer.details = {
+      yul: true,
+      yulDetails: {
+        stackAllocation: true,
+      },
+    };
 
     // Compile Instrumented Contracts
     await truffle.contracts.compile(config);
@@ -110,7 +116,7 @@ async function plugin(config){
     await api.report();
     await api.onIstanbulComplete(config);
 
-  } catch(e){
+  } catch (e) {
     error = e;
   }
 

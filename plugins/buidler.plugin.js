@@ -32,11 +32,11 @@ function plugin() {
 
   task("coverage", "Generates a code coverage report for tests")
 
-    .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
+    .addOptionalParam("testfiles", ui.flags.file, "", types.string)
     .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
-    .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
+    .addOptionalParam('temp', ui.flags.temp, "", types.string)
 
-    .setAction(async function(args, env){
+    .setAction(async function (args, env) {
       let error;
       let ui;
       let api;
@@ -109,6 +109,12 @@ function plugin() {
         config.paths.artifacts = tempArtifactsDir;
         config.paths.cache = buidlerUtils.tempCacheDir(config);
         config.solc.optimizer.enabled = false;
+        config.solc.optimizer.details = {
+          yul: true,
+          yulDetails: {
+            stackAllocation: true,
+          },
+        };
 
         await env.run(TASK_COMPILE);
 
@@ -122,7 +128,7 @@ function plugin() {
           : [];
 
         try {
-          await env.run(TASK_TEST, {testFiles: testfiles})
+          await env.run(TASK_TEST, { testFiles: testfiles })
         } catch (e) {
           error = e;
         }
@@ -134,15 +140,15 @@ function plugin() {
         await api.report();
         await api.onIstanbulComplete(config);
 
-    } catch(e) {
-       error = e;
-    }
+      } catch (e) {
+        error = e;
+      }
 
-    await buidlerUtils.finish(config, api);
+      await buidlerUtils.finish(config, api);
 
-    if (error !== undefined ) throw error;
-    if (process.exitCode > 0) throw new Error(ui.generate('tests-fail', [process.exitCode]));
-  })
+      if (error !== undefined) throw error;
+      if (process.exitCode > 0) throw new Error(ui.generate('tests-fail', [process.exitCode]));
+    })
 }
 
 module.exports = plugin;
