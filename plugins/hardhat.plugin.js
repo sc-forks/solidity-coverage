@@ -58,6 +58,12 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __,
     settings.metadata.useLiteralContent = false;
     // Override optimizer settings for all compilers
     settings.optimizer.enabled = false;
+    settings.optimizer.details = {
+      yul: true,
+      yulDetails: {
+        stackAllocation: true,
+      },
+    };
   }
   return compilationJob;
 });
@@ -68,148 +74,148 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __,
  * @param  {HardhatEnv} env
  */
 task("coverage", "Generates a code coverage report for tests")
-  .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
+  .addOptionalParam("testfiles", ui.flags.file, "", types.string)
   .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
-  .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
-  .setAction(async function(args, env){
+  .addOptionalParam('temp', ui.flags.temp, "", types.string)
+  .setAction(async function (args, env) {
 
-  let error;
-  let ui;
-  let api;
-  let config;
-  let client;
-  let address;
-  let failedTests = 0;
+    let error;
+    let ui;
+    let api;
+    let config;
+    let client;
+    let address;
+    let failedTests = 0;
 
-  instrumentedSources = {};
-  measureCoverage = true;
-
-  try {
-    config = nomiclabsUtils.normalizeConfig(env.config, args);
-    ui = new PluginUI(config.logger.log);
-    api = new API(utils.loadSolcoverJS(config));
-
-    // Catch interrupt signals
-    process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api, true));
-
-    // Version Info
-    ui.report('hardhat-versions', [pkg.version]);
-
-    // Merge non-null flags into hardhatArguments
-    const flags = {};
-    for (const key of Object.keys(args)){
-      if (args[key] && args[key].length){
-        flags[key] = args[key]
-      }
-    }
-    env.hardhatArguments = Object.assign(env.hardhatArguments, flags)
-
-    // ================
-    // Instrumentation
-    // ================
-
-    const skipFiles = api.skipFiles || [];
-
-    let {
-      targets,
-      skipped
-    } = utils.assembleFiles(config, skipFiles);
-
-    targets = api.instrument(targets);
-    for (const target of targets) {
-      instrumentedSources[target.canonicalPath] = target.source;
-    }
-    utils.reportSkipped(config, skipped);
-
-    // ==============
-    // Compilation
-    // ==============
-    ui.report('compilation', []);
-
-    config.temp = args.temp;
-
-    // With Hardhat >= 2.0.4, everything should automatically recompile
-    // after solidity-coverage corrupts the artifacts.
-    // Prior to that version, we (try to) save artifacts to a temp folder.
-    if (!config.useHardhatDefaultPaths){
-      const {
-        tempArtifactsDir,
-        tempContractsDir
-      } = utils.getTempLocations(config);
-
-      utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
-      config.paths.artifacts = tempArtifactsDir;
-      config.paths.cache = nomiclabsUtils.tempCacheDir(config);
-    }
-
-    await env.run(TASK_COMPILE);
-
-    await api.onCompileComplete(config);
-
-    // ==============
-    // Server launch
-    // ==============
-    const network = nomiclabsUtils.setupHardhatNetwork(env, api, ui);
-
-    if (network.isHardhatEVM){
-      accounts = await utils.getAccountsHardhat(network.provider);
-      nodeInfo = await utils.getNodeInfoHardhat(network.provider);
-
-      api.attachToHardhatVM(network.provider);
-
-      ui.report('hardhat-network', [
-        nodeInfo.split('/')[1],
-        env.network.name,
-      ]);
-    } else {
-      client = api.client || require('ganache-cli');
-      address = await api.ganache(client);
-      const accountsRequest = await utils.getAccountsGanache(api.server.provider);
-      const nodeInfoRequest = await utils.getNodeInfoGanache(api.server.provider);
-
-      ui.report('ganache-network', [
-        nodeInfoRequest.result.split('/')[1],
-        env.network.name,
-        api.port
-      ]);
-
-      accounts = accountsRequest.result;
-    }
-
-    // Set default account (if not already configured)
-    nomiclabsUtils.setNetworkFrom(network.config, accounts);
-
-    // Run post-launch server hook;
-    await api.onServerReady(config);
-
-    // ======
-    // Tests
-    // ======
-    const testfiles = args.testfiles
-      ? nomiclabsUtils.getTestFilePaths(args.testfiles)
-      : [];
+    instrumentedSources = {};
+    measureCoverage = true;
 
     try {
-      failedTests = await env.run(TASK_TEST, {testFiles: testfiles})
+      config = nomiclabsUtils.normalizeConfig(env.config, args);
+      ui = new PluginUI(config.logger.log);
+      api = new API(utils.loadSolcoverJS(config));
+
+      // Catch interrupt signals
+      process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api, true));
+
+      // Version Info
+      ui.report('hardhat-versions', [pkg.version]);
+
+      // Merge non-null flags into hardhatArguments
+      const flags = {};
+      for (const key of Object.keys(args)) {
+        if (args[key] && args[key].length) {
+          flags[key] = args[key]
+        }
+      }
+      env.hardhatArguments = Object.assign(env.hardhatArguments, flags)
+
+      // ================
+      // Instrumentation
+      // ================
+
+      const skipFiles = api.skipFiles || [];
+
+      let {
+        targets,
+        skipped
+      } = utils.assembleFiles(config, skipFiles);
+
+      targets = api.instrument(targets);
+      for (const target of targets) {
+        instrumentedSources[target.canonicalPath] = target.source;
+      }
+      utils.reportSkipped(config, skipped);
+
+      // ==============
+      // Compilation
+      // ==============
+      ui.report('compilation', []);
+
+      config.temp = args.temp;
+
+      // With Hardhat >= 2.0.4, everything should automatically recompile
+      // after solidity-coverage corrupts the artifacts.
+      // Prior to that version, we (try to) save artifacts to a temp folder.
+      if (!config.useHardhatDefaultPaths) {
+        const {
+          tempArtifactsDir,
+          tempContractsDir
+        } = utils.getTempLocations(config);
+
+        utils.setupTempFolders(config, tempContractsDir, tempArtifactsDir)
+        config.paths.artifacts = tempArtifactsDir;
+        config.paths.cache = nomiclabsUtils.tempCacheDir(config);
+      }
+
+      await env.run(TASK_COMPILE);
+
+      await api.onCompileComplete(config);
+
+      // ==============
+      // Server launch
+      // ==============
+      const network = nomiclabsUtils.setupHardhatNetwork(env, api, ui);
+
+      if (network.isHardhatEVM) {
+        accounts = await utils.getAccountsHardhat(network.provider);
+        nodeInfo = await utils.getNodeInfoHardhat(network.provider);
+
+        api.attachToHardhatVM(network.provider);
+
+        ui.report('hardhat-network', [
+          nodeInfo.split('/')[1],
+          env.network.name,
+        ]);
+      } else {
+        client = api.client || require('ganache-cli');
+        address = await api.ganache(client);
+        const accountsRequest = await utils.getAccountsGanache(api.server.provider);
+        const nodeInfoRequest = await utils.getNodeInfoGanache(api.server.provider);
+
+        ui.report('ganache-network', [
+          nodeInfoRequest.result.split('/')[1],
+          env.network.name,
+          api.port
+        ]);
+
+        accounts = accountsRequest.result;
+      }
+
+      // Set default account (if not already configured)
+      nomiclabsUtils.setNetworkFrom(network.config, accounts);
+
+      // Run post-launch server hook;
+      await api.onServerReady(config);
+
+      // ======
+      // Tests
+      // ======
+      const testfiles = args.testfiles
+        ? nomiclabsUtils.getTestFilePaths(args.testfiles)
+        : [];
+
+      try {
+        failedTests = await env.run(TASK_TEST, { testFiles: testfiles })
+      } catch (e) {
+        error = e;
+      }
+      await api.onTestsComplete(config);
+
+      // ========
+      // Istanbul
+      // ========
+      await api.report();
+      await api.onIstanbulComplete(config);
+
     } catch (e) {
       error = e;
+    } finally {
+      measureCoverage = false;
     }
-    await api.onTestsComplete(config);
 
-    // ========
-    // Istanbul
-    // ========
-    await api.report();
-    await api.onIstanbulComplete(config);
+    await nomiclabsUtils.finish(config, api);
 
-  } catch(e) {
-    error = e;
-  } finally {
-    measureCoverage = false;
-  }
-
-  await nomiclabsUtils.finish(config, api);
-
-  if (error !== undefined ) throw new HardhatPluginError(error);
-  if (failedTests > 0) throw new HardhatPluginError(ui.generate('tests-fail', [failedTests]));
-})
+    if (error !== undefined) throw new HardhatPluginError(error);
+    if (failedTests > 0) throw new HardhatPluginError(ui.generate('tests-fail', [failedTests]));
+  })
