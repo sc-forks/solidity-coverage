@@ -134,6 +134,7 @@ function configureNetworkEnv(env, networkName, networkConfig, provider, isHardha
   env.config.defaultNetwork = networkName;
 
   env.network = {
+    ...env.network,
     name: networkName,
     config: networkConfig,
     provider: provider,
