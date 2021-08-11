@@ -23,7 +23,7 @@ let instrumentedSources
 // UI for the task flags...
 const ui = new PluginUI();
 
-task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
+subtask(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
   const solcInput = await runSuper();
   if (measureCoverage) {
     // The source name here is actually the global name in the solc input,
@@ -40,7 +40,7 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, r
 });
 
 // Solidity settings are best set here instead of the TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT task.
-task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __, runSuper) => {
+subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __, runSuper) => {
   const compilationJob = await runSuper();
   if (measureCoverage && typeof compilationJob === "object") {
     if (compilationJob.solidityConfig.settings === undefined) {
