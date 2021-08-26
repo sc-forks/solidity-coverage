@@ -22,7 +22,7 @@ Solidity code coverage plugin for [Hardhat](http://hardhat.org).
 $ npm install --save-dev solidity-coverage
 ```
 
-And add the following to your `.config.js`:
+And add the following to your `hardhat.config.js`:
 
 ```js
 require("solidity-coverage");
