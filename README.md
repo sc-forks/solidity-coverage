@@ -194,6 +194,10 @@ $ yarn
 + [@yxliang01](https://github.com/yxliang01)
 + [@maxsam4](https://github.com/maxsam4)
 + [@justinjmoses](https://github.com/justinjmoses)
++ [@JasoonS](https://github.com/https://github.com/JasoonS)
++ [@feuGeneA](https://github.com/https://github.com/feuGeneA)
++ [@Dylan-Kerler](https://github.com/Dylan-Kerler)
++ [@paulrberg](https://github.com/paulrberg)
 
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
