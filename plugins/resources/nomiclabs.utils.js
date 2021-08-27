@@ -126,8 +126,11 @@ function configureHardhatEVMGas(networkConfig, api){
   networkConfig.allowUnlimitedContractSize = true;
   networkConfig.blockGasLimit = api.gasLimitNumber;
   networkConfig.gas =  api.gasLimit;
-  networkConfig.gasPrice = api.gasPrice;
-  networkConfig.initialBaseFeePerGas = 0;
+
+  // TODO: etherumjs.gte here or equiv. This will break after london.
+  if (networkConfig.hardfork !== 'london') {
+    networkConfig.gasPrice = api.gasPrice;
+  }
 }
 
 function configureNetworkEnv(env, networkName, networkConfig, provider, isHardhatEVM){
