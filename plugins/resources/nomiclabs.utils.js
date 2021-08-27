@@ -126,7 +126,6 @@ function configureHardhatEVMGas(networkConfig, api){
   networkConfig.allowUnlimitedContractSize = true;
   networkConfig.blockGasLimit = api.gasLimitNumber;
   networkConfig.gas =  api.gasLimit;
-  networkConfig.gasPrice = api.gasPrice;
 }
 
 function configureNetworkEnv(env, networkName, networkConfig, provider, isHardhatEVM){
