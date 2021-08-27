@@ -18,6 +18,7 @@ const {
 
 // Toggled true for `coverage` task only.
 let measureCoverage = false;
+let configureYulOptimizer = false;
 let instrumentedSources
 
 // UI for the task flags...
@@ -58,6 +59,17 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
     settings.metadata.useLiteralContent = false;
     // Override optimizer settings for all compilers
     settings.optimizer.enabled = false;
+
+    // This is fixes a stack too deep bug in ABIEncoderV2
+    // Experimental because not sure this works as expected across versions....
+    if (configureYulOptimizer) {
+      settings.optimizer.details = {
+        yul: true,
+        yulDetails: {
+          stackAllocation: true,
+        },
+      }
+    }
   }
   return compilationJob;
 });
@@ -127,6 +139,7 @@ task("coverage", "Generates a code coverage report for tests")
     ui.report('compilation', []);
 
     config.temp = args.temp;
+    configureYulOptimizer = api.config.configureYulOptimizer;
 
     // With Hardhat >= 2.0.4, everything should automatically recompile
     // after solidity-coverage corrupts the artifacts.
