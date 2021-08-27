@@ -24,7 +24,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@solidity-parser/parser": "^0.12.0",
+    "@solidity-parser/parser": "^0.13.2",
     "@truffle/provider": "^0.2.24",
     "chalk": "^2.4.2",
     "death": "^1.1.0",
