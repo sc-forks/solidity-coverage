@@ -30,25 +30,6 @@ echo "PR_PATH >>>>> $PR_PATH"
 
 echo ""
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Simple buidler/buidler-trufflev5    "
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo ""
-
-# Install buidler-e2e
-git clone https://github.com/sc-forks/buidler-e2e.git
-cd buidler-e2e
-npm install --silent
-
-# Install and run solidity-coverage @ PR
-npm install --save-dev --silent $PR_PATH
-cat package.json
-
-npx buidler coverage
-
-verifyCoverageExists
-
-echo ""
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Simple hardhat/hardhat-trufflev5    "
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo ""

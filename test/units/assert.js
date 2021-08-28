@@ -26,14 +26,14 @@ describe('asserts and requires', () => {
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      5: 1,
+      5: 2,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1,
+      1: 2,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 1,
+      1: 2,
     });
   });
 
@@ -47,14 +47,14 @@ describe('asserts and requires', () => {
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
     assert.deepEqual(mapping[util.filePath].l, {
-      5: 2,
+      5: 4,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 2,
+      1: 4,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 2,
+      1: 4,
     });
   });
 
