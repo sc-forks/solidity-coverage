@@ -127,18 +127,19 @@ function configureHardhatEVMGas(networkConfig, api){
   networkConfig.blockGasLimit = api.gasLimitNumber;
   networkConfig.gas =  api.gasLimit;
   networkConfig.gasPrice = api.gasPrice;
+  networkConfig.initialBaseFeePerGas = 0;
 }
 
 function configureNetworkEnv(env, networkName, networkConfig, provider, isHardhatEVM){
   env.config.networks[networkName] = networkConfig;
   env.config.defaultNetwork = networkName;
 
-  env.network = {
+  env.network = Object.assign(env.network, {
     name: networkName,
     config: networkConfig,
     provider: provider,
     isHardhatEVM: isHardhatEVM
-  }
+  });
 
   env.ethereum = provider;
 

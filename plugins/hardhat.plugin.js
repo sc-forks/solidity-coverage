@@ -18,12 +18,13 @@ const {
 
 // Toggled true for `coverage` task only.
 let measureCoverage = false;
+let configureYulOptimizer = false;
 let instrumentedSources
 
 // UI for the task flags...
 const ui = new PluginUI();
 
-task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
+subtask(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
   const solcInput = await runSuper();
   if (measureCoverage) {
     // The source name here is actually the global name in the solc input,
@@ -40,7 +41,7 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, r
 });
 
 // Solidity settings are best set here instead of the TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT task.
-task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __, runSuper) => {
+subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __, runSuper) => {
   const compilationJob = await runSuper();
   if (measureCoverage && typeof compilationJob === "object") {
     if (compilationJob.solidityConfig.settings === undefined) {
@@ -58,6 +59,17 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, __,
     settings.metadata.useLiteralContent = false;
     // Override optimizer settings for all compilers
     settings.optimizer.enabled = false;
+
+    // This is fixes a stack too deep bug in ABIEncoderV2
+    // Experimental because not sure this works as expected across versions....
+    if (configureYulOptimizer) {
+      settings.optimizer.details = {
+        yul: true,
+        yulDetails: {
+          stackAllocation: true,
+        },
+      }
+    }
   }
   return compilationJob;
 });
@@ -127,6 +139,7 @@ task("coverage", "Generates a code coverage report for tests")
     ui.report('compilation', []);
 
     config.temp = args.temp;
+    configureYulOptimizer = api.config.configureYulOptimizer;
 
     // With Hardhat >= 2.0.4, everything should automatically recompile
     // after solidity-coverage corrupts the artifacts.

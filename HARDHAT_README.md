@@ -22,7 +22,7 @@ Solidity code coverage plugin for [Hardhat](http://hardhat.org).
 $ npm install --save-dev solidity-coverage
 ```
 
-And add the following to your `.config.js`:
+And add the following to your `hardhat.config.js`:
 
 ```js
 require("solidity-coverage");
@@ -73,6 +73,7 @@ module.exports = {
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. [More...][23]|
+| configureYulOptimizer | *Boolean* | false | (Experimental) Setting to `true` should resolve "stack too deep" compiler errrors in large projects using ABIEncoderV2 |
 
 [<sup>*</sup> Advanced use][14]
 

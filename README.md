@@ -94,8 +94,8 @@ A working example can be found at [openzeppelin-contracts, here.][35]
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of tests to run. (Globs must be enclosed by quotes.)|
-| testfiles  | `--testfiles "test/registry/*.ts"` | (Buidler) Test file(s) to run. (Globs must be enclosed by quotes.)|
+| file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of tests to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
+| testfiles  | `--testfiles "test/registry/*.ts"` | (Buidler) Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
@@ -129,6 +129,7 @@ module.exports = {
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. [More...][23]|
+| configureYulOptimizer | *Boolean* | false | (Experimental) Setting to `true` should resolve "stack too deep" compiler errrors in large projects using ABIEncoderV2 |
 
 [<sup>*</sup> Advanced use][14]
 
@@ -193,6 +194,10 @@ $ yarn
 + [@yxliang01](https://github.com/yxliang01)
 + [@maxsam4](https://github.com/maxsam4)
 + [@justinjmoses](https://github.com/justinjmoses)
++ [@JasoonS](https://github.com/https://github.com/JasoonS)
++ [@feuGeneA](https://github.com/https://github.com/feuGeneA)
++ [@Dylan-Kerler](https://github.com/Dylan-Kerler)
++ [@paulrberg](https://github.com/paulrberg)
 
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
@@ -231,4 +236,5 @@ $ yarn
 [35]: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/e5fbbda9bac49039847a7ed20c1d966766ecc64a/scripts/coverage.js
 [36]: https://hardhat.org/
 [37]: https://github.com/sc-forks/solidity-coverage/blob/master/HARDHAT_README.md
+[38]: https://github.com/sindresorhus/globby#globbing-patterns
 
