@@ -34,6 +34,7 @@ The stages/hooks are (in order of execution):
 
 | Stage                                  | Post-stage hook    |
 |----------------------------------------|--------------------|
+| Before compiling                       | onPreCompile       |
 | Launch server                          | onServerReady      |
 | Instrument and compile contracts       | onCompileComplete  |
 | Run tests using instrumented artifacts | onTestsComplete    |
@@ -84,6 +85,14 @@ find it inconvenient to modify them to handle an alternate path.
 This option allows you to avoid that but it's important to realise that the temp
 folder is **automatically deleted** when coverage completes. You shouldn't use it if your preferred
 build target contains information you want to preserve between test runs.
+
+## Setting a custom temporary contracts directory
+
+A custom disposable folder to be used for the contracts can be specified by setting the
+```
+coverageContractsTemp
+```
+property in the configuration file. If not set, this directory defaults to `.coverage_contracts`.
 
 ## Reducing the instrumentation footprint
 

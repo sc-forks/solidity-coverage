@@ -420,6 +420,7 @@ describe('Truffle Plugin: standard use cases', function() {
     await plugin(truffleConfig);
 
     assert(
+      mock.loggerOutput.val.includes('running onPreCompile')     &&
       mock.loggerOutput.val.includes('running onServerReady')     &&
       mock.loggerOutput.val.includes('running onTestsComplete')   &&
       mock.loggerOutput.val.includes('running onCompileComplete') &&
