@@ -93,6 +93,9 @@ async function plugin(config){
     config.all = true;
     config.compilers.solc.settings.optimizer.enabled = false;
 
+    // Run pre-compile hook;
+    await api.onPreCompile(config);
+
     // Compile Instrumented Contracts
     await truffle.contracts.compile(config);
     await api.onCompileComplete(config);
