@@ -90,7 +90,7 @@ build target contains information you want to preserve between test runs.
 
 A custom disposable folder to be used for the contracts can be specified by setting the
 ```
-coverage_contracts_temp
+coverageContractsTemp
 ```
 property in the configuration file. If not set, this directory defaults to `.coverage_contracts`.
 
