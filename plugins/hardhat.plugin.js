@@ -162,16 +162,19 @@ task("coverage", "Generates a code coverage report for tests")
     // ==============
     // Server launch
     // ==============
-    const network = nomiclabsUtils.setupHardhatNetwork(env, api, ui);
+    let network = nomiclabsUtils.setupHardhatNetwork(env, api, ui);
 
     if (network.isHardhatEVM){
       accounts = await utils.getAccountsHardhat(network.provider);
       nodeInfo = await utils.getNodeInfoHardhat(network.provider);
 
-      network.provider.on(HARDHAT_NETWORK_RESET_EVENT, () => {
-        api.attachToHardhatVM(network.provider);
-      });
       api.attachToHardhatVM(network.provider);
+
+      network.provider.on(HARDHAT_NETWORK_RESET_EVENT, () => {
+        const {inspect} = require('util');
+        console.log('network --> ' + inspect(network));
+        api.attachToHardhatVMAfterReset(env.network.provider);
+      });
 
       ui.report('hardhat-network', [
         nodeInfo.split('/')[1],

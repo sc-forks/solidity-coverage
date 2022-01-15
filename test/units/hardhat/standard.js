@@ -342,6 +342,22 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expectedLine);
   });
 
+  it.only('hardhat_reset preserves coverage between resets', async function(){
+    mock.installFullProject('hardhat-reset');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractAReset.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
+
   // This test freezes when gas-reporter is not disabled
   it('disables hardhat-gas-reporter', async function() {
     mock.installFullProject('hardhat-gas-reporter');
