@@ -168,6 +168,9 @@ task("coverage", "Generates a code coverage report for tests")
       accounts = await utils.getAccountsHardhat(network.provider);
       nodeInfo = await utils.getNodeInfoHardhat(network.provider);
 
+      network.provider.on(HARDHAT_NETWORK_RESET_EVENT, () => {
+        api.attachToHardhatVM(network.provider);
+      });
       api.attachToHardhatVM(network.provider);
 
       network.provider.on(HARDHAT_NETWORK_RESET_EVENT, () => {
