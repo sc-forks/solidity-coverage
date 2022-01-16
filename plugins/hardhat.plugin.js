@@ -168,6 +168,8 @@ task("coverage", "Generates a code coverage report for tests")
       accounts = await utils.getAccountsHardhat(network.provider);
       nodeInfo = await utils.getNodeInfoHardhat(network.provider);
 
+      // Note: this only works if the reset block number is before any transactions have fired on the fork.
+      // e.g you cannot fork at block 1, send some txs (blocks 2,3,4) and reset to block 2
       env.network.provider.on(HARDHAT_NETWORK_RESET_EVENT, () => {
         api.attachToHardhatVM(env.network.provider);
       });

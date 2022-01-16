@@ -5,20 +5,10 @@ describe("contractA", function() {
   let instance;
   let startBlockNumber;
 
-  before(async () => {
-    const factory = await ethers.getContractFactory("ContractA");
-    instance = await factory.deploy();
+  beforeEach(async () => {
     startBlockNumber = await ethers.provider.getBlockNumber();
-  });
 
-  it('sends', async function(){
-    await instance.sendFn();
-  });
-
-  // Reset network and expect sendFn to still be covered
-  describe('reset tests', function() {
-    beforeEach(async function() {
-      await hre.network.provider.request({
+    await hre.network.provider.request({
         method: "hardhat_reset",
         params: [
           {
@@ -30,12 +20,24 @@ describe("contractA", function() {
         ],
       });
 
-      const newBlockNumber = await ethers.provider.getBlockNumber();
-    });
+    const factory = await ethers.getContractFactory("ContractA");
+    instance = await factory.deploy();
+  });
 
-    it('sends 2', async function(){
-      await instance.sendFn2();
-    })
+  it('sends', async function(){
+    await instance.sendFn();
+  });
+
+  it('sends 2', async function(){
+    await instance.sendFn2();
+  });
+
+  it('calls', async function(){
+    await instance.callFn();
+  });
+
+  it('calls 2', async function(){
+    await instance.callFn2();
   });
 });
 

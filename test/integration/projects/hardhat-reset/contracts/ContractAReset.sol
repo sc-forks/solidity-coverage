@@ -13,4 +13,14 @@ contract ContractA {
   function sendFn2() public {
     x = 2;
   }
+
+  function callFn() public pure returns (uint){
+    uint y = 5;
+    return y;
+  }
+
+  function callFn2() public pure returns (uint){
+    uint y = 5;
+    return y;
+  }
 }
