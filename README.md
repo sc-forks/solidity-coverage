@@ -187,6 +187,7 @@ $ yarn
 + [@paulrberg](https://github.com/paulrberg)
 + [@adjisb](https://github.com/adjisb)
 + [@Shelvak](https://github.com/Shelvak)
++ [@rynobey](https://github.com/rynobey)
 
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
