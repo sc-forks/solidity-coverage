@@ -4,6 +4,7 @@
   * [Continuous Integration](#continuous-integration)
   * [Running out of memory](#running-out-of-memory)
   * [Running out of time](#running-out-of-time)
+  * [Running out of stack](#running-out-of-stack)
   * [Notes on gas distortion](#notes-on-gas-distortion)
   * [Notes on branch coverage](#notes-on-branch-coverage)
 
@@ -68,12 +69,12 @@ We use [Codecov.io][2] here as a coverage provider for our JS tests - they're gr
 
 If your target contains dozens (and dozens) of large contracts, you may run up against Node's memory cap during the
 contract compilation step. This can be addressed by setting the size of the memory space allocated to the command
-when you run it. 
+when you run it.
 ```
 // Truffle
 $ node --max-old-space-size=4096 ./node_modules/.bin/truffle run coverage [options]
 
-// Buidler 
+// Buidler
 $ node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage [options]
 ```
 
@@ -85,7 +86,7 @@ RuntimeError: memory access out of bounds
     at wasm-function[833]:1152
     at wasm-function[147]:18
     at wasm-function[21880]:5
-    
+
 // solc 0.5.x
 Downloading compiler version 0.5.16
 * Line 1, Column 1
@@ -94,7 +95,7 @@ Downloading compiler version 0.5.16
   Extra non-whitespace after JSON value.
 ```
 
-...try setting the `measureStatementCoverage` option to `false` in `.solcoverjs`. This will reduce the footprint of 
+...try setting the `measureStatementCoverage` option to `false` in `.solcoverjs`. This will reduce the footprint of
 the instrumentation solidity-coverage adds to your files. You'll still get line, branch and function coverage but the data Istanbul collects
 for statements will be omitted.
 
@@ -121,13 +122,41 @@ module.exports = {
 }
 ```
 
+## Running out of stack
+
+If your project is large, complex and uses ABI encoder V2 or Solidity >= V8, you may see "stack too deep" compiler errors when using solidity-coverage. This happens because:
+
++ solidity-coverage turns the solc optimizer off in order trace code execution correctly
++ some projects cannot compile unless the optimizer is turned on.
+
+Work-arounds for this problem are tracked below. (These are only available in hardhat. If you're using hardhat and none of them work for you, please open an issue.)
+
+**Work-around #1**
++ Set the `.solcoverjs` option `configureYulOptimizer` to `true`.
+
+**Work-around #2**
++ Set the `.solcoverjs` option: `configureYulOptimizer` to `true`.
++ Set the `.solcoverjs` option: `solcOptimizerDetails` to:
+  + ```js
+  {
+      peephole: false,
+      inliner: false,
+      jumpdestRemover: false,
+      orderLiterals: true,  // <-- TRUE! Stack too deep when false
+      deduplicate: false,
+      cse: false,
+      constantOptimizer: false,
+      yul: false
+  }
+  ```
+
 ## Notes on gas distortion
 
 Solidity-coverage instruments by injecting statements into your code, increasing its execution costs.
 
 + If you are running gas usage simulations, they will **not be accurate**.
 + If you have hardcoded gas costs into your tests, some of them may **error**.
-+ If your solidity logic constrains gas usage within narrow bounds, it may **fail**. 
++ If your solidity logic constrains gas usage within narrow bounds, it may **fail**.
   + Solidity's `.send` and `.transfer` methods usually work fine though.
 
 Using `estimateGas` to calculate your gas costs or allowing your transactions to use the default gas
@@ -153,6 +182,6 @@ Clearly, the coverage should be the same in these situations, as the code is (fu
 If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
 
 [1]: https://coveralls.io/builds/25886294
-[2]: https://codecov.io/ 
+[2]: https://codecov.io/
 [3]: https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png
 [4]: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-170.md
