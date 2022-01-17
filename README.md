@@ -138,7 +138,7 @@ Common problems & questions:
 + [Running in CI][7]
 + [Running out of gas][13]
 + [Running out of time][6]
-+ [Running out of stack] [1002] (Stack too deep)
++ [Running out of stack][1002] (Stack too deep)
 + [Running out of memory][5]
 
 ## Example reports
