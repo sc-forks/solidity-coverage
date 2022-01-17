@@ -145,6 +145,15 @@ const CoverageAPI = require('solidity-coverage/api');
 
 [Documentation available here][28].
 
+## Detecting solidity-coverage from another task
+
+If you're writing another plugin or task, it can be helpful to detect whether coverage is running or not.
+The coverage plugin sets a boolean variable on the globally injected hardhat environment object for this purpose.
+
+```
+hre.__SOLIDITY_COVERAGE_RUNNING === true
+```
+
 ## FAQ
 
 Common problems & questions:

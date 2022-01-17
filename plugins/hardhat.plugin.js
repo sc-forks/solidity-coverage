@@ -96,6 +96,9 @@ task("coverage", "Generates a code coverage report for tests")
   instrumentedSources = {};
   measureCoverage = true;
 
+  // Set a variable on the environment so other tasks can detect if this task is executing
+  env.__SOLIDITY_COVERAGE_RUNNING = true;
+
   try {
     config = nomiclabsUtils.normalizeConfig(env.config, args);
     ui = new PluginUI(config.logger.log);
