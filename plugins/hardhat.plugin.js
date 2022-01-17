@@ -19,7 +19,8 @@ const {
 // Toggled true for `coverage` task only.
 let measureCoverage = false;
 let configureYulOptimizer = false;
-let instrumentedSources
+let instrumentedSources;
+let optimizerDetails;
 
 // UI for the task flags...
 const ui = new PluginUI();
@@ -63,11 +64,16 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
     // This is fixes a stack too deep bug in ABIEncoderV2
     // Experimental because not sure this works as expected across versions....
     if (configureYulOptimizer) {
-      settings.optimizer.details = {
-        yul: true,
-        yulDetails: {
-          stackAllocation: true,
-        },
+      if (optimizerDetails === undefined) {
+        settings.optimizer.details = {
+          yul: true,
+          yulDetails: {
+            stackAllocation: true,
+          },
+        }
+      // Other configurations may work as well. This loads custom details from .solcoverjs
+      } else {
+        settings.optimizer.details = optimizerDetails;
       }
     }
   }
@@ -100,6 +106,8 @@ task("coverage", "Generates a code coverage report for tests")
     config = nomiclabsUtils.normalizeConfig(env.config, args);
     ui = new PluginUI(config.logger.log);
     api = new API(utils.loadSolcoverJS(config));
+
+    optimizerDetails = api.solcOptimizerDetails;
 
     // Catch interrupt signals
     process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api, true));
