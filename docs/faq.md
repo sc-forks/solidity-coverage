@@ -137,7 +137,7 @@ Work-arounds for this problem are tracked below. (These are only available in ha
 **Work-around #2**
 + Set the `.solcoverjs` option: `configureYulOptimizer` to `true`.
 + Set the `.solcoverjs` option: `solcOptimizerDetails` to:
-  + ```js
+  ```js
   {
       peephole: false,
       inliner: false,
