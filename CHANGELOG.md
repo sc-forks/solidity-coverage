@@ -1,5 +1,9 @@
 # Changelog
 
+0.7.19 / 2022-02-09
+===================
+  * Update solidity-parser/parser to 0.14.0 - supports solidity user-defined types (https://github.com/sc-forks/solidity-coverage/issues/689)
+
 0.7.18 2022-01-17
 =================
 * Add solcOptimizerDetails option to help workaround "stack too deep" errors (https://github.com/sc-forks/solidity-coverage/issues/683)
