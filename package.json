@@ -1,6 +1,6 @@
 {
   "name": "solidity-coverage",
-  "version": "0.7.19",
+  "version": "0.7.20",
   "description": "",
   "main": "plugins/nomiclabs.plugin.js",
   "bin": {
