@@ -1,5 +1,9 @@
 # Changelog
 
+0.7.20 / 2022-02-15
+===================
+  * Remove early V7 Truffle patches  (https://github.com/sc-forks/solidity-coverage/issues/693)
+
 0.7.19 / 2022-02-09
 ===================
   * Update solidity-parser/parser to 0.14.0 - supports solidity user-defined types (https://github.com/sc-forks/solidity-coverage/issues/689)
