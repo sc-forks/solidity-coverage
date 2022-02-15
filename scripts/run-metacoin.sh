@@ -38,7 +38,7 @@ cat truffle-config.js
 # Install and run solidity-coverage @ PR
 npm init --yes
 yarn add $PR_PATH --dev
-yarn add truffle --dev
+yarn add truffle@5.4.29 --dev
 
 # require("truffle") not working on global install in Circle's Windows env
 if [ "$CIRCLE_JOB" == "e2e-metacoin-windows" ]; then
