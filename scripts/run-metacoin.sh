@@ -24,7 +24,7 @@ echo "PR_PATH >>>>> $PR_PATH"
 
 # Install truffle and metacoin box
 npm install -g yarn
-npm install -g truffle
+npm install -g truffle@5.4.29
 
 mkdir metacoin
 cd metacoin
@@ -42,7 +42,7 @@ yarn add truffle --dev
 
 # require("truffle") not working on global install in Circle's Windows env
 if [ "$CIRCLE_JOB" == "e2e-metacoin-windows" ]; then
-  yarn add truffle --dev
+  yarn add truffle@5.4.29 --dev
 fi
 
 npx truffle run coverage
