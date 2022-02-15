@@ -135,12 +135,10 @@ function setOuterConfigKeys(config, api, id){
 
 /**
  * Tries to load truffle module library and reports source. User can force use of
- * a non-local version using cli flags (see option). It's necessary to maintain
- * a fail-safe lib because feature was only introduced in 5.0.30. Load order is:
+ * a non-local version using cli flags (see option). Load order is:
  *
  * 1. local node_modules
  * 2. global node_modules
- * 3. fail-safe (truffle lib v 5.0.31 at ./plugin-assets/truffle.library)
  *
  * @param  {Object} truffleConfig config
  * @return {Module}
@@ -150,7 +148,7 @@ function loadLibrary(config){
 
   // Local
   try {
-    if (config.useGlobalTruffle || config.usePluginTruffle) throw null;
+    if (config.useGlobalTruffle) throw null;
 
     const lib = require("truffle");
     ui.report('lib-local');
@@ -160,26 +158,16 @@ function loadLibrary(config){
 
   // Global
   try {
-    if (config.usePluginTruffle) throw null;
+    if (config.forceLibFailure) throw null; // For err unit testing
 
     const globalTruffle = path.join(globalModules, 'truffle');
     const lib = require(globalTruffle);
     ui.report('lib-global');
     return lib;
 
-  } catch(err) {};
-
-  // Plugin Copy @ v 5.0.31
-  try {
-    if (config.forceLibFailure) throw null; // For err unit testing
-
-    ui.report('lib-warn');
-    return require("./truffle.library")
-
   } catch(err) {
     throw new Error(ui.generate('lib-fail', [err]));
   };
-
 }
 
 /**

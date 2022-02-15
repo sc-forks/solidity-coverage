@@ -41,10 +41,6 @@ class PluginUI extends UI {
       'lib-local':  `\n${ct} ${c.grey('Using Truffle library from local node_modules.')}\n`,
       'lib-global': `\n${ct} ${c.grey('Using Truffle library from global node_modules.')}\n`,
 
-      'lib-warn':   `${w}  ${c.red('Unable to require Truffle library locally or globally.\n')}`+
-                    `${w}  ${c.red('Using fallback Truffle library module instead (v5.0.31)')}\n` +
-                    `${w}  ${c.red('Truffle V5 must be a local dependency for fallback to work.')}\n`,
-
 
       'help': `Usage: truffle run coverage [options]\n\n` +
               `Options:\n` +
@@ -84,7 +80,7 @@ class PluginUI extends UI {
 
       'sources-fail': `${c.red('Cannot locate expected contract sources folder: ')} ${args[0]}`,
 
-      'lib-fail':  `${c.red('Unable to load plugin copy of Truffle library module. ')}` +
+      'lib-fail':  `${c.red('Unable to load Truffle library module. ')}` +
                    `${c.red('Try installing Truffle >= v5.0.31 locally or globally.\n')}` +
                    `Caught error message: ${args[0]}\n`,
 
