@@ -112,7 +112,7 @@ describe('generic statements', () => {
       1: [0, 1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 0, 3: 1,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -130,7 +130,7 @@ describe('generic statements', () => {
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1, 3: 1,
+      1: 1, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1, 2: 1,
@@ -148,7 +148,7 @@ describe('generic statements', () => {
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1, 3: 1,
+      1: 1, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1, 2: 1,

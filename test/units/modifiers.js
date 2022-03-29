@@ -159,7 +159,7 @@ describe('modifiers', () => {
       1: [1, 2], 2: [1, 2],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 3, 2: 1, 3: 1,
+      1: 3, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 3, 2: 1, 3: 1
@@ -187,7 +187,7 @@ describe('modifiers', () => {
       "1":[3,0],"2":[1,2],"3":[3,0],"4":[1,2]
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      "1":3,"2":3,"3":1,"4":1
+      "1":3,"2":3,"3":1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       "1":3,"2":3,"3":1,"4":1
