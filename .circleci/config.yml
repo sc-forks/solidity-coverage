@@ -45,7 +45,8 @@ jobs:
             bash <(curl -s https://codecov.io/bash)
   e2e-zeppelin:
     machine: true
-    resource_class: large
+    environment:
+          NODE_OPTIONS: --max_old_space_size=8192
     steps:
       - checkout
       - <<: *step_install_nvm
