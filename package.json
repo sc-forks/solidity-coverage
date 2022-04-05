@@ -58,7 +58,7 @@
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.3",
     "ganache-cli": "6.12.2",
-    "hardhat": "^2.8.2",
+    "hardhat": "^2.9.3",
     "hardhat-gas-reporter": "^1.0.1",
     "mocha": "5.2.0",
     "nyc": "^14.1.1",
