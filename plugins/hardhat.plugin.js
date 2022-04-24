@@ -1,10 +1,5 @@
-const API = require('./../lib/api');
-const utils = require('./resources/plugin.utils');
-const nomiclabsUtils = require('./resources/nomiclabs.utils');
-const PluginUI = require('./resources/nomiclabs.ui');
-
-const pkg = require('./../package.json');
 const path = require('path');
+const PluginUI = require('./resources/nomiclabs.ui');
 
 const { task, types } = require("hardhat/config");
 const { HardhatPluginError } = require("hardhat/plugins")
@@ -90,6 +85,11 @@ task("coverage", "Generates a code coverage report for tests")
   .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
   .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
   .setAction(async function(args, env){
+
+  const API = require('./../lib/api');
+  const utils = require('./resources/plugin.utils');
+  const nomiclabsUtils = require('./resources/nomiclabs.utils');
+  const pkg = require('./../package.json');
 
   let error;
   let ui;
