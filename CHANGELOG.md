@@ -1,5 +1,10 @@
 # Changelog
 
+0.7.21 / 2022-04-24
+===================
+  * Add support for UncheckedStatement blocks (https://github.com/sc-forks/solidity-coverage/issues/712)
+  * Lazy load hardhat plugin resources (https://github.com/sc-forks/solidity-coverage/issues/711)
+
 0.7.20 / 2022-02-15
 ===================
   * Remove early V7 Truffle patches  (https://github.com/sc-forks/solidity-coverage/issues/693)
