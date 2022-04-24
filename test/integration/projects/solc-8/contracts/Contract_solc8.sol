@@ -17,4 +17,14 @@ contract ContractA {
 
         someAddress = _add;
     }
+
+    function checkSomething() external {
+      uint a = 5;
+
+      unchecked {
+        a++;
+      }
+
+      unchecked {}
+    }
 }

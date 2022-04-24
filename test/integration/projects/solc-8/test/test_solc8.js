@@ -10,4 +10,8 @@ contract("contracta", function(accounts) {
   it('a:throwError', async function(){
     await a.throwError(a.address);
   });
+
+  it('a:checkSomething', async function(){
+    await a.checkSomething();
+  })
 });

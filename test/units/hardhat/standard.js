@@ -335,7 +335,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     const expectedLine = [
       {
         file: mock.pathToContract(hardhatConfig, 'Contract_solc8.sol'),
-        pct: 75
+        pct: 87.5
       },
     ];
 
