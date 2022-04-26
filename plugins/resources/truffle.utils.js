@@ -35,6 +35,39 @@ async function getTestFilePaths(config){
   return target.filter(f => f.match(testregex) != null);
 }
 
+/**
+ * Returns all Truffle artifacts.
+ * @param  {TruffleConfig} config
+ * @return {Artifact[]}
+ */
+function getAllArtifacts(config){
+  const all = [];
+  const artifactsGlob = path.join(config.artifactsDir, '/**/*.json');
+  const files = globby.sync([artifactsGlob])
+  for (const file of files){
+    const candidate = require(file);
+    if (candidate.contractName && candidate.abi){
+      all.push(candidate);
+    }
+  }
+  return all;
+}
+
+/**
+ * Compiles project
+ * Collects all artifacts from Truffle project,
+ * Converts them to a format that can be consumed by api.abiUtils.diff
+ * Saves them to `api.abiOutputPath`
+ * @param  {TruffleConfig} config
+ * @param  {TruffleAPI}    truffle
+ * @param  {SolidityCoverageAPI} api
+ */
+async function generateHumanReadableAbiList(config, truffle, api){
+  await truffle.contracts.compile(config);
+  const _artifacts = getAllArtifacts(config);
+  const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)
+  api.saveHumanReadableAbis(list);
+}
 
 /**
  * Configures the network. Runs before the server is launched.
@@ -196,10 +229,47 @@ function normalizeConfig(config){
   return config;
 }
 
+/**
+ * Configures mocha to generate a json object which maps which tests
+ * hit which lines of code.
+ */
+function collectTestMatrixData(config, api){
+  if (config.matrix){
+    config.mocha = config.mocha || {};
+    config.mocha.reporter = api.matrixReporterPath;
+    config.mocha.reporterOptions = {
+      collectTestMatrixData: api.collectTestMatrixData.bind(api),
+      saveMochaJsonOutput: api.saveMochaJsonOutput.bind(api),
+      cwd: api.cwd
+    }
+  }
+}
+
+/**
+ * Replacement logger which filters out compilation warnings triggered by injected trace
+ * function definitions.
+ *
+ * @type {Object}
+ */
+const filteredLogger = {
+  log: (val) => {
+    const loggable = typeof val === 'string'   &&
+                     !val.includes('Warning:') && // solc msg grep
+                     !process.env.SILENT;         // unit tests
+
+    loggable && console.log(val);
+  },
+  warn: console.warn,
+  error: console.error
+}
+
 module.exports = {
   getTestFilePaths,
   setNetwork,
   setNetworkFrom,
   loadLibrary,
   normalizeConfig,
+  filteredLogger,
+  collectTestMatrixData,
+  generateHumanReadableAbiList
 }

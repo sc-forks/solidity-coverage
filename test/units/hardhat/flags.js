@@ -172,5 +172,63 @@ describe('Hardhat Plugin: command line options', function() {
     verify.lineCoverage(expected);
     shell.rm('.solcover.js');
   });
+
+  it('--matrix', async function(){
+    const taskArgs = {
+      matrix: true
+    }
+
+    mock.installFullProject('matrix');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    // Integration test checks output path configurabililty
+    const altMatrixPath = path.join(process.cwd(), './alternateTestMatrix.json');
+    const expMatrixPath = path.join(process.cwd(), './expectedTestMatrixHardhat.json');
+    const altMochaPath = path.join(process.cwd(), './alternateMochaOutput.json');
+    const expMochaPath = path.join(process.cwd(), './expectedMochaOutput.json');
+
+    const producedMatrix = require(altMatrixPath)
+    const expectedMatrix = require(expMatrixPath);
+    const producedMochaOutput = require(altMochaPath);
+    const expectedMochaOutput = require(expMochaPath);
+
+    assert.deepEqual(producedMatrix, expectedMatrix);
+    assert.deepEqual(producedMochaOutput, expectedMochaOutput);
+  });
+
+  it('--abi', async function(){
+    const expected = [
+      {
+        "contractName": "Migrations",
+        "humanReadableAbiList": [
+         "function last_completed_migration() view returns (uint256)",
+         "function owner() view returns (address)",
+         "function setCompleted(uint256) nonpayable",
+         "function upgrade(address) nonpayable"
+        ]
+      },
+      {
+        "contractName": "Simple",
+        "humanReadableAbiList": [
+         "function getX() view returns (uint256)",
+         "function test(uint256) nonpayable"
+        ]
+      }
+    ];
+
+    const taskArgs = {
+      abi: true
+    }
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const outputPath = path.join(process.cwd(), 'humanReadableAbis.json');
+    const output = require(outputPath);
+    assert.deepEqual(output, expected);
+  })
 });
 

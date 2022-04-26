@@ -37,6 +37,7 @@ function normalizeConfig(config, args={}){
   config.logger = config.logger ? config.logger : {log: null};
   config.solcoverjs = args.solcoverjs
   config.gasReporter = { enabled: false }
+  config.matrix = args.matrix;
 
   try {
     const hardhatPackage = require('hardhat/package.json');
@@ -166,6 +167,52 @@ function configureHttpProvider(networkConfig, api, ui){
 }
 
 /**
+ * Configures mocha to generate a json object which maps which tests
+ * hit which lines of code.
+ */
+function collectTestMatrixData(args, env, api){
+  if (args.matrix){
+    mochaConfig = env.config.mocha || {};
+    mochaConfig.reporter = api.matrixReporterPath;
+    mochaConfig.reporterOptions = {
+      collectTestMatrixData: api.collectTestMatrixData.bind(api),
+      saveMochaJsonOutput: api.saveMochaJsonOutput.bind(api),
+      cwd: api.cwd
+    }
+    env.config.mocha = mochaConfig;
+  }
+}
+
+/**
+ * Returns all Hardhat artifacts.
+ * @param  {HRE} env
+ * @return {Artifact[]}
+ */
+async function getAllArtifacts(env){
+  const all = [];
+  const qualifiedNames = await env.artifacts.getArtifactPaths();
+  for (const name of qualifiedNames){
+    all.push(require(name));
+  }
+  return all;
+}
+
+/**
+ * Compiles project
+ * Collects all artifacts from Hardhat project,
+ * Converts them to a format that can be consumed by api.abiUtils.diff
+ * Saves them to `api.abiOutputPath`
+ * @param  {HRE}    env
+ * @param  {SolidityCoverageAPI} api
+ */
+async function generateHumanReadableAbiList(env, api, TASK_COMPILE){
+  await env.run(TASK_COMPILE);
+  const _artifacts = await getAllArtifacts(env);
+  const list = api.abiUtils.generateHumanReadableAbiList(_artifacts)
+  api.saveHumanReadableAbis(list);
+}
+
+/**
  * Sets the default `from` account field in the network that will be used.
  * This needs to be done after accounts are fetched from the launched client.
  * @param {env} config
@@ -216,6 +263,9 @@ module.exports = {
   setupBuidlerNetwork,
   setupHardhatNetwork,
   getTestFilePaths,
-  setNetworkFrom
+  setNetworkFrom,
+  collectTestMatrixData,
+  getAllArtifacts,
+  generateHumanReadableAbiList
 }
 

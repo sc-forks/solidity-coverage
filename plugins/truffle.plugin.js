@@ -30,9 +30,18 @@ async function plugin(config){
     truffle = truffleUtils.loadLibrary(config);
     api = new API(utils.loadSolcoverJS(config));
 
-    truffleUtils.setNetwork(config, api);
+    // ===========================
+    // Generate abi diff component
+    // (This flag only useful within codecheck context)
+    // ===========================
+    if (config.abi){
+      await truffleUtils.generateHumanReadableAbiList(config, truffle, api);
+      return;
+    }
 
     // Server launch
+    truffleUtils.setNetwork(config, api);
+
     const client = api.client || truffle.ganache;
     const address = await api.ganache(client);
     const accountsRequest = await utils.getAccountsGanache(api.server.provider);
@@ -90,7 +99,14 @@ async function plugin(config){
       path.basename(config.contracts_build_directory)
     );
 
+    // Filter compilation warnings
+    const defaultLogger = config.logger;
+    if (!config.verbose){
+      config.logger = truffleUtils.filteredLogger;
+    }
+
     config.all = true;
+    config.strict = false;
     config.compilers.solc.settings.optimizer.enabled = false;
 
     // Run pre-compile hook;
@@ -98,9 +114,12 @@ async function plugin(config){
 
     // Compile Instrumented Contracts
     await truffle.contracts.compile(config);
+    config.logger = defaultLogger;
+
     await api.onCompileComplete(config);
 
     config.test_files = await truffleUtils.getTestFilePaths(config);
+    truffleUtils.collectTestMatrixData(config, api);
     // Run tests
     try {
       failures = await truffle.test.run(config)
@@ -109,8 +128,13 @@ async function plugin(config){
     }
     await api.onTestsComplete(config);
 
-    // Run Istanbul
-    await api.report();
+    // =================================
+    // Output (Istanbul or Test Matrix)
+    // =================================
+    (config.matrix)
+      ? await api.saveTestMatrix()
+      : await api.report();
+
     await api.onIstanbulComplete(config);
 
   } catch(e){

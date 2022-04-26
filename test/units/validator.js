@@ -22,7 +22,9 @@ describe('config validation', () => {
     const options =  [
       "cwd",
       "host",
-      "istanbulFolder"
+      "istanbulFolder",
+      "abiOutputPath",
+      "matrixOutputPath",
     ]
 
     options.forEach(name => {
@@ -47,7 +49,10 @@ describe('config validation', () => {
       "silent",
       "autoLaunchServer",
       "measureStatementCoverage",
-      "measureFunctionCoverage"
+      "measureFunctionCoverage",
+      "measureModifierCoverage",
+      "measureBranchCoverage",
+      "measureLineCoverage"
     ]
 
     options.forEach(name => {
@@ -116,6 +121,7 @@ describe('config validation', () => {
     const options =  [
       "skipFiles",
       "istanbulReporter",
+      "modifierWhitelist"
     ]
 
     options.forEach(name => {

@@ -12,7 +12,7 @@
   "scripts": {
     "nyc": "SILENT=true  nyc --exclude '**/sc_temp/**' --exclude '**/test/**'",
     "test": "SILENT=true node --max-old-space-size=4096 ./node_modules/.bin/nyc --exclude '**/sc_temp/**' --exclude '**/test/**/' -- mocha test/units/* --timeout 100000 --no-warnings --exit",
-    "test:ci": "SILENT=true node --max-old-space-size=4096 ./node_modules/.bin/nyc --reporter=lcov --exclude '**/sc_temp/**' --exclude '**/test/**/' -- mocha test/units/* --timeout 100000 --no-warnings --exit",
+    "test:ci": "SILENT=true node --max-old-space-size=4096 ./node_modules/.bin/nyc --reporter=lcov --exclude '**/sc_temp/**' --exclude '**/test/**/' --exclude 'plugins/resources/matrix.js' -- mocha test/units/* --timeout 100000 --no-warnings --exit",
     "test:debug": "node --max-old-space-size=4096 ./node_modules/.bin/mocha test/units/* --timeout 100000 --no-warnings --exit",
     "netlify": "./scripts/run-netlify.sh"
   },
@@ -24,17 +24,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@solidity-parser/parser": "^0.14.0",
+    "@ethersproject/abi": "^5.0.9",
+    "@solidity-parser/parser": "^0.14.1",
     "@truffle/provider": "^0.2.24",
     "chalk": "^2.4.2",
     "death": "^1.1.0",
     "detect-port": "^1.3.0",
+    "difflib": "^0.2.4",
     "fs-extra": "^8.1.0",
     "ghost-testrpc": "^0.0.2",
     "global-modules": "^2.0.0",
     "globby": "^10.0.1",
     "jsonschema": "^1.2.4",
     "lodash": "^4.17.15",
+    "mocha": "7.1.2",
     "node-emoji": "^1.10.0",
     "pify": "^4.0.1",
     "recursive-readdir": "^2.2.2",
@@ -44,9 +47,6 @@
     "web3-utils": "^1.3.0"
   },
   "devDependencies": {
-    "@nomiclabs/buidler": "^1.3.6",
-    "@nomiclabs/buidler-truffle5": "^1.3.4",
-    "@nomiclabs/buidler-web3": "^1.3.4",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@nomiclabs/hardhat-truffle5": "^2.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
@@ -60,10 +60,9 @@
     "ganache-cli": "6.12.2",
     "hardhat": "^2.9.3",
     "hardhat-gas-reporter": "^1.0.1",
-    "mocha": "5.2.0",
     "nyc": "^14.1.1",
-    "solc": "^0.5.10",
-    "truffle": "5.0.31",
+    "solc": "^0.7.5",
+    "truffle": "5.1.43",
     "truffle-config": "^1.1.18"
   }
 }

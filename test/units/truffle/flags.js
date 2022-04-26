@@ -11,7 +11,7 @@ const plugin = require('../../../plugins/truffle.plugin');
 // CLI Options / Flags
 // =======================
 
-describe('Truffle Plugin: command line options', function() {
+describe.skip('Truffle Plugin: command line options', function() {
   let truffleConfig;
   let solcoverConfig;
 
@@ -190,6 +190,7 @@ describe('Truffle Plugin: command line options', function() {
     truffleConfig.logger = mock.testLogger;
 
     truffleConfig.temp = 'special_location';
+    truffleConfig.verbose = true;
 
     mock.install('Simple', 'simple.js', solcoverConfig);
     await plugin(truffleConfig);
@@ -256,5 +257,57 @@ describe('Truffle Plugin: command line options', function() {
       `Should have used default coverage port 8545: ${mock.loggerOutput.val}`
     );
   });
+
+  it('--matrix', async function(){
+    process.env.TRUFFLE_TEST = true; // Path to reporter differs btw HH and Truffle
+    truffleConfig.matrix = true;
+
+    mock.installFullProject('matrix');
+    await plugin(truffleConfig);
+
+    // Integration test checks output path configurabililty
+    const altMatrixPath = path.join(process.cwd(), mock.pathToTemp('./alternateTestMatrix.json'));
+    const expMatrixPath = path.join(process.cwd(), mock.pathToTemp('./expectedTestMatrixHardhat.json'));
+    const altMochaPath = path.join(process.cwd(), mock.pathToTemp('./alternateMochaOutput.json'));
+    const expMochaPath = path.join(process.cwd(), mock.pathToTemp('./expectedMochaOutput.json'));
+
+    const producedMatrix = require(altMatrixPath)
+    const expectedMatrix = require(expMatrixPath);
+    const producedMochaOutput = require(altMochaPath);
+    const expectedMochaOutput = require(expMochaPath);
+
+    assert.deepEqual(producedMatrix, expectedMatrix);
+    assert.deepEqual(producedMochaOutput, expectedMochaOutput);
+    process.env.TRUFFLE_TEST = false;
+  });
+
+  it('--abi', async function(){
+    const expected = [
+      {
+        "contractName": "Migrations",
+        "humanReadableAbiList": [
+         "function last_completed_migration() view returns (uint256)",
+         "function owner() view returns (address)",
+         "function setCompleted(uint256) nonpayable",
+         "function upgrade(address) nonpayable"
+        ]
+      },
+      {
+        "contractName": "Simple",
+        "humanReadableAbiList": [
+         "function getX() view returns (uint256)",
+         "function test(uint256) nonpayable"
+        ]
+      }
+    ];
+
+    truffleConfig.abi = true;
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    await plugin(truffleConfig);
+
+    const outputPath = path.join(process.cwd(), mock.pathToTemp('./humanReadableAbis.json'));
+    const output = require(outputPath);
+    assert.deepEqual(output, expected);
+  })
 });
 

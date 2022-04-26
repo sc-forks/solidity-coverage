@@ -11,7 +11,7 @@ const plugin = require('../../../plugins/truffle.plugin');
 // Standard Use-case Tests
 // =======================
 
-describe('Truffle Plugin: standard use cases', function() {
+describe.skip('Truffle Plugin: standard use cases', function() {
   let truffleConfig;
   let solcoverConfig;
 
@@ -230,7 +230,7 @@ describe('Truffle Plugin: standard use cases', function() {
     truffleConfig.version = true;
 
     // Baseline inequality check
-    const truffleClientVersion = "v2.5.7";
+    const truffleClientVersion = "v2.11.2";
 
     // Truffle client
     mock.install('Simple', 'simple.js', solcoverConfig);
@@ -498,4 +498,22 @@ describe('Truffle Plugin: standard use cases', function() {
 
     verify.lineCoverage(expected);
   });
+
+  it('logicalOR & ternary conditionals', async function(){
+    mock.installFullProject('ternary-and-logical-or');
+    await plugin(truffleConfig);
+
+    const expected = [
+      {
+        file: mock.pathToContract(truffleConfig, 'Contract_OR.sol'),
+        pct: 53.85
+      },
+      {
+        file: mock.pathToContract(truffleConfig, 'Contract_ternary.sol'),
+        pct: 44.44
+      },
+    ];
+
+    verify.branchCoverage(expected);
+  })
 })

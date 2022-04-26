@@ -39,7 +39,7 @@ describe('if, else, and else if statements', () => {
       1: [1, 0],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -60,7 +60,7 @@ describe('if, else, and else if statements', () => {
       1: [1, 0],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -82,7 +82,7 @@ describe('if, else, and else if statements', () => {
       1: [1, 0],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -105,7 +105,7 @@ describe('if, else, and else if statements', () => {
       1: [1, 0],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -127,7 +127,7 @@ describe('if, else, and else if statements', () => {
       1: [0, 1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 0,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -149,7 +149,7 @@ describe('if, else, and else if statements', () => {
       1: [0, 1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 0, 3: 1,
+      1: 1, 2: 0,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -170,7 +170,7 @@ describe('if, else, and else if statements', () => {
       1: [0, 1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 0, 3: 1,
+      1: 1, 2: 0,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -192,7 +192,7 @@ describe('if, else, and else if statements', () => {
       1: [0, 1], 2: [0, 1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 0, 3: 1, 4: 0
+      1: 1, 2: 0, 3: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -235,7 +235,7 @@ describe('if, else, and else if statements', () => {
       1: [0, 1], 2: [1, 0], 3: [0, 1], 4: [1, 0]
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 0, 3: 1, 4: 1, 5: 0, 6: 1, 7: 0, 8: 1, 9: 1, 10: 0,
+      1: 1, 2: 1, 3: 1, 4: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,

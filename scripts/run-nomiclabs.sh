@@ -13,6 +13,13 @@ function verifyCoverageExists {
   fi
 }
 
+function verifyMatrixExists {
+  if [ ! -f "testMatrix.json" ]; then
+    echo "ERROR: no matrix file was created."
+    exit 1
+  fi
+}
+
 # Get rid of any caches
 sudo rm -rf node_modules
 echo "NVM CURRENT >>>>>" && nvm current
@@ -47,6 +54,12 @@ npx hardhat coverage
 
 verifyCoverageExists
 
+npx hardhat coverage --matrix
+
+verifyMatrixExists
+
+cat testMatrix.json
+
 echo ""
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "wighawag/hardhat-deploy                "
@@ -66,24 +79,5 @@ cat package.json
 yarn run gas
 yarn run coverage
 yarn run gas
-
-verifyCoverageExists
-
-# Install buidler-ethers
-echo ""
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Simple buidler/buidler-ethers       "
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo ""
-cd ..
-git clone https://github.com/sc-forks/example-buidler-ethers.git
-cd example-buidler-ethers
-yarn
-
-# Install and run solidity-coverage @ PR
-yarn add $PR_PATH --dev
-cat package.json
-
-npx buidler coverage
 
 verifyCoverageExists

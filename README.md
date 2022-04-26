@@ -71,10 +71,12 @@ A working example can be found at [openzeppelin-contracts, here.][35]
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of tests to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
-| testfiles  | `--testfiles "test/registry/*.ts"` | (Buidler) Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
+| testfiles  | `--testfiles "test/registry/*.ts"` | (Hardhat) Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
+| network    | `--network development` | Use network settings defined in the Truffle or Hardhat config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
+| matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful
+as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
 
 [<sup>*</sup> Advanced use][14]
 
@@ -98,6 +100,11 @@ module.exports = {
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
+| measureModifierCoverage | *boolean* | `true` | Computes each modifier invocation as a code branch. [More...][34] |
+| modifierWhitelist | *String[]* | `[]` | List of modifier names (ex: "onlyOwner") to exclude from branch measurement. (Useful for modifiers which prepare something instead of acting as a gate.)) |
+| matrixOutputPath | *String* | `./testMatrix.json` | Relative path to write test matrix JSON object to. [More...][39]|
+| mochaJsonOutputPath | *String* | `./mochaOutput.json` | Relative path to write mocha JSON reporter object to. [More...][39]|
+| abiOutputPath | *String* | `./humanReadableAbis.json` | Relative path to write diff-able ABI data to |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
@@ -228,6 +235,7 @@ $ yarn
 [36]: https://hardhat.org/
 [37]: https://github.com/sc-forks/solidity-coverage/blob/master/HARDHAT_README.md
 [38]: https://github.com/sindresorhus/globby#globbing-patterns
+[39]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#generating-a-test-matrix
 [1001]: https://docs.soliditylang.org/en/v0.8.0/using-the-compiler.html#input-description
 [1002]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-stack
 
