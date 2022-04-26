@@ -3,7 +3,7 @@
  * of composing a workflow using the solidity-coverage API
  */
 
-const PluginUI = require('./truffle.ui');
+const PluginUI = require('./plugin.ui');
 
 const path = require('path');
 const fs = require('fs-extra');

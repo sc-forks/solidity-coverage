@@ -9,13 +9,10 @@ const shell = require('shelljs');
 const decache = require('decache');
 const globalModules = require('global-modules');
 
-const TruffleConfig = require('truffle-config');
-
 const { HARDHAT_NETWORK_NAME } = require("hardhat/plugins")
 const { resetHardhatContext } = require("hardhat/plugins-testing")
 
 const temp =              './sc_temp';
-const truffleConfigName = 'truffle-config.js';
 const hardhatConfigName = 'hardhat.config.js';
 const configPath =        `${temp}/.solcover.js`;
 const testPath =          './test/sources/js/';
@@ -32,12 +29,10 @@ let previousCWD;
 function decacheConfigs(){
   const paths = [
     `${process.cwd()}/${temp}/.solcover.js`,
-    `${process.cwd()}/${temp}/${truffleConfigName}`,
     `${process.cwd()}/${temp}/${hardhatConfigName}`,
     `${process.cwd()}/${temp}/contracts/Simple.sol`,
     `${process.cwd()}/${temp}/test/simple.js`,
     `${process.cwd()}/${temp}/test/account-one.js`,
-    `${process.cwd()}/${temp}/test/truffle-crash.js`
   ];
 
   paths.forEach(pth => {
@@ -85,49 +80,6 @@ function hardhatTearDownEnv() {
   process.chdir(previousCWD); // remove?
 };
 
-
-// ==========================
-// Truffle Configuration
-// ==========================
-function getDefaultTruffleConfig(){
-  const logger = process.env.SILENT ? { log: () => {} } : console;
-  const reporter = process.env.SILENT ? 'dot' : 'spec';
-
-  const mockwd = path.join(process.cwd(), temp);
-  const vals = {
-    working_directory: mockwd,
-    build_directory:  path.join(mockwd, 'build'),
-    contracts_directory: path.join(mockwd, 'contracts'),
-    contracts_build_directory: path.join(mockwd, 'build', 'contracts'),
-    migrations_directory: path.join(mockwd, 'migrations'),
-    test_directory: path.join(mockwd, 'test'),
-    logger: logger,
-    mocha: { reporter: reporter },
-    networks: {
-      development: {
-        host: "localhost",
-        port: 8545,
-        network_id: "*"
-      }
-    },
-    compilers: {
-      solc: {
-        version: "0.7.1",
-        settings: { optimizer: {} }
-      }
-    }
-  }
-
-  return (new TruffleConfig()).with(vals);
-}
-
-function getTruffleConfigJS(config){
-  if (config) {
-    return `module.exports = ${JSON.stringify(config, null, ' ')}`;
-  } else {
-    return `module.exports = ${JSON.stringify(getDefaultTruffleConfig(), null, ' ')}`;
-  }
-}
 
 // ==========================
 // NomicLab Configuration
@@ -246,7 +198,6 @@ function install(
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);
 
   // Configs
-  fs.writeFileSync(`${temp}/${truffleConfigName}`, getTruffleConfigJS(devPlatformConfig));
   fs.writeFileSync(`${temp}/${hardhatConfigName}`, getHardhatConfigJS(devPlatformConfig));
   if(solcoverConfig) fs.writeFileSync(configPath, solcoverJS);
 
@@ -280,7 +231,6 @@ function installDouble(contracts, test, config, skipMigration) {
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);
 
   // Configs
-  fs.writeFileSync(`${temp}/${truffleConfigName}`, getTruffleConfigJS());
   fs.writeFileSync(`${temp}/${hardhatConfigName}`, getHardhatConfigJS());
   fs.writeFileSync(configPath, configjs);
 
@@ -321,7 +271,6 @@ module.exports = {
   pathToTemp: pathToTemp,
   testLogger: testLogger,
   loggerOutput: loggerOutput,
-  getDefaultTruffleConfig: getDefaultTruffleConfig,
   getDefaultHardhatConfig: getDefaultHardhatConfig,
   install: install,
   installDouble: installDouble,

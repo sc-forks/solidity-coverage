@@ -28,10 +28,6 @@ jobs:
           command: |
             rm -rf node_modules/
       - run:
-          name: Install truffle (globally)
-          command: |
-            sudo npm install -g truffle
-      - run:
           name: Install dependencies
           command: |
             yarn
@@ -54,23 +50,6 @@ jobs:
           name: Zeppelin E2E
           command: |
             ./scripts/run-zeppelin.sh
-  e2e-metacoin:
-    machine: true
-    steps:
-      - checkout
-      - <<: *step_install_nvm
-      - run:
-          name: MetaCoin E2E
-          command: |
-            ./scripts/run-metacoin.sh
-  e2e-metacoin-windows:
-    executor: win/default
-    steps:
-      - checkout
-      - run:
-          name: Windows Metacoin E2E
-          command: |
-            bash ./scripts/run-metacoin.sh
   e2e-nomiclabs:
     machine: true
     steps:
@@ -86,6 +65,4 @@ workflows:
     jobs:
       - unit-test
       - e2e-zeppelin
-      - e2e-metacoin
-      - e2e-metacoin-windows
       - e2e-nomiclabs
