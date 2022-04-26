@@ -81,22 +81,3 @@ yarn run coverage
 yarn run gas
 
 verifyCoverageExists
-
-# Install buidler-ethers
-echo ""
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Simple buidler/buidler-ethers       "
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo ""
-cd ..
-git clone https://github.com/sc-forks/example-buidler-ethers.git
-cd example-buidler-ethers
-yarn
-
-# Install and run solidity-coverage @ PR
-yarn add $PR_PATH --dev
-cat package.json
-
-npx buidler coverage
-
-verifyCoverageExists
