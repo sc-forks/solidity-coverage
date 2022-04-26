@@ -11,7 +11,7 @@ const plugin = require('../../../plugins/truffle.plugin');
 // CLI Options / Flags
 // =======================
 
-describe('Truffle Plugin: command line options', function() {
+describe.skip('Truffle Plugin: command line options', function() {
   let truffleConfig;
   let solcoverConfig;
 
