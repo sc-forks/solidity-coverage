@@ -103,14 +103,14 @@ describe('function declarations', () => {
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      6: 2, 11: 1 // Doubled line-hit
+      6: 1, 11: 1 // Doubled line-hit
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
       1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 2,
+      1: 1,
       2: 1,
     });
   });
