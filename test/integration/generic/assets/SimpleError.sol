@@ -1,5 +1,5 @@
 // This contract should throw a parse error in instrumentSolidity.js
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 contract SimpleError {
     uint x = 0;

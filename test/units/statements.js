@@ -112,7 +112,7 @@ describe('generic statements', () => {
       1: [0, 1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 0, 3: 1,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -126,11 +126,11 @@ describe('generic statements', () => {
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      9: 1, 10: 1, 19: 1,
+      11: 1, 12: 1, 21: 1,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1, 3: 1,
+      1: 1, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1, 2: 1,
@@ -148,7 +148,7 @@ describe('generic statements', () => {
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1, 3: 1,
+      1: 1, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1, 2: 1,

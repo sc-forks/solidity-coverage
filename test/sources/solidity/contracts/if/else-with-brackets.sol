@@ -1,6 +1,6 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
-contract Test {  
+contract Test {
     function a(uint x) public {
         if (x == 1) {
             revert();

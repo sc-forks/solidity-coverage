@@ -9,15 +9,10 @@ const shell = require('shelljs');
 const decache = require('decache');
 const globalModules = require('global-modules');
 
-const TruffleConfig = require('truffle-config');
-
 const { HARDHAT_NETWORK_NAME } = require("hardhat/plugins")
 const { resetHardhatContext } = require("hardhat/plugins-testing")
-const { resetBuidlerContext } = require("@nomiclabs/buidler/plugins-testing")
 
 const temp =              './sc_temp';
-const truffleConfigName = 'truffle-config.js';
-const buidlerConfigName = 'buidler.config.js';
 const hardhatConfigName = 'hardhat.config.js';
 const configPath =        `${temp}/.solcover.js`;
 const testPath =          './test/sources/js/';
@@ -34,13 +29,10 @@ let previousCWD;
 function decacheConfigs(){
   const paths = [
     `${process.cwd()}/${temp}/.solcover.js`,
-    `${process.cwd()}/${temp}/${truffleConfigName}`,
-    `${process.cwd()}/${temp}/${buidlerConfigName}`,
     `${process.cwd()}/${temp}/${hardhatConfigName}`,
     `${process.cwd()}/${temp}/contracts/Simple.sol`,
     `${process.cwd()}/${temp}/test/simple.js`,
     `${process.cwd()}/${temp}/test/account-one.js`,
-    `${process.cwd()}/${temp}/test/truffle-crash.js`
   ];
 
   paths.forEach(pth => {
@@ -50,7 +42,6 @@ function decacheConfigs(){
 
 function clean() {
   shell.config.silent = true;
-
   shell.rm('-Rf', temp);
   shell.rm('-Rf', 'coverage');
   shell.rm('coverage.json');
@@ -73,16 +64,6 @@ function getOutput(config){
   return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 }
 
-// Buidler env set up
-function buidlerSetupEnv(mocha) {
-  const mockwd = path.join(process.cwd(), temp);
-  previousCWD = process.cwd();
-  process.chdir(mockwd);
-  mocha.env = require("@nomiclabs/buidler");
-  mocha.env.config.logger = testLogger
-  mocha.logger = testLogger
-};
-
 // Hardhat env set up
 function hardhatSetupEnv(mocha) {
   const mockwd = path.join(process.cwd(), temp);
@@ -93,61 +74,12 @@ function hardhatSetupEnv(mocha) {
   mocha.logger = testLogger
 };
 
-// Buidler env tear down
-function buidlerTearDownEnv() {
-  resetBuidlerContext();
-  process.chdir(previousCWD);
-};
-
 // Hardhat env tear down
 function hardhatTearDownEnv() {
   resetHardhatContext();
   process.chdir(previousCWD); // remove?
 };
 
-
-// ==========================
-// Truffle Configuration
-// ==========================
-function getDefaultTruffleConfig(){
-  const logger = process.env.SILENT ? { log: () => {} } : console;
-  const reporter = process.env.SILENT ? 'dot' : 'spec';
-
-  const mockwd = path.join(process.cwd(), temp);
-  const vals = {
-    working_directory: mockwd,
-    build_directory:  path.join(mockwd, 'build'),
-    contracts_directory: path.join(mockwd, 'contracts'),
-    contracts_build_directory: path.join(mockwd, 'build', 'contracts'),
-    migrations_directory: path.join(mockwd, 'migrations'),
-    test_directory: path.join(mockwd, 'test'),
-    logger: logger,
-    mocha: { reporter: reporter },
-    networks: {
-      development: {
-        host: "localhost",
-        port: 8545,
-        network_id: "*"
-      }
-    },
-    compilers: {
-      solc: {
-        version: "0.5.3",
-        settings: { optimizer: {} }
-      }
-    }
-  }
-
-  return (new TruffleConfig()).with(vals);
-}
-
-function getTruffleConfigJS(config){
-  if (config) {
-    return `module.exports = ${JSON.stringify(config, null, ' ')}`;
-  } else {
-    return `module.exports = ${JSON.stringify(getDefaultTruffleConfig(), null, ' ')}`;
-  }
-}
 
 // ==========================
 // NomicLab Configuration
@@ -179,39 +111,13 @@ function getDefaultNomicLabsConfig(){
   return vals;
 }
 
-function getDefaultBuidlerConfig() {
-  const config = getDefaultNomicLabsConfig()
-  config.defaultNetwork = "buidlerevm";
-  config.solc = {
-    evmVersion: 'petersburg'
-  }
-
-  return config;
-}
-
 function getDefaultHardhatConfig() {
   const config = getDefaultNomicLabsConfig()
   config.defaultNetwork = HARDHAT_NETWORK_NAME;
   config.solidity = {
-    version: "0.5.13"
+    version: "0.7.3"
   }
   return config;
-}
-
-function getBuidlerConfigJS(config){
-  // Hardhat tests will crash if the buidler plugin is loaded from the shared entrypoint
-  // b/c of some kind of weird cacheing or context reset issue.
-  const prefix =`
-    const { loadPluginFile } = require("@nomiclabs/buidler/plugins-testing");
-    loadPluginFile(__dirname + "/../plugins/buidler.plugin");
-    usePlugin("@nomiclabs/buidler-truffle5");
-  `
-
-  if (config) {
-    return `${prefix}module.exports = ${JSON.stringify(config, null, ' ')}`;
-  } else {
-    return `${prefix}module.exports = ${JSON.stringify(getDefaultBuidlerConfig(), null, ' ')}`;
-  }
 }
 
 function getHardhatConfigJS(config){
@@ -262,7 +168,7 @@ function deployDouble(contractNames){
 // Project Installers
 // ==========================
 /**
- * Installs mock truffle/buidler project at ./temp with a single contract
+ * Installs mock project at ./temp with a single contract
  * and test specified by the params.
  * @param  {String} contract <contractName.sol> located in /test/sources/cli/
  * @param  {[type]} test     <testName.js> located in /test/cli/
@@ -292,8 +198,6 @@ function install(
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);
 
   // Configs
-  fs.writeFileSync(`${temp}/${truffleConfigName}`, getTruffleConfigJS(devPlatformConfig));
-  fs.writeFileSync(`${temp}/${buidlerConfigName}`, getBuidlerConfigJS(devPlatformConfig));
   fs.writeFileSync(`${temp}/${hardhatConfigName}`, getHardhatConfigJS(devPlatformConfig));
   if(solcoverConfig) fs.writeFileSync(configPath, solcoverJS);
 
@@ -301,7 +205,7 @@ function install(
 };
 
 /**
- * Installs mock truffle/buidler project with two contracts (for inheritance, libraries, etc)
+ * Installs mock project with two contracts (for inheritance, libraries, etc)
  */
 function installDouble(contracts, test, config, skipMigration) {
   const configjs = getSolcoverJS(config);
@@ -327,8 +231,6 @@ function installDouble(contracts, test, config, skipMigration) {
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);
 
   // Configs
-  fs.writeFileSync(`${temp}/${truffleConfigName}`, getTruffleConfigJS());
-  fs.writeFileSync(`${temp}/${buidlerConfigName}`, getBuidlerConfigJS());
   fs.writeFileSync(`${temp}/${hardhatConfigName}`, getHardhatConfigJS());
   fs.writeFileSync(configPath, configjs);
 
@@ -336,7 +238,7 @@ function installDouble(contracts, test, config, skipMigration) {
 };
 
 /**
- * Installs full truffle/buidler project
+ * Installs full project
  */
 function installFullProject(name, config) {
   shell.mkdir(temp);
@@ -369,8 +271,6 @@ module.exports = {
   pathToTemp: pathToTemp,
   testLogger: testLogger,
   loggerOutput: loggerOutput,
-  getDefaultTruffleConfig: getDefaultTruffleConfig,
-  getDefaultBuidlerConfig: getDefaultBuidlerConfig,
   getDefaultHardhatConfig: getDefaultHardhatConfig,
   install: install,
   installDouble: installDouble,
@@ -378,8 +278,6 @@ module.exports = {
   clean: clean,
   pathToContract: pathToContract,
   getOutput: getOutput,
-  buidlerSetupEnv: buidlerSetupEnv,
-  buidlerTearDownEnv: buidlerTearDownEnv,
   hardhatSetupEnv: hardhatSetupEnv,
   hardhatTearDownEnv: hardhatTearDownEnv
 }

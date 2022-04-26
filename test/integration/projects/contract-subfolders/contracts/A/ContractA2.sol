@@ -1,9 +1,8 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 
 import "./../B/ContractB2.sol";
 
 contract ContractA is ContractB {
-  uint x;
   constructor() public {
   }
 

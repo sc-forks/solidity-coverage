@@ -66,7 +66,7 @@ describe('for and while statements', () => {
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1, 3: 1,
+      1: 1, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
@@ -85,7 +85,7 @@ describe('for and while statements', () => {
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 1, 2: 1, 3: 1,
+      1: 1, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
