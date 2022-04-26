@@ -5,7 +5,7 @@ const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
-describe.only('asserts and requires', () => {
+describe('asserts and requires', () => {
   let coverage;
   let api;
 
