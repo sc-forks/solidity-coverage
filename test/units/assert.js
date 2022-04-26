@@ -5,7 +5,7 @@ const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
-describe('asserts and requires', () => {
+describe.only('asserts and requires', () => {
   let coverage;
   let api;
 
@@ -26,14 +26,14 @@ describe('asserts and requires', () => {
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      5: 2,
+      5: 1,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 2,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 2,
+      1: 1,
     });
   });
 
@@ -47,14 +47,14 @@ describe('asserts and requires', () => {
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
     assert.deepEqual(mapping[util.filePath].l, {
-      5: 4,
+      5: 2,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 4,
+      1: 2,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 4,
+      1: 2,
     });
   });
 
