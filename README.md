@@ -71,9 +71,9 @@ A working example can be found at [openzeppelin-contracts, here.][35]
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of tests to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
-| testfiles  | `--testfiles "test/registry/*.ts"` | (Buidler) Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
+| testfiles  | `--testfiles "test/registry/*.ts"` | (Hardhat) Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
+| network    | `--network development` | Use network settings defined in the Truffle or Hardhat config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
 | matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful
 as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
