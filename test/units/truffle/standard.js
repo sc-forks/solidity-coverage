@@ -11,7 +11,7 @@ const plugin = require('../../../plugins/truffle.plugin');
 // Standard Use-case Tests
 // =======================
 
-describe('Truffle Plugin: standard use cases', function() {
+describe.skip('Truffle Plugin: standard use cases', function() {
   let truffleConfig;
   let solcoverConfig;
 

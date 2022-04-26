@@ -13,7 +13,7 @@ const plugin = require('../../../plugins/truffle.plugin');
 // Errors
 // =======
 
-describe('Truffle Plugin: error cases', function() {
+describe.skip('Truffle Plugin: error cases', function() {
   let truffleConfig;
   let solcoverConfig;
 
