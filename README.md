@@ -78,8 +78,6 @@ module.exports = {
 | Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
-| client | *Object* | `require("ganache-core")` | Useful if you need a specific ganache version. |
-| providerOptions | *Object* | `{ }` | [ganache-core options][1]  |
 | skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
@@ -99,6 +97,9 @@ module.exports = {
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. [More...][23]|
 | configureYulOptimizer | *Boolean* | false | (Experimental) Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
 | solcOptimizerDetails | *Object* | `undefined` |(Experimental) Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See FAQ below). |
+| client | *Object* | `require("ganache-core")` | Ganache only: useful if you need a specific ganache version |
+| providerOptions | *Object* | `{ }` | Ganache only: [ganache-core options][1]  |
+
 
 [<sup>*</sup> Advanced use][14]
 
