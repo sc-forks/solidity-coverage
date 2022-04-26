@@ -16,27 +16,11 @@
 
 ## Install
 ```
-$ npm install --save-dev solidity-coverage
+$ yarn add solidity-coverage --dev
 ```
 
 **Resources**:
-+ [0.7.0 release notes][31]
-+ [A guide][29] to upgrading from 0.6.x to 0.7.x
-+ [0.6.3 docs][30]
-
-### Truffle V5
-
-**Add** this package to your plugins array in `truffle-config.js` ([Truffle docs][27])
-```javascript
-module.exports = {
-  networks: {...},
-  plugins: ["solidity-coverage"]
-}
-```
-**Run**
-```
-truffle run coverage [command-options]
-```
++ [0.8.0 release notes][31]
 
 ### Hardhat
 
@@ -70,10 +54,9 @@ A working example can be found at [openzeppelin-contracts, here.][35]
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| file | `--file="test/registry/*.js"`    | (Truffle) Filename or glob describing a subset of tests to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
-| testfiles  | `--testfiles "test/registry/*.ts"` | (Buidler) Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
+| testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| network    | `--network development` | Use network settings defined in the Truffle or Buidler config |
+| network    | `--network development` | Use network settings defined in the Hardhat config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
 
 [<sup>*</sup> Advanced use][14]

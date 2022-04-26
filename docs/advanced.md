@@ -75,7 +75,7 @@ stage the compilation artifacts of instrumented contracts in before the tests ar
 
 **Example**
 ```
-$ truffle run coverage --temp build
+$ hardhat coverage --temp build
 ```
 
 By default this folder is called `.coverage_artifacts`. If you already have

@@ -10,51 +10,14 @@
 
 ## Continuous Integration
 
-An example using Truffle MetaCoin, TravisCI, and Coveralls:
+**Examples**
++ [Github Actions and CodeCov][8] (OpenZeppelin)
++ [CircleCI and Coveralls with coverage split into parallelized jobs][7] (SetProtocol)
 
-**Step 1: Create a metacoin project & install coverage tools**
-
-```bash
-$ mkdir metacoin && cd metacoin
-$ truffle unbox metacoin
-
-# Install coverage and development dependencies
-$ npm init
-$ npm install --save-dev truffle
-$ npm install --save-dev coveralls
-$ npm install --save-dev solidity-coverage
-```
-
-**Step 2: Add solidity-coverage to the plugins array in truffle-config.js:**
-
-```javascript
-module.exports = {
-  networks: {...},
-  plugins: ["solidity-coverage"]
-}
-```
-
-**Step 3: Create a .travis.yml:**
-
-```yml
-dist: trusty
-language: node_js
-node_js:
-  - '10'
-install:
-  - npm install
-script:
-  - npx truffle run coverage
-  - cat coverage/lcov.info | coveralls
-```
 **NB:** It's best practice to run coverage as a separate CI job rather than assume its
 equivalence to `test`. Coverage uses block gas settings far above the network limits,
 ignores [EIP 170][4] and rewrites your contracts in ways that might affect
 their behavior.
-
-**Step 4: Toggle the project on at Travis and Coveralls and push.**
-
-[It should look like this][1]
 
 **Appendix: Coveralls vs. Codecov**
 
@@ -71,11 +34,8 @@ If your target contains dozens (and dozens) of large contracts, you may run up a
 contract compilation step. This can be addressed by setting the size of the memory space allocated to the command
 when you run it.
 ```
-// Truffle
-$ node --max-old-space-size=4096 ./node_modules/.bin/truffle run coverage [options]
-
-// Buidler
-$ node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage [options]
+// Hardhat
+$ node --max-old-space-size=4096 ./node_modules/.bin/hardhat coverage [options]
 ```
 
 `solcjs` also has some limits on the size of the code bundle it can process. If you see errors like:
@@ -112,7 +72,7 @@ uint x = 5; uint y = 7;
 
 ## Running out of time
 
-Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under coverage, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `.solcover.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
+Because tests run slower under coverage, it's possible to hit default mocha time limits with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `.solcover.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
 
 ```javascript
 module.exports = {
@@ -185,3 +145,5 @@ If an `assert` or `require` is marked with an `I` in the coverage report, then d
 [2]: https://codecov.io/
 [3]: https://user-images.githubusercontent.com/7332026/28502310-6851f79c-6fa4-11e7-8c80-c8fd80808092.png
 [4]: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-170.md
+[7]: https://github.com/SetProtocol/set-v2-strategies/blob/29db4a3de4a6ecd55a2c86d85a002b7e1106f8b2/.circleci/config.yml#L79-L143
+[8]: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/c12076fb7e3dfe48ef1d9c3bb2a58bdd3ffc0cee/.github/workflows/test.yml#L36-L56
