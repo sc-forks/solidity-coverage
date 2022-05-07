@@ -75,8 +75,7 @@ A working example can be found at [openzeppelin-contracts, here.][35]
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Truffle or Hardhat config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
-| matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful
-as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
+| matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
 
 [<sup>*</sup> Advanced use][14]
 
