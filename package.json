@@ -60,5 +60,8 @@
     "hardhat-gas-reporter": "^1.0.1",
     "nyc": "^14.1.1",
     "solc": "^0.7.5"
+  },
+  "peerDependencies": {
+    "hardhat": "^2.9.3"
   }
 }
