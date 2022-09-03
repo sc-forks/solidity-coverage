@@ -44,6 +44,9 @@ npx hardhat coverage [command-options]
 OpenZeppelin have written their own coverage generation scripts for `test-environment` using the solidity-coverage API.
 A working example can be found at [openzeppelin-contracts, here.][35]
 
+## Viewing the reports: 
++ You can find the Istanbul reports written to the `./coverage/` folder generated in your root directory.
+
 ## Usage notes:
 + Coverage runs tests a little more slowly.
 + Coverage launches its own in-process ganache server.
