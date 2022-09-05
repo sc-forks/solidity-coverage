@@ -28,6 +28,9 @@ cd openzeppelin-contracts
 echo ">>>>> npm install"
 npm install
 
+# Use HH Merge version to test dual vm patch
+npm install hardhat@latest
+
 echo ">>>>> npm uninstall solidity-coverage --save-dev"
 npm uninstall solidity-coverage --save-dev
 
