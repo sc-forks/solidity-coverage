@@ -14,42 +14,33 @@
   see [the accompanying article][16].
 + `solidity-coverage` is [Solcover][17]
 
+## Requirements
+
++ Hardhat >= 2.11.0
+
 ## Install
 ```
 $ yarn add solidity-coverage --dev
 ```
-
-**Resources**:
-+ [0.8.0 release notes][31]
-
-### Hardhat
-
-Beginning with v0.7.12, this tool supports Hardhat and runs directly on
-HardhatEVM.
 
 **Require** the plugin in `hardhat.config.js` ([Hardhat docs][26])
 ```javascript
 require('solidity-coverage')
 ```
 
-**Run**
+Or, if you are using TypeScript, add this to your hardhat.config.ts:
+```ts
+import 'solidity-coverage'
+```
+**Resources**:
++ [0.8.0 release notes][31]
+
+
+
+## Run
 ```
 npx hardhat coverage [command-options]
 ```
-
-(Additional Hardhat-specific info can be found [here][37])
-
-### @openzeppelin/test-environment
-
-OpenZeppelin have written their own coverage generation scripts for `test-environment` using the solidity-coverage API.
-A working example can be found at [openzeppelin-contracts, here.][35]
-
-## Usage notes:
-+ Coverage runs tests a little more slowly.
-+ Coverage launches its own in-process ganache server.
-+ You can set [ganache options][1] using the `providerOptions` key in your `.solcover.js` [config][15].
-+ Coverage [distorts gas consumption][13]. Tests that check exact gas consumption should be [skipped][24].
-+ :warning:  Contracts are compiled **without optimization**. Please report unexpected compilation faults to [issue 417][25]
 
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
@@ -58,8 +49,7 @@ A working example can be found at [openzeppelin-contracts, here.][35]
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Hardhat config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
-| matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful
-as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
+| matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
 
 [<sup>*</sup> Advanced use][14]
 
