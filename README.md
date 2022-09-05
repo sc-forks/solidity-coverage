@@ -35,8 +35,6 @@ import 'solidity-coverage'
 **Resources**:
 + [0.8.0 release notes][31]
 
-
-
 ## Run
 ```
 npx hardhat coverage [command-options]
@@ -92,6 +90,9 @@ module.exports = {
 
 
 [<sup>*</sup> Advanced use][14]
+
+## Viewing the reports: 
++ You can find the Istanbul reports written to the `./coverage/` folder generated in your root directory.
 
 ## API
 
