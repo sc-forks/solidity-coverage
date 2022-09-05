@@ -1,4 +1,8 @@
 # Changelog
+0.8.0 / 2022-09-05
+==================
+
+* See release notes at: https://github.com/sc-forks/solidity-coverage/releases/tag/v0.8.0
 
 0.7.21 / 2022-04-24
 ===================
