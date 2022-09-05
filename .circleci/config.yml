@@ -12,15 +12,15 @@ step_install_nvm: &step_install_nvm
       set +e
       export NVM_DIR="/opt/circleci/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      nvm install v12.16.0
-      nvm alias default v12.16.0
+      nvm install v14.19.0
+      nvm alias default v14.19.0
       echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
       echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
 jobs:
   unit-test:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - run:

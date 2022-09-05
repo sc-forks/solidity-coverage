@@ -2,12 +2,12 @@
  "contracts/MatrixA.sol": {
   "10": [
    {
-    "title": "sends to A",
-    "file": "test/matrix_a_b.js"
-   },
-   {
     "title": "sends",
     "file": "test/matrix_a.js"
+   },
+   {
+    "title": "sends to A",
+    "file": "test/matrix_a_b.js"
    }
   ],
   "14": [
