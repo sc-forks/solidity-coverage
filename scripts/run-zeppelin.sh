@@ -28,6 +28,9 @@ cd openzeppelin-contracts
 echo ">>>>> npm install"
 npm install
 
+# Use HH Merge version
+npm install hardhat@2.11.0 --save-dev
+
 echo ">>>>> npm uninstall solidity-coverage --save-dev"
 npm uninstall solidity-coverage --save-dev
 
