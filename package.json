@@ -62,6 +62,6 @@
     "solc": "^0.7.5"
   },
   "peerDependencies": {
-    "hardhat": "^2.9.3"
+    "hardhat": "^2.11.0"
   }
 }
