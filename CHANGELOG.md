@@ -1,4 +1,9 @@
 # Changelog
+
+0.8.1 / 2022-09-06
+===================
+  * Restore web3-utils (https://github.com/sc-forks/solidity-coverage/issues/743)
+
 0.8.0 / 2022-09-05
 ==================
 
