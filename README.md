@@ -140,7 +140,7 @@ $ git clone https://github.com/sc-forks/solidity-coverage.git
 $ yarn
 ```
 
-## Contributors
+## Contributors (all complete n00bs)
 + [@area](https://github.com/area)
 + [@cgewecke](https://github.com/cgewecke)
 + [@adriamb](https://github.com/adriamb)
