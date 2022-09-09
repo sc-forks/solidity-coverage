@@ -20,7 +20,7 @@
 
 ## Install
 ```
-$ yarn add solidity-coverage --dev
+yarn add solidity-coverage --dev
 ```
 
 **Require** the plugin in `hardhat.config.js` ([Hardhat docs][26])
