@@ -55,7 +55,7 @@ Downloading compiler version 0.5.16
   Extra non-whitespace after JSON value.
 ```
 
-...try setting the `measureStatementCoverage` option to `false` in `.solcoverjs`. This will reduce the footprint of
+...try setting the `measureStatementCoverage` option to `false` in `.solcover.js`. This will reduce the footprint of
 the instrumentation solidity-coverage adds to your files. You'll still get line, branch and function coverage but the data Istanbul collects
 for statements will be omitted.
 
@@ -92,11 +92,11 @@ If your project is large, complex and uses ABI encoder V2 or Solidity >= V8, you
 Work-arounds for this problem are tracked below. (These are only available in hardhat. If you're using hardhat and none of them work for you, please open an issue.)
 
 **Work-around #1**
-+ Set the `.solcoverjs` option `configureYulOptimizer` to `true`.
++ Set the `.solcover.js` option `configureYulOptimizer` to `true`.
 
 **Work-around #2**
-+ Set the `.solcoverjs` option: `configureYulOptimizer` to `true`.
-+ Set the `.solcoverjs` option: `solcOptimizerDetails` to:
++ Set the `.solcover.js` option: `configureYulOptimizer` to `true`.
++ Set the `.solcover.js` option: `solcOptimizerDetails` to:
   ```js
   {
       peephole: false,
