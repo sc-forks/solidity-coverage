@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# E2E CI: installs PR candidate on sc-forks/buidler-e2e (a simple example,
+# E2E CI: installs PR candidate on sc-forks/hardhat-e2e (a simple example,
 # similar to Metacoin) and runs coverage
 #
 

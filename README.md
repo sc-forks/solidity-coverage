@@ -4,7 +4,7 @@
 ![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/latest)
 [![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
 [![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/master/graph/badge.svg)][21]
-[![buidler](https://buidler.dev/buidler-plugin-badge.svg?1)][26]
+[![Hardhat](https://hardhat.org/buidler-plugin-badge.svg?1)][26]
 
 
 ## Code coverage for Solidity testing
@@ -197,13 +197,12 @@ $ yarn
 [23]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#workflow-hooks
 [24]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#skipping-tests
 [25]: https://github.com/sc-forks/solidity-coverage/issues/417
-[26]: https://buidler.dev/
+[26]: https://hardhat.org/
 [27]: https://www.trufflesuite.com/docs
 [28]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/api.md
 [29]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/upgrade.md#upgrading-from-06x-to-070
 [30]: https://github.com/sc-forks/solidity-coverage/tree/0.6.x-final#solidity-coverage
 [31]: https://github.com/sc-forks/solidity-coverage/releases/tag/v0.7.0
-[32]: https://github.com/sc-forks/buidler-e2e/tree/coverage
 [33]: https://github.com/sc-forks/moloch
 [34]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#reducing-the-instrumentation-footprint
 [35]: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/e5fbbda9bac49039847a7ed20c1d966766ecc64a/scripts/coverage.js

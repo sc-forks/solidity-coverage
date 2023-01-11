@@ -56,7 +56,7 @@ jobs:
       - checkout
       - <<: *step_install_nvm
       - run:
-          name: Buidler & Hardhat E2E
+          name: Hardhat E2E
           command: |
             ./scripts/run-nomiclabs.sh
 workflows:
