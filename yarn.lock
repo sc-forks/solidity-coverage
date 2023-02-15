@@ -3283,6 +3283,11 @@
   "resolved" "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
   "version" "2.20.3"
 
+"commander@^8.1.0":
+  "integrity" "sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww=="
+  "resolved" "https://registry.npmjs.org/commander/-/commander-8.3.0.tgz"
+  "version" "8.3.0"
+
 "commander@3.0.2":
   "integrity" "sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow=="
   "resolved" "https://registry.npmjs.org/commander/-/commander-3.0.2.tgz"
@@ -9304,18 +9309,16 @@
     "semver" "^5.5.0"
     "tmp" "0.0.33"
 
-"solc@^0.7.5":
-  "integrity" "sha512-WsR/W7CXwh2VnmZapB4JrsDeLlshoKBz5Pz/zYNulB6LBsOEHI2Zj/GeKLMFcvv57OHiXHvxq5ZOQB+EdqxlxQ=="
-  "resolved" "https://registry.npmjs.org/solc/-/solc-0.7.6.tgz"
-  "version" "0.7.6"
+"solc@^0.8.18":
+  "integrity" "sha512-wVAa2Y3BYd64Aby5LsgS3g6YC2NvZ3bJ+A8TAIAukfVuQb3AjyGrLZpyxQk5YLn14G35uZtSnIgHEpab9klOLQ=="
+  "resolved" "https://registry.npmjs.org/solc/-/solc-0.8.18.tgz"
+  "version" "0.8.18"
   dependencies:
     "command-exists" "^1.2.8"
-    "commander" "3.0.2"
+    "commander" "^8.1.0"
     "follow-redirects" "^1.12.1"
-    "fs-extra" "^0.30.0"
     "js-sha3" "0.8.0"
     "memorystream" "^0.3.1"
-    "require-from-string" "^2.0.0"
     "semver" "^5.5.0"
     "tmp" "0.0.33"
 
