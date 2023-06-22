@@ -198,7 +198,7 @@ task("coverage", "Generates a code coverage report for tests")
     // ==============
     // Server launch
     // ==============
-    let network = nomiclabsUtils.setupHardhatNetwork(env, api, ui);
+    let network = await nomiclabsUtils.setupHardhatNetwork(env, api, ui);
 
     if (network.isHardhatEVM){
       accounts = await utils.getAccountsHardhat(network.provider);
@@ -206,11 +206,11 @@ task("coverage", "Generates a code coverage report for tests")
 
       // Note: this only works if the reset block number is before any transactions have fired on the fork.
       // e.g you cannot fork at block 1, send some txs (blocks 2,3,4) and reset to block 2
-      env.network.provider.on(HARDHAT_NETWORK_RESET_EVENT, () => {
-        api.attachToHardhatVM(env.network.provider);
+      env.network.provider.on(HARDHAT_NETWORK_RESET_EVENT, async () => {
+        await api.attachToHardhatVM(env.network.provider);
       });
 
-      api.attachToHardhatVM(network.provider);
+      await api.attachToHardhatVM(network.provider);
 
       ui.report('hardhat-network', [
         nodeInfo.split('/')[1],
