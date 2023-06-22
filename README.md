@@ -7,6 +7,7 @@
 [![buidler](https://buidler.dev/buidler-plugin-badge.svg?1)][26]
 
 
+
 ## Code coverage for Solidity testing
 ![coverage example][22]
 
@@ -91,7 +92,7 @@ module.exports = {
 
 [<sup>*</sup> Advanced use][14]
 
-## Viewing the reports: 
+## Viewing the reports:
 + You can find the Istanbul reports written to the `./coverage/` folder generated in your root directory.
 
 ## API
