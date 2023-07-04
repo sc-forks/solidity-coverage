@@ -871,9 +871,16 @@
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
 
-"@solidity-parser/parser@^0.14.0", "@solidity-parser/parser@^0.14.1":
+"@solidity-parser/parser@^0.14.0":
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.14.1.tgz#179afb29f4e295a77cc141151f26b3848abc3c46"
+  dependencies:
+    antlr4ts "^0.5.0-alpha.4"
+
+"@solidity-parser/parser@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@solidity-parser/parser/-/parser-0.16.0.tgz#1fb418c816ca1fc3a1e94b08bcfe623ec4e1add4"
+  integrity sha512-ESipEcHyRHg4Np4SqBCfcXwyxxna1DgFVz69bgpLV8vzl/NP1DtcKsJ4dJZXWQhY/Z4J2LeKBiOkOVZn9ct33Q==
   dependencies:
     antlr4ts "^0.5.0-alpha.4"
 
