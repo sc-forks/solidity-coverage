@@ -1,5 +1,13 @@
 # Changelog
 
+0.8.4 / 2023-07-04
+==================
+  * Update solidity-parser to 0.16.0 (https://github.com/sc-forks/solidity-coverage/issues/802)
+
+0.8.3 / 2023-06-22
+==================
+  * Updates for Hardhat v2.15.0  (https://github.com/sc-forks/solidity-coverage/pull/796)
+
 0.8.1 / 2022-09-06
 ===================
   * Restore web3-utils (https://github.com/sc-forks/solidity-coverage/issues/743)
