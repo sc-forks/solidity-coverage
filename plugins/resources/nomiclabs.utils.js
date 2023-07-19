@@ -31,7 +31,7 @@ function getTestFilePaths(files){
  */
 function normalizeConfig(config, args={}){
   config.workingDir = config.paths.root;
-  config.contractsDir = config.paths.sources;
+  config.contractsDir = args.sources? args.sources : config.paths.sources;
   config.testDir = config.paths.tests;
   config.artifactsDir = config.paths.artifacts;
   config.logger = config.logger ? config.logger : {log: null};
