@@ -1,7 +1,7 @@
 const path = require('path');
 const PluginUI = require('./resources/nomiclabs.ui');
 
-const { task, types } = require("hardhat/config");
+const { task, subtask, types } = require("hardhat/config");
 const { HardhatPluginError } = require("hardhat/plugins")
 const {HARDHAT_NETWORK_RESET_EVENT} = require("hardhat/internal/constants");
 const {
