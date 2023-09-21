@@ -49,9 +49,13 @@ function normalizeConfig(config, args={}){
   return config;
 }
 
-function setupHardhatNetwork(env, api, ui){
+async function setupHardhatNetwork(env, api, ui){
+  const hardhatPackage = require('hardhat/package.json');
   const { createProvider } = require("hardhat/internal/core/providers/construction");
   const { HARDHAT_NETWORK_NAME } = require("hardhat/plugins")
+
+  // after 2.15.0, the internal createProvider function has a different signature
+  const newCreateProviderSignature = semver.satisfies(hardhatPackage.version, "^2.15.0");
 
   let provider, networkName, networkConfig;
   let isHardhatEVM = false;
@@ -65,12 +69,20 @@ function setupHardhatNetwork(env, api, ui){
     networkConfig = env.network.config;
     configureHardhatEVMGas(networkConfig, api);
 
-    provider = createProvider(
-      networkName,
-      networkConfig,
-      env.config.paths,
-      env.artifacts,
-    )
+    if (newCreateProviderSignature) {
+      provider = await createProvider(
+        env.config,
+        networkName,
+        env.artifacts,
+      )
+    } else {
+      provider = createProvider(
+        networkName,
+        networkConfig,
+        env.config.paths,
+        env.artifacts,
+      )
+    }
 
   // HttpProvider
   } else {
@@ -80,7 +92,12 @@ function setupHardhatNetwork(env, api, ui){
     networkConfig = env.config.networks[networkName]
     configureNetworkGas(networkConfig, api);
     configureHttpProvider(networkConfig, api, ui)
-    provider = createProvider(networkName, networkConfig);
+
+    if (newCreateProviderSignature) {
+      provider = await createProvider(env.config, networkName);
+    } else {
+      provider = createProvider(networkName, networkConfig);
+    }
   }
 
   return configureNetworkEnv(
