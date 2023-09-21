@@ -18,16 +18,16 @@ const util = require('util')
 function getTestFilePaths(files){
   const target = globby.sync([files])
 
-  // Buidler/Hardhat supports js & ts
+  // Hardhat supports js & ts
   const testregex = /.*\.(js|ts)$/;
   return target.filter(f => f.match(testregex) != null);
 }
 
 /**
- * Normalizes Buidler/Hardhat paths / logging for use by the plugin utilities and
+ * Normalizes Hardhat paths / logging for use by the plugin utilities and
  * attaches them to the config
- * @param  {Buidler/HardhatConfig} config
- * @return {Buidler/HardhatConfig}        updated config
+ * @param  {HardhatConfig} config
+ * @return {HardhatConfig}        updated config
  */
 function normalizeConfig(config, args={}){
   config.workingDir = config.paths.root;
@@ -49,35 +49,13 @@ function normalizeConfig(config, args={}){
   return config;
 }
 
-function setupBuidlerNetwork(env, api, ui){
-  const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/construction");
-
-  let networkConfig = {};
-
-  let networkName = (env.buidlerArguments.network !== 'buidlerevm')
-    ? env.buidlerArguments.network
-    : api.defaultNetworkName;
-
-  if (networkName !== api.defaultNetworkName){
-    networkConfig = env.config.networks[networkName];
-    configureHttpProvider(networkConfig, api, ui)
-  } else {
-    networkConfig.url = `http://${api.host}:${api.port}`
-  }
-
-  const provider = createProvider(networkName, networkConfig);
-
-  return configureNetworkEnv(
-    env,
-    networkName,
-    networkConfig,
-    provider
-  )
-}
-
-function setupHardhatNetwork(env, api, ui){
+async function setupHardhatNetwork(env, api, ui){
+  const hardhatPackage = require('hardhat/package.json');
   const { createProvider } = require("hardhat/internal/core/providers/construction");
   const { HARDHAT_NETWORK_NAME } = require("hardhat/plugins")
+
+  // after 2.15.0, the internal createProvider function has a different signature
+  const newCreateProviderSignature = semver.satisfies(hardhatPackage.version, "^2.15.0");
 
   let provider, networkName, networkConfig;
   let isHardhatEVM = false;
@@ -91,12 +69,20 @@ function setupHardhatNetwork(env, api, ui){
     networkConfig = env.network.config;
     configureHardhatEVMGas(networkConfig, api);
 
-    provider = createProvider(
-      networkName,
-      networkConfig,
-      env.config.paths,
-      env.artifacts,
-    )
+    if (newCreateProviderSignature) {
+      provider = await createProvider(
+        env.config,
+        networkName,
+        env.artifacts,
+      )
+    } else {
+      provider = createProvider(
+        networkName,
+        networkConfig,
+        env.config.paths,
+        env.artifacts,
+      )
+    }
 
   // HttpProvider
   } else {
@@ -106,7 +92,12 @@ function setupHardhatNetwork(env, api, ui){
     networkConfig = env.config.networks[networkName]
     configureNetworkGas(networkConfig, api);
     configureHttpProvider(networkConfig, api, ui)
-    provider = createProvider(networkName, networkConfig);
+
+    if (newCreateProviderSignature) {
+      provider = await createProvider(env.config, networkName);
+    } else {
+      provider = createProvider(networkName, networkConfig);
+    }
   }
 
   return configureNetworkEnv(
@@ -227,7 +218,7 @@ function setNetworkFrom(networkConfig, accounts){
 // TODO: Hardhat cacheing??
 /**
  * Generates a path to a temporary compilation cache directory
- * @param  {BuidlerConfig} config
+ * @param  {HardhatConfig} config
  * @return {String}        .../.coverage_cache
  */
 function tempCacheDir(config){
@@ -236,7 +227,7 @@ function tempCacheDir(config){
 
 /**
  * Silently removes temporary folders and calls api.finish to shut server down
- * @param  {Buidler/HardhatConfig}     config
+ * @param  {HardhatConfig}     config
  * @param  {SolidityCoverage}  api
  * @return {Promise}
  */
@@ -260,7 +251,6 @@ module.exports = {
   normalizeConfig,
   finish,
   tempCacheDir,
-  setupBuidlerNetwork,
   setupHardhatNetwork,
   getTestFilePaths,
   setNetworkFrom,

@@ -128,7 +128,6 @@ More documentation, including FAQ and information about solidity-coverage's API 
 [29]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/upgrade.md#upgrading-from-06x-to-070
 [30]: https://github.com/sc-forks/solidity-coverage/tree/0.6.x-final#solidity-coverage
 [31]: https://github.com/sc-forks/solidity-coverage/releases/tag/v0.7.0
-[32]: https://github.com/sc-forks/buidler-e2e/tree/coverage
 [33]: https://github.com/sc-forks/moloch
 [34]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#reducing-the-instrumentation-footprint
 
