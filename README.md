@@ -91,7 +91,7 @@ module.exports = {
 
 [<sup>*</sup> Advanced use][14]
 
-## Viewing the reports: 
+## Viewing the reports:
 + You can find the Istanbul reports written to the `./coverage/` folder generated in your root directory.
 
 ## API
@@ -171,6 +171,8 @@ $ yarn
 + [@Shelvak](https://github.com/Shelvak)
 + [@rynobey](https://github.com/rynobey)
 + [@ZumZoom](https://github.com/ZumZoom)
++ [@fvictorio](https://github.com/fvictorio)
++ [@ChristopherDedominici](https://github.com/ChristopherDedominici)
 
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
