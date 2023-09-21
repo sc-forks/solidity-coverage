@@ -173,6 +173,8 @@ $ yarn
 + [@ZumZoom](https://github.com/ZumZoom)
 + [@fvictorio](https://github.com/fvictorio)
 + [@ChristopherDedominici](https://github.com/ChristopherDedominici)
++ [@joaoh9](https://github.com/joaoh9)
++ [@ilovehackathons](https://github.com/ilovehackathons)
 
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
