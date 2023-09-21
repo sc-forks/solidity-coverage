@@ -18,16 +18,16 @@ const util = require('util')
 function getTestFilePaths(files){
   const target = globby.sync([files])
 
-  // Buidler/Hardhat supports js & ts
+  // Hardhat supports js & ts
   const testregex = /.*\.(js|ts)$/;
   return target.filter(f => f.match(testregex) != null);
 }
 
 /**
- * Normalizes Buidler/Hardhat paths / logging for use by the plugin utilities and
+ * Normalizes Hardhat paths / logging for use by the plugin utilities and
  * attaches them to the config
- * @param  {Buidler/HardhatConfig} config
- * @return {Buidler/HardhatConfig}        updated config
+ * @param  {HardhatConfig} config
+ * @return {HardhatConfig}        updated config
  */
 function normalizeConfig(config, args={}){
   config.workingDir = config.paths.root;
@@ -47,32 +47,6 @@ function normalizeConfig(config, args={}){
   } catch(e){ /* ignore */ }
 
   return config;
-}
-
-function setupBuidlerNetwork(env, api, ui){
-  const { createProvider } = require("@nomiclabs/buidler/internal/core/providers/construction");
-
-  let networkConfig = {};
-
-  let networkName = (env.buidlerArguments.network !== 'buidlerevm')
-    ? env.buidlerArguments.network
-    : api.defaultNetworkName;
-
-  if (networkName !== api.defaultNetworkName){
-    networkConfig = env.config.networks[networkName];
-    configureHttpProvider(networkConfig, api, ui)
-  } else {
-    networkConfig.url = `http://${api.host}:${api.port}`
-  }
-
-  const provider = createProvider(networkName, networkConfig);
-
-  return configureNetworkEnv(
-    env,
-    networkName,
-    networkConfig,
-    provider
-  )
 }
 
 async function setupHardhatNetwork(env, api, ui){
@@ -244,7 +218,7 @@ function setNetworkFrom(networkConfig, accounts){
 // TODO: Hardhat cacheing??
 /**
  * Generates a path to a temporary compilation cache directory
- * @param  {BuidlerConfig} config
+ * @param  {HardhatConfig} config
  * @return {String}        .../.coverage_cache
  */
 function tempCacheDir(config){
@@ -253,7 +227,7 @@ function tempCacheDir(config){
 
 /**
  * Silently removes temporary folders and calls api.finish to shut server down
- * @param  {Buidler/HardhatConfig}     config
+ * @param  {HardhatConfig}     config
  * @param  {SolidityCoverage}  api
  * @return {Promise}
  */
@@ -277,7 +251,6 @@ module.exports = {
   normalizeConfig,
   finish,
   tempCacheDir,
-  setupBuidlerNetwork,
   setupHardhatNetwork,
   getTestFilePaths,
   setNetworkFrom,

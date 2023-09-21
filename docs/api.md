@@ -20,7 +20,7 @@ table below shows how its core methods relate to the stages of a test run:
 disposable set of contracts/artifacts which coverage must use in lieu of the 'real' (uninstrumented)
 contracts.
 
-+ there are two complete [coverage tool/plugin implementations][5] (for Buidler and Truffle)
++ there are two complete [coverage tool/plugin implementations][5] (for Hardhat and Truffle)
 which can be used as sources if you're building something similar.
 
 [5]: https://github.com/sc-forks/solidity-coverage/tree/master/plugins
