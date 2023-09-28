@@ -6,6 +6,7 @@ error InvalidSomeAddress(address someAddress);
 
 contract ContractA {
 
+    mapping(bytes32 key => uint256) public authorization;
     address public someAddress;
 
     function throwError(address _add) external {
