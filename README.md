@@ -1,4 +1,4 @@
- # solidity-coverage
+  # solidity-coverage
 
 [![Gitter chat](https://badges.gitter.im/sc-forks/solidity-coverage.svg)][18]
 ![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/latest)
