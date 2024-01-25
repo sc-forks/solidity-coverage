@@ -229,4 +229,8 @@ describe('ternary conditionals', () => {
     });
   });
 
+  it('should compile after instrumenting a ternary conditional which follows an unbracketed else', () => {
+    const info = util.instrumentAndCompile('conditional/ternary-with-unbracketed-else');
+    util.report(info.solcOutput.errors);
+  });
 });
