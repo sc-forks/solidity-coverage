@@ -127,7 +127,7 @@ Solidity code in your project.
 
 ## Parallelization in CI
 
-Coverage does not work with the Hardhat's mocha parallel mode. However, it *is* possible to parallelize coverage runs in CI environments that support complex workflows. The core idea is to
+Coverage does not work with the Hardhat's mocha parallel mode. However, it *is* possible to parallelize coverage in CI environments that support complex workflows. The core idea is to
 
 + partition the set of test files passed to the coverage task
 + split coverage into several concurrent jobs, passing test file targets as arguments using the `--testfiles` command line flag
@@ -136,7 +136,7 @@ Coverage does not work with the Hardhat's mocha parallel mode. However, it *is* 
 
 There's a nice example of this being done in CircleCI [at Synthetix, here][31].
 
-:light_bulb: **Pro Tip**: Codecov CI will automatically combine coverage reports sent to them as a batch - if you're using that service you don't need to do this yourself.
+:bulb: **Pro Tip**: Codecov CI will automatically combine coverage reports sent to them as a batch - if you're using that service you don't need to do this yourself.
 
 
 [22]: https://github.com/JoranHonig/vertigo#vertigo
