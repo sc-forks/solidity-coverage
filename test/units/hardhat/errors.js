@@ -202,4 +202,21 @@ describe('Hardhat Plugin: error cases', function() {
 
     verify.coverageNotGenerated(hardhatConfig);
   });
+
+  it('mocha parallel option is true', async function(){
+    mock.installFullProject('parallel');
+    mock.hardhatSetupEnv(this);
+
+    try {
+      await this.env.run("coverage");
+      assert.fail()
+    } catch(err){
+      assert(
+        err.message.includes('Coverage cannot be run in mocha parallel mode'),
+        `Should notify when mocha parallel flag is set:: ${err.message}`
+      );
+    }
+
+    verify.coverageNotGenerated(hardhatConfig);
+  })
 })

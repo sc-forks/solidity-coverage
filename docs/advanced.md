@@ -125,8 +125,24 @@ In combination these data sets can be passed to Joran Honig's [tarantula][29] to
 a fault localization algorithm to generate 'suspiciousness' ratings for each line of
 Solidity code in your project.
 
+## Parallelization in CI
+
+Coverage does not work with the Hardhat's mocha parallel mode. However, it *is* possible to parallelize coverage in CI environments that support complex workflows. The core idea is to
+
++ partition the set of test files passed to the coverage task
++ split coverage into several concurrent jobs, passing test file targets as arguments using the `--testfiles` command line flag
++ cache the coverage results in shared storage as each job completes
++ combine results in a final step (using the [instanbul-combine-updated][30] tool)
+
+There's a nice example of this being done in CircleCI [at Synthetix, here][31].
+
+:bulb: **Pro Tip**: Codecov CI will automatically combine coverage reports sent to them as a batch - if you're using that service you don't need to do this yourself.
+
+
 [22]: https://github.com/JoranHonig/vertigo#vertigo
 [23]: http://spideruci.org/papers/jones05.pdf
 [25]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/matrix.md
 [27]: https://mochajs.org/api/reporters_json.js.html
 [29]: https://github.com/JoranHonig/tarantula
+[30]: https://www.npmjs.com/package/istanbul-combine-updated
+[31]: https://github.com/Synthetixio/synthetix/blob/bd54f4e9cfd1529d8ea2e5a7b4d0be4c988e1a03/.circleci/src/jobs/job-unit-tests-coverage.yml

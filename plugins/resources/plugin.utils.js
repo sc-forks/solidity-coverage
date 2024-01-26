@@ -232,6 +232,12 @@ function loadSolcoverJS(config={}){
     );
   }
 
+  // Per fvictorio recommendation in #691
+  if (config.mocha.parallel) {
+    const message = ui.generate('mocha-parallel-fail');
+    throw new Error(message);
+  }
+
   return coverageConfig;
 }
 
