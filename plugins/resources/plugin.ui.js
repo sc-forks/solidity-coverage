@@ -56,6 +56,11 @@ class PluginUI extends UI {
                          `${c.red('the path you specified for it is wrong.')}`,
 
       'tests-fail': `${x} ${c.bold(args[0])} ${c.red('test(s) failed under coverage.')}`,
+
+      'mocha-parallel-fail': `${c.red('Coverage cannot be run in mocha parallel mode. ')}` +
+                             `${c.red('Set \`mocha: { parallel: false }\` in .solcover.js ')}` +
+                             `${c.red('to disable the option for the coverage task. ')}` +
+                             `${c.red('See the solidity-coverage README FAQ for info on parallelizing coverage in CI.')}`,
     }
 
 
