@@ -233,4 +233,24 @@ describe('ternary conditionals', () => {
     const info = util.instrumentAndCompile('conditional/ternary-with-unbracketed-else');
     util.report(info.solcOutput.errors);
   });
+
+  it('should compile after instrumenting a chain of ternary conditionals (single line)', () => {
+    const info = util.instrumentAndCompile('conditional/chained-singleline');
+    util.report(info.solcOutput.errors);
+  });
+
+  it('should compile after instrumenting a chain of ternary conditionals (multi-line)', () => {
+    const info = util.instrumentAndCompile('conditional/chained-multiline');
+    util.report(info.solcOutput.errors);
+  });
+
+  it('should compile after instrumenting a chain of ternary conditionals (parens)', () => {
+    const info = util.instrumentAndCompile('conditional/chained-with-parens');
+    util.report(info.solcOutput.errors);
+  });
+
+  it('should compile after instrumenting a chain of ternary conditionals (true expr is tern)', () => {
+    const info = util.instrumentAndCompile('conditional/chained-true');
+    util.report(info.solcOutput.errors);
+  });
 });
