@@ -110,6 +110,18 @@ Work-arounds for this problem are tracked below. (These are only available in ha
   }
   ```
 
+**Work-around #3**
++ Set the `.solcover.js` option: `configureYulOptimizer` to `true`.
++ Set the `.solcover.js` option: `solcOptimizerDetails` to:
+  ```js
+  {
+      yul: true,
+      yulDetails: {
+          optimizerSteps: ""
+      },
+  }
+  ```
+
 ## Notes on gas distortion
 
 Solidity-coverage instruments by injecting statements into your code, increasing its execution costs.
