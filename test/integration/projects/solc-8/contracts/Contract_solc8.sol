@@ -2,10 +2,13 @@
 pragma solidity >=0.8.0 <0.9.0;
 pragma abicoder v2;
 
+import "./Library_solc8.sol";
+
 error InvalidSomeAddress(address someAddress);
 
-contract ContractA {
+using Library_solc8 for uint256;
 
+contract ContractA {
     mapping(bytes32 key => uint256) public authorization;
     address public someAddress;
 
