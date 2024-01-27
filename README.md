@@ -123,6 +123,7 @@ Common problems & questions:
 + [Running out of stack][1002] (Stack too deep)
 + [Running out of memory][5]
 + [Running in parallel (in CI)][1003]
++ [Running coverage threshold checks][1004]
 
 ## Example reports
 + [metacoin][9] (Istanbul HTML)
@@ -218,4 +219,5 @@ $ yarn
 [1001]: https://docs.soliditylang.org/en/v0.8.0/using-the-compiler.html#input-description
 [1002]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-stack
 [1003]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#parallelization-in-ci
+[1004]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#coverage-threshold-checks
 
