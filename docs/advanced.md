@@ -138,6 +138,19 @@ There's a nice example of this being done in CircleCI [at Synthetix, here][31].
 
 :bulb: **Pro Tip**: Codecov CI will automatically combine coverage reports sent to them as a batch - if you're using that service you don't need to do this yourself.
 
+## Coverage threshold checks
+
+Istanbul has a command line utility which can be used to set thresholds for different coverage categories and throw an error if your coverage drops below them. (Istanbul is a solidity-coverage dependency so you shouldn't need to install it separately.)
+
+```shell
+# Usage
+
+$ npx istanbul check-coverage ./coverage.json --statements 99 --branches 94 --functions 99 --lines 99
+
+ERROR: Coverage for statements (60%) does not meet global threshold (99%)
+ERROR: Coverage for lines (60%) does not meet global threshold (99%)
+ERROR: Coverage for functions (66.67%) does not meet global threshold (99%)
+```
 
 [22]: https://github.com/JoranHonig/vertigo#vertigo
 [23]: http://spideruci.org/papers/jones05.pdf
