@@ -1,5 +1,27 @@
 # Changelog
 
+0.8.6 / 2024-01-28
+==================
+  * Add test for multi-contract files with inheritance
+    (https://github.com/sc-forks/solidity-coverage/issues/836)
+  * Add test for modifiers with post-conditions (https://github.com/sc-forks/solidity-coverage/issues/835)
+  * Document Istanbul check-coverage cli command
+    (https://github.com/sc-forks/solidity-coverage/issues/834)
+  * Throw error when mocha parallel is set to true
+    (https://github.com/sc-forks/solidity-coverage/issues/833)
+  * Fix instrumentation error for virtual modifiers
+    (https://github.com/sc-forks/solidity-coverage/issues/832)
+  * Add test for file level `using for` statements
+    (https://github.com/sc-forks/solidity-coverage/issues/831)
+  * Fix chained ternary conditionals instrumentation
+    (https://github.com/sc-forks/solidity-coverage/issues/830)
+  * Update faq.md with an optimizer config workaround
+    (https://github.com/sc-forks/solidity-coverage/issues/822)
+  * Upgrade solidity-parser to 0.18.0 (https://github.com/sc-forks/solidity-coverage/issues/829)
+  * Perform ternary conditional injections before branch injections
+    (https://github.com/sc-forks/solidity-coverage/issues/828)
+  * Add drips funding config (https://github.com/sc-forks/solidity-coverage/issues/827)
+
 0.8.5 / 2023-09-21
 ==================
   * Update contributor list (https://github.com/sc-forks/solidity-coverage/issues/812)
