@@ -166,6 +166,44 @@ describe('modifiers', () => {
     });
   });
 
+  it('should cover when there are post-conditions', async function() {
+    const contract = await util.bootstrapCoverage('modifiers/postconditions', api);
+    coverage.addContract(contract.instrumented, util.filePath);
+
+    // Both true
+    await contract.instance.a();
+
+    // Precondition false
+    await contract.instance.flip_precondition();
+    try {
+      await contract.instance.a();
+    } catch(e) { /*ignore*/ }
+
+    // Reset precondition to true, set postcondition false
+    await contract.instance.flip_precondition();
+    await contract.instance.flip_postcondition();
+
+    // Postcondition false
+    try {
+      await contract.instance.a();
+    } catch(e) { /*ignore*/ }
+
+    const mapping = coverage.generate(contract.data, util.pathPrefix);
+
+    assert.deepEqual(mapping[util.filePath].l, {
+      8:5, 9:3, 10:3, 14:2, 18:1, 22:3
+    });
+    assert.deepEqual(mapping[util.filePath].b, {
+      1:[3,2], 2:[1,2], 3:[3,2],
+    });
+    assert.deepEqual(mapping[util.filePath].s, {
+      1:5, 2:3, 3:3
+    });
+    assert.deepEqual(mapping[util.filePath].f, {
+      1:5, 2:2, 3:1, 4:3
+    });
+  });
+
   // Case: when first modifier always suceeds but a subsequent modifier succeeds and fails,
   // there should be a missing `else` branch on first modifier
   it('should not be influenced by revert from a subsequent modifier', async function() {
