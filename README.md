@@ -44,7 +44,7 @@ npx hardhat coverage [command-options]
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
-| sources | --sources "myFolder" or --sources "myFile.sol" | Path to *single* folder or file to target for coverage. Path is relative to Hardhat's `paths.sources` (usually `contracts/`)) |
+| sources | `--sources myFolder` or `--sources myFile.sol` | Path to *single* folder or file to target for coverage. Path is relative to Hardhat's `paths.sources` (usually `contracts/`) |
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | network    | `--network development` | Use network settings defined in the Hardhat config |
 | temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
