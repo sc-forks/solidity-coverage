@@ -19,7 +19,7 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     mock.loggerOutput.val = '';
     solcoverConfig = {
-      skipFiles: ['Migrations.sol'],
+      skipFiles: [],
       istanbulReporter: [ "json-summary", "text"]
     };
     hardhatConfig = mock.getDefaultHardhatConfig();

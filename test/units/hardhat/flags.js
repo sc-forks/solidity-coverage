@@ -19,7 +19,7 @@ describe('Hardhat Plugin: command line options', function() {
 
     mock.loggerOutput.val = '';
     solcoverConfig = {
-      skipFiles: ['Migrations.sol'],
+      skipFiles: [],
       silent: process.env.SILENT ? true : false,
       istanbulReporter: ['json-summary', 'text']
     };

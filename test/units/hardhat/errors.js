@@ -20,7 +20,7 @@ describe('Hardhat Plugin: error cases', function() {
     mock.clean();
 
     mock.loggerOutput.val = '';
-    solcoverConfig = { skipFiles: ['Migrations.sol']};
+    solcoverConfig = {};
     hardhatConfig = mock.getDefaultHardhatConfig();
     verify.cleanInitialState();
   })

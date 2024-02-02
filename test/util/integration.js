@@ -17,7 +17,6 @@ const hardhatConfigName = 'hardhat.config.js';
 const configPath =        `${temp}/.solcover.js`;
 const testPath =          './test/sources/js/';
 const sourcesPath =       './test/sources/solidity/contracts/app/';
-const migrationPath =     `${temp}/migrations/2_deploy.js`;
 const templatePath =      './test/integration/generic/*';
 const projectPath =       './test/integration/projects/'
 
@@ -177,8 +176,7 @@ function install(
   contract,
   test,
   solcoverConfig,
-  devPlatformConfig,
-  noMigrations
+  devPlatformConfig
 ) {
   if(solcoverConfig) solcoverJS = getSolcoverJS(solcoverConfig);
 
@@ -190,9 +188,6 @@ function install(
 
   // Contract
   shell.cp(`${sourcesPath}${contract}.sol`, `${temp}/contracts/${contract}.sol`);
-
-  // Migration
-  if (!noMigrations) fs.writeFileSync(migrationPath, migration);
 
   // Test
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);
