@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 interface Face {
   function stare(uint a, uint b) external;

@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 interface IInterface {
     event Assign(address indexed token, address indexed from, address indexed to, uint256 amount);

@@ -10,7 +10,7 @@ if (!process.env.ALCHEMY_TOKEN){
 
 module.exports = {
   solidity: {
-    version: "0.7.0"
+    version: "0.8.17"
   },
   networks: {
     hardhat: {

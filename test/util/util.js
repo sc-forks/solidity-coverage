@@ -64,7 +64,10 @@ function codeToCompilerInput(code) {
   return JSON.stringify({
     language: 'Solidity',
     sources: { 'test.sol': { content: code } },
-    settings: { outputSelection: {'*': { '*': [ '*' ] }} }
+    settings: {
+      outputSelection: {'*': { '*': [ '*' ] }},
+      evmVersion: "paris"
+    }
   });
 }
 
