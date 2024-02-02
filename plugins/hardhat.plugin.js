@@ -97,6 +97,7 @@ task("coverage", "Generates a code coverage report for tests")
   .addOptionalParam("testfiles",  ui.flags.file,       "", types.string)
   .addOptionalParam("solcoverjs", ui.flags.solcoverjs, "", types.string)
   .addOptionalParam('temp',       ui.flags.temp,       "", types.string)
+  .addOptionalParam('sources',    ui.flags.sources,    "", types.string)
   .addFlag('matrix', ui.flags.testMatrix)
   .addFlag('abi', ui.flags.abi)
   .setAction(async function(args, env){
