@@ -17,8 +17,8 @@ const hardhatConfigName = 'hardhat.config.js';
 const configPath =        `${temp}/.solcover.js`;
 const testPath =          './test/sources/js/';
 const sourcesPath =       './test/sources/solidity/contracts/app/';
-const templatePath =      './test/integration/generic/*';
-const projectPath =       './test/integration/projects/'
+const templatePath =      './test/sources/generic/*';
+const projectPath =       './test/sources/projects/'
 
 let previousCWD;
 
