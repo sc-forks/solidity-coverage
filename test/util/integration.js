@@ -17,7 +17,6 @@ const hardhatConfigName = 'hardhat.config.js';
 const configPath =        `${temp}/.solcover.js`;
 const testPath =          './test/sources/js/';
 const sourcesPath =       './test/sources/solidity/contracts/app/';
-const migrationPath =     `${temp}/migrations/2_deploy.js`;
 const templatePath =      './test/integration/generic/*';
 const projectPath =       './test/integration/projects/'
 
@@ -141,29 +140,6 @@ function getSolcoverJS(config){
   return `module.exports = ${JSON.stringify(config, null, ' ')}`
 }
 
-
-// ==========================
-// Migration Generators
-// ==========================
-function deploySingle(contractName){
-  return `
-    const A = artifacts.require("${contractName}");
-    module.exports = function(deployer) { deployer.deploy(A) };
-  `;
-}
-
-function deployDouble(contractNames){
-  return `
-    var A = artifacts.require("${contractNames[0]}");
-    var B = artifacts.require("${contractNames[1]}");
-    module.exports = function(deployer) {
-      deployer.deploy(A);
-      deployer.link(A, B);
-      deployer.deploy(B);
-    };
-  `;
-}
-
 // ==========================
 // Project Installers
 // ==========================
@@ -177,12 +153,9 @@ function install(
   contract,
   test,
   solcoverConfig,
-  devPlatformConfig,
-  noMigrations
+  devPlatformConfig
 ) {
   if(solcoverConfig) solcoverJS = getSolcoverJS(solcoverConfig);
-
-  const migration = deploySingle(contract);
 
   // Scaffold
   shell.mkdir(temp);
@@ -190,9 +163,6 @@ function install(
 
   // Contract
   shell.cp(`${sourcesPath}${contract}.sol`, `${temp}/contracts/${contract}.sol`);
-
-  // Migration
-  if (!noMigrations) fs.writeFileSync(migrationPath, migration);
 
   // Test
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);
@@ -207,9 +177,8 @@ function install(
 /**
  * Installs mock project with two contracts (for inheritance, libraries, etc)
  */
-function installDouble(contracts, test, config, skipMigration) {
+function installDouble(contracts, test, config) {
   const configjs = getSolcoverJS(config);
-  const migration = deployDouble(contracts);
 
   // Scaffold
   shell.mkdir(temp);
@@ -221,11 +190,6 @@ function installDouble(contracts, test, config, skipMigration) {
       ? shell.cp(`${sourcesPath}${item}`, `${temp}/contracts/${item}`)
       : shell.cp(`${sourcesPath}${item}.sol`, `${temp}/contracts/${item}.sol`);
   });
-
-  // Migration
-  if (!skipMigration){
-    fs.writeFileSync(migrationPath, migration)
-  }
 
   // Test
   shell.cp(`${testPath}${test}`, `${temp}/test/${test}`);

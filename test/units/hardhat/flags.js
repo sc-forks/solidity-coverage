@@ -19,7 +19,7 @@ describe('Hardhat Plugin: command line options', function() {
 
     mock.loggerOutput.val = '';
     solcoverConfig = {
-      skipFiles: ['Migrations.sol'],
+      skipFiles: [],
       silent: process.env.SILENT ? true : false,
       istanbulReporter: ['json-summary', 'text']
     };
@@ -200,15 +200,6 @@ describe('Hardhat Plugin: command line options', function() {
 
   it('--abi', async function(){
     const expected = [
-      {
-        "contractName": "Migrations",
-        "humanReadableAbiList": [
-         "function last_completed_migration() view returns (uint256)",
-         "function owner() view returns (address)",
-         "function setCompleted(uint256) nonpayable",
-         "function upgrade(address) nonpayable"
-        ]
-      },
       {
         "contractName": "Simple",
         "humanReadableAbiList": [

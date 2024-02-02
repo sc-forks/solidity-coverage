@@ -20,7 +20,7 @@ describe('Hardhat Plugin: error cases', function() {
     mock.clean();
 
     mock.loggerOutput.val = '';
-    solcoverConfig = { skipFiles: ['Migrations.sol']};
+    solcoverConfig = {};
     hardhatConfig = mock.getDefaultHardhatConfig();
     verify.cleanInitialState();
   })
@@ -28,30 +28,6 @@ describe('Hardhat Plugin: error cases', function() {
   afterEach(() => {
     mock.hardhatTearDownEnv();
     mock.clean();
-  });
-
-  // We're no longer checking context in HH since 2.0.4 because it just uses
-  // all the default paths. (HH dev dep currently above that: (>= 2.0.7))
-  it.skip('project contains no contract sources folder', async function() {
-    mock.installFullProject('no-sources');
-    mock.hardhatSetupEnv(this);
-
-    try {
-      await this.env.run("coverage");
-      assert.fail()
-    } catch(err){
-      assert(
-        err.message.includes('Cannot locate expected contract sources folder'),
-        `Should error when contract sources cannot be found:: ${err.message}`
-      );
-
-      assert(
-        err.message.includes('sc_temp/contracts'),
-        `Error message should contain path:: ${err.message}`
-      );
-    }
-
-    verify.coverageNotGenerated(hardhatConfig);
   });
 
   it('.solcover.js has syntax error', async function(){

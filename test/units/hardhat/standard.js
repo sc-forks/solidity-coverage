@@ -19,7 +19,7 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     mock.loggerOutput.val = '';
     solcoverConfig = {
-      skipFiles: ['Migrations.sol'],
+      skipFiles: [],
       istanbulReporter: [ "json-summary", "text"]
     };
     hardhatConfig = mock.getDefaultHardhatConfig();
@@ -70,15 +70,6 @@ describe('Hardhat Plugin: standard use cases', function() {
       mock.loggerOutput.val.includes("hardhat"),
       `Should have used 'hardhat' network name: ${mock.loggerOutput.val}`
     );
-  });
-
-  // Test fixture is not compatible with HH 2.5.0. Throws mysterious error (though fixture has no libs?)
-  // HH11: Internal invariant was violated: Libraries should have both name and version, or neither one
-  it.skip('with relative path solidity imports', async function() {
-    mock.installFullProject('import-paths');
-    mock.hardhatSetupEnv(this);
-
-    await this.env.run("coverage");
   });
 
   it('uses inheritance', async function() {
@@ -280,51 +271,6 @@ describe('Hardhat Plugin: standard use cases', function() {
       `Should run "on" hooks : ${mock.loggerOutput.val}`
     );
   });
-
-  it('solc 0.6.x', async function(){
-    mock.installFullProject('solc-6');
-    mock.hardhatSetupEnv(this);
-
-    await this.env.run("coverage");
-
-    const expected = [
-      {
-        file: mock.pathToContract(hardhatConfig, 'ContractA.sol'),
-        pct: 61.54
-      },
-      {
-        file: mock.pathToContract(hardhatConfig, 'ContractB.sol'),
-        pct: 0,
-      },
-      {
-        file: mock.pathToContract(hardhatConfig, 'B_Wallet.sol'),
-        pct: 80,
-      },
-
-    ];
-
-    verify.lineCoverage(expected);
-  })
-
-  it('solc 0.7.x', async function(){
-    mock.installFullProject('solc-7');
-    mock.hardhatSetupEnv(this);
-
-    await this.env.run("coverage");
-
-    const expected = [
-      {
-        file: mock.pathToContract(hardhatConfig, 'Contract_solc7.sol'),
-        pct: 75
-      },
-      {
-        file: mock.pathToContract(hardhatConfig, 'Functions_solc7.sol'),
-        pct: 50,
-      }
-    ];
-
-    verify.lineCoverage(expected);
-  })
 
   it('solc 0.8.x', async function(){
     mock.installFullProject('solc-8');
