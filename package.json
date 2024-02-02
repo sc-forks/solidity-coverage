@@ -10,11 +10,9 @@
     "test": "test"
   },
   "scripts": {
-    "nyc": "SILENT=true  nyc --exclude '**/sc_temp/**' --exclude '**/test/**'",
-    "test": "SILENT=true node --max-old-space-size=4096 ./node_modules/.bin/nyc --exclude '**/sc_temp/**' --exclude '**/test/**/' -- mocha test/units/* --timeout 100000 --no-warnings --exit",
-    "test:ci": "SILENT=true node --max-old-space-size=4096 ./node_modules/.bin/nyc --reporter=lcov --exclude '**/sc_temp/**' --exclude '**/test/**/' --exclude 'plugins/resources/matrix.js' -- mocha test/units/* --timeout 100000 --no-warnings --exit",
-    "test:debug": "node --max-old-space-size=4096 ./node_modules/.bin/mocha test/units/* --timeout 100000 --no-warnings --exit",
-    "netlify": "./scripts/run-netlify.sh"
+    "test:unit": "./scripts/unit.sh",
+    "test:integration": "./scripts/integration.sh",
+    "test:ci": "./scripts/ci.sh"
   },
   "homepage": "https://github.com/sc-forks/solidity-coverage",
   "repository": {
