@@ -201,15 +201,6 @@ describe('Hardhat Plugin: command line options', function() {
   it('--abi', async function(){
     const expected = [
       {
-        "contractName": "Migrations",
-        "humanReadableAbiList": [
-         "function last_completed_migration() view returns (uint256)",
-         "function owner() view returns (address)",
-         "function setCompleted(uint256) nonpayable",
-         "function upgrade(address) nonpayable"
-        ]
-      },
-      {
         "contractName": "Simple",
         "humanReadableAbiList": [
          "function getX() view returns (uint256)",
