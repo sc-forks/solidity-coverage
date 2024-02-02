@@ -1,4 +1,4 @@
-pragma solidity >0.4.99 <0.8.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 contract Account {
   address public owner;
