@@ -49,7 +49,7 @@ jobs:
       - run:
           name: Zeppelin E2E
           command: |
-            ./scripts/run-zeppelin.sh
+            ./scripts/zeppelin.sh
   e2e-nomiclabs:
     machine: true
     steps:
@@ -58,7 +58,7 @@ jobs:
       - run:
           name: Hardhat E2E
           command: |
-            ./scripts/run-nomiclabs.sh
+            ./scripts/nomiclabs.sh
 workflows:
   version: 2
   build:

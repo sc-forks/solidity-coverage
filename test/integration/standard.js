@@ -3,8 +3,8 @@ const fs = require('fs');
 const path = require('path')
 const shell = require('shelljs');
 
-const verify = require('../../util/verifiers')
-const mock = require('../../util/integration');
+const verify = require('./../util/verifiers')
+const mock = require('./../util/integration');
 
 // =======================
 // Standard Use-case Tests
