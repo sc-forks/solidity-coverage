@@ -231,17 +231,53 @@ describe('Hardhat Plugin: command line options', function() {
     assert.deepEqual(output, expected);
   })
 
-  it('--sources contract/<fileName>', async function() {
+  it('--sources folder', async function() {
 
     const taskArgs = {
-      testfiles: path.join(
-        hardhatConfig.paths.root,
-        'test/other_contract_a.js'
-      ),
-      sources: path.join(
-        hardhatConfig.paths.root,
-        'contracts/otherContracts'
-      )
+      testfiles: path.join(hardhatConfig.paths.root, 'test/other_contract_a.js'),
+      sources: 'otherContracts'
+    };
+    mock.installFullProject('test-files');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'otherContracts/OtherContractA.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  });
+
+  it('--sources folder/', async function() {
+
+    const taskArgs = {
+      testfiles: path.join(hardhatConfig.paths.root, 'test/other_contract_a.js'),
+      sources: 'otherContracts/'
+    };
+    mock.installFullProject('test-files');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage", taskArgs);
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'otherContracts/OtherContractA.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  });
+
+  it('--sources folder/filename.sol', async function() {
+
+    const taskArgs = {
+      testfiles: path.join(hardhatConfig.paths.root, 'test/other_contract_a.js'),
+      sources: 'otherContracts/OtherContractA.sol'
     };
     mock.installFullProject('test-files');
     mock.hardhatSetupEnv(this);

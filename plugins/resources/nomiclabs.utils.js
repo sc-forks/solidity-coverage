@@ -30,8 +30,14 @@ function getTestFilePaths(files){
  * @return {HardhatConfig}        updated config
  */
 function normalizeConfig(config, args={}){
+  let sources;
+
+  (args.sources)
+    ? sources = path.join(config.paths.sources, args.sources)
+    : sources = config.paths.sources;
+
   config.workingDir = config.paths.root;
-  config.contractsDir = args.sources? args.sources : config.paths.sources;
+  config.contractsDir = sources;
   config.testDir = config.paths.tests;
   config.artifactsDir = config.paths.artifacts;
   config.logger = config.logger ? config.logger : {log: null};
