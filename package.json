@@ -10,7 +10,7 @@
     "test": "test"
   },
   "scripts": {
-    "test:unit": "./scripts/units.sh",
+    "test:unit": "./scripts/unit.sh",
     "test:integration": "./scripts/integration.sh",
     "test:ci": "./scripts/ci.sh"
   },
