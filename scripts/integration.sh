@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SILENT=true node --max-old-space-size=4096 \
+node --max-old-space-size=4096 \
   ./node_modules/.bin/nyc \
     --exclude '**/sc_temp/**' \
     --exclude '**/test/**/' \
