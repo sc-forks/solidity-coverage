@@ -143,42 +143,6 @@ $ git clone https://github.com/sc-forks/solidity-coverage.git
 $ yarn
 ```
 
-## Contributors
-+ [@area](https://github.com/area)
-+ [@cgewecke](https://github.com/cgewecke)
-+ [@adriamb](https://github.com/adriamb)
-+ [@cag](https://github.com/cag)
-+ [@maurelian](https://github.com/maurelian)
-+ [@rudolfix](https://github.com/rudolfix)
-+ [@phiferd](https://github.com/phiferd)
-+ [@e11io](https://github.com/e11io)
-+ [@elenadimitrova](https://github.com/elenadimitrova)
-+ [@ukstv](https://github.com/ukstv)
-+ [@vdrg](https://github.com/vdrg)
-+ [@andresliva](https://github.com/andresilva)
-+ [@DimitarSD](https://github.com/DimitarSD)
-+ [@sohkai](https://github.com/sohkai)
-+ [@bingen](https://github.com/bingen)
-+ [@pinkiebell](https://github.com/pinkiebell)
-+ [@obernardovieira](https://github.com/obernardovieira)
-+ [@angus-hamill](https://github.com/angus-hamill)
-+ [@kandrianov](https://github.com/kandrianov)
-+ [@yxliang01](https://github.com/yxliang01)
-+ [@maxsam4](https://github.com/maxsam4)
-+ [@justinjmoses](https://github.com/justinjmoses)
-+ [@JasoonS](https://github.com/https://github.com/JasoonS)
-+ [@feuGeneA](https://github.com/https://github.com/feuGeneA)
-+ [@Dylan-Kerler](https://github.com/Dylan-Kerler)
-+ [@paulrberg](https://github.com/paulrberg)
-+ [@adjisb](https://github.com/adjisb)
-+ [@Shelvak](https://github.com/Shelvak)
-+ [@rynobey](https://github.com/rynobey)
-+ [@ZumZoom](https://github.com/ZumZoom)
-+ [@fvictorio](https://github.com/fvictorio)
-+ [@ChristopherDedominici](https://github.com/ChristopherDedominici)
-+ [@joaoh9](https://github.com/joaoh9)
-+ [@ilovehackathons](https://github.com/ilovehackathons)
-
 [1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
 [3]: https://mochajs.org/api/mocha
