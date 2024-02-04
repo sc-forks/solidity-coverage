@@ -111,7 +111,6 @@ task("coverage", "Generates a code coverage report for tests")
   let ui;
   let api;
   let config;
-  let client;
   let address;
   let failedTests = 0;
 
@@ -201,36 +200,21 @@ task("coverage", "Generates a code coverage report for tests")
     // ==============
     let network = await nomiclabsUtils.setupHardhatNetwork(env, api, ui);
 
-    if (network.isHardhatEVM){
-      accounts = await utils.getAccountsHardhat(network.provider);
-      nodeInfo = await utils.getNodeInfoHardhat(network.provider);
+    accounts = await utils.getAccountsHardhat(network.provider);
+    nodeInfo = await utils.getNodeInfoHardhat(network.provider);
 
-      // Note: this only works if the reset block number is before any transactions have fired on the fork.
-      // e.g you cannot fork at block 1, send some txs (blocks 2,3,4) and reset to block 2
-      env.network.provider.on(HARDHAT_NETWORK_RESET_EVENT, async () => {
-        await api.attachToHardhatVM(env.network.provider);
-      });
+    // Note: this only works if the reset block number is before any transactions have fired on the fork.
+    // e.g you cannot fork at block 1, send some txs (blocks 2,3,4) and reset to block 2
+    env.network.provider.on(HARDHAT_NETWORK_RESET_EVENT, async () => {
+      await api.attachToHardhatVM(env.network.provider);
+    });
 
-      await api.attachToHardhatVM(network.provider);
+    await api.attachToHardhatVM(network.provider);
 
-      ui.report('hardhat-network', [
-        nodeInfo.split('/')[1],
-        env.network.name,
-      ]);
-    } else {
-      client = api.client || require('ganache-cli');
-      address = await api.ganache(client);
-      const accountsRequest = await utils.getAccountsGanache(api.server.provider);
-      const nodeInfoRequest = await utils.getNodeInfoGanache(api.server.provider);
-
-      ui.report('ganache-network', [
-        nodeInfoRequest.result.split('/')[1],
-        env.network.name,
-        api.port
-      ]);
-
-      accounts = accountsRequest.result;
-    }
+    ui.report('hardhat-network', [
+      nodeInfo.split('/')[1],
+      env.network.name,
+    ]);
 
     // Set default account (if not already configured)
     nomiclabsUtils.setNetworkFrom(network.config, accounts);

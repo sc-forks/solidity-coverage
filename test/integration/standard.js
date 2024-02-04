@@ -193,20 +193,6 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   });
 
-  // hardhat-truffle5 test asserts balance is 777 ether
-  it('config: providerOptions', async function() {
-    const taskArgs = {
-      network: 'development'
-    };
-
-    solcoverConfig.providerOptions = { default_balance_ether: 777 }
-
-    mock.install('Simple', 'testrpc-options.js', solcoverConfig);
-    mock.hardhatSetupEnv(this);
-
-    await this.env.run("coverage", taskArgs);
-  });
-
   it('config: skipped file', async function() {
     solcoverConfig.skipFiles = ['Migrations.sol', 'Owned.sol'];
 
@@ -327,61 +313,6 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     await this.env.run("coverage");
   });
-
-  it('uses account[0] as default "from" (ganache)', async function(){
-    const mnemonic = "purity blame spice arm main narrow olive roof science verb parrot flash";
-    const account0 = "0x42ecc9ab31d7c0240532992682ee3533421dd7f5"
-    const taskArgs = {
-      network: "development"
-    }
-
-    solcoverConfig.providerOptions = {
-      mnemonic: mnemonic
-    };
-
-    mock.install('Simple', 'account-zero.js', solcoverConfig);
-    mock.hardhatSetupEnv(this);
-
-    await this.env.run("coverage", taskArgs);
-
-    const expected = [
-      {
-        file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
-        pct: 50
-      }
-    ];
-
-    verify.lineCoverage(expected);
-  })
-
-  it('inherits network defined "from" (ganache)', async function(){
-    const mnemonic = "purity blame spice arm main narrow olive roof science verb parrot flash";
-    const account1 = "0xe7a46b209a65baadc11bf973c0f4d5f19465ae83"
-    const taskArgs = {
-      network: "development"
-    }
-
-    solcoverConfig.providerOptions = {
-      mnemonic: mnemonic
-    };
-
-    const hardhatConfig = mock.getDefaultHardhatConfig()
-    hardhatConfig.networks.development.from = account1;
-
-    mock.install('Simple', 'account-one.js', solcoverConfig, hardhatConfig);
-    mock.hardhatSetupEnv(this);
-
-    await this.env.run("coverage", taskArgs);
-
-    const expected = [
-      {
-        file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
-        pct: 50
-      }
-    ];
-
-    verify.lineCoverage(expected);
-  })
 
   it('inherits network defined "from" (hardhat)', async function(){
     const mnemonic = "purity blame spice arm main narrow olive roof science verb parrot flash";

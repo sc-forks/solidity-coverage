@@ -21,7 +21,6 @@ describe('config validation', () => {
   it('validates the "string" options', function(){
     const options =  [
       "cwd",
-      "host",
       "istanbulFolder",
       "abiOutputPath",
       "matrixOutputPath",
@@ -47,7 +46,6 @@ describe('config validation', () => {
   it('validates the "boolean" options', function(){
     const options =  [
       "silent",
-      "autoLaunchServer",
       "measureStatementCoverage",
       "measureFunctionCoverage",
       "measureModifierCoverage",
