@@ -6,6 +6,7 @@ node --max-old-space-size=4096 \
     --exclude '**/test/**/' \
   -- \
   mocha test/units/* \
+    --require "test/util/mochaRootHook.js" \
     --timeout 100000 \
     --no-warnings \
     --exit

@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,18 +7,15 @@ describe('logical OR branches', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}));
   beforeEach(() => coverage = new Coverage());
   after(async() => await api.finish());
 
   // if (x == 1 || x == 2) { } else ...
   it('should cover an if statement with a simple OR condition (single branch)', async function() {
-    const contract = await util.bootstrapCoverage('or/if-or', api);
+    const contract = await util.bootstrapCoverage('or/if-or', api, this.provider, );
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -39,10 +34,10 @@ describe('logical OR branches', () => {
 
   // if (x == 1 || x == 2) { } else ...
   it('should cover an if statement with a simple OR condition (both branches)', async function() {
-    const contract = await util.bootstrapCoverage('or/if-or', api);
+    const contract = await util.bootstrapCoverage('or/if-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
-    await contract.instance.a(2);
+    await contract.instance.a(1, contract.gas);
+    await contract.instance.a(2, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -62,9 +57,9 @@ describe('logical OR branches', () => {
 
   // require(x == 1 || x == 2)
   it('should cover a require statement with a simple OR condition (single branch)', async function() {
-    const contract = await util.bootstrapCoverage('or/require-or', api);
+    const contract = await util.bootstrapCoverage('or/require-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -88,10 +83,10 @@ describe('logical OR branches', () => {
   //   x == 3
   // )
   it('should cover a require statement with multiline OR condition (two branches)', async function() {
-    const contract = await util.bootstrapCoverage('or/require-multiline-or', api);
+    const contract = await util.bootstrapCoverage('or/require-multiline-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
-    await contract.instance.a(3);
+    await contract.instance.a(1, contract.gas);
+    await contract.instance.a(3, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -111,10 +106,10 @@ describe('logical OR branches', () => {
 
   // require(x == 1 || x == 2)
   it('should cover a require statement with a simple OR condition (both branches)', async function() {
-    const contract = await util.bootstrapCoverage('or/require-or', api);
+    const contract = await util.bootstrapCoverage('or/require-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
-    await contract.instance.a(2);
+    await contract.instance.a(1, contract.gas);
+    await contract.instance.a(2, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -134,9 +129,9 @@ describe('logical OR branches', () => {
 
   // while( (x == 1 || x == 2) && counter < 2 ){
   it('should cover a while statement with a simple OR condition (single branch)', async function() {
-    const contract = await util.bootstrapCoverage('or/while-or', api);
+    const contract = await util.bootstrapCoverage('or/while-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -156,10 +151,10 @@ describe('logical OR branches', () => {
 
   // while( (x == 1 || x == 2) && counter < 2 ){
   it('should cover a while statement with a simple OR condition (both branches)', async function() {
-    const contract = await util.bootstrapCoverage('or/while-or', api);
+    const contract = await util.bootstrapCoverage('or/while-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
-    await contract.instance.a(2);
+    await contract.instance.a(1, contract.gas);
+    await contract.instance.a(2, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -179,9 +174,9 @@ describe('logical OR branches', () => {
 
   // return (x == 1 && true) || (x == 2 && true);
   it('should cover a return statement with ANDED OR conditions (single branch)', async function() {
-    const contract = await util.bootstrapCoverage('or/return-or', api);
+    const contract = await util.bootstrapCoverage('or/return-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -201,10 +196,10 @@ describe('logical OR branches', () => {
 
   // return (x == 1 && true) || (x == 2 && true);
   it('should cover a return statement with ANDED OR conditions (both branches)', async function() {
-    const contract = await util.bootstrapCoverage('or/return-or', api);
+    const contract = await util.bootstrapCoverage('or/return-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
-    await contract.instance.a(2);
+    await contract.instance.a(1, contract.gas);
+    await contract.instance.a(2, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -224,9 +219,9 @@ describe('logical OR branches', () => {
 
   //if (x == 1 && true || x == 2) {
   it('should cover an if statement with OR and AND conditions (single branch)', async function() {
-    const contract = await util.bootstrapCoverage('or/and-or', api);
+    const contract = await util.bootstrapCoverage('or/and-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -246,10 +241,10 @@ describe('logical OR branches', () => {
 
   //if (x == 1 && true || x == 2) {
   it('should cover an if statement with OR and AND conditions (both branches)', async function() {
-    const contract = await util.bootstrapCoverage('or/and-or', api);
+    const contract = await util.bootstrapCoverage('or/and-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
-    await contract.instance.a(2);
+    await contract.instance.a(1, contract.gas);
+    await contract.instance.a(2, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -269,9 +264,9 @@ describe('logical OR branches', () => {
 
   // if ((x == 1) && (x == 2 || true)) {
   it('should cover an if statement with bracked ANDED OR conditions (rightmost sub-branch)', async function() {
-    const contract = await util.bootstrapCoverage('or/and-or-brackets', api);
+    const contract = await util.bootstrapCoverage('or/and-or-brackets', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -291,9 +286,9 @@ describe('logical OR branches', () => {
 
   // if ((x == 1) || (x == 2 || true)) {
   it('should cover an if statement with multiple (bracketed) OR conditions (branch 1)', async function() {
-    const contract = await util.bootstrapCoverage('or/multi-or', api);
+    const contract = await util.bootstrapCoverage('or/multi-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -313,9 +308,9 @@ describe('logical OR branches', () => {
 
   // if ((x == 1) || (x == 2 || true)) {
   it('should cover an if statement with multiple (bracketed) OR conditions (branch 2)', async function() {
-    const contract = await util.bootstrapCoverage('or/multi-or', api);
+    const contract = await util.bootstrapCoverage('or/multi-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(2);
+    await contract.instance.a(2, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -335,9 +330,9 @@ describe('logical OR branches', () => {
 
   // if ((x == 1) || (x == 2 || true)) {
   it('should cover an if statement with multiple (bracketed) OR conditions (branch 3)', async function() {
-    const contract = await util.bootstrapCoverage('or/multi-or', api);
+    const contract = await util.bootstrapCoverage('or/multi-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(3);
+    await contract.instance.a(3, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
@@ -356,9 +351,9 @@ describe('logical OR branches', () => {
   });
 
   it('should cover the bzx example', async function(){
-    const contract = await util.bootstrapCoverage('or/bzx-or', api);
+    const contract = await util.bootstrapCoverage('or/bzx-or', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(3);
+    await contract.instance.a(3, contract.gas);
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 

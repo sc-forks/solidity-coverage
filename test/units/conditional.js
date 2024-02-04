@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,22 +7,19 @@ describe('ternary conditionals', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}));
   beforeEach(() => coverage = new Coverage());
   after(async() => await api.finish());
 
-  async function setupAndRun(solidityFile){
-    const contract = await util.bootstrapCoverage(solidityFile, api);
+  async function setupAndRun(solidityFile, provider){
+    const contract = await util.bootstrapCoverage(solidityFile, api, provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     return coverage.generate(contract.data, util.pathPrefix);
   }
 
   it('should cover a conditional that reaches the consequent (same-line)', async function() {
-    const mapping = await setupAndRun('conditional/sameline-consequent');
+    const mapping = await setupAndRun('conditional/sameline-consequent', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -41,7 +36,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover an unbracketed conditional that reaches the consequent (same-line)', async function() {
-    const mapping = await setupAndRun('conditional/unbracketed-condition');
+    const mapping = await setupAndRun('conditional/unbracketed-condition', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -58,7 +53,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover a multi-part conditional (&&) that reaches the consequent', async function() {
-    const mapping = await setupAndRun('conditional/and-condition');
+    const mapping = await setupAndRun('conditional/and-condition', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -75,7 +70,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover a multi-part conditional (||) that reaches the consequent', async function() {
-    const mapping = await setupAndRun('conditional/or-condition');
+    const mapping = await setupAndRun('conditional/or-condition', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -92,7 +87,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover a multi-part unbracketed conditional (||) that reaches the consequent', async function() {
-    const mapping = await setupAndRun('conditional/unbracketed-or-condition');
+    const mapping = await setupAndRun('conditional/unbracketed-or-condition', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -109,7 +104,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover an always-false multi-part unbracketed conditional (||)', async function() {
-    const mapping = await setupAndRun('conditional/or-always-false-condition');
+    const mapping = await setupAndRun('conditional/or-always-false-condition', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -126,7 +121,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover a conditional that reaches the alternate (same-line)', async function() {
-    const mapping = await setupAndRun('conditional/sameline-alternate');
+    const mapping = await setupAndRun('conditional/sameline-alternate', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -143,7 +138,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover a conditional that reaches the consequent (multi-line)', async function() {
-    const mapping = await setupAndRun('conditional/multiline-consequent');
+    const mapping = await setupAndRun('conditional/multiline-consequent', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -160,7 +155,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover a conditional that reaches the alternate (multi-line)', async function() {
-    const mapping = await setupAndRun('conditional/multiline-alternate');
+    const mapping = await setupAndRun('conditional/multiline-alternate', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -178,7 +173,7 @@ describe('ternary conditionals', () => {
 
   // Runs bool z = (x) ? false : true;
   it('should cover a definition assignment by conditional that reaches the alternate', async function() {
-    const mapping = await setupAndRun('conditional/declarative-exp-assignment-alternate');
+    const mapping = await setupAndRun('conditional/declarative-exp-assignment-alternate', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1,
@@ -196,7 +191,7 @@ describe('ternary conditionals', () => {
 
   // Runs z = (x) ? false : true;
   it('should cover an identifier assignment by conditional that reaches the alternate', async function() {
-    const mapping = await setupAndRun('conditional/identifier-assignment-alternate');
+    const mapping = await setupAndRun('conditional/identifier-assignment-alternate', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 7: 1, 8: 1,
@@ -213,7 +208,7 @@ describe('ternary conditionals', () => {
   });
 
   it('should cover an assignment to a member expression (reaches the alternate)', async function() {
-    const mapping = await setupAndRun('conditional/mapping-assignment');
+    const mapping = await setupAndRun('conditional/mapping-assignment', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       11: 1, 12: 1,

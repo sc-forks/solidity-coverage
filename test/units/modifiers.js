@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,30 +7,27 @@ describe('modifiers', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}));
   beforeEach(() => {
     api.config = {};
     coverage = new Coverage()
   });
   after(async() => await api.finish());
 
-  async function setupAndRun(solidityFile){
-    const contract = await util.bootstrapCoverage(solidityFile, api);
+  async function setupAndRun(solidityFile, provider){
+    const contract = await util.bootstrapCoverage(solidityFile, api, provider);
     coverage.addContract(contract.instrumented, util.filePath);
 
     /* some modifiers intentionally fail */
     try {
-      await contract.instance.a();
+      await contract.instance.a(contract.gas);
     } catch(e){}
 
     return coverage.generate(contract.data, util.pathPrefix);
   }
 
   it('should cover a modifier branch which always succeeds', async function() {
-    const mapping = await setupAndRun('modifiers/same-contract-pass');
+    const mapping = await setupAndRun('modifiers/same-contract-pass', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 10: 1,
@@ -48,26 +43,25 @@ describe('modifiers', () => {
     });
   });
 
-  // NB: Failures are replayed by truffle-contract
   it('should cover a modifier branch which never succeeds', async function() {
-    const mapping = await setupAndRun('modifiers/same-contract-fail');
+    const mapping = await setupAndRun('modifiers/same-contract-fail', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      5: 2, 6: 0, 10: 0,
+      5: 1, 6: 0, 10: 0,
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [0, 2], 2: [0, 2]
+      1: [0, 1], 2: [0, 1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 2, 2: 0,
+      1: 1, 2: 0,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 2, 2: 0
+      1: 1, 2: 0
     });
   });
 
   it('should cover a modifier on an overridden function', async function() {
-    const mapping = await setupAndRun('modifiers/override-function');
+    const mapping = await setupAndRun('modifiers/override-function', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       9: 1, 10: 1, 14: 1,
@@ -84,7 +78,7 @@ describe('modifiers', () => {
   });
 
   it('should cover multiple modifiers on the same function', async function() {
-    const mapping = await setupAndRun('modifiers/multiple-mods-same-fn');
+    const mapping = await setupAndRun('modifiers/multiple-mods-same-fn', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 10: 1, 11: 1, 15: 1
@@ -103,7 +97,7 @@ describe('modifiers', () => {
   // Same test as above - should have 2 fewer branches
   it('should exclude whitelisted modifiers', async function() {
     api.config.modifierWhitelist = ['mmm', 'nnn'];
-    const mapping = await setupAndRun('modifiers/multiple-mods-same-fn');
+    const mapping = await setupAndRun('modifiers/multiple-mods-same-fn', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 10: 1, 11: 1, 15: 1
@@ -120,10 +114,10 @@ describe('modifiers', () => {
   });
 
   it('should cover multiple functions which use the same modifier', async function() {
-    const contract = await util.bootstrapCoverage('modifiers/multiple-fns-same-mod', api);
+    const contract = await util.bootstrapCoverage('modifiers/multiple-fns-same-mod', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
-    await contract.instance.b();
+    await contract.instance.a(contract.gas);
+    await contract.instance.b(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -141,126 +135,126 @@ describe('modifiers', () => {
   });
 
   it('should cover when both modifier branches are hit', async function() {
-    const contract = await util.bootstrapCoverage('modifiers/both-branches', api);
+    const contract = await util.bootstrapCoverage('modifiers/both-branches', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
-    await contract.instance.flip();
+    await contract.instance.a(contract.gas);
+    await contract.instance.flip(contract.gas);
 
     try {
-      await contract.instance.a();
+      await contract.instance.a(contract.gas);
     } catch(e) { /*ignore*/ }
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      7: 3, 8: 1, 12: 1, 16: 1
+      7: 2, 8: 1, 12: 1, 16: 1
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [1, 2], 2: [1, 2],
+      1: [1, 1], 2: [1, 1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 3, 2: 1,
+      1: 2, 2: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 3, 2: 1, 3: 1
+      1: 2, 2: 1, 3: 1
     });
   });
 
   it('should cover when there are post-conditions', async function() {
-    const contract = await util.bootstrapCoverage('modifiers/postconditions', api);
+    const contract = await util.bootstrapCoverage('modifiers/postconditions', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
 
     // Both true
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
 
     // Precondition false
-    await contract.instance.flip_precondition();
+    await contract.instance.flip_precondition(contract.gas);
     try {
-      await contract.instance.a();
+      await contract.instance.a(contract.gas);
     } catch(e) { /*ignore*/ }
 
     // Reset precondition to true, set postcondition false
-    await contract.instance.flip_precondition();
-    await contract.instance.flip_postcondition();
+    await contract.instance.flip_precondition(contract.gas);
+    await contract.instance.flip_postcondition(contract.gas);
 
     // Postcondition false
     try {
-      await contract.instance.a();
+      await contract.instance.a(contract.gas);
     } catch(e) { /*ignore*/ }
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      8:5, 9:3, 10:3, 14:2, 18:1, 22:3
+      8:3, 9:2, 10:2, 14:2, 18:1, 22:2
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1:[3,2], 2:[1,2], 3:[3,2],
+      1:[2,1], 2:[1,1], 3:[2,1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1:5, 2:3, 3:3
+      1:3, 2:2, 3:2
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1:5, 2:2, 3:1, 4:3
+      1:3, 2:2, 3:1, 4:2
     });
   });
 
   // Case: when first modifier always suceeds but a subsequent modifier succeeds and fails,
   // there should be a missing `else` branch on first modifier
   it('should not be influenced by revert from a subsequent modifier', async function() {
-    const contract = await util.bootstrapCoverage('modifiers/reverting-neighbor', api);
+    const contract = await util.bootstrapCoverage('modifiers/reverting-neighbor', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
-    await contract.instance.flip();
+    await contract.instance.a(contract.gas);
+    await contract.instance.flip(contract.gas);
 
     try {
-      await contract.instance.a();
+      await contract.instance.a(contract.gas);
     } catch(e) { /*ignore*/ }
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      "7":3,"8":3,"12":3,"13":1,"17":1,"21":1
+      "7":2,"8":2,"12":2,"13":1,"17":1,"21":1
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      "1":[3,0],"2":[1,2],"3":[3,0],"4":[1,2]
+      "1":[2,0],"2":[1,1],"3":[2,0],"4":[1,1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      "1":3,"2":3,"3":1,
+      "1":2,"2":2,"3":1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      "1":3,"2":3,"3":1,"4":1
+      "1":2,"2":2,"3":1,"4":1
     });
   });
 
   // Case: when the modifier always suceeds but fn logic succeeds and fails, there should be
   // a missing `else` branch on modifier
   it('should not be influenced by revert within the function', async function() {
-    const contract = await util.bootstrapCoverage('modifiers/reverting-fn', api);
+    const contract = await util.bootstrapCoverage('modifiers/reverting-fn', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(true);
+    await contract.instance.a(true, contract.gas);
 
     try {
-      await contract.instance.a(false);
+      await contract.instance.a(false, contract.gas);
     } catch(e) { /*ignore*/ }
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      7: 3, 8: 3, 12: 3
+      7: 2, 8: 2, 12: 2
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [3, 0], 2: [3, 0], 3: [1,2]
+      1: [2, 0], 2: [2, 0], 3: [1,1]
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 3, 2: 3
+      1: 2, 2: 2
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 3, 2: 3
+      1: 2, 2: 2
     });
   });
 
   it('should cover when modifiers are listed with newlines', async function() {
-    const mapping = await setupAndRun('modifiers/listed-modifiers');
+    const mapping = await setupAndRun('modifiers/listed-modifiers', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       5: 1, 6: 1, 10: 1, 11: 1, 19: 1
@@ -277,7 +271,7 @@ describe('modifiers', () => {
   });
 
   it('should cover when same modifier is invoked twice on same fn', async function() {
-    const mapping = await setupAndRun('modifiers/duplicate-mods-same-fn');
+    const mapping = await setupAndRun('modifiers/duplicate-mods-same-fn', this.provider);
 
     assert.deepEqual(mapping[util.filePath].l, {
       "5":2,"13":1
@@ -294,7 +288,7 @@ describe('modifiers', () => {
   });
 
   it('should *not* treat constructor inheritance invocations as branches', async function() {
-    const mapping = await setupAndRun('modifiers/constructor');
+    const mapping = await setupAndRun('modifiers/constructor', this.provider);
     assert.deepEqual(mapping[util.filePath].b, {});
   });
 

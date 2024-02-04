@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,18 +7,15 @@ describe('for and while statements', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}));
   beforeEach(() => coverage = new Coverage());
   after(async() => await api.finish());
 
   // Runs: a() => for(var x = 1; x < 10; x++){\n sha3(x);\n }
   it('should cover a for statement with a bracketed body (multiline)', async function() {
-    const contract = await util.bootstrapCoverage('loops/for-with-brackets', api);
+    const contract = await util.bootstrapCoverage('loops/for-with-brackets', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -37,9 +32,9 @@ describe('for and while statements', () => {
 
   // Runs: a() => for(var x = 1; x < 10; x++)\n sha3(x);\n
   it('should cover a for statement with an unbracketed body', async function() {
-    const contract = await util.bootstrapCoverage('loops/for-no-brackets', api);
+    const contract = await util.bootstrapCoverage('loops/for-no-brackets', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -56,9 +51,9 @@ describe('for and while statements', () => {
 
   // Runs: a() => var t = true;\n while(t){\n t = false;\n }
   it('should cover a while statement with an bracketed body (multiline)', async function() {
-    const contract = await util.bootstrapCoverage('loops/while-with-brackets', api);
+    const contract = await util.bootstrapCoverage('loops/while-with-brackets', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -75,9 +70,9 @@ describe('for and while statements', () => {
 
   // Runs: a() => var t = true;\n while(t)\n t = false;\n
   it('should cover a while statement with an unbracketed body (multiline)', async function() {
-    const contract = await util.bootstrapCoverage('loops/while-no-brackets', api);
+    const contract = await util.bootstrapCoverage('loops/while-no-brackets', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
