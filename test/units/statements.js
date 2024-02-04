@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,10 +7,7 @@ describe('generic statements', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}))
   beforeEach(() => coverage = new Coverage());
   after(async() => await api.finish());
 
@@ -88,9 +83,9 @@ describe('generic statements', () => {
   });
 
   it('should cover an emitted event statement', async function() {
-    const contract = await util.bootstrapCoverage('statements/emit-coverage', api);
+    const contract = await util.bootstrapCoverage('statements/emit-coverage', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(0);
+    await contract.instance.a(0, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -106,9 +101,9 @@ describe('generic statements', () => {
   });
 
   it('should cover a statement following a close brace', async function() {
-    const contract = await util.bootstrapCoverage('statements/post-close-brace', api);
+    const contract = await util.bootstrapCoverage('statements/post-close-brace', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -126,9 +121,9 @@ describe('generic statements', () => {
   });
 
   it('should cover a library statement and an invoked library method', async function() {
-    const contract = await util.bootstrapCoverage('statements/library', api);
+    const contract = await util.bootstrapCoverage('statements/library', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.not();
+    await contract.instance.not(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -144,9 +139,9 @@ describe('generic statements', () => {
   });
 
   it('should cover a tuple statement', async function() {
-    const contract = await util.bootstrapCoverage('statements/tuple', api);
+    const contract = await util.bootstrapCoverage('statements/tuple', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -162,16 +157,16 @@ describe('generic statements', () => {
   });
 
   it.skip('should cover a unary statement', async function(){
-    const contract = await util.bootstrapCoverage('statements/unary', api);
+    const contract = await util.bootstrapCoverage('statements/unary', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     // TODO: obtain both statements in unary.sol
   })
 
   it('should cover an empty bodied contract statement', async function() {
-    const contract = await util.bootstrapCoverage('statements/empty-contract-body', api);
+    const contract = await util.bootstrapCoverage('statements/empty-contract-body', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 

@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const solc = require('solc');
-const TruffleContract = require('@truffle/contract');
+const ethers = require('ethers');
 
 const Instrumenter = require('./../../lib/instrumenter');
 const DataCollector = require('./../../lib/collector')
@@ -28,23 +28,18 @@ function getBytecode(solcOutput, testFile="test.sol", testName="Test"){
 }
 
 async function getDeployedContractInstance(info, provider){
+  const ethersProvider = new ethers.providers.Web3Provider(provider);
+  const signer = ethersProvider.getSigner();
+  const factory = new ethers.ContractFactory(
+    getABI(info.solcOutput),
+    getBytecode(info.solcOutput),
+    signer
+  )
 
-  const contract = TruffleContract({
-    abi: getABI(info.solcOutput),
-    bytecode: getBytecode(info.solcOutput)
-  })
+  const contract = await factory.deploy();
+  await contract.deployTransaction.wait();
 
-  contract.setProvider(provider);
-  contract.autoGas = false;
-
-  const accounts = await contract.web3.eth.getAccounts();
-  contract.defaults({
-    gas: 5500000,
-    gasPrice: 1,
-    from: accounts[0]
-  });
-
-  return contract.new();
+  return contract;
 }
 
 // ============
@@ -119,26 +114,21 @@ function report(output=[]) {
 // =====================
 // Coverage Correctness
 // =====================
-async function bootstrapCoverage(file, api){
+async function bootstrapCoverage(file, api, provider){
   const info = instrumentAndCompile(file, api);
-  info.instance = await getDeployedContractInstance(info, api.server.provider);
+
+  // Need to define a gasLimit for contract calls because otherwise ethers will estimateGas
+  // and cause duplicate hits for everything
+  info.gas = { gasLimit: 2_000_000 }
+  info.instance = await getDeployedContractInstance(info, provider);
+
+  // Have to do this after the deployment call because provider initializes on send
+  await api.attachToHardhatVM(provider);
+
   api.collector._setInstrumentationData(info.data);
   return info;
 }
 
-// =========
-// Provider
-// =========
-function initializeProvider(ganache){
-  const collector = new DataCollector();
-  const options = { logger: { log: collector.step.bind(collector) }};
-  const provider = ganache.provider(options);
-
-  return {
-    provider: provider,
-    collector: collector
-  }
-}
 
 module.exports = {
   getCode,
@@ -147,6 +137,5 @@ module.exports = {
   report,
   instrumentAndCompile,
   bootstrapCoverage,
-  initializeProvider,
   getDiffABIs
 }

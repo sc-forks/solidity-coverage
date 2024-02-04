@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,10 +7,7 @@ describe('asserts and requires', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}));
   beforeEach(() => coverage = new Coverage());
   after(async() => await api.finish());
 
@@ -20,9 +15,9 @@ describe('asserts and requires', () => {
   // conditions are never meant to be fullfilled (and assert is really for smt)
   // people disliked this...
   it('should *not* cover assert statements as branches (pass)', async function() {
-    const contract = await util.bootstrapCoverage('assert/Assert', api);
+    const contract = await util.bootstrapCoverage('assert/Assert', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(true);
+    await contract.instance.a(true, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -37,31 +32,29 @@ describe('asserts and requires', () => {
     });
   });
 
-  // NB: truffle/contract replays failing txs as .calls to obtain the revert reason from the return
-  // data. Hence the 2X measurements.
   it('should *not* cover assert statements as branches (fail)', async function() {
-    const contract = await util.bootstrapCoverage('assert/Assert', api);
+    const contract = await util.bootstrapCoverage('assert/Assert', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
 
-    try { await contract.instance.a(false) } catch(err) { /* Invalid opcode */ }
+    try { await contract.instance.a(false, contract.gas) } catch(err) { /* Invalid opcode */ }
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
     assert.deepEqual(mapping[util.filePath].l, {
-      5: 2,
+      5: 1,
     });
     assert.deepEqual(mapping[util.filePath].b, {});
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 2,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 2,
+      1: 1,
     });
   });
 
   it('should cover multi-line require stmts as `if` statements when they pass', async function() {
-    const contract = await util.bootstrapCoverage('assert/RequireMultiline', api);
+    const contract = await util.bootstrapCoverage('assert/RequireMultiline', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(true, true, true);
+    await contract.instance.a(true, true, true, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -78,34 +71,32 @@ describe('asserts and requires', () => {
     });
   });
 
-  // NB: Truffle replays failing txs as .calls to obtain the revert reason from the return
-  // data. Hence the 2X measurements.
   it('should cover multi-line require stmts as `if` statements when they fail', async function() {
-    const contract = await util.bootstrapCoverage('assert/RequireMultiline', api);
+    const contract = await util.bootstrapCoverage('assert/RequireMultiline', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
 
-    try { await contract.instance.a(true, true, false) } catch(err) { /* Revert */ }
+    try { await contract.instance.a(true, true, false, contract.gas) } catch(err) { /* Revert */ }
 
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
-      5: 2,
+      5: 1,
     });
     assert.deepEqual(mapping[util.filePath].b, {
-      1: [0, 2],
+      1: [0, 1],
     });
     assert.deepEqual(mapping[util.filePath].s, {
-      1: 2,
+      1: 1,
     });
     assert.deepEqual(mapping[util.filePath].f, {
-      1: 2,
+      1: 1,
     });
   });
 
   it('should cover require statements with method arguments', async function() {
-    const contract = await util.bootstrapCoverage('assert/Require-fn', api);
+    const contract = await util.bootstrapCoverage('assert/Require-fn', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(true);
+    await contract.instance.a(true, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -123,9 +114,9 @@ describe('asserts and requires', () => {
   });
 
   it('should cover require statements with method arguments & reason string', async function() {
-    const contract = await util.bootstrapCoverage('assert/Require-fn-reason', api);
+    const contract = await util.bootstrapCoverage('assert/Require-fn-reason', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(true);
+    await contract.instance.a(true, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {

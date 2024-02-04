@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,10 +7,7 @@ describe('function declarations', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}));
   beforeEach(() => coverage = new Coverage());
   after(async() => await api.finish());
 
@@ -37,9 +32,9 @@ describe('function declarations', () => {
   });
 
   it('should cover a simple invoked function call', async function() {
-    const contract = await util.bootstrapCoverage('function/function-call', api);
+    const contract = await util.bootstrapCoverage('function/function-call', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a();
+    await contract.instance.a(contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -56,9 +51,9 @@ describe('function declarations', () => {
   });
 
   it('should cover a modifier used on a function', async function() {
-    const contract = await util.bootstrapCoverage('function/modifier', api);
+    const contract = await util.bootstrapCoverage('function/modifier', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(0);
+    await contract.instance.a(0, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {

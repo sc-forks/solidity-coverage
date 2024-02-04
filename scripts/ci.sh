@@ -9,6 +9,7 @@ SILENT=true node --max-old-space-size=4096 \
   -- \
   mocha \
     test/units/* test/integration/* \
+    --require "test/util/mochaRootHook.js" \
     --timeout 100000 \
     --no-warnings \
     --exit \

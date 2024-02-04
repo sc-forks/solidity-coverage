@@ -1,7 +1,5 @@
 const assert = require('assert');
 const util = require('./../util/util.js');
-
-const client = require('ganache-cli');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
@@ -9,10 +7,7 @@ describe('if, else, and else if statements', () => {
   let coverage;
   let api;
 
-  before(async () => {
-    api = new Api({silent: true});
-    await api.ganache(client);
-  })
+  before(async () => api = new Api({silent: true}));
   beforeEach(() => coverage = new Coverage());
   after(async() => await api.finish());
 
@@ -27,9 +22,9 @@ describe('if, else, and else if statements', () => {
   });
 
   it('should cover an if statement with a bracketed consequent', async function() {
-    const contract = await util.bootstrapCoverage('if/if-with-brackets', api);
+    const contract = await util.bootstrapCoverage('if/if-with-brackets', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -48,9 +43,9 @@ describe('if, else, and else if statements', () => {
 
   // Runs: a(1) => if (x == 1) x = 2;
   it('should cover an unbracketed if consequent (single line)', async function(){
-    const contract = await util.bootstrapCoverage('if/if-no-brackets', api);
+    const contract = await util.bootstrapCoverage('if/if-no-brackets', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -69,10 +64,10 @@ describe('if, else, and else if statements', () => {
 
   // Runs: a(1) => if (x == 1){\n x = 3; }
   it('should cover an if statement with multiline bracketed consequent', async function() {
-    const contract = await util.bootstrapCoverage('if/if-with-brackets-multiline',api);
+    const contract = await util.bootstrapCoverage('if/if-with-brackets-multiline',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -92,10 +87,10 @@ describe('if, else, and else if statements', () => {
 
   // Runs: a(1) => if (x == 1)\n x = 3;
   it('should cover an unbracketed if consequent (multi-line)', async function() {
-    const contract = await util.bootstrapCoverage('if/if-no-brackets-multiline',api);
+    const contract = await util.bootstrapCoverage('if/if-no-brackets-multiline',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(1);
+    await contract.instance.a(1, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -114,10 +109,10 @@ describe('if, else, and else if statements', () => {
 
   // Runs: a(2) => if (x == 1) { x = 3; }
   it('should cover a simple if statement with a failing condition', async function() {
-    const contract = await util.bootstrapCoverage('if/if-with-brackets',api);
+    const contract = await util.bootstrapCoverage('if/if-with-brackets',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(2);
+    await contract.instance.a(2, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -136,10 +131,10 @@ describe('if, else, and else if statements', () => {
 
   // Runs: a(2) => if (x == 1){\n throw;\n }else{\n x = 5; \n}
   it('should cover an if statement with a bracketed alternate', async function() {
-    const contract = await util.bootstrapCoverage('if/else-with-brackets',api);
+    const contract = await util.bootstrapCoverage('if/else-with-brackets',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(2);
+    await contract.instance.a(2, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -157,10 +152,10 @@ describe('if, else, and else if statements', () => {
   });
 
   it('should cover an if statement with an unbracketed alternate', async function() {
-    const contract = await util.bootstrapCoverage('if/else-without-brackets',api);
+    const contract = await util.bootstrapCoverage('if/else-without-brackets',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(2);
+    await contract.instance.a(2, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -179,10 +174,10 @@ describe('if, else, and else if statements', () => {
   });
 
   it('should cover an else if statement with an unbracketed alternate', async function() {
-    const contract = await util.bootstrapCoverage('if/else-if-without-brackets',api);
+    const contract = await util.bootstrapCoverage('if/else-if-without-brackets',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(2);
+    await contract.instance.a(2, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -200,10 +195,10 @@ describe('if, else, and else if statements', () => {
   });
 
   it('should cover nested if statements with missing else statements', async function() {
-    const contract = await util.bootstrapCoverage('if/nested-if-missing-else',api);
+    const contract = await util.bootstrapCoverage('if/nested-if-missing-else',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(2,3,3);
+    await contract.instance.a(2,3,3, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
@@ -218,14 +213,13 @@ describe('if, else, and else if statements', () => {
     assert.deepEqual(mapping[util.filePath].f, {
       1: 1,
     });
-
   });
 
   it('should cover if-elseif-else statements that are at the same depth as each other', async function() {
-    const contract = await util.bootstrapCoverage('if/if-elseif-else',api);
+    const contract = await util.bootstrapCoverage('if/if-elseif-else',api, this.provider);
 
     coverage.addContract(contract.instrumented, util.filePath);
-    await contract.instance.a(2,3,3);
+    await contract.instance.a(2,3,3, contract.gas);
     const mapping = coverage.generate(contract.data, util.pathPrefix);
 
     assert.deepEqual(mapping[util.filePath].l, {
