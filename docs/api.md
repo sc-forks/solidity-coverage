@@ -8,7 +8,7 @@ table below shows how its core methods relate to the stages of a test run:
 | Test Stage <img width=200/>   | API Method <img width=200/>  | Description <img width=800/>                                                                                                                                                                         |
 |---------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | compilation   | `instrument` | A **pre-compilation** step: Rewrites contracts and generates an instrumentation data map.                                                                                              |
-| client launch |   `ganache`  | A **substitute** step: Launches a ganache client with coverage collection enabled in its VM. As the client runs it will mark line/branch hits on the instrumentation data map.         |
+| client launch |   `attachToHardhatVM`  | A **substitute** step: Enables coverage collection enabled in a HardhatEVM client. As the client runs it will mark line/branch hits on the instrumentation data map.         |
 | test          | `report`     | A **post-test** step: Generates a coverage report from the data collected by the VM after tests complete. |
 | exit          | `finish`     | A **substitute** step: Shuts client down                                                                                                                                               |
 
@@ -31,9 +31,8 @@ which can be used as sources if you're building something similar.
 - [API Methods](#api)
   * [constructor](#constructor)
   * [instrument](#instrument)
-  * [ganache](#ganache)
+  * [attachToHardhatVM](#attachToHardhatVM)
   * [report](#report)
-  * [finish](#finish)
   * [getInstrumentationData](#getinstrumentationdata)
   * [setInstrumentationData](#setinstrumentationdata)
 - [Utils Methods](#utils)
@@ -64,13 +63,10 @@ Creates a coverage API instance. Configurable.
 | ------ | ---- | ------- | ----------- |
 | port | *Number* | 8555 | Port to launch client on |
 | silent | *Boolean* | false | Suppress logging output |
-| client | *Object* | `require("ganache-core")` | JS Ethereum client |
-| providerOptions | *Object* | `{ }` | [ganache-core options][1]  |
 | skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
 
-[1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
 
 --------------
@@ -100,33 +96,37 @@ const instrumented = api.instrument(contracts)
 
 --------------
 
-## ganache
+## attachToHardhatVM
 
-Enables coverage data collection on an in-process ganache server. By default, this method launches
-the server, begins listening on the port specified in the [config](#constructor) (or 8555 if unspecified), and
-returns a url string. When `autoLaunchServer` is false, method returns `ganache.server` so you can control
-the `server.listen` invocation yourself.
+Enables coverage data collection on a HardhatEVM provider. (You will need to create a hardhat provider with the correct VM settings as shown below before invoking this method.)
 
 **Parameters**
 
--   `client` **Object**: (*Optional*)   ganache module
--   `autoLaunchServer` **Boolean**: (*Optional*)
+-   `provider` **Object**: Hardhat provider
 
-Returns **Promise** Address of server to connect to, or initialized, unlaunched server
+Returns **Promise**
 
 **Example**
 ```javascript
-const client = require('ganache-cli');
+const { createProvider } = require("hardhat/internal/core/providers/construction");
+const { resolveConfig } = require("hardhat/internal/core/config/config-resolution");
+const { HARDHAT_NETWORK_NAME } = require("hardhat/plugins")
 
-const api = new CoverageAPI( { client: client } );
-const address = await api.ganache();
+const api = new CoverageAPI( { ... } );
+const config = resolveConfig("./", {});
 
-> http://127.0.0.1:8555
+config.networks[HARDHAT_NETWORK_NAME].allowUnlimitedContractSize = true;
+config.networks[HARDHAT_NETWORK_NAME].blockGasLimit = api.gasLimitNumber;
+config.networks[HARDHAT_NETWORK_NAME].gas =  api.gasLimit;
+config.networks[HARDHAT_NETWORK_NAME].gasPrice = api.gasPrice;
+config.networks[HARDHAT_NETWORK_NAME].initialBaseFeePerGas = 0;
 
-// Alternatively...
+const provider = await createProvider(
+  config,
+  HARDHAT_NETWORK_NAME
+)
 
-const server = await api.ganache(client, false);
-await pify(server.listen)(8545));
+await api.attachToHardhatVM(provider);
 ```
 
 --------------
@@ -144,22 +144,6 @@ Returns **Promise**
 **Example**
 ```javascript
 await api.report('./coverage_4A3cd2b'); // Default folder name is 'coverage'
-```
-
--------------
-
-## finish
-
-Shuts down coverage-enabled ganache server instance
-
-Returns **Promise**
-
-**Example**
-```javascript
-const client = require('ganache-cli');
-
-await api.ganache(client); // Server listening...
-await api.finish();        // Server shut down.
 ```
 
 -------------
@@ -193,7 +177,7 @@ const data = load(data); // Pseudo-code
 api.setIntrumentationData(data);
 
 // Client will collect data for the loaded map
-const address = await api.ganache(client);
+await api.attachToHardhatVM(provider);
 
 // Or to `report` instrumentation data which was collected in a different process.
 const data = load(data); // Pseudo-code
@@ -348,8 +332,7 @@ utils.save(instrumented, config.contractsDir, tempContractsDir);
 
 ## finish
 
-Deletes temporary folders and shuts the ganache server down. Is tolerant - if folders or ganache
-server don't exist it will return silently.
+Deletes temporary folders. Is tolerant - if folders don't exist it will return silently.
 
 **Parameters**
 

@@ -82,7 +82,7 @@ module.exports = {
 | onPreCompile[<sup>*</sup>][14] | *Function* |   | Hook run *after* filesystem and compiler configuration is applied, *before* the compiler is run. Can be used with the other hooks to be able to generate coverage reports on non-standard / customized directory structures, as well as contracts with absolute import paths. [More...][23] |
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
-| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the ganache server is shut down. Useful if you need to clean resources up. [More...][23]|
+| onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the coverage task completes. Useful if you need to clean resources up. [More...][23]|
 | configureYulOptimizer | *Boolean* | false | (Experimental) Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
 | solcOptimizerDetails | *Object* | `undefined` |(Experimental) Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See FAQ below). |
 
@@ -140,7 +140,6 @@ $ git clone https://github.com/sc-forks/solidity-coverage.git
 $ yarn
 ```
 
-[1]: https://github.com/trufflesuite/ganache-core#options
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
 [3]: https://mochajs.org/api/mocha
 [4]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas
