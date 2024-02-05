@@ -20,7 +20,7 @@ step_install_nvm: &step_install_nvm
 jobs:
   unit-test:
     docker:
-      - image: circleci/node:20
+      - image: cimg/node:20.11.0
     steps:
       - checkout
       - run:
