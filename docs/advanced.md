@@ -27,7 +27,7 @@ module.exports = {
 
 The plugin exposes a set of workflow hooks that let you run arbitrary async logic between the main
 stages of the coverage generation process. These are useful for tasks like launching secondary
-services which need to connect to a running ganache instance (ex: the Oraclize/Provable bridge),
+services which need to connect to a running ethereum client instance (ex: the Oraclize/Provable bridge),
 or reading data from the compilation artifacts to run special preparatory steps for your tests.
 
 The stages/hooks are (in order of execution):

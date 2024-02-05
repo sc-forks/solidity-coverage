@@ -45,9 +45,6 @@ class PluginUI extends UI {
 
       'instr-skipped': `${ds} ${c.grey(args[0])}`,
 
-      'versions':  `${ct} ${c.bold('ganache-core')}:      ${args[0]}\n` +
-                   `${ct} ${c.bold('solidity-coverage')}: v${args[1]}`,
-
       'hardhat-versions': `\n${c.bold('Version')}` +
                           `\n${c.bold('=======')}\n` +
                           `${ct} ${c.bold('solidity-coverage')}: v${args[0]}`,
@@ -56,17 +53,6 @@ class PluginUI extends UI {
                          `\n${c.bold('============')}\n` +
                          `${ct} ${c.bold('HardhatEVM')}: v${args[0]}\n` +
                          `${ct} ${c.bold('network')}:    ${args[1]}\n`,
-
-      'ganache-network': `\n${c.bold('Network Info')}` +
-                         `\n${c.bold('============')}\n` +
-                         `${ct} ${c.bold('port')}:         ${args[1]}\n` +
-                         `${ct} ${c.bold('network')}:      ${args[0]}\n`,
-
-      'port-clash': `${w}  ${c.red("The 'port' values in your config's network url ")}` +
-                          `${c.red("and .solcover.js are different. Using network's: ")} ${c.bold(args[0])}.\n`,
-
-      'port-clash-hardhat': `${w}  ${c.red("The 'port' values in your Hardhat network's url ")}` +
-                            `${c.red("and .solcover.js are different. Using Hardhat's: ")} ${c.bold(args[0])}.\n`,
 
     }
 
@@ -84,8 +70,8 @@ class PluginUI extends UI {
     const x = ":x:";
 
     const kinds = {
-      'network-fail': `${c.red('--network argument: ')}${args[0]}` +
-                      `${c.red(' is not a defined network in hardhat.config.js.')}`,
+      'network-fail': `${c.red('--network cli flag is not supported for the coverage task. ')}` +
+                      `${c.red('Beginning with v0.8.7, coverage must use the default "hardhat" network.')}`,
 
       'sources-fail': `${c.red('Cannot locate expected contract sources folder: ')} ${args[0]}`,
 

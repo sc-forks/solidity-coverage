@@ -262,35 +262,6 @@ async function getNodeInfoHardhat(provider){
   return provider.send("web3_clientVersion", [])
 }
 
-async function getAccountsGanache(provider){
-  const payload = {
-    jsonrpc: "2.0",
-    method: "eth_accounts",
-    params: [],
-    id: 1
-  };
-  return ganacheRequest(provider, payload)
-}
-
-async function getNodeInfoGanache(provider){
-  const payload = {
-    jsonrpc: "2.0",
-    method: "web3_clientVersion",
-    params: [],
-    id: 1
-  };
-  return ganacheRequest(provider, payload)
-}
-
-async function ganacheRequest(provider, payload){
-  return new Promise((resolve, reject) => {
-    provider.sendAsync(payload, function(err, res){
-      if (err) return reject(err)
-      resolve(res);
-    })
-  });
-}
-
 // ==========================
 // Finishing / Cleanup
 // ==========================
@@ -330,6 +301,4 @@ module.exports = {
   setupTempFolders,
   getAccountsHardhat,
   getNodeInfoHardhat,
-  getAccountsGanache,
-  getNodeInfoGanache
 }

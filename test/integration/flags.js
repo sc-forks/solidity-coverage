@@ -51,39 +51,6 @@ describe('Hardhat Plugin: command line options', function() {
     verify.lineCoverage(expected);
   });
 
-  it('--network (declared port mismatches)', async function(){
-    solcoverConfig.port = 8222;
-
-    mock.install('Simple', 'simple.js', solcoverConfig);
-    mock.hardhatSetupEnv(this);
-
-    this.env.hardhatArguments.network = "development";
-
-    await this.env.run("coverage");
-
-    assert(
-      mock.loggerOutput.val.includes("The 'port' values"),
-      `Should notify about mismatched port values: ${mock.loggerOutput.val}`
-    );
-
-    assert(
-      mock.loggerOutput.val.includes("8545"),
-      `Should have used default coverage port 8545: ${mock.loggerOutput.val}`
-    );
-
-    assert(
-      mock.loggerOutput.val.includes("development"),
-      `Should have used specified network name: ${mock.loggerOutput.val}`
-    );
-
-    const expected = [{
-      file: mock.pathToContract(hardhatConfig, 'Simple.sol'),
-      pct: 100
-    }];
-
-    verify.lineCoverage(expected);
-  });
-
   it('--testfiles test/<fileName>', async function() {
     const taskArgs = {
       testfiles: path.join(

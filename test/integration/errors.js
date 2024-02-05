@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path')
 const pify = require('pify')
 const shell = require('shelljs');
-const ganache = require('ganache-cli')
 
 const verify = require('./../util/verifiers')
 const mock = require('./../util/integration');
@@ -64,37 +63,11 @@ describe('Hardhat Plugin: error cases', function() {
     }
   });
 
-  it('tries to launch with a port already in use', async function(){
+  it('tries to launch with the network flag', async function(){
     const taskArgs = {
       network: "development"
     }
 
-    const server = ganache.server();
-
-    mock.install('Simple', 'simple.js', solcoverConfig);
-    mock.hardhatSetupEnv(this);
-
-    await pify(server.listen)(8545);
-
-    try {
-      await this.env.run("coverage", taskArgs);
-      assert.fail();
-    } catch(err){
-      assert(
-        err.message.includes('already in use') &&
-        err.message.includes('lsof'),
-        `Should error on port-in-use with advice: ${err.message}`
-      )
-    }
-
-    await pify(server.close)();
-  });
-
-  it('tries to launch with a non-existent network', async function(){
-    const taskArgs = {
-      network: "does-not-exist"
-    }
-
     mock.install('Simple', 'simple.js', solcoverConfig);
     mock.hardhatSetupEnv(this);
 
@@ -103,9 +76,8 @@ describe('Hardhat Plugin: error cases', function() {
       assert.fail();
     } catch(err){
       assert(
-        err.message.includes('is not a defined network in hardhat.config.js') &&
-        err.message.includes('does-not-exist'),
-        `Should error missing network error: ${err.message}`
+        err.message.includes('--network cli flag is not supported') &&
+        `Should error network flag disallowed: ${err.message}`
       )
     }
   });
