@@ -223,7 +223,7 @@ describe('Hardhat Plugin: standard use cases', function() {
   });
 
   it('config: "onServerReady", "onTestsComplete", ...', async function() {
-    mock.installFullProject('test-files');
+    mock.installFullProject('task-hooks');
 
     mock.hardhatSetupEnv(this);
 
@@ -232,6 +232,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     assert(
       mock.loggerOutput.val.includes('running onServerReady')     &&
       mock.loggerOutput.val.includes('running onTestsComplete')   &&
+      mock.loggerOutput.val.includes('running onPreCompile') &&
       mock.loggerOutput.val.includes('running onCompileComplete') &&
       mock.loggerOutput.val.includes('running onIstanbulComplete'),
 

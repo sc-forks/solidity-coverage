@@ -196,6 +196,8 @@ task("coverage", "Generates a code coverage report for tests")
       config.paths.cache = nomiclabsUtils.tempCacheDir(config);
     }
 
+    await api.onPreCompile(config);
+
     await env.run(TASK_COMPILE);
 
     await api.onCompileComplete(config);
