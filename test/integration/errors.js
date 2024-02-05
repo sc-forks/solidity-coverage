@@ -63,9 +63,9 @@ describe('Hardhat Plugin: error cases', function() {
     }
   });
 
-  it('tries to launch with a non-existent network', async function(){
+  it('tries to launch with the network flag', async function(){
     const taskArgs = {
-      network: "does-not-exist"
+      network: "development"
     }
 
     mock.install('Simple', 'simple.js', solcoverConfig);
@@ -76,9 +76,8 @@ describe('Hardhat Plugin: error cases', function() {
       assert.fail();
     } catch(err){
       assert(
-        err.message.includes('is not a defined network in hardhat.config.js') &&
-        err.message.includes('does-not-exist'),
-        `Should error missing network error: ${err.message}`
+        err.message.includes('--network cli flag is not supported') &&
+        `Should error network flag disallowed: ${err.message}`
       )
     }
   });

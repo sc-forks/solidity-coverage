@@ -64,60 +64,32 @@ async function setupHardhatNetwork(env, api, ui){
   const newCreateProviderSignature = semver.satisfies(hardhatPackage.version, "^2.15.0");
 
   let provider, networkName, networkConfig;
-  let isHardhatEVM = false;
-
-  networkName = env.hardhatArguments.network || HARDHAT_NETWORK_NAME;
 
   // HardhatEVM
-  if (networkName === HARDHAT_NETWORK_NAME){
-    isHardhatEVM = true;
+  networkConfig = env.network.config;
+  configureHardhatEVMGas(networkConfig, api);
 
-    networkConfig = env.network.config;
-    configureHardhatEVMGas(networkConfig, api);
-
-    if (newCreateProviderSignature) {
-      provider = await createProvider(
-        env.config,
-        networkName,
-        env.artifacts,
-      )
-    } else {
-      provider = createProvider(
-        networkName,
-        networkConfig,
-        env.config.paths,
-        env.artifacts,
-      )
-    }
-
-  // HttpProvider
+  if (newCreateProviderSignature) {
+    provider = await createProvider(
+      env.config,
+      HARDHAT_NETWORK_NAME,
+      env.artifacts,
+    )
   } else {
-    if (!(env.config.networks && env.config.networks[networkName])){
-      throw new Error(ui.generate('network-fail', [networkName]))
-    }
-    networkConfig = env.config.networks[networkName]
-    configureNetworkGas(networkConfig, api);
-    configureHttpProvider(networkConfig, api, ui)
-
-    if (newCreateProviderSignature) {
-      provider = await createProvider(env.config, networkName);
-    } else {
-      provider = createProvider(networkName, networkConfig);
-    }
+    provider = createProvider(
+      HARDHAT_NETWORK_NAME,
+      networkConfig,
+      env.config.paths,
+      env.artifacts,
+    )
   }
 
   return configureNetworkEnv(
     env,
     networkName,
     networkConfig,
-    provider,
-    isHardhatEVM
+    provider
   )
-}
-
-function configureNetworkGas(networkConfig, api){
-  networkConfig.gas =  api.gasLimit;
-  networkConfig.gasPrice = api.gasPrice;
 }
 
 function configureHardhatEVMGas(networkConfig, api){
@@ -128,7 +100,7 @@ function configureHardhatEVMGas(networkConfig, api){
   networkConfig.initialBaseFeePerGas = 0;
 }
 
-function configureNetworkEnv(env, networkName, networkConfig, provider, isHardhatEVM){
+function configureNetworkEnv(env, networkName, networkConfig, provider){
   env.config.networks[networkName] = networkConfig;
   env.config.defaultNetwork = networkName;
 
@@ -136,31 +108,13 @@ function configureNetworkEnv(env, networkName, networkConfig, provider, isHardha
     name: networkName,
     config: networkConfig,
     provider: provider,
-    isHardhatEVM: isHardhatEVM
+    isHardhatEVM: true
   });
 
   env.ethereum = provider;
 
   // Return a reference so we can set the from account
   return env.network;
-}
-
-/**
- * Extracts port from url / sets network.url
- * @param  {Object} networkConfig
- * @param  {SolidityCoverage} api
- */
-function configureHttpProvider(networkConfig, api, ui){
-  const configPort = networkConfig.url.split(':')[2];
-
-  // Warn: port conflicts
-  if (api.port !== api.defaultPort && api.port !== configPort){
-    ui.report('port-clash', [ configPort ])
-  }
-
-  // Prefer network port
-  api.port = parseInt(configPort);
-  networkConfig.url = `http://${api.host}:${api.port}`;
 }
 
 /**

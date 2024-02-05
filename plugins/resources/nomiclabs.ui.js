@@ -70,8 +70,8 @@ class PluginUI extends UI {
     const x = ":x:";
 
     const kinds = {
-      'network-fail': `${c.red('--network argument: ')}${args[0]}` +
-                      `${c.red(' is not a defined network in hardhat.config.js.')}`,
+      'network-fail': `${c.red('--network cli flag is not supported for the coverage task. ')}` +
+                      `${c.red('Beginning with v0.8.7, coverage must use the default "hardhat" network.')}`,
 
       'sources-fail': `${c.red('Cannot locate expected contract sources folder: ')} ${args[0]}`,
 

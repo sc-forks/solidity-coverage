@@ -142,6 +142,11 @@ task("coverage", "Generates a code coverage report for tests")
     }
     env.hardhatArguments = Object.assign(env.hardhatArguments, flags)
 
+    // Error if --network flag is set
+    if (env.hardhatArguments.network){
+      throw new Error(ui.generate('network-fail'));
+    }
+
     // ===========================
     // Generate abi diff component
     // (This flag only useful within codecheck context)
