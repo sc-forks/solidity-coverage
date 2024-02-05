@@ -8,9 +8,9 @@ table below shows how its core methods relate to the stages of a test run:
 | Test Stage <img width=200/>   | API Method <img width=200/>  | Description <img width=800/>                                                                                                                                                                         |
 |---------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | compilation   | `instrument` | A **pre-compilation** step: Rewrites contracts and generates an instrumentation data map.                                                                                              |
-| client launch |   `attachToHardhatVM`  | A **substitute** step: Enables coverage collection enabled in a HardhatEVM client. As the client runs it will mark line/branch hits on the instrumentation data map.         |
+| client launch |   `attachToHardhatVM`  | A **pre-test** step: Enables coverage collection enabled in a HardhatEVM client. As the client runs it will mark line/branch hits on the instrumentation data map.         |
 | test          | `report`     | A **post-test** step: Generates a coverage report from the data collected by the VM after tests complete. |
-| exit          | `finish`     | A **substitute** step: Shuts client down                                                                                                                                               |
+
 
 [3]: https://github.com/gotwarlost/istanbul
 
@@ -20,8 +20,8 @@ table below shows how its core methods relate to the stages of a test run:
 disposable set of contracts/artifacts which coverage must use in lieu of the 'real' (uninstrumented)
 contracts.
 
-+ there are two complete [coverage tool/plugin implementations][5] (for Hardhat and Truffle)
-which can be used as sources if you're building something similar.
++ there is a complete [coverage tool/plugin implementation][5] for Hardhat
+which can be used as a source if you're building something similar.
 
 [5]: https://github.com/sc-forks/solidity-coverage/tree/master/plugins
 
