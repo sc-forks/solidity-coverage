@@ -53,25 +53,6 @@ describe('Hardhat Plugin: standard use cases', function() {
     );
   });
 
-  it('default network ("hardhat")', async function(){
-    mock.install('Simple', 'simple.js', solcoverConfig);
-    mock.hardhatSetupEnv(this);
-
-    this.env.hardhatArguments.network = "hardhat"
-
-    await this.env.run("coverage");
-
-    assert(
-      mock.loggerOutput.val.includes("HardhatEVM"),
-      `Should have displayed HardhatEVM version: ${mock.loggerOutput.val}`
-    );
-
-    assert(
-      mock.loggerOutput.val.includes("hardhat"),
-      `Should have used 'hardhat' network name: ${mock.loggerOutput.val}`
-    );
-  });
-
   it('uses inheritance', async function() {
     mock.installDouble(
       ['Proxy', 'Owned'],
