@@ -61,7 +61,6 @@ Creates a coverage API instance. Configurable.
 
 | Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
 | ------ | ---- | ------- | ----------- |
-| port | *Number* | 8555 | Port to launch client on |
 | silent | *Boolean* | false | Suppress logging output |
 | skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
@@ -113,6 +112,9 @@ const { resolveConfig } = require("hardhat/internal/core/config/config-resolutio
 const { HARDHAT_NETWORK_NAME } = require("hardhat/plugins")
 
 const api = new CoverageAPI( { ... } );
+
+// Execute instrument and compiilation steps and then...
+
 const config = resolveConfig("./", {});
 
 config.networks[HARDHAT_NETWORK_NAME].allowUnlimitedContractSize = true;
