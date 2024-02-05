@@ -86,7 +86,7 @@ async function setupHardhatNetwork(env, api, ui){
 
   return configureNetworkEnv(
     env,
-    networkName,
+    HARDHAT_NETWORK_NAME,
     networkConfig,
     provider
   )
