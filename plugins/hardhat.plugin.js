@@ -52,10 +52,13 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
     if (settings.optimizer === undefined) {
       settings.optimizer = {};
     }
+
     // Unset useLiteralContent due to solc metadata size restriction
     settings.metadata.useLiteralContent = false;
-    // Override optimizer settings for all compilers
-    settings.optimizer.enabled = false;
+
+    // Beginning with v0.8.7, we let the optimizer run if viaIR is true and
+    // instrument using `verbatim` YUL keyword. Otherwise turn the optimizer off.
+    if (!settings.viaIR) settings.optimizer.enabled = false;
 
     // This is fixes a stack too deep bug in ABIEncoderV2
     // Experimental because not sure this works as expected across versions....

@@ -61,7 +61,8 @@ function codeToCompilerInput(code) {
     sources: { 'test.sol': { content: code } },
     settings: {
       outputSelection: {'*': { '*': [ '*' ] }},
-      evmVersion: "paris"
+      evmVersion: "paris",
+      viaIR: process.env.VIA_IR === "true"
     }
   });
 }
@@ -89,10 +90,13 @@ function getDiffABIs(sourceName, testFile="test.sol", original="Old", current="N
 // ============================
 // Instrumentation Correctness
 // ============================
-function instrumentAndCompile(sourceName, api={}) {
+function instrumentAndCompile(sourceName, api={ config: {} }) {
+  api.config.viaIR = process.env.VIA_IR === "true";
   const contract = getCode(`${sourceName}.sol`)
   const instrumenter = new Instrumenter(api.config);
   const instrumented = instrumenter.instrument(contract, filePath);
+
+  //console.log('instrumented: --> ' + instrumented.contract);
 
   return {
     contract: contract,
@@ -116,6 +120,9 @@ function report(output=[]) {
 // =====================
 async function bootstrapCoverage(file, api, provider){
   const info = instrumentAndCompile(file, api);
+
+  const {inspect} = require('util');
+  //console.log('info --> ' + inspect(info.solcOutput));
 
   // Need to define a gasLimit for contract calls because otherwise ethers will estimateGas
   // and cause duplicate hits for everything

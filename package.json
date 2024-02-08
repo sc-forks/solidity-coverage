@@ -1,4 +1,4 @@
-{
+ {
   "name": "solidity-coverage",
   "version": "0.8.6",
   "description": "Code coverage for Solidity testing",
@@ -12,7 +12,10 @@
   "scripts": {
     "test:unit": "./scripts/unit.sh",
     "test:integration": "./scripts/integration.sh",
-    "test:ci": "./scripts/ci.sh"
+    "test:ci": "./scripts/ci.sh",
+    "test:uint:viaIR": "VIA_IR=true ./scripts/unit.sh",
+    "test:integration:viaIR": "VIA_IR=true ./scripts/integration.sh",
+    "test:ci:viaIR": "VIA_IR=true ./scripts/ci.sh"
   },
   "homepage": "https://github.com/sc-forks/solidity-coverage",
   "repository": {

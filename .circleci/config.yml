@@ -32,9 +32,13 @@ jobs:
           command: |
             yarn
       - run:
-          name: Run tests
+          name: Tests ( optimizer.enabled=false )
           command: |
             npm run test:ci
+      - run:
+          name: Tests ( viaIR=true )
+          command: |
+            npm run test:ci:viaIR
       - run:
           name: Upload coverage
           command: |

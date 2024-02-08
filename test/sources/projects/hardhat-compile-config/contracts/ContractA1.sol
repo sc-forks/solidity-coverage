@@ -1,4 +1,4 @@
-pragma solidity ^0.5.5;
+pragma solidity >=0.8.0 <0.9.0;
 
 
 contract ContractA {

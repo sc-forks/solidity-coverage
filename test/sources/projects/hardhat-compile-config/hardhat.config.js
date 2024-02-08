@@ -5,14 +5,20 @@ module.exports={
   solidity: {
     compilers: [
       {
-        version: "0.5.5"
+        version: "0.8.17",
+        settings: {
+          optimizer: {
+            enabled: true
+          },
+          viaIR: process.env.VIA_IR === "true"
+        }
       },
       {
-        version: "0.5.7"
+        version: "0.8.19"
       },
       // Make sure optimizer gets disabled
       {
-        version: "0.6.7",
+        version: "0.8.12",
         settings: {
           optimizer: {
             enabled: true,
@@ -23,11 +29,13 @@ module.exports={
     ],
     overrides: {
       "contracts/ContractA.sol": {
-        version: "0.5.5",
+        version: "0.8.24",
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200
+            runs: 200,
+            viaIR: process.env.VIA_IR === "true",
+            evmVersion: 'paris'
           }
         }
       }

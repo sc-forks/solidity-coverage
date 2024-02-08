@@ -8,7 +8,13 @@ module.exports={
     }
   },
   solidity: {
-    version: "0.8.17"
+    version: "0.8.17",
+    settings: {
+      optimizer: {
+        enabled: true
+      },
+      viaIR: process.env.VIA_IR === "true"
+    }
   },
   paths: {
     sources: './contracts/A'

@@ -51,8 +51,11 @@ describe('generic statements', () => {
     util.report(info.solcOutput.errors);
   });
 
-  // FAILING WITH 0.8.x ... unskip when viaIR work is done
-  it.skip('should instrument without triggering stack-too-deep', () => {
+  it('should instrument without triggering stack-too-deep', () => {
+    // Only compiles if compiler.settings.viaIR = true
+    // Tests run with optimizer turned on/off to validate both instrumentation techniques
+    if (!process.env.VIA_IR) return;
+
     const info = util.instrumentAndCompile('statements/stack-too-deep');
     util.report(info.solcOutput.errors);
   });

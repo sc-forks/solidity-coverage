@@ -36,6 +36,13 @@ function normalizeConfig(config, args={}){
     ? sources = path.join(config.paths.sources, args.sources)
     : sources = config.paths.sources;
 
+  //const { inspect } = require('util');
+  //console.log('config --> ' + inspect(config.solidity.compilers));
+
+  if (config.solidity && config.solidity.compilers.length) {
+    config.viaIR = isUsingViaIR(config.solidity);
+  }
+
   config.workingDir = config.paths.root;
   config.contractsDir = sources;
   config.testDir = config.paths.tests;
@@ -53,6 +60,17 @@ function normalizeConfig(config, args={}){
   } catch(e){ /* ignore */ }
 
   return config;
+}
+
+function isUsingViaIR(solidity) {
+  let viaIR = false;
+  for (compiler of solidity.compilers) {
+    if (compiler.settings && compiler.settings.viaIR) {
+      viaIR = true;
+    }
+  }
+  // Also handle overrides...
+  return viaIR;
 }
 
 async function setupHardhatNetwork(env, api, ui){

@@ -227,7 +227,9 @@ function loadSolcoverJS(config={}){
     coverageConfig = {};
   }
 
-  // Truffle writes to coverage config
+  // viaIR is eval'd in `nomiclab.utils.normalizeConfig`
+  coverageConfig.viaIR = config.viaIR;
+
   coverageConfig.log = log;
   coverageConfig.cwd = config.workingDir;
   coverageConfig.originalContractsDir = config.contractsDir;
