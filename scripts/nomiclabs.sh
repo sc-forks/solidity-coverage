@@ -22,7 +22,7 @@ function verifyMatrixExists {
 
 # Get rid of any caches
 sudo rm -rf node_modules
-# echo "NVM CURRENT >>>>>" && nvm current
+echo "NVM CURRENT >>>>>" && nvm current
 
 # Use PR env variables (for forks) or fallback on local if PR not available
 SED_REGEX="s/git@github.com:/https:\/\/github.com\//"
@@ -69,15 +69,15 @@ cd ..
 npm install -g yarn
 git clone https://github.com/cgewecke/template-ethereum-contracts.git
 cd template-ethereum-contracts
-sudo yarn
-sudo yarn add $PR_PATH --dev
+yarn
+yarn add $PR_PATH --dev
 cat package.json
 
 # Here we want to make sure that HH cache triggers a
 # complete recompile after coverage runs by verifying
 # that gas consumption is same in both runs.
-sudo yarn run gas
-sudo yarn run coverage
-sudo yarn run gas
+yarn run gas
+yarn run coverage
+yarn run gas
 
 verifyCoverageExists

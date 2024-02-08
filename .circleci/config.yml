@@ -54,10 +54,10 @@ jobs:
           command: |
             ./scripts/zeppelin.sh
   e2e-nomiclabs:
-    docker:
-      - image: cimg/node:18.19.0
+    machine: true
     steps:
       - checkout
+      - <<: *step_install_nvm
       - run:
           name: Hardhat E2E
           command: |
