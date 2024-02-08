@@ -364,7 +364,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   })
 
-  it.only('logicalOR & ternary conditionals', async function(){
+  it('logicalOR & ternary conditionals', async function(){
     mock.installFullProject('ternary-and-logical-or');
     mock.hardhatSetupEnv(this);
 

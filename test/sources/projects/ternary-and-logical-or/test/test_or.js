@@ -5,7 +5,7 @@ contract("contract_or", function(accounts) {
 
   before(async () => instance = await Contract_OR.new())
 
-  it.only('_if', async function(){
+  it('_if', async function(){
     await instance._if(0);
     await instance._if(7);
   });
