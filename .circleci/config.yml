@@ -10,13 +10,15 @@ step_install_nvm: &step_install_nvm
     name: "Install nvm for machine"
     command: |
       set +e
-      export NVM_DIR="/opt/circleci/.nvm"
+      wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+      export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      nvm install v14.19.0
-      nvm alias default v14.19.0
-      echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-      echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+      nvm install v14
+      nvm alias default 14.19.0
 
+      echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
+      echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
 jobs:
   unit-test:
     docker:
