@@ -69,15 +69,15 @@ cd ..
 npm install -g yarn
 git clone https://github.com/cgewecke/template-ethereum-contracts.git
 cd template-ethereum-contracts
-yarn
-yarn add $PR_PATH --dev
+sudo yarn
+sudo yarn add $PR_PATH --dev
 cat package.json
 
 # Here we want to make sure that HH cache triggers a
 # complete recompile after coverage runs by verifying
 # that gas consumption is same in both runs.
-yarn run gas
-yarn run coverage
-yarn run gas
+sudo yarn run gas
+sudo yarn run coverage
+sudo yarn run gas
 
 verifyCoverageExists
