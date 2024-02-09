@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-SILENT=true node --max-old-space-size=4096 \
+# Toggles optimizer on/off
+VIAR_IR=$VIA_IR
+
+# Minimize integration test output
+SILENT=true
+
+node --max-old-space-size=4096 \
   ./node_modules/.bin/nyc \
     --reporter=lcov \
     --exclude '**/sc_temp/**' \

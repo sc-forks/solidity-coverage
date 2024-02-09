@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Toggles optimizer on/off
+VIAR_IR=$VIA_IR
+
 node --max-old-space-size=4096 \
   ./node_modules/.bin/nyc \
     --exclude '**/sc_temp/**' \

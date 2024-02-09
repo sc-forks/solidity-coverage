@@ -348,6 +348,31 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   })
 
+  it('detects viaIR when specified in config overrides only', async function(){
+    mock.installFullProject('overrides-viaIR');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractOverA2.sol'),
+        pct: 33.33
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractOverB2.sol'),
+        pct: 100,
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractOverC2.sol'),
+        pct: 100,
+      },
+
+    ];
+
+    verify.lineCoverage(expected);
+  })
+
   it('locates .coverage_contracts correctly when dir is subfolder', async function(){
     mock.installFullProject('contract-subfolders');
     mock.hardhatSetupEnv(this);

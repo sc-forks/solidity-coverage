@@ -6,26 +6,10 @@ module.exports={
     compilers: [
       {
         version: "0.8.17",
-        settings: {
-          optimizer: {
-            enabled: true
-          },
-          viaIR: process.env.VIA_IR === "true"
-        }
       },
       {
         version: "0.8.19"
       },
-      // Make sure optimizer gets disabled
-      {
-        version: "0.8.12",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200
-          }
-        }
-      }
     ],
     overrides: {
       "contracts/ContractA.sol": {

@@ -61,7 +61,8 @@ function codeToCompilerInput(code) {
     sources: { 'test.sol': { content: code } },
     settings: {
       outputSelection: {'*': { '*': [ '*' ] }},
-      evmVersion: "paris"
+      evmVersion: "paris",
+      viaIR: process.env.VIA_IR === "true"
     }
   });
 }
@@ -89,7 +90,8 @@ function getDiffABIs(sourceName, testFile="test.sol", original="Old", current="N
 // ============================
 // Instrumentation Correctness
 // ============================
-function instrumentAndCompile(sourceName, api={}) {
+function instrumentAndCompile(sourceName, api={ config: {} }) {
+  api.config.viaIR = process.env.VIA_IR === "true";
   const contract = getCode(`${sourceName}.sol`)
   const instrumenter = new Instrumenter(api.config);
   const instrumented = instrumenter.instrument(contract, filePath);
