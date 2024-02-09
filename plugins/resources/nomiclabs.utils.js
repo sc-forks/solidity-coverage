@@ -37,7 +37,7 @@ function normalizeConfig(config, args={}){
     : sources = config.paths.sources;
 
   if (config.solidity && config.solidity.compilers.length) {
-    config.viaIR = isUsingViaIR(config.solidity);
+    config.viaIR = true; //isUsingViaIR(config.solidity);
   }
 
   config.workingDir = config.paths.root;

@@ -57,7 +57,7 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
 
     // Beginning with v0.8.7, we let the optimizer run if viaIR is true and
     // instrument using `abi.encode(bytes8 covHash)`. Otherwise turn the optimizer off.
-    if (!settings.viaIR) settings.optimizer.enabled = false;
+    if (!settings.viaIR) settings.viaIR = true;
 
     // This sometimes fixed a stack-too-deep bug in ABIEncoderV2 for coverage plugin versions up to 0.8.6
     // Although issue should be fixed in 0.8.7, am leaving this option in because it may still be necessary

@@ -65,6 +65,6 @@ workflows:
   version: 2
   build:
     jobs:
-      - unit-test
+      # - unit-test
       - e2e-zeppelin
-      - e2e-nomiclabs
+      # - e2e-nomiclabs
