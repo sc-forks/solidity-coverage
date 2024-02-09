@@ -34,9 +34,9 @@ module.exports={
           optimizer: {
             enabled: true,
             runs: 200,
-            viaIR: process.env.VIA_IR === "true",
             evmVersion: 'paris'
-          }
+          },
+          viaIR: process.env.VIA_IR === "true",
         }
       }
     }
