@@ -445,4 +445,28 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     verify.branchCoverage(expected);
   });
+
+  it('file-level function declarations', async function(){
+    mock.installFullProject('file-level-functions');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'FunctionA.sol'),
+        pct: 25
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'FunctionB.sol'),
+        pct: 25
+      },
+      {
+        file: mock.pathToContract(hardhatConfig, 'UsesFunctions.sol'),
+        pct: 100
+      },
+    ];
+
+    verify.branchCoverage(expected);
+  });
 })
