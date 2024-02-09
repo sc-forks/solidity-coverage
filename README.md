@@ -41,16 +41,16 @@ import 'solidity-coverage'
 npx hardhat coverage [command-options]
 ```
 
-### Basic Trouble shooting
+### Trouble shooting
 
-+ **Seeing missing or unexpected coverage?** Make sure you're on the latest plugin version and run:
+**Seeing missing or unexpected coverage?** Make sure you're on the latest plugin version and run:
 ```sh
 $ npx hardhat clean
 $ npx hardhat compile
 $ npx hardhat coverage
 ```
 
-+ **Typescript compilation errors?**
+**Typescript compilation errors?**
 ```sh
 $ npx hardhat compile
 $ TS_NODE_TRANSPILE_ONLY=true npx hardhat coverage
@@ -67,7 +67,6 @@ $ TS_NODE_TRANSPILE_ONLY=true npx hardhat coverage
 | testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
 | sources | `--sources myFolder` or `--sources myFile.sol` | Path to *single* folder or file to target for coverage. Path is relative to Hardhat's `paths.sources` (usually `contracts/`) |
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
 | matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
 
 [<sup>*</sup> Advanced use][14]
