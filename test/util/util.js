@@ -119,6 +119,9 @@ function report(output=[]) {
 async function bootstrapCoverage(file, api, provider){
   const info = instrumentAndCompile(file, api);
 
+  const { inspect } = require("util");
+  //console.log('solc: ' + inspect(info.solcOutput));
+
   // Need to define a gasLimit for contract calls because otherwise ethers will estimateGas
   // and cause duplicate hits for everything
   info.gas = { gasLimit: 2_000_000 }
