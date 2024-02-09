@@ -94,7 +94,7 @@ specific line of code. Examples include:
 + [mutation testing][22], where this data lets you select the correct subset of tests to check
 a mutation with.
 + [fault localization techniques][23], where the complete data set is a key input to algorithms that try
-to guess where bugs might exist in a given codebase.
+to guess where bugs might exist in a codebase.
 
 Running the coverage command with `--matrix` will write [a JSON test matrix][25] which maps greppable
 test names to each line of code to a file named `testMatrix.json` in your project's root.
@@ -123,9 +123,8 @@ There's a nice example of this being done in CircleCI [at Synthetix, here][31].
 
 Istanbul has a command line utility which can be used to set thresholds for different coverage categories and throw an error if your coverage drops below them. (Istanbul is a solidity-coverage dependency so you shouldn't need to install it separately.)
 
+**Example**
 ```shell
-# Usage
-
 $ npx istanbul check-coverage ./coverage.json --statements 99 --branches 94 --functions 99 --lines 99
 ```
 
@@ -146,6 +145,8 @@ find it inconvenient to modify them to handle an alternate path.
 This option allows you to avoid that but it's important to realise that the temp
 folder is **automatically deleted** when coverage completes. You shouldn't use it if your preferred
 build target contains information you want to preserve between test runs.
+
+-----------
 
 ## [DEPRECATED] Setting a custom temporary contracts directory
 
