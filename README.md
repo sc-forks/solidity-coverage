@@ -132,20 +132,12 @@ The coverage plugin sets a boolean variable on the globally injected hardhat env
 hre.__SOLIDITY_COVERAGE_RUNNING === true
 ```
 
-## FAQ
-
-Common problems & questions:
-
-+ [Running in CI][7]
-+ [Running out of gas][13]
-+ [Running out of time][6]
-+ [Running out of stack][1002] (Stack too deep)
-+ [Running out of memory][5]
-+ [Running in parallel (in CI)][1003]
-+ [Running coverage threshold checks][1004]
-
 ## Example reports
 + [openzeppelin-solidity][10](Codecov)
+
+## Funding
+
+You can fund solidity-coverage development through [DRIPS][1008]. It's a public goods protocol which makes it super easy to distribute money to packages in your dependency tree. (It's great, check it out.)
 
 ## Contribution Guidelines
 
@@ -203,4 +195,5 @@ $ yarn
 [1004]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#coverage-threshold-checks
 [1005]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
 [1007]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md
+[1008]: https://www.drips.network/app/projects/github/sc-forks/solidity-coverage
 
