@@ -63,14 +63,20 @@ function normalizeConfig(config, args={}){
 }
 
 function isUsingViaIR(solidity) {
-  let viaIR = false;
+
   for (compiler of solidity.compilers) {
     if (compiler.settings && compiler.settings.viaIR) {
-      viaIR = true;
+      return true;
     }
   }
-  // Also handle overrides...
-  return viaIR;
+  if (solidity.overrides) {
+    for (key of Object.keys(solidity.overrides)){
+      if (solidity.overrides[key].settings && solidity.overrides[key].settings.viaIR) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 async function setupHardhatNetwork(env, api, ui){
