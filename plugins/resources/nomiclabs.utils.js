@@ -36,9 +36,6 @@ function normalizeConfig(config, args={}){
     ? sources = path.join(config.paths.sources, args.sources)
     : sources = config.paths.sources;
 
-  //const { inspect } = require('util');
-  //console.log('config --> ' + inspect(config.solidity.compilers));
-
   if (config.solidity && config.solidity.compilers.length) {
     config.viaIR = isUsingViaIR(config.solidity);
   }

@@ -52,16 +52,16 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
     if (settings.optimizer === undefined) {
       settings.optimizer = {};
     }
-
     // Unset useLiteralContent due to solc metadata size restriction
     settings.metadata.useLiteralContent = false;
 
     // Beginning with v0.8.7, we let the optimizer run if viaIR is true and
-    // instrument using `verbatim` YUL keyword. Otherwise turn the optimizer off.
+    // instrument using `abi.encode(bytes8 covHash)`. Otherwise turn the optimizer off.
     if (!settings.viaIR) settings.optimizer.enabled = false;
 
-    // This is fixes a stack too deep bug in ABIEncoderV2
-    // Experimental because not sure this works as expected across versions....
+    // This sometimes fixed a stack-too-deep bug in ABIEncoderV2 for coverage plugin versions up to 0.8.6
+    // Although issue should be fixed in 0.8.7, am leaving this option in because it may still be necessary
+    // to configure optimizer details in some cases.
     if (configureYulOptimizer) {
       if (optimizerDetails === undefined) {
         settings.optimizer.details = {

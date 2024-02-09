@@ -96,8 +96,6 @@ function instrumentAndCompile(sourceName, api={ config: {} }) {
   const instrumenter = new Instrumenter(api.config);
   const instrumented = instrumenter.instrument(contract, filePath);
 
-  //console.log('instrumented: --> ' + instrumented.contract);
-
   return {
     contract: contract,
     instrumented: instrumented,
@@ -120,9 +118,6 @@ function report(output=[]) {
 // =====================
 async function bootstrapCoverage(file, api, provider){
   const info = instrumentAndCompile(file, api);
-
-  const {inspect} = require('util');
-  //console.log('info --> ' + inspect(info.solcOutput));
 
   // Need to define a gasLimit for contract calls because otherwise ethers will estimateGas
   // and cause duplicate hits for everything
