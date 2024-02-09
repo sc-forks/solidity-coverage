@@ -3,7 +3,7 @@ const util = require('./../util/util.js');
 const Coverage = require('./../../lib/coverage');
 const Api = require('./../../lib/api')
 
-describe.only('try / catch branches', () => {
+describe('try / catch branches', () => {
   let coverage;
   let api;
 
