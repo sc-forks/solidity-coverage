@@ -32,6 +32,7 @@ Or, if you are using TypeScript, add this to your hardhat.config.ts:
 ```ts
 import 'solidity-coverage'
 ```
+
 **Resources**:
 + [0.8.0 release notes][31]
 
@@ -39,6 +40,26 @@ import 'solidity-coverage'
 ```
 npx hardhat coverage [command-options]
 ```
+
+### Basic Trouble shooting
+
++ **Seeing missing or unexpected coverage?** Make sure you're on the latest plugin version and run:
+```sh
+$ npx hardhat clean
+$ npx hardhat compile
+$ npx hardhat coverage
+```
+
++ **Typescript compilation errors?**
+```sh
+$ npx hardhat compile
+$ TS_NODE_TRANSPILE_ONLY=true npx hardhat coverage
+```
+
+**Additional Help**
++ [FAQ][1007]
++ [Advanced Topics][1005]
+
 
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
@@ -66,7 +87,7 @@ module.exports = {
 | Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
-| skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
+| skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. (Example: `[ "Routers", "Networks/Polygon.sol"]` ) |
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
 | measureModifierCoverage | *boolean* | `true` | Computes each modifier invocation as a code branch. [More...][34] |
@@ -83,8 +104,8 @@ module.exports = {
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the coverage task completes. Useful if you need to clean resources up. [More...][23]|
-| configureYulOptimizer | *Boolean* | false | (Experimental) Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
-| solcOptimizerDetails | *Object* | `undefined` |(Experimental) Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See FAQ below). |
+| configureYulOptimizer | *Boolean* | false | (Deprecated since 0.8.7) Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
+| solcOptimizerDetails | *Object* | `undefined` |(Deprecated since 0.8.7)) Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See FAQ below). |
 
 
 [<sup>*</sup> Advanced use][14]
@@ -124,8 +145,7 @@ Common problems & questions:
 + [Running coverage threshold checks][1004]
 
 ## Example reports
-+ [metacoin][9] (Istanbul HTML)
-+ [openzeppelin-solidity][10](Coveralls)
++ [openzeppelin-solidity][10](Codecov)
 
 ## Contribution Guidelines
 
@@ -181,4 +201,6 @@ $ yarn
 [1002]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-stack
 [1003]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#parallelization-in-ci
 [1004]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#coverage-threshold-checks
+[1005]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
+[1007]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md
 

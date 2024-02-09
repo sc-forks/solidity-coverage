@@ -1,5 +1,13 @@
 # Advanced Use
 
+- [Table of Contents](#contents)
+  * [Skipping tests](#skipping-tests)
+  * [Workflow hooks](#workflow-hooks)
+  * [Reducing the instrumentation footprint](#reducing-the-instrumentation-footprint)
+  * [Generating a test matrix](#generating-a-test-matrix)
+  * [Parallelization in CI](#parallelization-in-ci)
+  * [Coverage threshold checks](#coverage-threshold-checks)
+
 ## Skipping tests
 
 Sometimes it's convenient to skip specific tests when running coverage. You can do this by
@@ -32,22 +40,21 @@ or reading data from the compilation artifacts to run special preparatory steps 
 
 The stages/hooks are (in order of execution):
 
-| Stage                                  | Post-stage hook    |
-|----------------------------------------|--------------------|
-| Before compiling                       | onPreCompile       |
-| Launch server                          | onServerReady      |
-| Instrument and compile contracts       | onCompileComplete  |
-| Run tests using instrumented artifacts | onTestsComplete    |
-| Generate istanbul coverage reports     | onIstanbulComplete |
+| Stage                                   | Post-stage hook    |
+|---------------------------------------- |--------------------|
+| After instrumentation, before compile.  | onPreCompile       |
+| After compile contracts                 | onCompileComplete  |
+| Launch server                           | onServerReady      |
+| Run tests using instrumented artifacts  | onTestsComplete    |
+| Generate istanbul coverage reports      | onIstanbulComplete |
 
 The tool's general workflow is:
 
-+ Launch an ethereum client, attaching special listeners that monitor each opcode execution step
 + Read Solidity contract sources from a standard contracts directory
 + Rewrite the sources so the code execution path can be tracked by the opcode monitors.
 + Compile the modified sources, without optimization
-+ Save the compilation artifacts to a temporary folder
-+ Tell the testing framework to use the instrumented artifacts & run tests to completion.
++ Launch a HardhatEVM, attaching special listeners that monitor each opcode execution step
++ Run tests to completion.
 + Transfer collected data to a coverage reporter & report.
 
 Each hook is passed a `config` object provided by your plugin's dev platform which will contain
@@ -67,32 +74,6 @@ module.exports = {
   onServerReady: serverReadyHandler,
 }
 ```
-
-## Setting the temporary artifacts directory
-
-The `temp` command line option lets you to specify the name of a disposable folder to
-stage the compilation artifacts of instrumented contracts in before the tests are run.
-
-**Example**
-```
-$ hardhat coverage --temp build
-```
-
-By default this folder is called `.coverage_artifacts`. If you already have
-preparatory scripts which run between compilation and the tests, you'll probably
-find it inconvenient to modify them to handle an alternate path.
-
-This option allows you to avoid that but it's important to realise that the temp
-folder is **automatically deleted** when coverage completes. You shouldn't use it if your preferred
-build target contains information you want to preserve between test runs.
-
-## Setting a custom temporary contracts directory
-
-A custom disposable folder to be used for the contracts can be specified by setting the
-```
-coverageContractsTemp
-```
-property in the configuration file. If not set, this directory defaults to `.coverage_contracts`.
 
 ## Reducing the instrumentation footprint
 
@@ -146,11 +127,34 @@ Istanbul has a command line utility which can be used to set thresholds for diff
 # Usage
 
 $ npx istanbul check-coverage ./coverage.json --statements 99 --branches 94 --functions 99 --lines 99
-
-ERROR: Coverage for statements (60%) does not meet global threshold (99%)
-ERROR: Coverage for lines (60%) does not meet global threshold (99%)
-ERROR: Coverage for functions (66.67%) does not meet global threshold (99%)
 ```
+
+## [DEPRECATED] Setting the temporary artifacts directory
+
+The `temp` command line option lets you to specify the name of a disposable folder to
+stage the compilation artifacts of instrumented contracts in before the tests are run.
+
+**Example**
+```
+$ hardhat coverage --temp build
+```
+
+By default this folder is called `.coverage_artifacts`. If you already have
+preparatory scripts which run between compilation and the tests, you'll probably
+find it inconvenient to modify them to handle an alternate path.
+
+This option allows you to avoid that but it's important to realise that the temp
+folder is **automatically deleted** when coverage completes. You shouldn't use it if your preferred
+build target contains information you want to preserve between test runs.
+
+## [DEPRECATED] Setting a custom temporary contracts directory
+
+A custom disposable folder to be used for the contracts can be specified by setting the
+```
+coverageContractsTemp
+```
+property in the configuration file. If not set, this directory defaults to `.coverage_contracts`.
+
 
 [22]: https://github.com/JoranHonig/vertigo#vertigo
 [23]: http://spideruci.org/papers/jones05.pdf
