@@ -20,10 +20,13 @@ table below shows how its core methods relate to the stages of a test run:
 disposable set of contracts/artifacts which coverage must use in lieu of the 'real' (uninstrumented)
 contracts.
 
-+ there is a complete [coverage tool/plugin implementation][5] for Hardhat
++ a complete [coverage tool/plugin implementation][5] for Hardhat
 which can be used as a source if you're building something similar.
 
++ a [coverage integration for the vitest framework][100] which uses the API written by @wighawag
+
 [5]: https://github.com/sc-forks/solidity-coverage/tree/master/plugins
+[100]: https://github.com/wighawag/vitest-solidity-coverage
 
 
 # Table of Contents

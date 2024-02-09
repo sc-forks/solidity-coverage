@@ -32,6 +32,7 @@ Or, if you are using TypeScript, add this to your hardhat.config.ts:
 ```ts
 import 'solidity-coverage'
 ```
+
 **Resources**:
 + [0.8.0 release notes][31]
 
@@ -40,13 +41,32 @@ import 'solidity-coverage'
 npx hardhat coverage [command-options]
 ```
 
+### Trouble shooting
+
+**Missing or unexpected coverage?** Make sure you're using the latest plugin version and run:
+```sh
+$ npx hardhat clean
+$ npx hardhat compile
+$ npx hardhat coverage
+```
+
+**Typescript compilation errors?**
+```sh
+$ npx hardhat compile
+$ TS_NODE_TRANSPILE_ONLY=true npx hardhat coverage
+```
+
+**Additional Help**
++ [FAQ][1007]
++ [Advanced Topics][1005]
+
+
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
 | testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
 | sources | `--sources myFolder` or `--sources myFile.sol` | Path to *single* folder or file to target for coverage. Path is relative to Hardhat's `paths.sources` (usually `contracts/`) |
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
-| temp[<sup>*</sup>][14]       | `--temp build`   | :warning: **Caution** :warning:  Path to a *disposable* folder to store compilation artifacts in. Useful when your test setup scripts include hard-coded paths to a build directory. [More...][14] |
 | matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
 
 [<sup>*</sup> Advanced use][14]
@@ -63,10 +83,10 @@ module.exports = {
 };
 ```
 
-| Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
+| Option <img width=200/>| Type <img width=200/> | Default <img width=1000/> | Description <img width=1000/> |
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
-| skipFiles | *Array* | `['Migrations.sol']` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. |
+| skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation.(Example: `[ "Routers", "Networks/Polygon.sol"]` :bulb: **RUN THE HARDHAT CLEAN COMMAND AFTER UPDATING THIS** ) |
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
 | measureModifierCoverage | *boolean* | `true` | Computes each modifier invocation as a code branch. [More...][34] |
@@ -79,12 +99,12 @@ module.exports = {
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
 | coverageContractsTemp | *String* | `.coverage_contracts` |  Temporary folder location for instrumented contracts - Note that this directory will automatically be deleted when coverage completes. |
 | onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][23] |
-| onPreCompile[<sup>*</sup>][14] | *Function* |   | Hook run *after* filesystem and compiler configuration is applied, *before* the compiler is run. Can be used with the other hooks to be able to generate coverage reports on non-standard / customized directory structures, as well as contracts with absolute import paths. [More...][23] |
+| onPreCompile[<sup>*</sup>][14] | *Function* |   | Hook run *after* instrumentation is performed, *before* the compiler is run. Can be used with the other hooks to be able to generate coverage reports on non-standard / customized directory structures, as well as contracts with absolute import paths. [More...][23] |
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the coverage task completes. Useful if you need to clean resources up. [More...][23]|
-| configureYulOptimizer | *Boolean* | false | (Experimental) Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
-| solcOptimizerDetails | *Object* | `undefined` |(Experimental) Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See FAQ below). |
+| configureYulOptimizer | *Boolean* | false | **(Deprecated since 0.8.7)** Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
+| solcOptimizerDetails | *Object* | `undefined` |**(Deprecated since 0.8.7))** Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See FAQ below). |
 
 
 [<sup>*</sup> Advanced use][14]
@@ -111,21 +131,12 @@ The coverage plugin sets a boolean variable on the globally injected hardhat env
 hre.__SOLIDITY_COVERAGE_RUNNING === true
 ```
 
-## FAQ
-
-Common problems & questions:
-
-+ [Running in CI][7]
-+ [Running out of gas][13]
-+ [Running out of time][6]
-+ [Running out of stack][1002] (Stack too deep)
-+ [Running out of memory][5]
-+ [Running in parallel (in CI)][1003]
-+ [Running coverage threshold checks][1004]
-
 ## Example reports
-+ [metacoin][9] (Istanbul HTML)
-+ [openzeppelin-solidity][10](Coveralls)
++ [openzeppelin-solidity][10](Codecov)
+
+## Funding
+
+You can help fund solidity-coverage development through [DRIPS][1008]. It's a public goods protocol which helps distribute money to packages in your dependency tree. (It's great, check it out.)
 
 ## Contribution Guidelines
 
@@ -181,4 +192,7 @@ $ yarn
 [1002]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-stack
 [1003]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#parallelization-in-ci
 [1004]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#coverage-threshold-checks
+[1005]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md
+[1007]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md
+[1008]: https://www.drips.network/app/projects/github/sc-forks/solidity-coverage
 
