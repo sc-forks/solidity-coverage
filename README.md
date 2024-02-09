@@ -87,7 +87,7 @@ module.exports = {
 | Option <img width=200/>| Type <img width=200/> | Default <img width=1300/> | Description <img width=800/> |
 | ------ | ---- | ------- | ----------- |
 | silent | *Boolean* | false | Suppress logging output |
-| skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. (Example: `[ "Routers", "Networks/Polygon.sol"]` ) |
+| skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation. (Example: `[ "Routers", "Networks/Polygon.sol"]` :bulb: **RUN THE HARDHAT CLEAN COMMAND AFTER UPDATING THIS** ) |
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
 | measureModifierCoverage | *boolean* | `true` | Computes each modifier invocation as a code branch. [More...][34] |
@@ -137,7 +137,7 @@ hre.__SOLIDITY_COVERAGE_RUNNING === true
 
 ## Funding
 
-You can fund solidity-coverage development through [DRIPS][1008]. It's a public goods protocol which makes it super easy to distribute money to packages in your dependency tree. (It's great, check it out.)
+You can help fund solidity-coverage development through [DRIPS][1008]. It's a public goods protocol which makes it super easy to distribute money to packages in your dependency tree. (It's great, check it out.)
 
 ## Contribution Guidelines
 
