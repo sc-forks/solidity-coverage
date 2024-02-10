@@ -1,5 +1,23 @@
 # Changelog
 
+0.8.7 / 2024-02-09
+==================
+  * Documentation Cleanup & Improvements for 0.8.7 release
+    (https://github.com/sc-forks/solidity-coverage/issues/859)
+  * Add tests for file-level function declarations
+    (https://github.com/sc-forks/solidity-coverage/issues/858)
+  * Add try / catch unit tests (https://github.com/sc-forks/solidity-coverage/issues/857)
+  * Fix test project configs for viaIR detection in overrides
+    (https://github.com/sc-forks/solidity-coverage/issues/856)
+  * Enable coverage when viaIR compiler flag is true
+    (https://github.com/sc-forks/solidity-coverage/issues/854)
+  * Add missing onPreCompile hook
+    (https://github.com/sc-forks/solidity-coverage/issues/851)
+  * Remove ganache-cli related code from API & tests
+    (https://github.com/sc-forks/solidity-coverage/pull/849)
+  * Add command option to specify the source files to run the coverage on
+    (https://github.com/sc-forks/solidity-coverage/pull/838)
+
 0.8.6 / 2024-01-28
 ==================
   * Add test for multi-contract files with inheritance
