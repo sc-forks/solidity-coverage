@@ -85,24 +85,27 @@ module.exports = {
 
 | Option <img width=200/>| Type <img width=200/> | Default <img width=1000/> | Description <img width=1000/> |
 | ------ | ---- | ------- | ----------- |
-| silent | *Boolean* | false | Suppress logging output |
+| **BASIC CONFIG** |  | |  |
 | skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation.(Example: `[ "Routers", "Networks/Polygon.sol"]` :bulb: **RUN THE HARDHAT CLEAN COMMAND AFTER UPDATING THIS** ) |
+| modifierWhitelist | *String[]* | `[]` | List of modifier names (ex: "onlyOwner") to exclude from branch measurement. (Useful for modifiers which prepare something instead of acting as a gate.)) |
+| mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions. [More...][24]|
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
 | measureFunctionCoverage | *boolean* | `true` | Computes function coverage. [More...][34] |
 | measureModifierCoverage | *boolean* | `true` | Computes each modifier invocation as a code branch. [More...][34] |
-| modifierWhitelist | *String[]* | `[]` | List of modifier names (ex: "onlyOwner") to exclude from branch measurement. (Useful for modifiers which prepare something instead of acting as a gate.)) |
+| **OUTPUT** |  | |  |
 | matrixOutputPath | *String* | `./testMatrix.json` | Relative path to write test matrix JSON object to. [More...][39]|
 | mochaJsonOutputPath | *String* | `./mochaOutput.json` | Relative path to write mocha JSON reporter object to. [More...][39]|
 | abiOutputPath | *String* | `./humanReadableAbis.json` | Relative path to write diff-able ABI data to |
 | istanbulFolder | *String* | `./coverage` |  Folder location for Istanbul coverage reports. |
 | istanbulReporter | *Array* | `['html', 'lcov', 'text', 'json']` | [Istanbul coverage reporters][2]  |
-| mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions.|
-| coverageContractsTemp | *String* | `.coverage_contracts` |  Temporary folder location for instrumented contracts - Note that this directory will automatically be deleted when coverage completes. |
+| silent | *Boolean* | false | Suppress logging output |
+| **WORKFLOW HOOKS** |  | |  |
 | onServerReady[<sup>*</sup>][14] | *Function* |   | Hook run *after* server is launched, *before* the tests execute. Useful if you need to use the Oraclize bridge or have setup scripts which rely on the server's availability. [More...][23] |
 | onPreCompile[<sup>*</sup>][14] | *Function* |   | Hook run *after* instrumentation is performed, *before* the compiler is run. Can be used with the other hooks to be able to generate coverage reports on non-standard / customized directory structures, as well as contracts with absolute import paths. [More...][23] |
 | onCompileComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* compilation completes, *before* tests are run. Useful if you have secondary compilation steps or need to modify built artifacts. [More...][23]|
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the coverage task completes. Useful if you need to clean resources up. [More...][23]|
+| **DEPRECATED** |  | |  |
 | configureYulOptimizer | *Boolean* | false | **(Deprecated since 0.8.7)** Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
 | solcOptimizerDetails | *Object* | `undefined` |**(Deprecated since 0.8.7))** Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See FAQ below). |
 
