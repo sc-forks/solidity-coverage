@@ -1,3 +1,4 @@
+
 # solidity-coverage
 
 [![Gitter chat](https://badges.gitter.im/sc-forks/solidity-coverage.svg)][18]
