@@ -65,8 +65,8 @@ describe('generic statements', () => {
     util.report(info.solcOutput.errors);
   })
 
-  it('should instrument a multi-contract file with diamond inheritance (#769)', () => {
-    const info = util.instrumentAndCompile('statements/multi-contract-diamond');
+  it('should instrument a multi-contract flattened file (#769)', () => {
+    const info = util.instrumentAndCompile('statements/multi-contract-flattened');
     util.report(info.solcOutput.errors);
   });
 
