@@ -15,6 +15,19 @@ step_install_nvm: &step_install_nvm
       nvm install v18
       echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
       echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+
+step_install_foundry: &step_install_foundry
+  run:
+    name: "Install Foundry"
+    working_directory: ~/
+    environment:
+      SHELL: /bin/bash
+    command: |-
+      export PATH="$PATH:$HOME/.foundry/bin"
+      echo 'export PATH=$PATH:$HOME/.foundry/bin' >> $BASH_ENV
+      curl -L https://foundry.paradigm.xyz | bash
+      foundryup
+
 jobs:
   unit-test:
     docker:
@@ -57,6 +70,7 @@ jobs:
     steps:
       - checkout
       - <<: *step_install_nvm
+      - <<: *step_install_foundry
       - run:
           name: Hardhat E2E
           command: |

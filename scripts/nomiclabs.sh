@@ -50,6 +50,9 @@ npm install --silent
 npm install --save-dev --silent $PR_PATH
 cat package.json
 
+npx hardhat init-foundry
+cat foundry.toml
+
 npx hardhat coverage
 
 verifyCoverageExists
