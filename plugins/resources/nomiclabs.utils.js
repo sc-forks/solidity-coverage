@@ -36,6 +36,10 @@ function normalizeConfig(config, args={}){
     ? sources = path.join(config.paths.sources, args.sources)
     : sources = config.paths.sources;
 
+  if (!path.isAbsolute(sources)) {
+    sources = path.join(config.paths.root, sources);
+  }
+
   if (config.solidity && config.solidity.compilers.length) {
     config.viaIR = isUsingViaIR(config.solidity);
   }
