@@ -1,5 +1,10 @@
 # Changelog
 
+0.8.8 / 2024-02-21
+==================
+  * Coerce sources path to absolute path if necessary (https://github.com/sc-forks/solidity-coverage/issues/866)
+  * Only inject file-level instr. for first pragma in file (https://github.com/sc-forks/solidity-coverage/issues/865)
+
 0.8.7 / 2024-02-09
 ==================
   * Documentation Cleanup & Improvements for 0.8.7 release
