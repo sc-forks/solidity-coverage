@@ -1,5 +1,6 @@
 const ModifiersA = artifacts.require("ModifiersA");
 const ModifiersC = artifacts.require("ModifiersC");
+const ModifiersD = artifacts.require("ModifiersD");
 
 contract("Modifiers", function(accounts) {
   let instance;
@@ -7,6 +8,7 @@ contract("Modifiers", function(accounts) {
   before(async () => {
     A = await ModifiersA.new();
     C = await ModifiersC.new();
+    D = await ModifiersD.new();
   })
 
   it('simpleSet (overridden method)', async function(){
@@ -37,4 +39,14 @@ contract("Modifiers", function(accounts) {
       /* ignore */
     }
   });
+
+  it('when false & true branches are hit in immediate succesion by EOA (issue #863)', async function(){
+    try {
+      await D.a({from: accounts[1]});
+    } catch (e) {
+      /* ignore */
+    }
+
+    await D.a({from: accounts[0]});
+  })
 });
