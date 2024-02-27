@@ -1,5 +1,10 @@
 # Changelog
 
+0.8.9 / 2024-02-27
+==================
+  * Fix duplicate hash logic (https://github.com/sc-forks/solidity-coverage/issues/868)
+  * Improve organization of edge case code in collector (https://github.com/sc-forks/solidity-coverage/issues/869)
+
 0.8.8 / 2024-02-21
 ==================
   * Coerce sources path to absolute path if necessary (https://github.com/sc-forks/solidity-coverage/issues/866)
