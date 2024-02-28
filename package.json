@@ -13,7 +13,7 @@
     "test:unit": "./scripts/unit.sh",
     "test:integration": "./scripts/integration.sh",
     "test:ci": "./scripts/ci.sh",
-    "test:uint:viaIR": "VIA_IR=true ./scripts/unit.sh",
+    "test:unit:viaIR": "VIA_IR=true ./scripts/unit.sh",
     "test:integration:viaIR": "VIA_IR=true ./scripts/integration.sh",
     "test:ci:viaIR": "VIA_IR=true ./scripts/ci.sh"
   },
