@@ -1,5 +1,9 @@
 # Changelog
 
+0.8.10 / 2024-02-29
+===================
+  * Check all PUSH opcodes for instr. hashes when viaIR is true (https://github.com/sc-forks/solidity-coverage/issues/871)
+
 0.8.9 / 2024-02-27
 ==================
   * Fix duplicate hash logic (https://github.com/sc-forks/solidity-coverage/issues/868)
