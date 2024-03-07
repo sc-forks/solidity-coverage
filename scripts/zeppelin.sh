@@ -8,7 +8,7 @@ set -o errexit
 # Get rid of any caches
 sudo rm -rf node_modules
 echo "NVM CURRENT >>>>>" && nvm current
-nvm use 18
+nvm use 20
 
 # Use PR env variables (for forks) or fallback on local if PR not available
 SED_REGEX="s/git@github.com:/https:\/\/github.com\//"
