@@ -55,7 +55,9 @@ jobs:
           command: |
             bash <(curl -s https://codecov.io/bash)
   e2e-zeppelin:
-    machine: true
+    machine:
+      image: ubuntu-2204:2024.01.1
+    resource_class: large
     environment:
           NODE_OPTIONS: --max_old_space_size=8192
     steps:
