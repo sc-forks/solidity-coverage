@@ -42,8 +42,8 @@ jobs:
   e2e-zeppelin:
     machine:
       image: ubuntu-2204:2024.01.1
-      resource_class: large
-      environment:
+    resource_class: large
+    environment:
           NODE_OPTIONS: --max_old_space_size=8192
     steps:
       - checkout
