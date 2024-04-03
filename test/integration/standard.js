@@ -342,7 +342,10 @@ describe('Hardhat Plugin: standard use cases', function() {
         file: mock.pathToContract(hardhatConfig, 'ContractC1.sol'),
         pct: 100,
       },
-
+      {
+        file: mock.pathToContract(hardhatConfig, 'ContractD1.sol'),
+        pct: 100,
+      },
     ];
 
     verify.lineCoverage(expected);
