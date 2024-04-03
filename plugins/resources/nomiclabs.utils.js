@@ -42,6 +42,7 @@ function normalizeConfig(config, args={}){
 
   if (config.solidity && config.solidity.compilers.length) {
     config.viaIR = isUsingViaIR(config.solidity);
+    config.usingSolcV4 = isUsingSolcV4(config.solidity);
   }
 
   config.workingDir = config.paths.root;
@@ -63,8 +64,23 @@ function normalizeConfig(config, args={}){
   return config;
 }
 
-function isUsingViaIR(solidity) {
+function isUsingSolcV4(solidity) {
+  for (compiler of solidity.compilers) {
+    if (compiler.version && semver.lt(compiler.version, '0.5.0')) {
+      return true;
+    }
+  }
+  if (solidity.overrides) {
+    for (key of Object.keys(solidity.overrides)){
+      if (solidity.overrides[key].version && semver.lt(solidity.overrides[key].version, '0.5.0')) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
+function isUsingViaIR(solidity) {
   for (compiler of solidity.compilers) {
     if (compiler.settings && compiler.settings.viaIR) {
       return true;

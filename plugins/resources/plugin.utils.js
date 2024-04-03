@@ -227,8 +227,9 @@ function loadSolcoverJS(config={}){
     coverageConfig = {};
   }
 
-  // viaIR is eval'd in `nomiclab.utils.normalizeConfig`
+  // viaIR and solc versions are eval'd in `nomiclab.utils.normalizeConfig`
   coverageConfig.viaIR = config.viaIR;
+  coverageConfig.usingSolcV4 = config.usingSolcV4;
 
   coverageConfig.log = log;
   coverageConfig.cwd = config.workingDir;

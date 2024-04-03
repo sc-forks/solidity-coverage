@@ -329,6 +329,13 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     await this.env.run("coverage");
 
+    const contractDExpectation = (!process.env.VIA_IR)
+      ? {
+          file: mock.pathToContract(hardhatConfig, 'ContractD1.sol'),
+          pct: 100,
+        }
+      : undefined;
+
     const expected = [
       {
         file: mock.pathToContract(hardhatConfig, 'ContractA1.sol'),
@@ -342,7 +349,7 @@ describe('Hardhat Plugin: standard use cases', function() {
         file: mock.pathToContract(hardhatConfig, 'ContractC1.sol'),
         pct: 100,
       },
-
+      contractDExpectation
     ];
 
     verify.lineCoverage(expected);
