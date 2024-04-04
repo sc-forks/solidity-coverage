@@ -135,9 +135,9 @@ function assembleFiles(config, skipFiles=[]){
   let targetsPath;
 
   // The targets (contractsDir) could actually be a single named file (OR a folder)
-  const extName = path.extname(config.contractsDir);
+  const isDirectory = fs.statSync(config.contractsDir).isDirectory();
 
-  if (extName.length !== 0) {
+  if (!isDirectory) {
     targets = [ path.normalize(config.contractsDir) ];
   } else {
     targetsPath = path.join(config.contractsDir, '**', '*.{sol,vy}');
