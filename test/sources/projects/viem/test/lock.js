@@ -117,7 +117,7 @@ describe("Lock", function () {
       });
     });
 
-    describe.skip("Events", function () {
+    describe("Events", function () {
       it("Should emit an event on withdrawals", async function () {
         const { lock, unlockTime, lockedAmount, publicClient } =
           await loadFixture(deployOneYearLockFixture);
