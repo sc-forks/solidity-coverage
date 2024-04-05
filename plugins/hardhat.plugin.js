@@ -1,7 +1,7 @@
 const path = require('path');
 const PluginUI = require('./resources/nomiclabs.ui');
 
-const { task, types } = require("hardhat/config");
+const { extendConfig, task, types } = require("hardhat/config");
 const { HardhatPluginError } = require("hardhat/plugins")
 const {HARDHAT_NETWORK_RESET_EVENT} = require("hardhat/internal/constants");
 const {
@@ -20,6 +20,24 @@ let optimizerDetails;
 
 // UI for the task flags...
 const ui = new PluginUI();
+
+// Workaround for hardhat-viem-plugin and other provider redefinition conflicts
+extendConfig((config, userConfig) => {
+  if (Boolean(process.env.SOLIDITY_COVERAGE)) {
+    const { cloneDeep } = require("lodash");
+    const { configureHardhatEVMGas } = require('./resources/nomiclabs.utils');
+    const API = require('./../lib/api');
+    const api = new API({});
+
+    let hardhatNetworkForCoverage = {};
+    if (userConfig.networks && userConfig.networks.hardhat) {
+      hardhatNetworkForCoverage = cloneDeep(userConfig.networks.hardhat);
+    };
+
+    configureHardhatEVMGas(hardhatNetworkForCoverage, api);
+    config.networks.hardhat = Object.assign(config.networks.hardhat, hardhatNetworkForCoverage);
+  }
+});
 
 subtask(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
   const solcInput = await runSuper();
@@ -133,6 +151,12 @@ task("coverage", "Generates a code coverage report for tests")
     // Catch interrupt signals
     process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api, true));
 
+    // Warn about hardhat-viem plugin if present and config hasn't happened
+    if (env.viem !== undefined && nomiclabsUtils.requiresEVMConfiguration(env.network.config, api)) {
+      ui.report('hardhat-viem', []);
+      throw new Error(ui.generate('hardhat-viem'));
+    }
+
     // Version Info
     ui.report('hardhat-versions', [pkg.version]);
 
@@ -208,7 +232,13 @@ task("coverage", "Generates a code coverage report for tests")
     // ==============
     // Server launch
     // ==============
-    let network = await nomiclabsUtils.setupHardhatNetwork(env, api, ui);
+    let network
+
+    if (nomiclabsUtils.requiresEVMConfiguration(env.network.config, api)) {
+      network = await nomiclabsUtils.setupHardhatNetwork(env, api, ui);
+    } else {
+      network = env.network;
+    }
 
     accounts = await utils.getAccountsHardhat(network.provider);
     nodeInfo = await utils.getNodeInfoHardhat(network.provider);
