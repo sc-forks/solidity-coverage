@@ -104,7 +104,7 @@ async function setupHardhatNetwork(env, api, ui){
   // after 2.15.0, the internal createProvider function has a different signature
   const newCreateProviderSignature = semver.satisfies(hardhatPackage.version, "^2.15.0");
 
-  let provider, networkName, networkConfig;
+  let provider, networkConfig;
 
   // HardhatEVM
   networkConfig = env.network.config;
@@ -130,6 +130,16 @@ async function setupHardhatNetwork(env, api, ui){
     HARDHAT_NETWORK_NAME,
     networkConfig,
     provider
+  )
+}
+
+function requiresEVMConfiguration(networkConfig, api) {
+  return (
+    networkConfig.allowUnlimitedContractSize !== true ||
+    networkConfig.blockGasLimit !== api.gasLimitNumber ||
+    networkConfig.gas !==  api.gasLimit ||
+    networkConfig.gasPrice !== api.gasPrice ||
+    networkConfig.initialBaseFeePerGas !== 0
   )
 }
 
@@ -249,6 +259,8 @@ async function finish(config, api, shouldKill){
 }
 
 module.exports = {
+  configureHardhatEVMGas,
+  requiresEVMConfiguration,
   normalizeConfig,
   finish,
   tempCacheDir,

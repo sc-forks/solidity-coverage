@@ -167,4 +167,21 @@ describe('Hardhat Plugin: error cases', function() {
 
     verify.coverageNotGenerated(hardhatConfig);
   })
+
+  it('viem plugin (when SOLIDITY_COVERAGE is undefined)', async function(){
+    mock.installFullProject('viem');
+    mock.hardhatSetupEnv(this);
+
+    try {
+      await this.env.run("coverage");
+      assert.fail()
+    } catch(err){
+      assert(
+        err.message.includes('requires an environment variable'),
+        `Should notify when mocha parallel flag is set:: ${err.message}`
+      );
+    }
+
+    verify.coverageNotGenerated(hardhatConfig);
+  });
 })

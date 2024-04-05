@@ -481,4 +481,22 @@ describe('Hardhat Plugin: standard use cases', function() {
 
     verify.branchCoverage(expected);
   });
+
+  it('viem plugin (when SOLIDITY_COVERAGE="true")', async function(){
+    process.env.SOLIDITY_COVERAGE = "true";
+
+    mock.installFullProject('viem');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'Lock.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.branchCoverage(expected);
+  });
 })

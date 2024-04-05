@@ -54,6 +54,12 @@ class PluginUI extends UI {
                          `${ct} ${c.bold('HardhatEVM')}: v${args[0]}\n` +
                          `${ct} ${c.bold('network')}:    ${args[1]}\n`,
 
+      'hardhat-viem': `\n${w}${c.red("  Coverage requires a special environment variable when used with 'hardhat-viem'  ")}${w}` +
+                      `\n${c.red(    "====================================================================================")}`   +
+                      `\n${c.bold(   "Please run the coverage command as:" )}` +
+                      `\n${c(        "SOLIDITY_COVERAGE=true npx hardhat coverage")}` +
+                      `\n${c.red(    "====================================================================================")}`
+                      ,
     }
 
     this._write(kinds[kind]);
@@ -80,13 +86,14 @@ class PluginUI extends UI {
                          `${c.red('the path you specified for it is wrong.')}`,
 
       'tests-fail': `${x} ${c.bold(args[0])} ${c.red('test(s) failed under coverage.')}`,
-
-
+      'hardhat-viem': "'hardhat-viem' requires an environment variable to be set when used with the solidity-coverage plugin"
     }
 
 
     return this._format(kinds[kind])
   }
+
+
 }
 
 module.exports = PluginUI;
