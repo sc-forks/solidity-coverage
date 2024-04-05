@@ -21,21 +21,21 @@ let optimizerDetails;
 // UI for the task flags...
 const ui = new PluginUI();
 
-// Workaround for viem-plugin and other provider redefinition conflicts
+// Workaround for hardhat-viem-plugin and other provider redefinition conflicts
 extendConfig((config, userConfig) => {
-    if (Boolean(process.env.SOLIDITY_COVERAGE)) {
-      const { configureHardhatEVMGas } = require('./resources/nomiclabs.utils');
-      const API = require('./../lib/api');
-      const api = new API({});
+  if (Boolean(process.env.SOLIDITY_COVERAGE)) {
+    const { configureHardhatEVMGas } = require('./resources/nomiclabs.utils');
+    const API = require('./../lib/api');
+    const api = new API({});
 
-      let hardhatNetworkForCoverage = {};
-      if (userConfig.networks && userConfig.networks.hardhat) {
-        hardhatNetworkForCoverage = structuredClone(userConfig.networks.hardhat);
-      };
+    let hardhatNetworkForCoverage = {};
+    if (userConfig.networks && userConfig.networks.hardhat) {
+      hardhatNetworkForCoverage = structuredClone(userConfig.networks.hardhat);
+    };
 
-      configureHardhatEVMGas(hardhatNetworkForCoverage, api);
-      config.networks.hardhat = Object.assign(config.networks.hardhat, hardhatNetworkForCoverage);
-    }
+    configureHardhatEVMGas(hardhatNetworkForCoverage, api);
+    config.networks.hardhat = Object.assign(config.networks.hardhat, hardhatNetworkForCoverage);
+  }
 });
 
 subtask(TASK_COMPILE_SOLIDITY_GET_COMPILER_INPUT).setAction(async (_, { config }, runSuper) => {
