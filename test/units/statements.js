@@ -85,6 +85,11 @@ describe('generic statements', () => {
     util.report(info.solcOutput.errors);
   });
 
+  it('should instrument require statements when semi-colon is separated by spaces', () => {
+    const info = util.instrumentAndCompile('statements/require');
+    util.report(info.solcOutput.errors);
+  });
+
   it('should cover an emitted event statement', async function() {
     const contract = await util.bootstrapCoverage('statements/emit-coverage', api, this.provider);
     coverage.addContract(contract.instrumented, util.filePath);
