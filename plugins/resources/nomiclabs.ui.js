@@ -86,6 +86,7 @@ class PluginUI extends UI {
                          `${c.red('the path you specified for it is wrong.')}`,
 
       'tests-fail': `${x} ${c.bold(args[0])} ${c.red('test(s) failed under coverage.')}`,
+
       'hardhat-viem': "'hardhat-viem' requires an environment variable to be set when used with the solidity-coverage plugin"
     }
 

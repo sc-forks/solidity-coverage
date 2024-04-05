@@ -178,7 +178,7 @@ describe('Hardhat Plugin: error cases', function() {
     } catch(err){
       assert(
         err.message.includes('requires an environment variable'),
-        `Should notify when mocha parallel flag is set:: ${err.message}`
+        `Should error when viem plugin is used without env variable:: ${err.message}`
       );
     }
 
