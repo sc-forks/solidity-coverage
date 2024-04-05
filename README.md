@@ -57,11 +57,11 @@ $ TS_NODE_TRANSPILE_ONLY=true npx hardhat coverage
 ```
 
 **Weird test failures or plugin conflicts?**
-``sh
+```sh
 # Setting the SOLIDITY_COVERAGE env variable tells the coverage plugin to configure the provider
 # early in the hardhat `task` cycle, minimizing conflicts with other plugins or `extendEnvironment` hooks
 $ SOLIDITY_COVERAGE=true npx hardhat coverage
-``
+```
 
 **Additional Help**
 + [FAQ][1007]
