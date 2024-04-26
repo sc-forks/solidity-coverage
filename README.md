@@ -143,7 +143,7 @@ hre.__SOLIDITY_COVERAGE_RUNNING === true
 ```
 
 ## Example reports
-+ [openzeppelin-solidity][10](Codecov)
++ [openzeppelin-contracts][10] (Codecov)
 
 ## Funding
 
@@ -170,7 +170,7 @@ $ yarn
 [7]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#continuous-integration
 [8]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-branch-coverage
 [9]: https://sc-forks.github.io/metacoin/
-[10]: https://coveralls.io/github/OpenZeppelin/openzeppelin-solidity?branch=master
+[10]: https://app.codecov.io/gh/OpenZeppelin/openzeppelin-contracts
 [11]: https://github.com/sc-forks/solidity-coverage/tree/master/test/units
 [12]: https://github.com/sc-forks/solidity-coverage/issues
 [13]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#notes-on-gas-distortion
