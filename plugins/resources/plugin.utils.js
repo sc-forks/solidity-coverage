@@ -222,7 +222,10 @@ function loadSolcoverJS(config={}){
       throw new Error(error)
     }
 
-  // Config is optional
+  // Config is optional, but if passed and not found, error
+  } else if (config.solcoverjs) {
+    const message = ui.generate('solcoverjs-fail') + " --solcoverjs flag was set but no file was found";
+    throw new Error(message);
   } else {
     coverageConfig = {};
   }

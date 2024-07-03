@@ -46,6 +46,26 @@ describe('Hardhat Plugin: error cases', function() {
     verify.coverageNotGenerated(hardhatConfig);
   })
 
+  it('.solcover.js is not found', async function(){
+    const taskArgs = {
+      solcoverjs: "./file-that-does-not-exist.js"
+    }
+
+    mock.install('Simple', 'simple.js', solcoverConfig);
+    mock.hardhatSetupEnv(this);
+
+    try {
+      await this.env.run("coverage", taskArgs);
+      assert.fail()
+    } catch (err) {
+      assert(
+        err.message.includes('--solcoverjs flag was set but no file was found'),
+        `Should error if --solcoverjs passed but not found: ${err.message}`
+      );
+    }
+  })
+
+
   it('.solcover.js has incorrectly formatted option', async function(){
     solcoverConfig.port = "Antwerpen";
 
