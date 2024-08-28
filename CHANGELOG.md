@@ -63,7 +63,7 @@
   * Update contributor list (https://github.com/sc-forks/solidity-coverage/issues/812)
   * Add dependabot config (https://github.com/sc-forks/solidity-coverage/issues/759)
   * Add a package description to package.json (https://github.com/sc-forks/solidity-coverage/issues/775)
-  * change .solcoverjs occurencies to .solcover.js (https://github.com/sc-forks/solidity-coverage/issues/777)
+  * change .solcoverjs occurrences to .solcover.js (https://github.com/sc-forks/solidity-coverage/issues/777)
   * Remove all mentions to buidler (https://github.com/sc-forks/solidity-coverage/issues/778)
   * Update HH dev dep & fix Zeppelin E2E test (https://github.com/sc-forks/solidity-coverage/issues/811)
   * Update mocha version to 10.2.0, fix deprecated debug package (https://github.com/sc-forks/solidity-coverage/issues/810)
@@ -353,7 +353,7 @@
 0.4.0 / 2017-11-08 (Compatible with testrpc >= 6.0 / pragma 0.4.18 and above)
 ==================
 
-  * Bug fix to accomodate strict enforcement of constant and view modifiers in pragma 0.4.18
+  * Bug fix to accommodate strict enforcement of constant and view modifiers in pragma 0.4.18
 
 0.3.5 / 2017-11-07 (Compatible with testrpc >= 6.0 / pragma 0.4.17 and below)
 ==================
