@@ -9,7 +9,7 @@ table below shows how its core methods relate to the stages of a test run:
 |---------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | compilation   | `instrument` | A **pre-compilation** step: Rewrites contracts and generates an instrumentation data map.                                                                                              |
 | client launch |   `attachToHardhatVM`  | A **pre-test** step: Enables coverage collection enabled in a HardhatEVM client. As the client runs it will mark line/branch hits on the instrumentation data map.         |
-| test          | `report`     | A **post-test** step: Generates a coverage report from the data collected by the VM after tests complete. |
+| test          | `report`     | A **post-test** step: Generates a coverage report from the data collected by the VM after tests are complete. |
 
 
 [3]: https://github.com/gotwarlost/istanbul
