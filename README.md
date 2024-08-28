@@ -115,7 +115,7 @@ module.exports = {
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the coverage task completes. Useful if you need to clean resources up. [More...][23]|
 | **:warning:    DEPRECATED** |  | |  |
 | configureYulOptimizer | *Boolean* | false | **(Deprecated since 0.8.7)** Setting to `true` should resolve "stack too deep" compiler errors in large projects using ABIEncoderV2 |
-| solcOptimizerDetails | *Object* | `undefined` |**(Deprecated since 0.8.7))** Must be used in combination with `configureYulOptimizer`. Allows you configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See [FAQ: Running out of stack][1002] ). |
+| solcOptimizerDetails | *Object* | `undefined` |**(Deprecated since 0.8.7))** Must be used in combination with `configureYulOptimizer`. Allows you to configure solc's [optimizer details][1001]. Useful if the default remedy for stack-too-deep errors doesn't work in your case (See [FAQ: Running out of stack][1002] ). |
 
 
 [<sup>*</sup> Advanced use][14]
