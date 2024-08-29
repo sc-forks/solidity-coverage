@@ -24,16 +24,11 @@ const ui = new PluginUI();
 // Workaround for hardhat-viem-plugin and other provider redefinition conflicts
 extendConfig((config, userConfig) => {
   if (Boolean(process.env.SOLIDITY_COVERAGE)) {
-    const { cloneDeep } = require("lodash");
     const { configureHardhatEVMGas } = require('./resources/nomiclabs.utils');
     const API = require('./../lib/api');
     const api = new API({});
 
-    let hardhatNetworkForCoverage = {};
-    if (userConfig.networks && userConfig.networks.hardhat) {
-      hardhatNetworkForCoverage = cloneDeep(userConfig.networks.hardhat);
-    };
-
+    const hardhatNetworkForCoverage = {};
     configureHardhatEVMGas(hardhatNetworkForCoverage, api);
     config.networks.hardhat = Object.assign(config.networks.hardhat, hardhatNetworkForCoverage);
   }
