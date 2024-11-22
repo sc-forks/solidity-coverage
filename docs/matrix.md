@@ -168,19 +168,19 @@ is run with the `--matrix` cli flag. (Source project: [sc-forks/hardhat-e2e][1])
  "contracts/VariableConstructor.sol": {
   "8": [
    {
-    "title": "should should initialize with a short string",
+    "title": "should initialize with a short string",
     "file": "test/variableconstructor.js"
    },
    {
-    "title": "should should initialize with a medium length string",
+    "title": "should initialize with a medium length string",
     "file": "test/variableconstructor.js"
    },
    {
-    "title": "should should initialize with a long string",
+    "title": "should initialize with a long string",
     "file": "test/variableconstructor.js"
    },
    {
-    "title": "should should initialize with a random length string",
+    "title": "should initialize with a random length string",
     "file": "test/variableconstructor.js"
    }
   ]
@@ -188,19 +188,19 @@ is run with the `--matrix` cli flag. (Source project: [sc-forks/hardhat-e2e][1])
  "contracts/VariableCosts.sol": {
   "13": [
    {
-    "title": "should should initialize with a short string",
+    "title": "should initialize with a short string",
     "file": "test/variableconstructor.js"
    },
    {
-    "title": "should should initialize with a medium length string",
+    "title": "should initialize with a medium length string",
     "file": "test/variableconstructor.js"
    },
    {
-    "title": "should should initialize with a long string",
+    "title": "should initialize with a long string",
     "file": "test/variableconstructor.js"
    },
    {
-    "title": "should should initialize with a random length string",
+    "title": "should initialize with a random length string",
     "file": "test/variableconstructor.js"
    },
    {
@@ -372,7 +372,7 @@ is run with the `--matrix` cli flag. (Source project: [sc-forks/hardhat-e2e][1])
     "file": "test/variablecosts.js"
    },
    {
-    "title": "should should allow transfers and sends",
+    "title": "should allow transfers and sends",
     "file": "test/wallet.js"
    }
   ],
@@ -382,7 +382,7 @@ is run with the `--matrix` cli flag. (Source project: [sc-forks/hardhat-e2e][1])
     "file": "test/variablecosts.js"
    },
    {
-    "title": "should should allow transfers and sends",
+    "title": "should allow transfers and sends",
     "file": "test/wallet.js"
    }
   ],
@@ -392,7 +392,7 @@ is run with the `--matrix` cli flag. (Source project: [sc-forks/hardhat-e2e][1])
     "file": "test/variablecosts.js"
    },
    {
-    "title": "should should allow transfers and sends",
+    "title": "should allow transfers and sends",
     "file": "test/wallet.js"
    }
   ],
@@ -402,7 +402,7 @@ is run with the `--matrix` cli flag. (Source project: [sc-forks/hardhat-e2e][1])
     "file": "test/variablecosts.js"
    },
    {
-    "title": "should should allow transfers and sends",
+    "title": "should allow transfers and sends",
     "file": "test/wallet.js"
    }
   ],
@@ -412,7 +412,7 @@ is run with the `--matrix` cli flag. (Source project: [sc-forks/hardhat-e2e][1])
     "file": "test/variablecosts.js"
    },
    {
-    "title": "should should allow transfers and sends",
+    "title": "should allow transfers and sends",
     "file": "test/wallet.js"
    }
   ]
