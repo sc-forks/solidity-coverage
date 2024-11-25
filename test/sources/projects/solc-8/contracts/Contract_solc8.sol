@@ -10,6 +10,7 @@ using Library_solc8 for uint256;
 contract ContractA {
     mapping(bytes32 key => uint256) public authorization;
     address public someAddress;
+    bool transient locked;
 
     function throwError(address _add) external {
         this;
