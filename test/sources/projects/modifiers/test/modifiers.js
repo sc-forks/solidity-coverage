@@ -40,7 +40,7 @@ contract("Modifiers", function(accounts) {
     }
   });
 
-  it('when false & true branches are hit in immediate succesion by EOA (issue #863)', async function(){
+  it('when false & true branches are hit in immediate succession by EOA (issue #863)', async function(){
     try {
       await D.a({from: accounts[1]});
     } catch (e) {
