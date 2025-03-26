@@ -158,7 +158,7 @@ property in the configuration file. If not set, this directory defaults to `.cov
 
 
 [22]: https://github.com/JoranHonig/vertigo#vertigo
-[23]: http://spideruci.org/papers/jones05.pdf
+[23]: https://web.archive.org/web/20220122174401/http://spideruci.org/papers/jones05.pdf
 [25]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/matrix.md
 [27]: https://mochajs.org/api/reporters_json.js.html
 [29]: https://github.com/JoranHonig/tarantula
