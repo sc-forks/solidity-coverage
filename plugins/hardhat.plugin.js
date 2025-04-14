@@ -15,6 +15,7 @@ const {
 // Toggled true for `coverage` task only.
 let measureCoverage = false;
 let configureYulOptimizer = false;
+let irMinimum = false;
 let instrumentedSources;
 let optimizerDetails;
 
@@ -72,10 +73,27 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
     // instrument using `abi.encode(bytes8 covHash)`. Otherwise turn the optimizer off.
     if (!settings.viaIR) settings.optimizer.enabled = false;
 
-    // This sometimes fixed a stack-too-deep bug in ABIEncoderV2 for coverage plugin versions up to 0.8.6
+    //
+    // https://github.com/ethereum/solidity/issues/12533#issuecomment-1013073350
+    if (irMinimum) {
+      settings.optimizer.details =  {
+        peephole: false,
+        inliner: false,
+        jumpdest_remover: false,
+        order_literals: false,
+        deduplicate: false,
+        cse: false,
+        constant_optimizer: false,
+        yul: true,
+        yul_details: {
+          stack_allocation: true,
+          optimizer_steps: "",
+        },
+      }
+    // LEGACY: This sometimes fixed a stack-too-deep bug in ABIEncoderV2 for coverage plugin versions up to 0.8.6
     // Although issue should be fixed in 0.8.7, am leaving this option in because it may still be necessary
     // to configure optimizer details in some cases.
-    if (configureYulOptimizer) {
+    } else if (configureYulOptimizer) {
       if (optimizerDetails === undefined) {
         settings.optimizer.details = {
           yul: true,
@@ -142,6 +160,7 @@ task("coverage", "Generates a code coverage report for tests")
     api = new API(utils.loadSolcoverJS(config));
 
     optimizerDetails = api.solcOptimizerDetails;
+    irMinimum = api.irMinimum;
 
     // Catch interrupt signals
     process.on("SIGINT", nomiclabsUtils.finish.bind(null, config, api, true));
