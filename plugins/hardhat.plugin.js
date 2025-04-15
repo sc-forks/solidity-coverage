@@ -73,8 +73,8 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
     // instrument using `abi.encode(bytes8 covHash)`. Otherwise turn the optimizer off.
     if (!settings.viaIR) settings.optimizer.enabled = false;
 
-    //
-    // https://github.com/ethereum/solidity/issues/12533#issuecomment-1013073350
+    // Almost identical to foundry's irMinimum option - may improve performance for projects compiling with viaIR
+    // Original discussion at: https://github.com/ethereum/solidity/issues/12533#issuecomment-1013073350
     if (irMinimum) {
       settings.optimizer.details =  {
         peephole: false,
@@ -86,8 +86,8 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
         constantOptimizer: false,
         yul: true,
         yulDetails: {
-          stackAllocation: false,
-          //optimizerSteps: "",
+          stackAllocation: true,
+          optimizerSteps: "",
         },
       }
     // LEGACY: This sometimes fixed a stack-too-deep bug in ABIEncoderV2 for coverage plugin versions up to 0.8.6
