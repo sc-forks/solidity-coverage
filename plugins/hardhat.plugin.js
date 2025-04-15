@@ -71,19 +71,12 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
 
     // Beginning with v0.8.7, we let the optimizer run if viaIR is true and
     // instrument using `abi.encode(bytes8 covHash)`. Otherwise turn the optimizer off.
-    if (!settings.viaIR) settings.optimizer.enabled = false;
+    if (!settings.viaIR || irMinimum) settings.optimizer.enabled = false;
 
     // Almost identical to foundry's irMinimum option - may improve performance for projects compiling with viaIR
     // Original discussion at: https://github.com/ethereum/solidity/issues/12533#issuecomment-1013073350
     if (irMinimum) {
       settings.optimizer.details =  {
-        peephole: false,
-        inliner: false,
-        jumpdestRemover: false,
-        orderLiterals: false,
-        deduplicate: false,
-        cse: false,
-        constantOptimizer: false,
         yul: true,
         yulDetails: {
           stackAllocation: true,
