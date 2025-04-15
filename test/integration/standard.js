@@ -380,6 +380,22 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expected);
   })
 
+  it('compiles with irMinimum setting', async function(){
+    mock.installFullProject('irMinimum');
+    mock.hardhatSetupEnv(this);
+
+    await this.env.run("coverage");
+
+    const expected = [
+      {
+        file: mock.pathToContract(hardhatConfig, 'IRMinimum.sol'),
+        pct: 100
+      }
+    ];
+
+    verify.lineCoverage(expected);
+  })
+
   it('locates .coverage_contracts correctly when dir is subfolder', async function(){
     mock.installFullProject('contract-subfolders');
     mock.hardhatSetupEnv(this);

@@ -79,15 +79,15 @@ subtask(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE).setAction(async (_, 
       settings.optimizer.details =  {
         peephole: false,
         inliner: false,
-        jumpdest_remover: false,
-        order_literals: false,
+        jumpdestRemover: false,
+        orderLiterals: false,
         deduplicate: false,
         cse: false,
-        constant_optimizer: false,
+        constantOptimizer: false,
         yul: true,
-        yul_details: {
-          stack_allocation: true,
-          optimizer_steps: "",
+        yulDetails: {
+          stackAllocation: false,
+          //optimizerSteps: "",
         },
       }
     // LEGACY: This sometimes fixed a stack-too-deep bug in ABIEncoderV2 for coverage plugin versions up to 0.8.6
