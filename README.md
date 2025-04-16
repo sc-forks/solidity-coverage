@@ -95,7 +95,7 @@ module.exports = {
 | Option <img width=200/>| Type <img width=200/> | Default <img width=1000/> | Description <img width=1000/> |
 | ------ | ---- | ------- | ----------- |
 | skipFiles | *Array* | `[]` | Array of contracts or folders (with paths expressed relative to the `contracts` directory) that should be skipped when doing instrumentation.(ex: `[ "Routers", "Networks/Polygon.sol"]`) :warning: **RUN THE HARDHAT CLEAN COMMAND AFTER UPDATING THIS**  |
-| irMinimum | *Boolean* | `[]` | Speeds up test execution times when using `viaIR` compilation setting. If your project will compile with this solc config (it may not!) it's worth a try |
+| irMinimum | *Boolean* | `[]` | Speeds up test execution times when using `viaIR` compilation setting. If your project will compile with this solc config (it may not!) this is worth a try |
 | modifierWhitelist | *String[]* | `[]` | List of modifier names (ex: `onlyOwner`) to exclude from branch measurement. (Useful for modifiers which prepare something instead of acting as a gate.)) |
 | mocha | *Object* | `{ }` | [Mocha options][3] to merge into existing mocha config. `grep` and `invert` are useful for skipping certain tests under coverage using tags in the test descriptions. [More...][24]|
 | measureStatementCoverage | *boolean* | `true` | Computes statement (in addition to line) coverage. [More...][34] |
@@ -115,7 +115,7 @@ module.exports = {
 | onTestsComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the tests complete, *before* Istanbul reports are generated. [More...][23]|
 | onIstanbulComplete[<sup>*</sup>][14] | *Function* |  | Hook run *after* the Istanbul reports are generated, *before* the coverage task completes. Useful if you need to clean resources up. [More...][23]|
 | **:warning:    LOW LEVEL** |  | |  |
-| configureYulOptimizer | *Boolean* | false | Setting to `true` may resolve "stack too deep" compiler errors when **NOT** using `viaIR` |
+| configureYulOptimizer | *Boolean* | false | Setting to `true` lets you specify optimizer details (see next option). If no details are defined it defaults to turning on the yul optimizer and enabling stack allocation |
 | solcOptimizerDetails | *Object* | `undefined` |Must be used in combination with `configureYulOptimizer`. Allows you to configure solc's [optimizer details][1001]. (See [FAQ: Running out of stack][1002] ). |
 
 
