@@ -226,7 +226,7 @@ function setNetworkFrom(networkConfig, accounts){
   }
 }
 
-// TODO: Hardhat cacheing??
+// TODO: Hardhat caching??
 /**
  * Generates a path to a temporary compilation cache directory
  * @param  {HardhatConfig} config
