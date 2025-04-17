@@ -12,7 +12,7 @@ describe('asserts and requires', () => {
   after(async() => await api.finish());
 
   // Assert was covered as a branch up to v0.7.11. But since those
-  // conditions are never meant to be fullfilled (and assert is really for smt)
+  // conditions are never meant to be fulfilled (and assert is really for smt)
   // people disliked this...
   it('should *not* cover assert statements as branches (pass)', async function() {
     const contract = await util.bootstrapCoverage('assert/Assert', api, this.provider);
