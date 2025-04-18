@@ -232,7 +232,7 @@
   * Add E2E vs Zeppelin and Colony in CI
   * Add misc regression tests
   * Rebase testrpc-sc on ganache-cli 6.4.5, using --allowUnlimitedContractSize and --emitFreeLogs by default.
-  * Make pre-processor (and instrumentation step) much much faster
+  * Make pre-processor (and instrumentation step) much faster
   * Transition to using solidity-parser-antlr (@area)
 
 0.5.11 / 2018-08-31
