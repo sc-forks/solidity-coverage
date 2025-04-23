@@ -1,7 +1,7 @@
 # solidity-coverage
 
 [![Gitter chat](https://badges.gitter.im/sc-forks/solidity-coverage.svg)][18]
-![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/latest)
+[![npm (tag)](https://img.shields.io/npm/v/solidity-coverage/latest)[1]
 [![CircleCI](https://circleci.com/gh/sc-forks/solidity-coverage.svg?style=svg)][20]
 [![codecov](https://codecov.io/gh/sc-forks/solidity-coverage/branch/master/graph/badge.svg)][21]
 [![Hardhat](https://hardhat.org/buidler-plugin-badge.svg?1)][26]
@@ -163,6 +163,7 @@ $ git clone https://github.com/sc-forks/solidity-coverage.git
 $ yarn
 ```
 
+[1]: https://www.npmjs.com/package/solidity-coverage
 [2]: https://istanbul.js.org/docs/advanced/alternative-reporters/
 [3]: https://mochajs.org/api/mocha
 [4]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-gas
