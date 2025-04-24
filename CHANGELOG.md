@@ -24,7 +24,7 @@
     (https://github.com/sc-forks/solidity-coverage/issues/859)
   * Add tests for file-level function declarations
     (https://github.com/sc-forks/solidity-coverage/issues/858)
-  * Add try / catch unit tests (https://github.com/sc-forks/solidity-coverage/issues/857)
+  * Add try / catch unit tests (https://github.com/sc-forks/solidity-coverage/pull/857)
   * Fix test project configs for viaIR detection in overrides
     (https://github.com/sc-forks/solidity-coverage/issues/856)
   * Enable coverage when viaIR compiler flag is true
