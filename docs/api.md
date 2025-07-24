@@ -44,7 +44,7 @@ which can be used as a source if you're building something similar.
   * [getTempLocations](#gettemplocations)
   * [setupTempFolders](#setuptempfolders)
   * [save](#save)
-  * [finish](#finish-1)
+  * [finish](#finish)
 
 # API
 
