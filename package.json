@@ -1,6 +1,6 @@
 {
   "name": "solidity-coverage",
-  "version": "0.8.16",
+  "version": "0.8.17",
   "description": "Code coverage for Solidity testing",
   "main": "plugins/nomiclabs.plugin.js",
   "bin": {
