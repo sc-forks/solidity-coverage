@@ -27,7 +27,7 @@ extendConfig((config, userConfig) => {
   if (Boolean(process.env.SOLIDITY_COVERAGE)) {
     const { configureHardhatEVMGas } = require('./resources/nomiclabs.utils');
     const API = require('./../lib/api');
-    const api = new API({});
+    const api = new API({}, config.networks.hardhat.hardfork);
 
     const hardhatNetworkForCoverage = {};
     configureHardhatEVMGas(hardhatNetworkForCoverage, api);
@@ -150,7 +150,7 @@ task("coverage", "Generates a code coverage report for tests")
   try {
     config = nomiclabsUtils.normalizeConfig(env.config, args);
     ui = new PluginUI(config.logger.log);
-    api = new API(utils.loadSolcoverJS(config));
+    api = new API(utils.loadSolcoverJS(config), config.networks.hardhat.hardfork);
 
     optimizerDetails = api.solcOptimizerDetails;
     irMinimum = api.irMinimum;
