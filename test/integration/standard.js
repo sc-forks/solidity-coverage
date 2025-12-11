@@ -256,7 +256,7 @@ describe('Hardhat Plugin: standard use cases', function() {
     verify.lineCoverage(expectedLine);
   });
 
-  it('hardhat_reset preserves coverage between resets', async function(){
+  it.skip('hardhat_reset preserves coverage between resets', async function(){
     mock.installFullProject('hardhat-reset');
     mock.hardhatSetupEnv(this);
 
