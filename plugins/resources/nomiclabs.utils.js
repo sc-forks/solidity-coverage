@@ -1,5 +1,5 @@
 const shell = require('shelljs');
-const globby = require('globby');
+const { globSync } = require('glob');
 const pluginUtils = require("./plugin.utils");
 const path = require('path');
 const DataCollector = require("./../../lib/collector")
@@ -16,7 +16,7 @@ const util = require('util')
  * @return {String[]}         list of files to pass to mocha
  */
 function getTestFilePaths(files){
-  const target = globby.sync([files])
+  const target = globSync(files)
 
   // Hardhat supports js & ts
   const testregex = /.*\.(js|ts)$/;

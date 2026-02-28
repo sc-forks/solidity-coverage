@@ -73,7 +73,7 @@ $ SOLIDITY_COVERAGE=true npx hardhat coverage
 ## Command Options
 | Option <img width=200/> | Example <img width=750/>| Description <img width=1000/> |
 |--------------|------------------------------------|--------------------------------|
-| testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes and use [globby matching patterns][38])|
+| testfiles  | `--testfiles "test/registry/*.ts"` | Test file(s) to run. (Globs must be enclosed by quotes and use [glob matching patterns][38])|
 | sources | `--sources myFolder` or `--sources myFile.sol` | Path to *single* folder or file to target for coverage. Path is relative to Hardhat's `paths.sources` (usually `contracts/`) |
 | solcoverjs | `--solcoverjs ./../.solcover.js` | Relative path from working directory to config. Useful for monorepo packages that share settings. (Path must be "./" prefixed) |
 | matrix   | `--matrix` | Generate a JSON object that maps which mocha tests hit which lines of code. (Useful as an input for some fuzzing, mutation testing and fault-localization algorithms.) [More...][39]|
@@ -198,7 +198,7 @@ $ yarn
 [35]: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/e5fbbda9bac49039847a7ed20c1d966766ecc64a/scripts/coverage.js
 [36]: https://hardhat.org/
 [37]: https://github.com/sc-forks/solidity-coverage/blob/master/HARDHAT_README.md
-[38]: https://github.com/sindresorhus/globby#globbing-patterns
+[38]: https://github.com/isaacs/node-glob#glob-primer
 [39]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/advanced.md#generating-a-test-matrix
 [1001]: https://docs.soliditylang.org/en/v0.8.0/using-the-compiler.html#input-description
 [1002]: https://github.com/sc-forks/solidity-coverage/blob/master/docs/faq.md#running-out-of-stack
